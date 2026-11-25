@@ -1,0 +1,2623 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Лицей №37 · Нижнекамск · Движение Первых</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --font-main: 'Manrope', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius-card: 24px;
+      --radius-btn: 16px;
+      --transition-smooth: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --bg-page: #F8FAFC;
+      --bg-card: #FFFFFF;
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --accent-blue: #2563EB;
+      --accent-indigo: #4F46E5;
+      --accent-crimson: #E11D48;
+      --border-color: rgba(226, 232, 240, 0.8);
+      --glass-bg: rgba(255, 255, 255, 0.72);
+      --glass-border: rgba(226, 232, 240, 0.8);
+      --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.03), 0 12px 24px -8px rgba(0, 0, 0, 0.08);
+      --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -4px rgba(0, 0, 0, 0.05), 0 20px 40px -12px rgba(0, 0, 0, 0.12);
+      --glow-color: rgba(37, 99, 235, 0.15);
+      --header-bg: rgba(248, 250, 252, 0.72);
+      --card-glass: rgba(255, 255, 255, 0.72);
+      --input-bg: rgba(241, 245, 249, 0.8);
+      --chat-own: #2563EB;
+      --chat-other: #F1F5F9;
+      --chat-other-text: #0F172A;
+    }
+    [data-theme="dark"] {
+      --bg-page: #090D16;
+      --bg-card: rgba(17, 24, 39, 0.72);
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --accent-blue: #3B82F6;
+      --accent-indigo: #6366F1;
+      --accent-crimson: #F43F5E;
+      --border-color: rgba(255, 255, 255, 0.1);
+      --glass-bg: rgba(17, 24, 39, 0.72);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2), 0 12px 24px -8px rgba(0, 0, 0, 0.4);
+      --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.3), 0 20px 40px -12px rgba(0, 0, 0, 0.5);
+      --glow-color: rgba(59, 130, 246, 0.2);
+      --header-bg: rgba(9, 13, 22, 0.72);
+      --card-glass: rgba(17, 24, 39, 0.72);
+      --input-bg: rgba(30, 41, 59, 0.6);
+      --chat-own: #3B82F6;
+      --chat-other: #1E293B;
+      --chat-other-text: #F8FAFC;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      min-height: 100vh;
+      transition: background-color 0.4s ease, color 0.4s ease;
+      overflow-x: hidden;
+      position: relative;
+    }
+    [data-theme="dark"] body::before {
+      content: '';
+      position: fixed;
+      top: -30%;
+      left: -20%;
+      width: 70vw;
+      height: 70vh;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    [data-theme="dark"] body::after {
+      content: '';
+      position: fixed;
+      bottom: -20%;
+      right: -15%;
+      width: 60vw;
+      height: 60vh;
+      background: radial-gradient(circle, rgba(244, 63, 94, 0.06) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glass-card {
+      background: var(--card-glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      transition: var(--transition-smooth);
+      position: relative;
+      z-index: 1;
+    }
+    .glass-card:hover { box-shadow: var(--shadow-hover); }
+    .glass-header {
+      background: var(--header-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-btn);
+      padding: 0.75rem 1.75rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4); }
+    .btn-primary:active { transform: translateY(0) scale(0.98); }
+    .btn-accent {
+      background: linear-gradient(135deg, var(--accent-crimson), #BE123C);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-btn);
+      padding: 0.75rem 1.75rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 14px rgba(225, 29, 72, 0.3);
+    }
+    .btn-accent:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(225, 29, 72, 0.4); }
+    .btn-accent:active { transform: translateY(0) scale(0.98); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-btn);
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-ghost:hover { background: var(--input-bg); border-color: var(--accent-blue); color: var(--accent-blue); }
+    .input-field {
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-btn);
+      padding: 0.75rem 1rem;
+      color: var(--text-primary);
+      font-family: var(--font-main);
+      font-size: 0.95rem;
+      width: 100%;
+      transition: var(--transition-smooth);
+      outline: none;
+    }
+    .input-field:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px var(--glow-color); }
+    .input-field::placeholder { color: var(--text-secondary); opacity: 0.7; }
+    .mono { font-family: var(--font-mono); }
+    .text-gradient {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo), var(--accent-crimson));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      z-index: 100; display: flex; align-items: center; justify-content: center;
+      padding: 1rem; opacity: 0; visibility: hidden; transition: var(--transition-smooth);
+    }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    .modal-content {
+      background: var(--bg-card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border); border-radius: var(--radius-card);
+      max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 2rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      transform: scale(0.95) translateY(10px); transition: var(--transition-smooth); position: relative;
+    }
+    .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
+    .modal-wide { max-width: 900px !important; }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+    .pulse-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .float-anim { animation: float 3s ease-in-out infinite; }
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.4); }
+      50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.7); }
+    }
+    .glow-gold { animation: glow-pulse 2.5s ease-in-out infinite; }
+    .notif-badge {
+      position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px;
+      background: var(--accent-crimson); color: #fff; font-size: 0.65rem; font-weight: 700;
+      border-radius: 9px; display: flex; align-items: center; justify-content: center;
+      padding: 0 4px; border: 2px solid var(--bg-card);
+    }
+    .code-editor {
+      background: #0d1117; color: #c9d1d9; font-family: var(--font-mono); font-size: 0.85rem;
+      line-height: 1.6; border-radius: var(--radius-btn); padding: 1rem;
+      border: 1px solid rgba(255,255,255,0.1); resize: vertical; width: 100%;
+      min-height: 120px; outline: none; tab-size: 2;
+    }
+    .code-editor:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px var(--glow-color); }
+    @media (max-width: 640px) {
+      .rank-row { grid-template-columns: 32px 1fr 60px; font-size: 0.85rem; }
+    }
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .theme-toggle {
+      position: relative; width: 64px; height: 32px; border-radius: 16px;
+      background: var(--input-bg); border: 1px solid var(--border-color);
+      cursor: pointer; transition: var(--transition-smooth);
+      display: flex; align-items: center; padding: 0 4px;
+    }
+    .theme-toggle .toggle-knob {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-indigo));
+      transition: var(--transition-smooth); display: flex; align-items: center;
+      justify-content: center; font-size: 0.7rem; color: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    [data-theme="dark"] .theme-toggle .toggle-knob { transform: translateX(32px); }
+    .mobile-menu-panel {
+      position: fixed; top: 0; right: -100%; width: 300px; height: 100vh;
+      background: var(--bg-card); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+      border-left: 1px solid var(--glass-border); z-index: 90;
+      transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      padding: 5rem 1.5rem 2rem; overflow-y: auto;
+    }
+    .mobile-menu-panel.open { right: 0; }
+    .mobile-menu-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+      z-index: 89; opacity: 0; visibility: hidden; transition: var(--transition-smooth);
+    }
+    .mobile-menu-backdrop.active { opacity: 1; visibility: visible; }
+    .hidden { display: none !important; }
+    .custom-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem;
+    }
+    .online-indicator {
+      width: 8px; height: 8px; background: #22C55E; border-radius: 50%;
+      display: inline-block; box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+    }
+    .social-tab {
+      padding: 0.5rem 1rem; border-radius: 12px; font-size: 0.85rem; font-weight: 500;
+      cursor: pointer; transition: var(--transition-smooth); border: 1px solid transparent;
+      color: var(--text-secondary); background: transparent;
+    }
+    .social-tab.active { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+    .social-tab:hover:not(.active) { background: var(--input-bg); }
+    .chat-list-item {
+      padding: 0.75rem; border-radius: 12px; cursor: pointer; transition: var(--transition-smooth);
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .chat-list-item:hover { background: var(--input-bg); }
+    .chat-list-item.active { background: var(--input-bg); border: 1px solid var(--accent-blue); }
+    .chat-msg-own {
+      background: var(--chat-own); color: #fff; border-radius: 16px 16px 4px 16px;
+      padding: 0.6rem 0.9rem; max-width: 80%; word-break: break-word; font-size: 0.875rem;
+      align-self: flex-end;
+    }
+    .chat-msg-other {
+      background: var(--chat-other); color: var(--chat-other-text);
+      border-radius: 16px 16px 16px 4px; padding: 0.6rem 0.9rem;
+      max-width: 80%; word-break: break-word; font-size: 0.875rem; align-self: flex-start;
+    }
+    .comment-item {
+      padding: 0.5rem 0.75rem; border-radius: 12px; background: var(--input-bg);
+      font-size: 0.8rem; margin-top: 0.5rem;
+    }
+    .btn-editor-card {
+      padding: 0.75rem; border-radius: 12px; border: 1px solid var(--border-color);
+      background: var(--input-bg); margin-bottom: 0.75rem;
+    }
+    .strikethrough { text-decoration: line-through; opacity: 0.5; }
+    .calc-mode-btn {
+      padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.75rem; font-weight: 600;
+      cursor: pointer; border: 1px solid var(--border-color); background: var(--input-bg);
+      color: var(--text-secondary); transition: var(--transition-smooth);
+    }
+    .calc-mode-btn.active { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+    .filter-chip {
+      padding: 0.35rem 0.75rem; border-radius: 8px; font-size: 0.75rem; font-weight: 600;
+      cursor: pointer; border: 1px solid var(--border-color); background: transparent;
+      color: var(--text-secondary); transition: var(--transition-smooth);
+    }
+    .filter-chip.active { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+    @media (max-width: 768px) {
+      .chat-mobile-sidebar-hidden { display: none !important; }
+      .chat-mobile-main-hidden { display: none !important; }
+    }
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .photo-upload-hint {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.5rem;
+      background: rgba(0,0,0,0.4); color: #fff; opacity: 0; transition: var(--transition-smooth);
+      border-radius: 1rem; cursor: pointer;
+    }
+    .photo-wrapper:hover .photo-upload-hint { opacity: 1; }
+  </style>
+</head>
+<body data-theme="light">
+
+  <!-- ========== МОБИЛЬНОЕ МЕНЮ ========== -->
+  <div class="mobile-menu-backdrop" id="mobileMenuBackdrop"></div>
+  <div class="mobile-menu-panel" id="mobileMenuPanel">
+    <button class="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition" id="mobileMenuClose">
+      <i data-lucide="x" class="w-6 h-6" style="color: var(--text-primary);"></i>
+    </button>
+    <nav class="flex flex-col gap-2 mt-4">
+      <a href="#hero" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition text-sm font-medium mobile-nav-link" style="color: var(--text-primary);">
+        <i data-lucide="home" class="w-5 h-5"></i> Главная
+      </a>
+      <a href="#events" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition text-sm font-medium mobile-nav-link" style="color: var(--text-primary);">
+        <i data-lucide="calendar" class="w-5 h-5"></i> Мероприятия
+      </a>
+      <a href="#best-student" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition text-sm font-medium mobile-nav-link" style="color: var(--text-primary);">
+        <i data-lucide="award" class="w-5 h-5"></i> Лучший ученик
+      </a>
+      <a href="#top6" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition text-sm font-medium mobile-nav-link" style="color: var(--text-primary);">
+        <i data-lucide="trophy" class="w-5 h-5"></i> Топ‑6
+      </a>
+      <a href="#ideas" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition text-sm font-medium mobile-nav-link" style="color: var(--text-primary);">
+        <i data-lucide="lightbulb" class="w-5 h-5"></i> Идеи
+      </a>
+      <a href="#contacts" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition text-sm font-medium mobile-nav-link" style="color: var(--text-primary);">
+        <i data-lucide="map-pin" class="w-5 h-5"></i> Контакты
+      </a>
+      <a href="https://будьвдвижении.рф" target="_blank" class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition text-sm font-medium" style="color: var(--accent-crimson);">
+        <i data-lucide="external-link" class="w-5 h-5"></i> Будь в движении ↗
+      </a>
+      <hr class="my-2" style="border-color: var(--border-color);">
+      <button class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition text-sm font-medium" onclick="App.openSocial()" style="color: var(--text-primary);">
+        <i data-lucide="users" class="w-5 h-5"></i> Соцсеть лицея →
+      </button>
+      <button class="flex items-center gap-3 px-4 py-3 rounded-2xl hover:bg-white/5 transition text-sm font-medium" onclick="App.openAI()" style="color: var(--text-primary);">
+        <i data-lucide="bot" class="w-5 h-5"></i> ИИ‑ассистент →
+      </button>
+      <hr class="my-2" style="border-color: var(--border-color);">
+      <div id="mobileAuthBlock"></div>
+    </nav>
+  </div>
+
+  <!-- ========== ШАПКА ========== -->
+  <header class="glass-header sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+      <div class="flex items-center justify-between h-16 lg:h-[72px]">
+        <a href="#hero" class="flex items-center gap-2.5 shrink-0 group" aria-label="На главную">
+          <div class="relative w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-gradient-to-br from-[#2563EB] via-[#4F46E5] to-[#E11D48] flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+            <span class="mono font-extrabold text-white text-sm lg:text-base tracking-tight">37</span>
+            <div class="absolute -inset-1 rounded-xl bg-gradient-to-br from-blue-500/20 to-rose-500/20 blur-md -z-10"></div>
+          </div>
+          <div class="flex flex-col leading-none">
+            <span class="font-extrabold text-base lg:text-lg tracking-tight" style="color: var(--text-primary);">licey37</span>
+            <span class="text-[0.6rem] lg:text-[0.65rem] font-medium tracking-wide uppercase" style="color: var(--accent-crimson);">Движение Первых</span>
+          </div>
+        </a>
+        <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
+          <a href="#hero" class="px-3 py-2 rounded-xl text-sm font-medium transition hover:bg-white/5 nav-link" style="color: var(--text-secondary);">Движение Первых</a>
+          <a href="#events" class="px-3 py-2 rounded-xl text-sm font-medium transition hover:bg-white/5 nav-link" style="color: var(--text-secondary);">Мероприятия</a>
+          <a href="#top6" class="px-3 py-2 rounded-xl text-sm font-medium transition hover:bg-white/5 nav-link" style="color: var(--text-secondary);">Топ‑6</a>
+          <a href="#ideas" class="px-3 py-2 rounded-xl text-sm font-medium transition hover:bg-white/5 nav-link" style="color: var(--text-secondary);">Идея</a>
+          <a href="#contacts" class="px-3 py-2 rounded-xl text-sm font-medium transition hover:bg-white/5 nav-link" style="color: var(--text-secondary);">Контакты</a>
+          <a href="https://будьвдвижении.рф" target="_blank" class="px-3 py-2 rounded-xl text-sm font-semibold transition hover:bg-white/5 flex items-center gap-1" style="color: var(--accent-crimson);">
+            Будь в движении <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          </a>
+        </nav>
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему" title="Переключить тему">
+            <div class="toggle-knob" id="themeKnob">☀</div>
+          </button>
+          <button class="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition hover:bg-white/5 relative" onclick="App.openSocial()" style="color: var(--text-secondary);" title="Соцсеть лицея" data-editable-btn="header_social">
+            <i data-lucide="users" class="w-4 h-4"></i>
+            <span class="hidden xl:inline">Соцсеть</span>
+            <span class="notif-badge" id="socialNotifBadge">3</span>
+          </button>
+          <button class="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition hover:bg-white/5 relative" onclick="App.openAI()" style="color: var(--text-secondary);" title="ИИ-ассистент" data-editable-btn="header_ai">
+            <i data-lucide="bot" class="w-4 h-4"></i>
+            <span class="hidden xl:inline">ИИ</span>
+            <span class="online-indicator absolute top-1.5 right-1.5 pulse-dot"></span>
+          </button>
+          <div class="hidden md:flex items-center gap-2" id="authBlock"></div>
+          <button class="lg:hidden p-2 rounded-xl transition hover:bg-white/5" id="mobileMenuOpen" aria-label="Меню">
+            <i data-lucide="menu" class="w-5 h-5" style="color: var(--text-primary);"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="relative z-10">
+
+    <!-- ===== HERO ===== -->
+    <section id="hero" class="relative overflow-hidden py-16 md:py-24 lg:py-32">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto text-center">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card text-xs sm:text-sm font-medium mb-8 fade-in" style="color: var(--text-secondary);">
+            <span class="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-rose-500"></span>
+            Нижнекамск · 1–11 классы · Первичное отделение Движения Первых
+          </div>
+          <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold tracking-tight leading-none mb-6 fade-in" style="color: var(--text-primary);" data-editable-text="hero_title">
+            Лицей <span class="text-gradient">№37</span>
+          </h1>
+          <p class="text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed fade-in" style="color: var(--text-secondary);" data-editable-text="hero_subtitle">
+            Цифровая экосистема школьного сообщества, где ученики объединяются в проекты, участвуют в олимпиадах, общаются в закрытой соцсети и готовятся к экзаменам с умным ИИ‑ассистентом.
+          </p>
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-16 fade-in">
+            <button class="btn-accent text-base px-8 py-3.5 w-full sm:w-auto" onclick="App.openRegister()" data-editable-btn="hero_cta_register">
+              <i data-lucide="user-plus" class="w-5 h-5"></i>
+              Создать аккаунт
+            </button>
+            <button class="btn-primary text-base px-8 py-3.5 w-full sm:w-auto" onclick="App.openAI()" data-editable-btn="hero_cta_ai">
+              <i data-lucide="sparkles" class="w-5 h-5"></i>
+              Спросить ИИ‑ассистента
+            </button>
+          </div>
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-12 fade-in">
+            <a href="#events" class="glass-card p-4 sm:p-5 text-left group cursor-pointer">
+              <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <i data-lucide="calendar" class="w-5 h-5" style="color: var(--accent-blue);"></i>
+              </div>
+              <div class="font-semibold text-sm" style="color: var(--text-primary);">Мероприятия →</div>
+              <div class="text-xs mt-1" style="color: var(--text-secondary);">Ближайшие события</div>
+            </a>
+            <a href="#top6" class="glass-card p-4 sm:p-5 text-left group cursor-pointer">
+              <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <i data-lucide="trophy" class="w-5 h-5 text-amber-500"></i>
+              </div>
+              <div class="font-semibold text-sm" style="color: var(--text-primary);">Топ‑6 лицеистов →</div>
+              <div class="text-xs mt-1" style="color: var(--text-secondary);">Рейтинг лучших</div>
+            </a>
+            <button onclick="App.openSocial()" class="glass-card p-4 sm:p-5 text-left group cursor-pointer">
+              <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <i data-lucide="users" class="w-5 h-5" style="color: var(--accent-indigo);"></i>
+              </div>
+              <div class="font-semibold text-sm" style="color: var(--text-primary);">Соцсеть лицея →</div>
+              <div class="text-xs mt-1" style="color: var(--text-secondary);">Закрытое сообщество</div>
+            </button>
+            <a href="#ideas" class="glass-card p-4 sm:p-5 text-left group cursor-pointer">
+              <div class="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <i data-lucide="lightbulb" class="w-5 h-5" style="color: var(--accent-crimson);"></i>
+              </div>
+              <div class="font-semibold text-sm" style="color: var(--text-primary);">Предложить идею →</div>
+              <div class="text-xs mt-1" style="color: var(--text-secondary);">Измени лицей</div>
+            </a>
+          </div>
+          <div class="grid grid-cols-3 gap-4 sm:gap-8 max-w-lg mx-auto fade-in">
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl font-extrabold mono" style="color: var(--accent-blue);" id="statMembers">0</div>
+              <div class="text-[0.7rem] sm:text-xs mt-1" style="color: var(--text-secondary);">участников движения</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl font-extrabold mono" style="color: var(--accent-indigo);" id="statEvents">0</div>
+              <div class="text-[0.7rem] sm:text-xs mt-1" style="color: var(--text-secondary);">проведённых событий</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl sm:text-3xl font-extrabold mono" style="color: var(--accent-crimson);" id="statProjects">0</div>
+              <div class="text-[0.7rem] sm:text-xs mt-1" style="color: var(--text-secondary);">активных проектов</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== МЕРОПРИЯТИЯ ===== -->
+    <section id="events" class="py-16 md:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-4" style="background: var(--input-bg); color: var(--accent-blue);">
+              <i data-lucide="calendar" class="w-3.5 h-3.5"></i> Календарь
+            </div>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight" style="color: var(--text-primary);" data-editable-text="events_heading">Ближайшие мероприятия</h2>
+            <p class="mt-3 max-w-xl text-sm sm:text-base" style="color: var(--text-secondary);" data-editable-text="events_subheading">События лицея, олимпиады, волонтёрские акции и творческие конкурсы — выбирай и участвуй.</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2 mb-8" id="eventFilters">
+          <button class="event-filter-btn px-4 py-2 rounded-full text-sm font-medium transition active" data-filter="all" style="background: var(--accent-blue); color: #fff;">Все события</button>
+          <button class="event-filter-btn px-4 py-2 rounded-full text-sm font-medium transition" data-filter="Олимпиады" style="background: var(--input-bg); color: var(--text-secondary);">Олимпиады</button>
+          <button class="event-filter-btn px-4 py-2 rounded-full text-sm font-medium transition" data-filter="Волонтёрство" style="background: var(--input-bg); color: var(--text-secondary);">Волонтёрство</button>
+          <button class="event-filter-btn px-4 py-2 rounded-full text-sm font-medium transition" data-filter="Творчество" style="background: var(--input-bg); color: var(--text-secondary);">Творчество</button>
+          <button class="event-filter-btn px-4 py-2 rounded-full text-sm font-medium transition" data-filter="Спорт" style="background: var(--input-bg); color: var(--text-secondary);">Спорт</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="eventsGrid"></div>
+      </div>
+    </section>
+
+    <!-- ===== ЛУЧШИЙ УЧЕНИК ===== -->
+    <section id="best-student" class="py-16 md:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-6 glass-card" style="color: #F59E0B;">
+            <span class="w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-xs glow-gold float-anim">★</span>
+            Лучший ученик месяца
+          </div>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-4" style="color: var(--text-primary);" data-editable-text="best_student_heading">Самый лучший лицеист месяца</h2>
+          <p class="max-w-2xl mx-auto text-sm sm:text-base" style="color: var(--text-secondary);" data-editable-text="best_student_subheading">Звание присуждается ежемесячно по итогам олимпиад, проектной деятельности и активности в первичном отделении Движения Первых.</p>
+        </div>
+        <div class="glass-card p-6 md:p-10 relative overflow-hidden">
+          <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-gradient-to-b from-amber-500/10 via-blue-500/5 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10">
+            <div class="lg:col-span-4">
+              <div class="relative">
+                <div class="absolute -top-3 -left-3 z-10 w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500 flex items-center justify-center shadow-xl glow-gold float-anim">
+                  <span class="text-white text-2xl font-bold">★</span>
+                </div>
+                <div class="aspect-[4/5] rounded-2xl overflow-hidden bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 relative group cursor-pointer photo-wrapper" id="bestStudentPhoto" onclick="App.triggerPhotoUpload()">
+                  <img id="bestStudentImg" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" style="display:none;">
+                  <div class="absolute inset-0 flex flex-col items-center justify-center gap-2" id="bestStudentPhotoPlaceholder">
+                    <i data-lucide="camera" class="w-12 h-12 opacity-30" style="color: var(--text-secondary);"></i>
+                    <span class="text-sm font-medium opacity-50" style="color: var(--text-secondary);">Место для фото</span>
+                    <span class="text-xs opacity-40" style="color: var(--text-secondary);">Загрузить фото в CMS</span>
+                  </div>
+                  <div class="photo-upload-hint" id="photoUploadHint">
+                    <i data-lucide="upload" class="w-8 h-8"></i>
+                    <span class="text-sm font-semibold">Нажмите, чтобы загрузить</span>
+                  </div>
+                </div>
+                <input type="file" id="bestStudentFileInput" accept="image/*" class="hidden" onchange="App.handlePhotoFile(event)">
+              </div>
+              <div class="mt-4 flex items-center justify-between">
+                <span class="px-4 py-2 rounded-xl font-bold text-sm" style="background: linear-gradient(135deg, rgba(225, 29, 72, 0.1), rgba(37, 99, 235, 0.1)); color: var(--accent-crimson);" data-editable-text="best_student_month">Октябрь 2026</span>
+                <span class="text-xs flex items-center gap-1" style="color: var(--text-secondary);">
+                  <i data-lucide="badge-check" class="w-3.5 h-3.5 text-blue-500"></i>
+                  Выбор совета
+                </span>
+              </div>
+            </div>
+            <div class="lg:col-span-8">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                <div>
+                  <h3 class="text-2xl sm:text-3xl font-extrabold" style="color: var(--text-primary);" data-editable-text="best_student_name">Фамилия Имя</h3>
+                  <p class="text-sm mt-1" style="color: var(--text-secondary);" data-editable-text="best_student_meta">Класс · направление</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="px-4 py-2 rounded-xl font-bold mono text-lg" style="background: var(--input-bg); color: #F59E0B;">★ <span id="bestStudentPoints">485</span> <span class="text-xs font-normal" style="color: var(--text-secondary);">баллов</span></div>
+                  <button class="btn-ghost text-xs py-2 px-3" onclick="App.openSocial()">Профиль →</button>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+                <div class="p-4 rounded-2xl" style="background: var(--input-bg);">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="w-7 h-7 rounded-full bg-amber-500/20 flex items-center justify-center text-xs font-bold text-amber-600 mono">01</span>
+                    <i data-lucide="medal" class="w-4 h-4 text-amber-500"></i>
+                  </div>
+                  <p class="text-xs leading-relaxed" style="color: var(--text-secondary);" data-editable-text="best_student_reason_1">Победа в региональной олимпиаде по математике и информатике.</p>
+                </div>
+                <div class="p-4 rounded-2xl" style="background: var(--input-bg);">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="w-7 h-7 rounded-full bg-blue-500/20 flex items-center justify-center text-xs font-bold text-blue-600 mono">02</span>
+                    <i data-lucide="rocket" class="w-4 h-4 text-blue-500"></i>
+                  </div>
+                  <p class="text-xs leading-relaxed" style="color: var(--text-secondary);" data-editable-text="best_student_reason_2">Реализовал школьный проект «Цифровая лаборатория» для младших классов.</p>
+                </div>
+                <div class="p-4 rounded-2xl" style="background: var(--input-bg);">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="w-7 h-7 rounded-full bg-rose-500/20 flex items-center justify-center text-xs font-bold text-rose-600 mono">03</span>
+                    <i data-lucide="heart" class="w-4 h-4 text-rose-500"></i>
+                  </div>
+                  <p class="text-xs leading-relaxed" style="color: var(--text-secondary);" data-editable-text="best_student_reason_3">Активный волонтёр, наставник для учеников 5–6 классов, участник Движения Первых.</p>
+                </div>
+              </div>
+              <div class="flex flex-wrap items-center gap-4">
+                <button class="btn-primary text-sm py-2.5 px-5" id="applauseBtn" onclick="App.applaud()" data-editable-btn="best_student_applause">
+                  <span>👏</span> Поздравить лицеиста
+                  <span class="mono ml-1" id="applauseCount">0</span>
+                </button>
+                <a href="#points-rules" class="text-sm font-medium hover:underline" style="color: var(--accent-blue);">Как стать лучшим учеником месяца? →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ТОП-6 ===== -->
+    <section id="top6" class="py-16 md:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-4" style="background: var(--input-bg); color: #F59E0B;">
+              <i data-lucide="trophy" class="w-3.5 h-3.5"></i> Рейтинг
+            </div>
+            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight" style="color: var(--text-primary);" data-editable-text="top6_heading">Топ‑6 лицеистов</h2>
+            <p class="mt-3 max-w-xl text-sm sm:text-base" style="color: var(--text-secondary);" data-editable-text="top6_subheading">Лучшие ученики по итогам олимпиад, проектов и общественной деятельности.</p>
+          </div>
+          <div class="flex gap-2 p-1 rounded-xl" style="background: var(--input-bg);">
+            <button class="top6-filter px-4 py-2 rounded-lg text-sm font-medium transition active" data-period="total" style="background: var(--bg-card); color: var(--text-primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1);">Общий зачёт</button>
+            <button class="top6-filter px-4 py-2 rounded-lg text-sm font-medium transition" data-period="month" style="color: var(--text-secondary);">За месяц</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10" id="top6Grid"></div>
+        <div class="glass-card p-6 md:p-8">
+          <h3 class="text-xl font-bold mb-4" style="color: var(--text-primary);">
+            <i data-lucide="calculator" class="w-5 h-5 inline mr-2" style="color: var(--accent-blue);"></i>
+            Сколько баллов я получу?
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-5" id="calcActivities"></div>
+          <div class="flex items-center gap-4 p-4 rounded-2xl" style="background: var(--input-bg);">
+            <span class="text-sm" style="color: var(--text-secondary);">Прогнозируемый рейтинг:</span>
+            <span class="text-2xl font-extrabold mono" style="color: var(--accent-blue);" id="calcResult">0</span>
+            <span class="text-sm" style="color: var(--text-secondary);">баллов</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ИДЕИ ===== -->
+    <section id="ideas" class="py-16 md:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl mx-auto text-center mb-12">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-4" style="background: var(--input-bg); color: var(--accent-crimson);">
+            <i data-lucide="lightbulb" class="w-3.5 h-3.5"></i> Идеи
+          </div>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight" style="color: var(--text-primary);" data-editable-text="ideas_heading">Предложить идею</h2>
+          <p class="mt-3 text-sm sm:text-base" style="color: var(--text-secondary);" data-editable-text="ideas_subheading">Есть идея, как сделать лицей лучше? Расскажи нам — лучшие предложения попадут в план развития.</p>
+        </div>
+        <div class="max-w-xl mx-auto glass-card p-6 md:p-8">
+          <div class="space-y-4">
+            <input type="text" class="input-field" placeholder="Ваше имя" id="ideaName">
+            <input type="text" class="input-field" placeholder="Класс" id="ideaGrade">
+            <textarea class="input-field resize-none" rows="4" placeholder="Опишите вашу идею..." id="ideaText"></textarea>
+            <button class="btn-accent w-full" onclick="App.submitIdea()">
+              <i data-lucide="send" class="w-4 h-4"></i>
+              Отправить идею
+            </button>
+          </div>
+        </div>
+        <div class="mt-8 space-y-3 max-w-3xl mx-auto" id="ideasList"></div>
+      </div>
+    </section>
+
+    <!-- ===== ПРАВИЛА БАЛЛОВ ===== -->
+    <section id="points-rules" class="py-16 md:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl mx-auto text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight" style="color: var(--text-primary);" data-editable-text="rules_heading">Как стать лучшим учеником месяца?</h2>
+          <p class="mt-3 text-sm" style="color: var(--text-secondary);" data-editable-text="rules_subheading">Баллы начисляются за активность в учёбе, проектах и общественной жизни лицея.</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+          <div class="glass-card p-5 text-center">
+            <div class="text-2xl mb-2">🏆</div>
+            <div class="font-bold mono text-lg" style="color: var(--accent-blue);">+50</div>
+            <div class="text-xs mt-1" style="color: var(--text-secondary);">Победа на городском этапе олимпиады</div>
+          </div>
+          <div class="glass-card p-5 text-center">
+            <div class="text-2xl mb-2">🎯</div>
+            <div class="font-bold mono text-lg" style="color: var(--accent-blue);">+20</div>
+            <div class="text-xs mt-1" style="color: var(--text-secondary);">Участие в школьной олимпиаде</div>
+          </div>
+          <div class="glass-card p-5 text-center">
+            <div class="text-2xl mb-2">🚀</div>
+            <div class="font-bold mono text-lg" style="color: var(--accent-blue);">+40</div>
+            <div class="text-xs mt-1" style="color: var(--text-secondary);">Реализованный проект</div>
+          </div>
+          <div class="glass-card p-5 text-center">
+            <div class="text-2xl mb-2">❤️</div>
+            <div class="font-bold mono text-lg" style="color: var(--accent-blue);">+15</div>
+            <div class="text-xs mt-1" style="color: var(--text-secondary);">Волонтёрство</div>
+          </div>
+          <div class="glass-card p-5 text-center">
+            <div class="text-2xl mb-2">🤝</div>
+            <div class="font-bold mono text-lg" style="color: var(--accent-blue);">+10</div>
+            <div class="text-xs mt-1" style="color: var(--text-secondary);">Помощь младшим классам</div>
+          </div>
+          <div class="glass-card p-5 text-center">
+            <div class="text-2xl mb-2">⭐</div>
+            <div class="font-bold mono text-lg" style="color: var(--accent-blue);">+5</div>
+            <div class="text-xs mt-1" style="color: var(--text-secondary);">Активность в Движении Первых</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== КОНТАКТЫ ===== -->
+    <section id="contacts" class="py-16 md:py-24">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl mx-auto text-center mb-10">
+          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight" style="color: var(--text-primary);" data-editable-text="contacts_heading">Контакты</h2>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+          <div class="glass-card p-6 text-center">
+            <i data-lucide="map-pin" class="w-8 h-8 mx-auto mb-3" style="color: var(--accent-blue);"></i>
+            <div class="font-semibold text-sm" style="color: var(--text-primary);">Адрес</div>
+            <div class="text-xs mt-2" style="color: var(--text-secondary);">г. Нижнекамск, ул. Школьная, д. 37</div>
+          </div>
+          <div class="glass-card p-6 text-center">
+            <i data-lucide="phone" class="w-8 h-8 mx-auto mb-3" style="color: var(--accent-indigo);"></i>
+            <div class="font-semibold text-sm" style="color: var(--text-primary);">Телефон</div>
+            <div class="text-xs mt-2 mono" style="color: var(--text-secondary);">+7 (8555) 12-34-56</div>
+          </div>
+          <div class="glass-card p-6 text-center">
+            <i data-lucide="mail" class="w-8 h-8 mx-auto mb-3" style="color: var(--accent-crimson);"></i>
+            <div class="font-semibold text-sm" style="color: var(--text-primary);">Почта</div>
+            <div class="text-xs mt-2" style="color: var(--text-secondary);">info@licey37.ru</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========== ФУТЕР ========== -->
+  <footer class="border-t py-10" style="border-color: var(--border-color);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#2563EB] to-[#E11D48] flex items-center justify-center">
+            <span class="mono font-extrabold text-white text-xs">37</span>
+          </div>
+          <div>
+            <div class="font-bold text-sm" style="color: var(--text-primary);">Лицей №37</div>
+            <div class="text-xs" style="color: var(--text-secondary);">Нижнекамск · Движение Первых</div>
+          </div>
+        </div>
+        <div class="text-xs text-center" style="color: var(--text-secondary);">© 2026 МБОУ «Лицей №37» г. Нижнекамск. Все права защищены.</div>
+        <div class="flex gap-4">
+          <a href="https://будьвдвижении.рф" target="_blank" class="text-xs font-medium hover:underline" style="color: var(--accent-crimson);">Будь в движении ↗</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========== МОДАЛЬНЫЕ ОКНА ========== -->
+  <div class="modal-overlay" id="registerModal">
+    <div class="modal-content">
+      <button class="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition" onclick="App.closeModal('registerModal')">
+        <i data-lucide="x" class="w-5 h-5" style="color: var(--text-secondary);"></i>
+      </button>
+      <h2 class="text-2xl font-extrabold mb-1" style="color: var(--text-primary);">Создать аккаунт</h2>
+      <p class="text-sm mb-6" style="color: var(--text-secondary);">Присоединяйтесь к сообществу Лицея №37</p>
+      <div class="space-y-3">
+        <input type="text" class="input-field" placeholder="Имя" id="regFirstName">
+        <input type="text" class="input-field" placeholder="Фамилия" id="regLastName">
+        <input type="email" class="input-field" placeholder="Email" id="regEmail">
+        <input type="password" class="input-field" placeholder="Пароль" id="regPassword">
+        <select class="input-field custom-select" id="regGrade">
+          <option value="">Выберите класс</option>
+          <option>1 класс</option><option>2 класс</option><option>3 класс</option>
+          <option>4 класс</option><option>5 класс</option><option>6 класс</option>
+          <option>7 класс</option><option>8 класс</option><option>9 класс</option>
+          <option>10 класс</option><option>11 класс</option>
+        </select>
+        <button class="btn-accent w-full mt-2" onclick="App.register()">
+          <i data-lucide="user-plus" class="w-4 h-4"></i> Зарегистрироваться
+        </button>
+      </div>
+      <p class="text-center text-xs mt-4" style="color: var(--text-secondary);">Уже есть аккаунт? <button class="font-semibold hover:underline" style="color: var(--accent-blue);" onclick="App.switchModal('registerModal','loginModal')">Войти</button></p>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal-content">
+      <button class="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition" onclick="App.closeModal('loginModal')">
+        <i data-lucide="x" class="w-5 h-5" style="color: var(--text-secondary);"></i>
+      </button>
+      <h2 class="text-2xl font-extrabold mb-1" style="color: var(--text-primary);">Войти</h2>
+      <p class="text-sm mb-6" style="color: var(--text-secondary);">Войдите в свой аккаунт Лицея №37</p>
+      <div class="space-y-3">
+        <input type="email" class="input-field" placeholder="Email" id="loginEmail">
+        <input type="password" class="input-field" placeholder="Пароль" id="loginPassword">
+        <button class="btn-primary w-full mt-2" onclick="App.login()">
+          <i data-lucide="log-in" class="w-4 h-4"></i> Войти
+        </button>
+      </div>
+      <p class="text-center text-xs mt-4" style="color: var(--text-secondary);">Нет аккаунта? <button class="font-semibold hover:underline" style="color: var(--accent-crimson);" onclick="App.switchModal('loginModal','registerModal')">Создать</button></p>
+      <div class="mt-4 p-3 rounded-xl text-xs" style="background: var(--input-bg); color: var(--text-secondary);">
+        <strong>Демо-доступ:</strong> admin@licey37.ru / admin37
+      </div>
+    </div>
+  </div>
+
+  <!-- ИИ-ассистент с калькулятором -->
+  <div class="modal-overlay" id="aiModal">
+    <div class="modal-content" style="max-width: 680px;">
+      <button class="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition" onclick="App.closeModal('aiModal')">
+        <i data-lucide="x" class="w-5 h-5" style="color: var(--text-secondary);"></i>
+      </button>
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center relative">
+          <i data-lucide="bot" class="w-5 h-5 text-white"></i>
+          <span class="online-indicator absolute -bottom-0.5 -right-0.5 pulse-dot"></span>
+        </div>
+        <div>
+          <h2 class="text-xl font-extrabold" style="color: var(--text-primary);">ИИ‑ассистент лицея</h2>
+          <p class="text-xs" style="color: var(--text-secondary);">Онлайн · всегда готов помочь</p>
+        </div>
+      </div>
+
+      <!-- Мини-калькулятор процентов -->
+      <div class="rounded-2xl p-4 mb-4" style="background: var(--input-bg); border: 1px solid var(--border-color);">
+        <div class="flex items-center gap-2 mb-3">
+          <i data-lucide="calculator" class="w-4 h-4" style="color: var(--accent-blue);"></i>
+          <span class="text-sm font-semibold" style="color: var(--text-primary);">Калькулятор процентов</span>
+        </div>
+        <div class="flex flex-wrap gap-2 mb-3">
+          <button class="calc-mode-btn active" data-mode="percent" onclick="App.setCalcMode('percent')">% от числа</button>
+          <button class="calc-mode-btn" data-mode="discount" onclick="App.setCalcMode('discount')">Скидка</button>
+          <button class="calc-mode-btn" data-mode="markup" onclick="App.setCalcMode('markup')">Бонус / наценка</button>
+        </div>
+        <div class="grid grid-cols-2 gap-2 mb-3">
+          <input type="number" class="input-field text-sm" placeholder="Число" id="calcNumber" oninput="App.recalc()">
+          <input type="number" class="input-field text-sm" placeholder="Процент" id="calcPercent" oninput="App.recalc()">
+        </div>
+        <div class="p-3 rounded-xl mb-3" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+          <div class="text-xs mb-1" style="color: var(--text-secondary);">Результат:</div>
+          <div class="text-lg font-bold mono" style="color: var(--accent-blue);" id="calcFormula">—</div>
+        </div>
+        <button class="btn-ghost w-full text-xs py-2" onclick="App.sendCalcToAI()">
+          <i data-lucide="send" class="w-3.5 h-3.5"></i> Отправить в чат ИИ
+        </button>
+      </div>
+
+      <div class="rounded-2xl p-4 h-56 overflow-y-auto mb-4 space-y-3" id="aiChat" style="background: var(--input-bg);">
+        <div class="flex gap-2">
+          <div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shrink-0">
+            <i data-lucide="bot" class="w-3.5 h-3.5 text-white"></i>
+          </div>
+          <div class="p-3 rounded-2xl rounded-tl-sm text-sm max-w-[85%]" style="background: var(--bg-card); color: var(--text-primary);">
+            Привет! Я ИИ‑ассистент Лицея №37. Могу помочь с учёбой, подсказать расписание, объяснить тему, сгенерировать игру или посчитать проценты. Спрашивай!
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-2 mb-3">
+        <button class="btn-ghost text-xs py-1.5 px-3" onclick="App.aiQuick('Дай случайную игру')">🎲 Игра</button>
+        <button class="btn-ghost text-xs py-1.5 px-3" onclick="App.aiQuick('Дай задание')">📝 Задание</button>
+        <button class="btn-ghost text-xs py-1.5 px-3" onclick="App.aiQuick('Как поступить в Лицей №37?')">🎓 Поступление</button>
+        <button class="btn-ghost text-xs py-1.5 px-3" onclick="App.aiQuick('Формулы по математике')">📐 Формулы</button>
+      </div>
+      <div class="flex gap-2">
+        <input type="text" class="input-field" placeholder="Напишите сообщение..." id="aiInput" onkeydown="if(event.key==='Enter')App.aiSend()">
+        <button class="btn-primary px-4" onclick="App.aiSend()">
+          <i data-lucide="send" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Соцсеть с чатами, друзьями, комментариями -->
+  <div class="modal-overlay" id="socialModal">
+    <div class="modal-content modal-wide" style="max-height: 92vh;">
+      <button class="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition z-10" onclick="App.closeModal('socialModal')">
+        <i data-lucide="x" class="w-5 h-5" style="color: var(--text-secondary);"></i>
+      </button>
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+          <i data-lucide="users" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <h2 class="text-xl font-extrabold" style="color: var(--text-primary);">Соцсеть лицея</h2>
+          <p class="text-xs" style="color: var(--text-secondary);">Закрытое сообщество учеников</p>
+        </div>
+      </div>
+
+      <!-- Вкладки -->
+      <div class="flex gap-2 mb-4 flex-wrap" id="socialTabs">
+        <button class="social-tab active" data-tab="feed" onclick="App.switchSocialTab('feed')"><i data-lucide="rss" class="w-3.5 h-3.5 inline mr-1"></i>Лента</button>
+        <button class="social-tab" data-tab="chats" onclick="App.switchSocialTab('chats')"><i data-lucide="message-circle" class="w-3.5 h-3.5 inline mr-1"></i>Чаты</button>
+        <button class="social-tab" data-tab="friends" onclick="App.switchSocialTab('friends')"><i data-lucide="user-plus" class="w-3.5 h-3.5 inline mr-1"></i>Друзья</button>
+      </div>
+
+      <!-- Вкладка Лента -->
+      <div id="socialTabFeed" class="social-tab-panel">
+        <div class="space-y-3 max-h-[55vh] overflow-y-auto pr-1" id="socialFeed"></div>
+        <div class="mt-4 p-3 rounded-2xl" style="background: var(--input-bg);">
+          <textarea class="input-field resize-none mb-2" rows="2" placeholder="Что нового в лицее?" id="postInput"></textarea>
+          <div class="flex items-center justify-between">
+            <select class="input-field custom-select w-auto text-xs py-1.5" id="postTag" style="max-width: 160px;">
+              <option value="Новости">Новости</option>
+              <option value="Учёба">Учёба</option>
+              <option value="Спорт">Спорт</option>
+              <option value="Творчество">Творчество</option>
+              <option value="Движение Первых">Движение Первых</option>
+            </select>
+            <button class="btn-primary text-xs py-2 px-4" onclick="App.createPost()">
+              <i data-lucide="send" class="w-3.5 h-3.5"></i> Опубликовать
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Вкладка Чаты -->
+      <div id="socialTabChats" class="social-tab-panel hidden">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3" style="height: 55vh;">
+          <div class="md:col-span-1 rounded-2xl p-2 overflow-y-auto" style="background: var(--input-bg);" id="chatSidebar">
+            <div class="text-xs font-semibold px-2 py-1 mb-1" style="color: var(--text-secondary);">Диалоги</div>
+            <div id="chatList"></div>
+          </div>
+          <div class="md:col-span-2 rounded-2xl flex flex-col" style="background: var(--input-bg);" id="chatMain">
+            <div class="p-3 border-b flex items-center justify-between" style="border-color: var(--border-color);" id="chatHeader">
+              <div class="flex items-center gap-2">
+                <button class="md:hidden p-1" onclick="App.closeChatMobile()"><i data-lucide="arrow-left" class="w-4 h-4"></i></button>
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500/20 to-indigo-500/20 flex items-center justify-center text-xs font-bold" style="color: var(--accent-blue);" id="chatHeaderAvatar">—</div>
+                <div>
+                  <div class="text-sm font-semibold" style="color: var(--text-primary);" id="chatHeaderName">Выберите чат</div>
+                  <div class="text-[0.65rem]" style="color: var(--text-secondary);" id="chatHeaderStatus">—</div>
+                </div>
+              </div>
+              <button class="btn-ghost text-[0.65rem] py-1 px-2" onclick="App.blockCurrentChatUser()" id="blockUserBtn" style="display:none;">
+                <i data-lucide="ban" class="w-3 h-3"></i> Заблокировать
+              </button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-3 space-y-2 flex flex-col" id="chatMessages"></div>
+            <div class="p-2 border-t flex gap-2" style="border-color: var(--border-color);" id="chatInputArea">
+              <input type="text" class="input-field text-sm" placeholder="Сообщение..." id="chatInput" onkeydown="if(event.key==='Enter')App.sendMessage()">
+              <button class="btn-primary px-3 py-2" onclick="App.sendMessage()"><i data-lucide="send" class="w-4 h-4"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Вкладка Друзья -->
+      <div id="socialTabFriends" class="social-tab-panel hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto">
+          <div class="rounded-2xl p-4" style="background: var(--input-bg);">
+            <div class="text-sm font-semibold mb-3" style="color: var(--text-primary);">
+              <i data-lucide="inbox" class="w-4 h-4 inline mr-1" style="color: var(--accent-blue);"></i>Заявки в друзья
+            </div>
+            <div id="friendRequests"></div>
+          </div>
+          <div class="rounded-2xl p-4" style="background: var(--input-bg);">
+            <div class="text-sm font-semibold mb-3" style="color: var(--text-primary);">
+              <i data-lucide="users" class="w-4 h-4 inline mr-1" style="color: var(--accent-indigo);"></i>Мои друзья
+            </div>
+            <div id="friendsList"></div>
+          </div>
+          <div class="rounded-2xl p-4 md:col-span-2" style="background: var(--input-bg);">
+            <div class="text-sm font-semibold mb-3" style="color: var(--text-primary);">
+              <i data-lucide="ban" class="w-4 h-4 inline mr-1" style="color: var(--accent-crimson);"></i>Чёрный список
+            </div>
+            <div id="blockedList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Админка -->
+  <div class="modal-overlay" id="adminModal">
+    <div class="modal-content" style="max-width: 860px;">
+      <button class="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 transition" onclick="App.closeModal('adminModal')">
+        <i data-lucide="x" class="w-5 h-5" style="color: var(--text-secondary);"></i>
+      </button>
+      <div class="flex items-center gap-3 mb-6">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+          <i data-lucide="settings" class="w-5 h-5 text-white"></i>
+        </div>
+        <div>
+          <h2 class="text-xl font-extrabold" style="color: var(--text-primary);">CMS / Админка</h2>
+          <p class="text-xs" style="color: var(--text-secondary);">Управление контентом и настройками</p>
+        </div>
+      </div>
+
+      <div class="flex gap-2 mb-6 flex-wrap" id="adminTabs">
+        <button class="admin-tab px-3 py-2 rounded-xl text-xs font-medium transition active" data-tab="content" style="background: var(--accent-blue); color: #fff;">Контент</button>
+        <button class="admin-tab px-3 py-2 rounded-xl text-xs font-medium transition" data-tab="buttons" style="background: var(--input-bg); color: var(--text-secondary);">Кнопки</button>
+        <button class="admin-tab px-3 py-2 rounded-xl text-xs font-medium transition" data-tab="bestStudent" style="background: var(--input-bg); color: var(--text-secondary);">Лучший ученик</button>
+        <button class="admin-tab px-3 py-2 rounded-xl text-xs font-medium transition" data-tab="supabase" style="background: var(--input-bg); color: var(--text-secondary);">Supabase</button>
+        <button class="admin-tab px-3 py-2 rounded-xl text-xs font-medium transition" data-tab="code" style="background: var(--input-bg); color: var(--text-secondary);">Код</button>
+      </div>
+
+      <div id="adminTabContent" class="admin-tab-panel">
+        <p class="text-sm mb-4" style="color: var(--text-secondary);">Редактируйте тексты. Изменения сохраняются автоматически.</p>
+        <div class="space-y-3 max-h-[50vh] overflow-y-auto pr-1" id="adminContentFields"></div>
+      </div>
+
+      <div id="adminTabButtons" class="admin-tab-panel hidden">
+        <p class="text-sm mb-4" style="color: var(--text-secondary);">Меняйте текст, цвет, иконку и действие кнопок, а также создавайте новые.</p>
+        <div class="space-y-3 max-h-[35vh] overflow-y-auto pr-1" id="adminButtonFields"></div>
+        <hr class="my-4" style="border-color: var(--border-color);">
+        <div class="rounded-2xl p-4" style="background: var(--input-bg);">
+          <div class="text-sm font-semibold mb-3" style="color: var(--text-primary);">Создать новую кнопку</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+            <input type="text" class="input-field text-sm" placeholder="Ключ (латиницей)" id="newBtnKey">
+            <input type="text" class="input-field text-sm" placeholder="Текст кнопки" id="newBtnText">
+            <select class="input-field text-sm custom-select" id="newBtnLocation">
+              <option value="header">Шапка</option>
+              <option value="hero">Hero-секция</option>
+            </select>
+            <input type="text" class="input-field text-sm" placeholder="Иконка Lucide (например, star)" id="newBtnIcon">
+            <select class="input-field text-sm custom-select" id="newBtnAction">
+              <option value="modal">Открыть модалку</option>
+              <option value="scroll">Плавный скролл</option>
+              <option value="external">Внешняя ссылка</option>
+              <option value="js">Свой JS-код</option>
+            </select>
+            <input type="text" class="input-field text-sm" placeholder="Значение (ID модалки / #якорь / URL / JS)" id="newBtnValue">
+          </div>
+          <button class="btn-primary text-xs py-2 px-4" onclick="App.createCustomButton()">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Создать кнопку
+          </button>
+        </div>
+      </div>
+
+      <div id="adminTabBestStudent" class="admin-tab-panel hidden">
+        <p class="text-sm mb-4" style="color: var(--text-secondary);">Загрузите фото (сжимается до 800px), измените данные лучшего ученика.</p>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3 p-3 rounded-xl" style="background: var(--input-bg);">
+            <div class="w-20 h-24 rounded-xl overflow-hidden bg-slate-200 dark:bg-slate-700" id="adminPhotoPreview" style="background-size:cover; background-position:center;"></div>
+            <div class="flex-1">
+              <input type="file" accept="image/*" id="adminPhotoFile" class="input-field text-xs" onchange="App.handlePhotoFile(event)">
+              <p class="text-[0.65rem] mt-1" style="color: var(--text-secondary);">Фото автоматически сожмётся и сохранится.</p>
+            </div>
+          </div>
+          <input type="text" class="input-field text-sm" placeholder="Имя" id="adminBsName">
+          <input type="text" class="input-field text-sm" placeholder="Класс · направление" id="adminBsMeta">
+          <input type="text" class="input-field text-sm" placeholder="Месяц (например, Октябрь 2026)" id="adminBsMonth">
+          <input type="number" class="input-field text-sm" placeholder="Баллы" id="adminBsPoints">
+          <input type="text" class="input-field text-sm" placeholder="Причина №1" id="adminBsR1">
+          <input type="text" class="input-field text-sm" placeholder="Причина №2" id="adminBsR2">
+          <input type="text" class="input-field text-sm" placeholder="Причина №3" id="adminBsR3">
+          <button class="btn-primary w-full" onclick="App.saveBestStudent()">
+            <i data-lucide="save" class="w-4 h-4"></i> Сохранить
+          </button>
+        </div>
+      </div>
+
+      <div id="adminTabSupabase" class="admin-tab-panel hidden">
+        <p class="text-sm mb-4" style="color: var(--text-secondary);">Подключите Supabase для облачной синхронизации.</p>
+        <div class="space-y-3">
+          <input type="text" class="input-field" placeholder="SUPABASE_URL" id="supabaseUrl">
+          <input type="text" class="input-field" placeholder="SUPABASE_ANON_KEY" id="supabaseAnonKey">
+          <button class="btn-primary w-full" onclick="App.saveSupabase()"><i data-lucide="cloud" class="w-4 h-4"></i> Сохранить ключи</button>
+          <button class="btn-ghost w-full" onclick="App.testSupabase()"><i data-lucide="wifi" class="w-4 h-4"></i> Проверить соединение</button>
+          <button class="btn-ghost w-full" onclick="App.copySQL()"><i data-lucide="clipboard" class="w-4 h-4"></i> 📋 Скопировать SQL-схему</button>
+          <div class="p-3 rounded-xl text-xs" id="supabaseStatus" style="background: var(--input-bg); color: var(--text-secondary);">Статус: автономный режим (localStorage)</div>
+        </div>
+      </div>
+
+      <div id="adminTabCode" class="admin-tab-panel hidden">
+        <p class="text-sm mb-4" style="color: var(--text-secondary);">Пользовательский JS-код с проверкой синтаксиса.</p>
+        <textarea class="code-editor" rows="8" placeholder="// Ваш JavaScript код..." id="customCodeEditor"></textarea>
+        <div class="flex gap-2 mt-3">
+          <button class="btn-primary text-xs py-2 px-4" onclick="App.saveCustomCode()"><i data-lucide="save" class="w-3.5 h-3.5"></i> Сохранить и выполнить</button>
+          <button class="btn-ghost text-xs py-2 px-4" onclick="App.resetCustomCode()"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Сбросить</button>
+        </div>
+        <div class="mt-3 p-3 rounded-xl text-xs" id="codeStatus" style="background: var(--input-bg); color: var(--text-secondary);">Статус: код не выполнялся</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ============================================================
+  // DATA SERVICE
+  // ============================================================
+  const STORAGE_KEYS = {
+    THEME: 'licey37_theme',
+    DATA: 'licey37_data',
+    SESSION: 'licey37_session',
+    SUPABASE: 'licey37_supabase',
+    CUSTOM_CODE: 'licey37_custom_code',
+    APPLAUSE: 'licey37_applause',
+    BLOCKED: 'licey37_blocked',
+    FRIENDS: 'licey37_friends',
+    MESSAGES: 'licey37_messages',
+    CUSTOM_BUTTONS: 'licey37_custom_buttons'
+  };
+
+  const DataService = {
+    _supabase: null,
+    _isCloud: false,
+    _realtimeChannels: [],
+    _data: {},
+
+    _getSeedData() {
+      return {
+        profiles: [
+          { id: 'u1', email: 'admin@licey37.ru', password: 'admin37', first_name: 'Александр', last_name: 'Волков', grade: '11', direction: 'Технологический', role: 'admin', points: 485, month_points: 120, is_online: true, avatar_url: '' },
+          { id: 'u2', email: 'elena@licey37.ru', password: 'elena37', first_name: 'Елена', last_name: 'Соколова', grade: '10', direction: 'Естественно-научный', role: 'activist', points: 452, month_points: 95, is_online: true, avatar_url: '' },
+          { id: 'u3', email: 'dmitry@licey37.ru', password: 'dmitry37', first_name: 'Дмитрий', last_name: 'Козлов', grade: '9', direction: 'Социально-экономический', role: 'student', points: 430, month_points: 88, is_online: false, avatar_url: '' },
+          { id: 'u4', email: 'anna@licey37.ru', password: 'anna37', first_name: 'Анна', last_name: 'Морозова', grade: '11', direction: 'Гуманитарный', role: 'student', points: 415, month_points: 76, is_online: true, avatar_url: '' },
+          { id: 'u5', email: 'ivan@licey37.ru', password: 'ivan37', first_name: 'Иван', last_name: 'Петров', grade: '8', direction: 'Технологический', role: 'student', points: 390, month_points: 72, is_online: false, avatar_url: '' },
+          { id: 'u6', email: 'maria@licey37.ru', password: 'maria37', first_name: 'Мария', last_name: 'Новикова', grade: '10', direction: 'Естественно-научный', role: 'student', points: 375, month_points: 68, is_online: true, avatar_url: '' }
+        ],
+        posts: [
+          { id: 'p1', author_id: 'u1', author_name: 'Александр Волков', author_grade: '11', tag: 'Движение Первых', content: 'Вчера прошёл форум первичных отделений! Наш лицей представил проект «Цифровая лаборатория». Очень гордимся нашей командой! 🚀', likes_count: 24, created_at: new Date(Date.now() - 3600000 * 2).toISOString() },
+          { id: 'p2', author_id: 'u2', author_name: 'Елена Соколова', author_grade: '10', tag: 'Учёба', content: 'Готовимся к региональной олимпиаде по биологии. Кто хочет присоединиться к разбору задач — пишите в личку! 🧬', likes_count: 18, created_at: new Date(Date.now() - 3600000 * 5).toISOString() },
+          { id: 'p3', author_id: 'u3', author_name: 'Дмитрий Козлов', author_grade: '9', tag: 'Спорт', content: 'Наша команда заняла 2 место в городских соревнованиях по баскетболу! Спасибо всем болельщикам! 🏀', likes_count: 32, created_at: new Date(Date.now() - 3600000 * 24).toISOString() }
+        ],
+        post_comments: [
+          { id: 'c1', post_id: 'p1', author_name: 'Мария Новикова', author_grade: '10', text: 'Вы молодцы! Особенно понравилась презентация проекта.', created_at: new Date(Date.now() - 3600000).toISOString() }
+        ],
+        events: [
+          { id: 'e1', date_label: '15 ноября 2026', category: 'Олимпиады', title: 'Городская олимпиада по математике', description: 'Отборочный этап городской олимпиады для учеников 8–11 классов. Регистрация до 12 ноября.', location: 'Актовый зал Лицея №37', time_label: '15:30', participants_count: 48 },
+          { id: 'e2', date_label: '18 ноября 2026', category: 'Волонтёрство', title: 'Экологическая акция «Чистый город»', description: 'Совместная акция с Движением Первых по уборке территории парка. Инвентарь предоставляется.', location: 'Парк «Солнечный»', time_label: '10:00', participants_count: 32 },
+          { id: 'e3', date_label: '22 ноября 2026', category: 'Творчество', title: 'Конкурс талантов «Звёзды Лицея»', description: 'Ежегодный конкурс среди учеников 5–11 классов. Вокал, танцы, актёрское мастерство.', location: 'Актовый зал Лицея №37', time_label: '17:00', participants_count: 56 },
+          { id: 'e4', date_label: '25 ноября 2026', category: 'Спорт', title: 'Турнир по волейболу между классами', description: 'Соревнования среди сборных команд 9–11 классов. Поддержите свои классы!', location: 'Спортивный зал Лицея №37', time_label: '14:00', participants_count: 40 },
+          { id: 'e5', date_label: '28 ноября 2026', category: 'Олимпиады', title: 'Олимпиада по информатике «IT-Кубок»', description: 'Командная олимпиада по программированию для учеников 7–11 классов.', location: 'Кабинет информатики №204', time_label: '13:00', participants_count: 24 },
+          { id: 'e6', date_label: '1 декабря 2026', category: 'Творчество', title: 'Новогодний концерт', description: 'Праздничный концерт с участием всех классов. Подготовка номеров до 20 ноября.', location: 'Актовый зал Лицея №37', time_label: '18:00', participants_count: 120 }
+        ],
+        best_student: {
+          month_label: 'Октябрь 2026',
+          full_name: 'Фамилия Имя',
+          grade: 'Класс · направление',
+          direction: 'Технологический профиль',
+          points: 485,
+          avatar_url: '',
+          reason_1: 'Победа в региональной олимпиаде по математике и информатике.',
+          reason_2: 'Реализовал школьный проект «Цифровая лаборатория» для младших классов.',
+          reason_3: 'Активный волонтёр, наставник для учеников 5–6 классов, участник Движения Первых.'
+        },
+        ideas: [
+          { id: 'i1', author_name: 'Мария Новикова', grade: '10', proposal: 'Создать школьный медиацентр с регулярными видеоновостями о жизни лицея.', status: 'На рассмотрении', created_at: new Date(Date.now() - 86400000).toISOString() }
+        ],
+        site_content: {
+          hero_title: 'Лицей №37',
+          hero_subtitle: 'Цифровая экосистема школьного сообщества, где ученики объединяются в проекты, участвуют в олимпиадах, общаются в закрытой соцсети и готовятся к экзаменам с умным ИИ‑ассистентом.',
+          events_heading: 'Ближайшие мероприятия',
+          events_subheading: 'События лицея, олимпиады, волонтёрские акции и творческие конкурсы — выбирай и участвуй.',
+          best_student_heading: 'Самый лучший лицеист месяца',
+          best_student_subheading: 'Звание присуждается ежемесячно по итогам олимпиад, проектной деятельности и активности в первичном отделении Движения Первых.',
+          top6_heading: 'Топ‑6 лицеистов',
+          top6_subheading: 'Лучшие ученики по итогам олимпиад, проектов и общественной деятельности.',
+          ideas_heading: 'Предложить идею',
+          ideas_subheading: 'Есть идея, как сделать лицей лучше? Расскажи нам — лучшие предложения попадут в план развития.',
+          contacts_heading: 'Контакты',
+          rules_heading: 'Как стать лучшим учеником месяца?',
+          rules_subheading: 'Баллы начисляются за активность в учёбе, проектах и общественной жизни лицея.',
+          best_student_month: 'Октябрь 2026',
+          best_student_name: 'Фамилия Имя',
+          best_student_meta: 'Класс · направление',
+          best_student_reason_1: 'Победа в региональной олимпиаде по математике и информатике.',
+          best_student_reason_2: 'Реализовал школьный проект «Цифровая лаборатория» для младших классов.',
+          best_student_reason_3: 'Активный волонтёр, наставник для учеников 5–6 классов, участник Движения Первых.'
+        },
+        custom_code: { html: '', css: '', js: '' },
+        ai_knowledge: []
+      };
+    },
+
+    init() {
+      this._loadFromLocalStorage();
+      this._checkSupabase();
+    },
+
+    _loadFromLocalStorage() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEYS.DATA);
+        if (!stored) {
+          const seed = this._getSeedData();
+          localStorage.setItem(STORAGE_KEYS.DATA, JSON.stringify(seed));
+          this._data = seed;
+        } else {
+          this._data = JSON.parse(stored);
+        }
+        if (!this._data.profiles) this._data.profiles = [];
+        if (!this._data.posts) this._data.posts = [];
+        if (!this._data.post_comments) this._data.post_comments = [];
+        if (!this._data.events) this._data.events = [];
+        if (!this._data.ideas) this._data.ideas = [];
+        if (!this._data.site_content) this._data.site_content = {};
+        if (!this._data.best_student) this._data.best_student = {};
+      } catch (e) {
+        const seed = this._getSeedData();
+        localStorage.setItem(STORAGE_KEYS.DATA, JSON.stringify(seed));
+        this._data = seed;
+      }
+    },
+
+    _saveToLocalStorage() {
+      try { localStorage.setItem(STORAGE_KEYS.DATA, JSON.stringify(this._data)); } catch (e) {}
+    },
+
+    _checkSupabase() {
+      try {
+        const cfg = localStorage.getItem(STORAGE_KEYS.SUPABASE);
+        if (cfg) {
+          const { url, key } = JSON.parse(cfg);
+          if (url && key && window.supabase) {
+            this._supabase = window.supabase.createClient(url, key);
+            this._isCloud = true;
+            this._setupRealtime();
+          }
+        }
+      } catch (e) {}
+    },
+
+    _setupRealtime() {
+      if (!this._isCloud || !this._supabase) return;
+      try {
+        this._realtimeChannels.forEach(ch => { try { ch.unsubscribe(); } catch (e) {} });
+        this._realtimeChannels = [];
+
+        const msgCh = this._supabase.channel('public:messages')
+          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
+            window.dispatchEvent(new CustomEvent('licey37:newMessage', { detail: payload.new }));
+          })
+          .subscribe();
+        this._realtimeChannels.push(msgCh);
+
+        const postCh = this._supabase.channel('public:posts')
+          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'posts' }, (payload) => {
+            window.dispatchEvent(new CustomEvent('licey37:newPost', { detail: payload.new }));
+          })
+          .subscribe();
+        this._realtimeChannels.push(postCh);
+
+        const commCh = this._supabase.channel('public:post_comments')
+          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'post_comments' }, (payload) => {
+            window.dispatchEvent(new CustomEvent('licey37:newComment', { detail: payload.new }));
+          })
+          .subscribe();
+        this._realtimeChannels.push(commCh);
+      } catch (e) { console.warn('Realtime setup error:', e); }
+    },
+
+    get(collection) { return this._data[collection] || []; },
+    set(collection, items) {
+      this._data[collection] = items;
+      this._saveToLocalStorage();
+    },
+
+    getContent(key) { return this._data.site_content?.[key] || ''; },
+    setContent(key, value) {
+      if (!this._data.site_content) this._data.site_content = {};
+      this._data.site_content[key] = value;
+      this._saveToLocalStorage();
+    },
+
+    getBestStudent() { return this._data.best_student || {}; },
+    setBestStudent(data) { this._data.best_student = data; this._saveToLocalStorage(); },
+
+    getApplause() { return parseInt(localStorage.getItem(STORAGE_KEYS.APPLAUSE) || '0', 10); },
+    addApplause() {
+      const count = this.getApplause() + 1;
+      localStorage.setItem(STORAGE_KEYS.APPLAUSE, count.toString());
+      return count;
+    },
+
+    login(email, password) {
+      const profiles = this.get('profiles');
+      const user = profiles.find(p => p.email === email && p.password === password);
+      if (user) {
+        const { password: _, ...safeUser } = user;
+        localStorage.setItem(STORAGE_KEYS.SESSION, JSON.stringify(safeUser));
+        return safeUser;
+      }
+      return null;
+    },
+
+    register(data) {
+      const profiles = this.get('profiles');
+      if (profiles.find(p => p.email === data.email)) {
+        return { error: 'Пользователь с таким email уже существует' };
+      }
+      const newUser = {
+        id: 'u' + Date.now(),
+        email: data.email, password: data.password,
+        first_name: data.first_name, last_name: data.last_name,
+        grade: data.grade, direction: data.direction || '',
+        role: 'student', points: 0, month_points: 0,
+        is_online: true, avatar_url: ''
+      };
+      profiles.push(newUser);
+      this.set('profiles', profiles);
+      const { password: _, ...safeUser } = newUser;
+      localStorage.setItem(STORAGE_KEYS.SESSION, JSON.stringify(safeUser));
+      return safeUser;
+    },
+
+    getSession() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.SESSION)); } catch (e) { return null; }
+    },
+    logout() { localStorage.removeItem(STORAGE_KEYS.SESSION); },
+    isAdmin() {
+      const s = this.getSession();
+      return s && (s.role === 'admin' || s.role === 'activist');
+    },
+
+    // Друзья
+    getFriendships() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.FRIENDS) || '[]'); } catch (e) { return []; }
+    },
+    saveFriendships(list) { localStorage.setItem(STORAGE_KEYS.FRIENDS, JSON.stringify(list)); },
+    sendFriendRequest(addresseeId) {
+      const session = this.getSession();
+      if (!session) return false;
+      const list = this.getFriendships();
+      if (list.find(f => (f.requesterId === session.id && f.addresseeId === addresseeId) || (f.requesterId === addresseeId && f.addresseeId === session.id))) return false;
+      list.push({ id: 'fr' + Date.now(), requesterId: session.id, addresseeId, status: 'pending', createdAt: new Date().toISOString() });
+      this.saveFriendships(list);
+      return true;
+    },
+    acceptFriendRequest(id) {
+      const list = this.getFriendships();
+      const f = list.find(x => x.id === id);
+      if (f) { f.status = 'accepted'; this.saveFriendships(list); }
+    },
+    rejectFriendRequest(id) {
+      const list = this.getFriendships().filter(x => x.id !== id);
+      this.saveFriendships(list);
+    },
+    removeFriend(id) {
+      const list = this.getFriendships().filter(x => x.id !== id);
+      this.saveFriendships(list);
+    },
+
+    // Сообщения
+    getMessages() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.MESSAGES) || '[]'); } catch (e) { return []; }
+    },
+    saveMessages(list) { localStorage.setItem(STORAGE_KEYS.MESSAGES, JSON.stringify(list)); },
+    sendMessage(receiverId, content) {
+      const session = this.getSession();
+      if (!session) return null;
+      const msg = {
+        id: 'm' + Date.now(),
+        senderId: session.id, senderName: session.first_name + ' ' + session.last_name,
+        receiverId, content, isRead: false,
+        createdAt: new Date().toISOString()
+      };
+      const list = this.getMessages();
+      list.push(msg);
+      this.saveMessages(list);
+      return msg;
+    },
+    getConversation(userId) {
+      const session = this.getSession();
+      if (!session) return [];
+      return this.getMessages().filter(m =>
+        (m.senderId === session.id && m.receiverId === userId) ||
+        (m.senderId === userId && m.receiverId === session.id)
+      ).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    },
+    getLastMessage(userId) {
+      const conv = this.getConversation(userId);
+      return conv.length ? conv[conv.length - 1] : null;
+    },
+
+    // Блокировки
+    getBlocked() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.BLOCKED) || '[]'); } catch (e) { return []; }
+    },
+    blockUser(userId) {
+      const list = this.getBlocked();
+      if (!list.includes(userId)) { list.push(userId); localStorage.setItem(STORAGE_KEYS.BLOCKED, JSON.stringify(list)); }
+    },
+    unblockUser(userId) {
+      const list = this.getBlocked().filter(id => id !== userId);
+      localStorage.setItem(STORAGE_KEYS.BLOCKED, JSON.stringify(list));
+    },
+    isBlocked(userId) { return this.getBlocked().includes(userId); },
+
+    // Пользовательские кнопки
+    getCustomButtons() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.CUSTOM_BUTTONS) || '[]'); } catch (e) { return []; }
+    },
+    saveCustomButtons(list) { localStorage.setItem(STORAGE_KEYS.CUSTOM_BUTTONS, JSON.stringify(list)); }
+  };
+
+  // ============================================================
+  // AI
+  // ============================================================
+  const AIAssistant = {
+    _templates: {
+      games: [
+        '🎲 **Игра «{name}»**\n\n👥 Участников: {players}\n🎒 Реквизит: {props}\n📋 Правила: {rules}\n🏆 Побеждает тот, кто {win}\n\n💡 Совет: {tip}',
+        '🎮 **Игра «{name}»**\n\n👥 От {minp} до {players} человек\n⏱ Время: {time} минут\n📋 Суть: {rules}\n🎯 Цель: {win}\n\n💡 Совет: {tip}',
+        '🕹 **Игра «{name}»**\n\n👥 Количество: {players}\n🎒 Реквизит: {props}\n📋 Как играть: {rules}\n🏆 Победа: {win}\n\n💡 Совет: {tip}'
+      ],
+      gameNames: ['Весёлый лабиринт', 'Космическое путешествие', 'Тайна старого замка', 'Гонка роботов', 'Математический бой', 'Звёздный патруль', 'Школа волшебства', 'Квест знаний', 'Ловкий мяч', 'Быстрый ум'],
+      props: ['мяч, свисток, конусы', 'карточки с заданиями, ручки', 'верёвка, обручи, кегли', 'кубики, фишки, поле', 'листы бумаги, маркеры', 'ничего не нужно', 'музыкальный центр, ленты'],
+      winConditions: ['наберёт больше всех очков', 'первым пройдёт все станции', 'правильно решит все задачи', 'соберёт больше жетонов', 'финиширует первым', 'проявит лучшую командную работу'],
+      tips: ['разделитесь на команды по 3–5 человек', 'назначьте капитана и распределите роли', 'не забудьте про разминку перед игрой', 'подготовьте небольшие призы участникам', 'обсудите правила до начала игры'],
+      subjects: {
+        'математика': '📐 **Математика**\n\n• Квадрат суммы: (a+b)² = a² + 2ab + b²\ n• Разность квадратов: a² - b² = (a-b)(a+b)\n• Теорема Пифагора: a² + b² = c²\n• Площадь круга: S = πr²\n• Формула корней: x = (-b ± √(b²-4ac)) / 2a',
+        'физика': '⚡ **Физика**\n\n• Скорость: v = s/t\n• Сила: F = ma\n• Работа: A = F·s·cosα\n• Мощность: N = A/t\n• Закон Ома: I = U/R',
+        'информатика': '💻 **Информатика**\n\n• Системы счисления: 2, 8, 10, 16\n• Алгоритмы: линейные, с ветвлением, циклические\n• Языки: Python, JavaScript, C++\n• 1 байт = 8 бит\n• Сортировка: пузырьком, быстрая, слиянием',
+        'русский язык': '📖 **Русский язык**\n\n• Корни с чередованием: -раст-/-рос-, -лаг-/-лож-, -бер-/-бир-\n• Правописание НЕ и НИ\n• Причастный и деепричастный обороты\n• Типы текста: повествование, описание, рассуждение\n• Стили речи: научный, разговорный, художественный, официально-деловой',
+        'история': '🏛 **История**\n\n• Ключевые даты: 862 — призвание варягов, 988 — Крещение Руси, 1380 — Куликовская битва, 1812 — Отечественная война, 1945 — Победа в ВОВ\n• Правители: Рюриковичи, Романовы, советский период\n• Реформы: Петра I, Александра II, Столыпина',
+        'биология': '🧬 **Биология**\n\n• Строение клетки: мембрана, цитоплазма, ядро, органоиды\n• Фотосинтез: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂\n• Кровеносная система: артерии, вены, капилляры\n• Царства: бактерии, грибы, растения, животные\n• ДНК: носитель наследственной информации',
+        'химия': '🧪 **Химия**\n\n• Периодический закон: свойства элементов зависят от заряда ядра\n• Валентность: I, II, III, IV...\n• Реакции: соединения, разложения, замещения, обмена\n• Моль: N = 6,02·10²³ частиц\n• Кислоты: HCl, H₂SO₄, HNO₃; основания: NaOH, KOH',
+        'обществознание': '⚖️ **Обществознание**\n\n• Формы правления: монархия, республика\n• Политические режимы: демократия, авторитаризм, тоталитаризм\n• Права человека: личные, политические, социальные, экономические, культурные\n• Экономика: спрос и предложение, конкуренция, рынок\n• Социальные группы: семья, классы, нации'
+      },
+      admission: '🎓 **Поступление в Лицей №37 (г. Нижнекамск)**\n\n📅 **Сроки подачи документов:**\n• 1 апреля – 15 июня — приём заявлений.\n• 20 июня – 30 июня — вступительные испытания.\n• 1 июля – 5 июля — зачисление.\n\n📝 **Документы:**\n1. Заявление на имя директора.\n2. Копия свидетельства о рождении или паспорта.\n3. Медицинская карта.\n4. Портфолио достижений.\n\n📚 **Вступительные испытания (5–11 классы):**\n• Русский язык и математика — обязательные.\n• Профильный предмет.\n\n🏫 **Профильные направления 10–11 классов:**\n• Технологический (математика, физика, информатика).\n• Естественно-научный (химия, биология, медицина).\n• Социально-экономический (обществознание, экономика, право).\n• Гуманитарный (история, литература, иностранные языки).',
+      tasks: [
+        '📝 **Задание для {grade_class}**\n\nТема: {topic}\n\n{task}\n\n💡 Подсказка: {hint}',
+        '🧠 **Упражнение ({grade_class})**\n\n{topic}\n\n{task}\n\n💡 Подсказка: {hint}',
+        '✏️ **Практика: {topic}**\n\nДля {grade_class}.\n\n{task}\n\n💡 Подсказка: {hint}'
+      ],
+      taskTopics: ['сложение и вычитание', 'умножение и деление', 'решение уравнений', 'работа с текстом', 'грамматический разбор', 'анализ стихотворения', 'решение задач на движение', 'площадь и периметр', 'дроби', 'проценты'],
+      taskTexts: [
+        'Решите пример: 45 + 27 × 3. Запишите ход решения.',
+        'Найдите корень уравнения: 3x + 12 = 45.',
+        'Прочитайте текст и определите основную мысль. Запишите 2-3 предложения.',
+        'Вычислите площадь прямоугольника со сторонами 8 см и 12 см.',
+        'Разберите слово «пришкольный» по составу.',
+        'Решите задачу: Велосипедист ехал 2 часа со скоростью 15 км/ч. Какое расстояние он проехал?',
+        'Сократите дробь 24/36.',
+        'Найдите 15% от числа 200.',
+        'Определите спряжение глагола «строить».',
+        'Составьте план рассказа о любимом времени года.'
+      ],
+      taskHints: ['Вспомните порядок действий.', 'Проверьте часть речи.', 'Не забудьте про единицы измерения.', 'Попробуйте решить по действиям.', 'Обратите внимание на приставку и корень.']
+    },
+    _random(arr) { return arr[Math.floor(Math.random() * arr.length)]; },
+
+    generateGame() {
+      const grade = this._random(['1–4 классов', '5–8 классов', '9–11 классов']);
+      const players = this._random([2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30]);
+      const minp = Math.max(2, players - this._random([1, 2, 3]));
+      const name = this._random(this._templates.gameNames);
+      const props = this._random(this._templates.props);
+      const win = this._random(this._templates.winConditions);
+      const tip = this._random(this._templates.tips);
+      const time = this._random([5, 10, 15, 20, 25, 30]);
+      const rules = this._random([
+        'разделитесь на команды и по сигналу начните выполнять задания на скорость',
+        'каждый участник по очереди выполняет задание, остальные поддерживают',
+        'команды перемещаются по станциям и собирают баллы',
+        'ведущий зачитывает вопрос, а команды совещаются и отвечают',
+        'участники выполняют упражнения под музыку',
+        'нужно быстрее и точнее выполнить серию заданий'
+      ]);
+      const t = this._random(this._templates.games);
+      return t.replace('{name}', name).replace('{players}', players).replace('{minp}', minp)
+        .replace('{props}', props).replace('{rules}', rules).replace('{win}', win)
+        .replace('{tip}', tip).replace('{time}', time) + '\n\n🎓 Для: ' + grade;
+    },
+
+    generateTask() {
+      const grade = this._random(['1–4 классов', '5–8 классов', '9–11 классов']);
+      const topic = this._random(this._templates.taskTopics);
+      const task = this._random(this._templates.taskTexts);
+      const hint = this._random(this._templates.taskHints);
+      const t = this._random(this._templates.tasks);
+      return t.replace('{grade_class}', grade).replace('{topic}', topic).replace('{task}', task).replace('{hint}', hint);
+    },
+
+    getResponse(input) {
+      const lower = input.toLowerCase();
+      if (lower.includes('игр')) return this.generateGame();
+      if (lower.includes('задани') || lower.includes('задач') || lower.includes('упражнен')) return this.generateTask();
+      if (lower.includes('поступ') || lower.includes('приём') || lower.includes('прием')) return this._templates.admission;
+      if (lower.includes('привет') || lower.includes('здравствуй')) return 'Привет! 👋 Я ИИ‑ассистент Лицея №37. Чем помочь? Могу объяснить тему, дать задание или сгенерировать игру!';
+      if (lower.includes('спасибо')) return 'Пожалуйста! Рад был помочь. Обращайся! 😊';
+      if (lower.includes('%') || lower.includes('процент') || lower.includes('скидк')) return '💡 Используйте калькулятор процентов в верхней части окна! Введите число и процент — получите мгновенный расчёт и формулу.';
+      for (const subject of Object.keys(this._templates.subjects)) {
+        if (lower.includes(subject)) return this._templates.subjects[subject];
+      }
+      if (lower.includes('формул')) return this._templates.subjects['математика'] + '\n\n' + this._templates.subjects['физика'];
+      return this._random([
+        'Интересный вопрос! Могу помочь с учёбой, подсказать формулу или сгенерировать игру. Спроси конкретнее — например: «Дай задание по математике» или «Формулы по физике».',
+        'Я учусь отвечать на вопросы. Могу: 🎲 сгенерировать игру, 📝 дать задание, 📐 подсказать формулы, 🎓 рассказать о поступлении, 🧮 посчитать проценты.',
+        'Попробуем иначе! Напиши, какой предмет интересует, или нажми «Дай случайную игру».'
+      ]);
+    }
+  };
+
+  // ============================================================
+  // APP
+  // ============================================================
+  const App = {
+    _currentUser: null,
+    _currentEventFilter: 'all',
+    _currentTop6Period: 'total',
+    _calcPoints: 0,
+    _calcMode: 'percent',
+    _currentChatUser: null,
+    _currentSocialTab: 'feed',
+    _customButtonCounter: 0,
+    _editingButtons: {},
+
+    init() {
+      DataService.init();
+      this._currentUser = DataService.getSession();
+      this.applyTheme();
+      this.renderAuth();
+      this.renderEvents();
+      this.renderBestStudent();
+      this.renderTop6();
+      this.renderIdeas();
+      this.renderStats();
+      this.renderSocialFeed();
+      this.bindEvents();
+      this.initScrollAnimations();
+      this.renderAdminContentFields();
+      this.renderAdminButtonFields();
+      this.fillBestStudentAdmin();
+      this.loadCustomCode();
+      this.renderApplause();
+      this.renderCustomButtons();
+      this.setupRealtimeListeners();
+
+      setTimeout(() => lucide.createIcons(), 50);
+    },
+
+    setupRealtimeListeners() {
+      window.addEventListener('licey37:newMessage', (e) => {
+        if (this._currentChatUser && e.detail && (e.detail.sender_id === this._currentChatUser || e.detail.receiver_id === this._currentUser?.id)) {
+          this.renderChatMessages();
+        }
+        this.renderChatList();
+      });
+      window.addEventListener('licey37:newPost', () => this.renderSocialFeed());
+      window.addEventListener('licey37:newComment', () => this.renderSocialFeed());
+    },
+
+    applyTheme() {
+      const saved = localStorage.getItem(STORAGE_KEYS.THEME) || 'light';
+      document.body.setAttribute('data-theme', saved);
+      const knob = document.getElementById('themeKnob');
+      if (knob) knob.textContent = saved === 'dark' ? '🌙' : '☀';
+    },
+    toggleTheme() {
+      const cur = document.body.getAttribute('data-theme');
+      const next = cur === 'dark' ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', next);
+      localStorage.setItem(STORAGE_KEYS.THEME, next);
+      document.getElementById('themeKnob').textContent = next === 'dark' ? '🌙' : '☀';
+      lucide.createIcons();
+    },
+
+    renderAuth() {
+      const block = document.getElementById('authBlock');
+      const mobileBlock = document.getElementById('mobileAuthBlock');
+      const s = this._currentUser;
+      if (s) {
+        const initials = (s.first_name?.[0] || '') + (s.last_name?.[0] || '');
+        block.innerHTML = `
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xs font-bold shrink-0">${initials}</div>
+            <div class="hidden xl:block leading-tight">
+              <div class="text-xs font-semibold" style="color: var(--text-primary);">${s.first_name} ${s.last_name}</div>
+              <div class="text-[0.65rem]" style="color: var(--text-secondary);">${s.grade} класс</div>
+            </div>
+            ${DataService.isAdmin() ? `<button class="btn-ghost text-xs py-1.5 px-3" onclick="App.openAdmin()"><i data-lucide="settings" class="w-3 h-3"></i> CMS</button>` : ''}
+            <button class="p-2 rounded-xl hover:bg-white/5 transition" onclick="App.logout()" title="Выйти"><i data-lucide="log-out" class="w-4 h-4" style="color: var(--text-secondary);"></i></button>
+          </div>`;
+        mobileBlock.innerHTML = `
+          <div class="flex items-center gap-3 px-4 py-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold">${initials}</div>
+            <div><div class="text-sm font-semibold" style="color: var(--text-primary);">${s.first_name} ${s.last_name}</div><div class="text-xs" style="color: var(--text-secondary);">${s.grade} класс</div></div>
+          </div>
+          ${DataService.isAdmin() ? `<button class="w-full mt-2 btn-ghost text-sm" onclick="App.openAdmin()"><i data-lucide="settings" class="w-4 h-4"></i> CMS / Админка</button>` : ''}
+          <button class="w-full mt-2 btn-ghost text-sm" onclick="App.logout()"><i data-lucide="log-out" class="w-4 h-4"></i> Выйти</button>`;
+      } else {
+        block.innerHTML = `
+          <span class="text-xs font-medium mr-1" style="color: var(--text-secondary);">Гость</span>
+          <button class="btn-ghost text-xs py-1.5 px-3" onclick="App.openModal('loginModal')">Войти</button>
+          <button class="btn-accent text-xs py-1.5 px-3" onclick="App.openRegister()">Создать аккаунт</button>`;
+        mobileBlock.innerHTML = `
+          <button class="w-full btn-ghost text-sm" onclick="App.openModal('loginModal')">Войти</button>
+          <button class="w-full mt-2 btn-accent text-sm" onclick="App.openRegister()">Создать аккаунт</button>`;
+      }
+      lucide.createIcons();
+    },
+
+    openRegister() { this.openModal('registerModal'); },
+    openLogin() { this.openModal('loginModal'); },
+
+    register() {
+      const fn = document.getElementById('regFirstName').value.trim();
+      const ln = document.getElementById('regLastName').value.trim();
+      const em = document.getElementById('regEmail').value.trim();
+      const p = document.getElementById('regPassword').value;
+      const g = document.getElementById('regGrade').value;
+      if (!fn || !ln || !em || !p || !g) { alert('Заполните все поля.'); return; }
+      const r = DataService.register({ first_name: fn, last_name: ln, email: em, password: p, grade: g });
+      if (r.error) { alert(r.error); return; }
+      this._currentUser = r;
+      this.renderAuth();
+      this.renderStats();
+      this.closeModal('registerModal');
+      alert(`Добро пожаловать, ${fn}!`);
+    },
+
+    login() {
+      const em = document.getElementById('loginEmail').value.trim();
+      const p = document.getElementById('loginPassword').value;
+      const u = DataService.login(em, p);
+      if (!u) { alert('Неверный email или пароль.'); return; }
+      this._currentUser = u;
+      this.renderAuth();
+      this.closeModal('loginModal');
+      alert(`С возвращением, ${u.first_name}!`);
+    },
+
+    logout() {
+      DataService.logout();
+      this._currentUser = null;
+      this.renderAuth();
+      alert('Вы вышли из аккаунта.');
+    },
+
+    openModal(id) {
+      const m = document.getElementById(id);
+      if (m) { m.classList.add('active'); document.body.style.overflow = 'hidden'; }
+      if (id === 'socialModal') this.renderSocial();
+    },
+    closeModal(id) {
+      const m = document.getElementById(id);
+      if (m) { m.classList.remove('active'); document.body.style.overflow = ''; }
+    },
+    switchModal(a, b) { this.closeModal(a); this.openModal(b); },
+    openSocial() { this.openModal('socialModal'); },
+    openAI() { this.openModal('aiModal'); },
+    openAdmin() {
+      if (!DataService.isAdmin()) { alert('Доступ только для администраторов.'); return; }
+      this.renderAdminContentFields();
+      this.renderAdminButtonFields();
+      this.fillBestStudentAdmin();
+      this.openModal('adminModal');
+    },
+
+    renderEvents() {
+      const grid = document.getElementById('eventsGrid');
+      const events = DataService.get('events');
+      const filtered = this._currentEventFilter === 'all' ? events : events.filter(e => e.category === this._currentEventFilter);
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="col-span-full text-center py-12 text-sm" style="color: var(--text-secondary);">Пока нет мероприятий.</div>';
+        return;
+      }
+      const colors = {
+        'Олимпиады': 'bg-blue-500/10 text-blue-600',
+        'Волонтёрство': 'bg-emerald-500/10 text-emerald-600',
+        'Творчество': 'bg-purple-500/10 text-purple-600',
+        'Спорт': 'bg-orange-500/10 text-orange-600'
+      };
+      grid.innerHTML = filtered.map(e => {
+        const joined = localStorage.getItem('event_joined_' + e.id) === 'true';
+        return `
+          <div class="glass-card p-5 flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-3 py-1 rounded-lg text-xs font-semibold ${colors[e.category] || 'bg-slate-500/10 text-slate-600'}">${e.category}</span>
+              <span class="text-xs font-medium mono" style="color: var(--text-secondary);">${e.date_label}</span>
+            </div>
+            <h3 class="font-bold text-base mb-2" style="color: var(--text-primary);">${e.title}</h3>
+            <p class="text-sm mb-4 flex-1" style="color: var(--text-secondary);">${e.description}</p>
+            <div class="flex items-center gap-2 text-xs mb-3" style="color: var(--text-secondary);">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ${e.location} · ${e.time_label}
+            </div>
+            <div class="flex items-center justify-between mt-auto">
+              <span class="text-xs" style="color: var(--text-secondary);"><i data-lucide="users" class="w-3.5 h-3.5 inline mr-1"></i><span class="mono">${e.participants_count}</span> записалось</span>
+              <button class="btn-ghost text-xs py-1.5 px-3 ${joined ? '!border-green-500 !text-green-600' : ''}" onclick="App.joinEvent('${e.id}')">${joined ? 'Вы записаны ✓' : 'Я пойду!'}</button>
+            </div>
+          </div>`;
+      }).join('');
+      lucide.createIcons();
+    },
+
+    joinEvent(id) {
+      const joined = localStorage.getItem('event_joined_' + id) === 'true';
+      const events = DataService.get('events');
+      const ev = events.find(e => e.id === id);
+      if (!ev) return;
+      if (joined) { localStorage.removeItem('event_joined_' + id); ev.participants_count = Math.max(0, ev.participants_count - 1); }
+      else { localStorage.setItem('event_joined_' + id, 'true'); ev.participants_count += 1; }
+      DataService.set('events', events);
+      this.renderEvents();
+      this.renderStats();
+    },
+
+    renderBestStudent() {
+      const d = DataService.getBestStudent();
+      const c = DataService._data.site_content || {};
+      document.querySelectorAll('[data-editable-text]').forEach(el => {
+        const k = el.getAttribute('data-editable-text');
+        if (c[k]) el.textContent = c[k];
+      });
+      if (d.avatar_url) {
+        const img = document.getElementById('bestStudentImg');
+        img.src = d.avatar_url;
+        img.style.display = 'block';
+        document.getElementById('bestStudentPhotoPlaceholder').style.display = 'none';
+      }
+      const pointsEl = document.getElementById('bestStudentPoints');
+      if (pointsEl && d.points) pointsEl.textContent = d.points;
+    },
+
+    applaud() { document.getElementById('applauseCount').textContent = DataService.addApplause(); },
+    renderApplause() { document.getElementById('applauseCount').textContent = DataService.getApplause(); },
+
+    renderTop6() {
+      const grid = document.getElementById('top6Grid');
+      const profiles = DataService.get('profiles').filter(p => p.role !== 'admin');
+      const key = this._currentTop6Period === 'month' ? 'month_points' : 'points';
+      profiles.sort((a, b) => (b[key] || 0) - (a[key] || 0));
+      const top6 = profiles.slice(0, 6);
+      grid.innerHTML = top6.map((p, i) => {
+        const init = (p.first_name?.[0] || '') + (p.last_name?.[0] || '');
+        const rank = i + 1;
+        const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `<span class="mono font-bold" style="color: var(--text-secondary);">${rank}</span>`;
+        return `
+          <div class="glass-card p-4 flex items-center gap-3">
+            <div class="text-xl shrink-0">${medal}</div>
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500/20 to-indigo-500/20 flex items-center justify-center text-xs font-bold shrink-0" style="color: var(--accent-blue);">${init}</div>
+            <div class="min-w-0 flex-1">
+              <div class="text-sm font-semibold truncate" style="color: var(--text-primary);">${p.first_name} ${p.last_name}</div>
+              <div class="text-xs truncate" style="color: var(--text-secondary);">${p.grade} класс · ${p.direction || '—'}</div>
+            </div>
+            <div class="text-right shrink-0">
+              <div class="text-lg font-extrabold mono" style="color: var(--accent-blue);">${p[key] || 0}</div>
+              <div class="text-[0.6rem]" style="color: var(--text-secondary);">${this._currentTop6Period === 'month' ? 'за месяц' : 'баллов'}</div>
+            </div>
+          </div>`;
+      }).join('');
+      const calc = document.getElementById('calcActivities');
+      const acts = [
+        { label: 'Участие в олимпиаде', points: 20 },
+        { label: 'Победа на городском этапе', points: 50 },
+        { label: 'Готовый проект', points: 40 },
+        { label: 'Волонтёрство', points: 15 },
+        { label: 'Помощь младшим', points: 10 }
+      ];
+      calc.innerHTML = acts.map(a => `
+        <label class="flex items-center gap-2 p-3 rounded-xl cursor-pointer transition hover:bg-white/5" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+          <input type="checkbox" class="calc-checkbox" data-points="${a.points}" onchange="App.updateCalc()">
+          <span class="text-sm" style="color: var(--text-primary);">${a.label}</span>
+          <span class="ml-auto text-xs font-bold mono" style="color: var(--accent-blue);">+${a.points}</span>
+        </label>`).join('');
+    },
+
+    updateCalc() {
+      let t = 0;
+      document.querySelectorAll('.calc-checkbox:checked').forEach(c => t += parseInt(c.dataset.points, 10));
+      this._calcPoints = t;
+      document.getElementById('calcResult').textContent = t;
+    },
+
+    renderIdeas() {
+      const ideas = DataService.get('ideas').slice(-5).reverse();
+      const list = document.getElementById('ideasList');
+      if (ideas.length === 0) { list.innerHTML = '<p class="text-center text-sm" style="color: var(--text-secondary);">Пока нет идей.</p>'; return; }
+      list.innerHTML = ideas.map(i => `
+        <div class="glass-card p-4">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-rose-500/20 to-orange-500/20 flex items-center justify-center text-xs font-bold" style="color: var(--accent-crimson);">${i.author_name?.[0] || '?'}</div>
+            <span class="text-sm font-semibold" style="color: var(--text-primary);">${i.author_name}</span>
+            <span class="text-xs" style="color: var(--text-secondary);">${i.grade} класс</span>
+            <span class="ml-auto px-2 py-0.5 rounded-full text-[0.6rem] font-medium" style="background: var(--input-bg); color: var(--text-secondary);">${i.status}</span>
+          </div>
+          <p class="text-sm" style="color: var(--text-secondary);">${i.proposal}</p>
+        </div>`).join('');
+    },
+
+    submitIdea() {
+      const n = document.getElementById('ideaName').value.trim();
+      const g = document.getElementById('ideaGrade').value.trim();
+      const t = document.getElementById('ideaText').value.trim();
+      if (!n || !t) { alert('Заполните имя и описание.'); return; }
+      const ideas = DataService.get('ideas');
+      ideas.push({ id: 'i' + Date.now(), author_name: n, grade: g || '—', proposal: t, status: 'На рассмотрении', created_at: new Date().toISOString() });
+      DataService.set('ideas', ideas);
+      document.getElementById('ideaName').value = '';
+      document.getElementById('ideaGrade').value = '';
+      document.getElementById('ideaText').value = '';
+      this.renderIdeas();
+      this.renderStats();
+      alert('Спасибо! Идея отправлена.');
+    },
+
+    renderStats() {
+      const p = DataService.get('profiles').length;
+      const e = DataService.get('events').length;
+      const i = DataService.get('ideas').length;
+      this.animateNumber('statMembers', p + 120);
+      this.animateNumber('statEvents', e + 45);
+      this.animateNumber('statProjects', i + 12);
+    },
+
+    animateNumber(id, target) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      let cur = 0;
+      const step = Math.max(1, Math.ceil(target / 40));
+      const timer = setInterval(() => {
+        cur += step;
+        if (cur >= target) { cur = target; clearInterval(timer); }
+        el.textContent = cur;
+      }, 40);
+    },
+
+    // ===== СОЦСЕТЬ =====
+    renderSocial() {
+      if (this._currentSocialTab === 'feed') this.renderSocialFeed();
+      else if (this._currentSocialTab === 'chats') { this.renderChatList(); this.renderChatMessages(); }
+      else if (this._currentSocialTab === 'friends') { this.renderFriends(); }
+    },
+
+    switchSocialTab(tab) {
+      this._currentSocialTab = tab;
+      document.querySelectorAll('#socialTabs .social-tab').forEach(b => {
+        b.classList.toggle('active', b.dataset.tab === tab);
+      });
+      document.querySelectorAll('.social-tab-panel').forEach(p => p.classList.add('hidden'));
+      const map = { feed: 'socialTabFeed', chats: 'socialTabChats', friends: 'socialTabFriends' };
+      const el = document.getElementById(map[tab]);
+      if (el) el.classList.remove('hidden');
+      this.renderSocial();
+      lucide.createIcons();
+    },
+
+    renderSocialFeed() {
+      const feed = document.getElementById('socialFeed');
+      const posts = DataService.get('posts').slice().reverse();
+      feed.innerHTML = posts.map(p => {
+        const comments = DataService.get('post_comments').filter(c => c.post_id === p.id);
+        return `
+          <div class="glass-card p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center text-xs font-bold" style="color: var(--accent-indigo);">${p.author_name?.[0] || '?'}</div>
+              <div>
+                <div class="text-sm font-semibold" style="color: var(--text-primary);">${p.author_name}</div>
+                <div class="text-[0.65rem]" style="color: var(--text-secondary);">${p.author_grade} класс · ${p.tag}</div>
+              </div>
+              <span class="ml-auto text-[0.6rem]" style="color: var(--text-secondary);">${this.timeAgo(p.created_at)}</span>
+            </div>
+            <p class="text-sm mb-3" style="color: var(--text-secondary);">${p.content}</p>
+            <div class="flex items-center gap-4">
+              <button class="flex items-center gap-1 text-xs transition hover:text-rose-500" style="color: var(--text-secondary);" onclick="App.likePost('${p.id}')">
+                <i data-lucide="heart" class="w-4 h-4"></i> <span class="mono">${p.likes_count}</span>
+              </button>
+              <button class="flex items-center gap-1 text-xs transition hover:text-blue-500" style="color: var(--text-secondary);" onclick="App.toggleComments('${p.id}')">
+                <i data-lucide="message-circle" class="w-4 h-4"></i> <span class="mono">${comments.length}</span>
+              </button>
+            </div>
+            <div id="comments_${p.id}" class="hidden mt-3">
+              <div class="space-y-1 mb-2">
+                ${comments.map(c => `
+                  <div class="comment-item">
+                    <span class="font-semibold" style="color: var(--text-primary);">${c.author_name}</span>
+                    <span class="text-[0.65rem] ml-1" style="color: var(--text-secondary);">${c.author_grade} класс</span>
+                    <div style="color: var(--text-secondary);">${c.text}</div>
+                  </div>`).join('')}
+              </div>
+              <div class="flex gap-2">
+                <input type="text" class="input-field text-xs py-1.5" placeholder="Комментарий..." id="commInput_${p.id}">
+                <button class="btn-primary text-xs py-1.5 px-3" onclick="App.addComment('${p.id}')">→</button>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+      lucide.createIcons();
+    },
+
+    toggleComments(postId) {
+      const el = document.getElementById('comments_' + postId);
+      if (el) el.classList.toggle('hidden');
+    },
+
+    addComment(postId) {
+      if (!this._currentUser) { alert('Войдите, чтобы комментировать.'); return; }
+      const input = document.getElementById('commInput_' + postId);
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text) return;
+      const comments = DataService.get('post_comments');
+      comments.push({
+        id: 'c' + Date.now(),
+        post_id: postId,
+        author_name: `${this._currentUser.first_name} ${this._currentUser.last_name}`,
+        author_grade: this._currentUser.grade,
+        text,
+        created_at: new Date().toISOString()
+      });
+      DataService.set('post_comments', comments);
+      this.renderSocialFeed();
+      setTimeout(() => {
+        const el = document.getElementById('comments_' + postId);
+        if (el) el.classList.remove('hidden');
+      }, 30);
+    },
+
+    likePost(id) {
+      if (!this._currentUser) { alert('Войдите, чтобы поставить лайк.'); return; }
+      const posts = DataService.get('posts');
+      const post = posts.find(p => p.id === id);
+      if (post) { post.likes_count += 1; DataService.set('posts', posts); this.renderSocialFeed(); }
+    },
+
+    createPost() {
+      if (!this._currentUser) { alert('Войдите, чтобы публиковать.'); return; }
+      const input = document.getElementById('postInput');
+      const tag = document.getElementById('postTag').value;
+      const content = input.value.trim();
+      if (!content) return;
+      const posts = DataService.get('posts');
+      posts.push({
+        id: 'p' + Date.now(),
+        author_id: this._currentUser.id,
+        author_name: `${this._currentUser.first_name} ${this._currentUser.last_name}`,
+        author_grade: this._currentUser.grade,
+        tag, content, likes_count: 0, created_at: new Date().toISOString()
+      });
+      DataService.set('posts', posts);
+      input.value = '';
+      this.renderSocialFeed();
+      this.renderStats();
+    },
+
+    timeAgo(dateStr) {
+      const diff = Date.now() - new Date(dateStr).getTime();
+      const m = Math.floor(diff / 60000);
+      if (m < 1) return 'только что';
+      if (m < 60) return `${m} мин назад`;
+      const h = Math.floor(m / 60);
+      if (h < 24) return `${h} ч назад`;
+      return `${Math.floor(h / 24)} д назад`;
+    },
+
+    // ===== ЧАТЫ =====
+    renderChatList() {
+      const list = document.getElementById('chatList');
+      if (!list) return;
+      if (!this._currentUser) {
+        list.innerHTML = '<p class="text-xs p-3" style="color: var(--text-secondary);">Войдите, чтобы видеть чаты.</p>';
+        return;
+      }
+      const profiles = DataService.get('profiles').filter(p => p.id !== this._currentUser.id && p.role !== 'admin');
+      list.innerHTML = profiles.map(p => {
+        const last = DataService.getLastMessage(p.id);
+        const unread = DataService.getMessages().filter(m => m.senderId === p.id && m.receiverId === this._currentUser.id && !m.isRead).length;
+        const blocked = DataService.isBlocked(p.id);
+        return `
+          <div class="chat-list-item ${this._currentChatUser === p.id ? 'active' : ''} ${blocked ? 'opacity-50' : ''}" onclick="App.openChat('${p.id}')">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500/20 to-indigo-500/20 flex items-center justify-center text-xs font-bold shrink-0" style="color: var(--accent-blue);">${p.first_name?.[0] || '?'}${p.last_name?.[0] || ''}</div>
+            <div class="min-w-0 flex-1">
+              <div class="text-xs font-semibold truncate" style="color: var(--text-primary);">${p.first_name} ${p.last_name}</div>
+              <div class="text-[0.65rem] truncate" style="color: var(--text-secondary);">${last ? (last.content || '').substring(0, 30) : 'Нет сообщений'}</div>
+            </div>
+            ${unread ? `<span class="notif-badge" style="position:static; min-width:16px; height:16px;">${unread}</span>` : ''}
+          </div>`;
+      }).join('');
+      lucide.createIcons();
+    },
+
+    openChat(userId) {
+      this._currentChatUser = userId;
+      this.renderChatList();
+      this.renderChatMessages();
+      const sidebar = document.getElementById('chatSidebar');
+      const main = document.getElementById('chatMain');
+      if (sidebar && main && window.innerWidth < 768) {
+        sidebar.classList.add('chat-mobile-sidebar-hidden');
+        main.classList.remove('chat-mobile-main-hidden');
+      }
+      const blockBtn = document.getElementById('blockUserBtn');
+      if (blockBtn) {
+        blockBtn.style.display = 'inline-flex';
+        blockBtn.innerHTML = DataService.isBlocked(userId) ? '<i data-lucide="unlock" class="w-3 h-3"></i> Разблокировать' : '<i data-lucide="ban" class="w-3 h-3"></i> Заблокировать';
+      }
+      lucide.createIcons();
+    },
+
+    closeChatMobile() {
+      const sidebar = document.getElementById('chatSidebar');
+      const main = document.getElementById('chatMain');
+      if (sidebar && main) {
+        sidebar.classList.remove('chat-mobile-sidebar-hidden');
+        main.classList.add('chat-mobile-main-hidden');
+      }
+    },
+
+    renderChatMessages() {
+      const header = document.getElementById('chatHeaderName');
+      const headerAv = document.getElementById('chatHeaderAvatar');
+      const status = document.getElementById('chatHeaderStatus');
+      const msgs = document.getElementById('chatMessages');
+      if (!header || !msgs) return;
+      if (!this._currentChatUser) {
+        header.textContent = 'Выберите чат';
+        headerAv.textContent = '—';
+        status.textContent = '—';
+        msgs.innerHTML = '<p class="text-xs text-center my-auto" style="color: var(--text-secondary);">Выберите диалог слева</p>';
+        return;
+      }
+      const profiles = DataService.get('profiles');
+      const u = profiles.find(p => p.id === this._currentChatUser);
+      if (!u) return;
+      header.textContent = `${u.first_name} ${u.last_name}`;
+      headerAv.textContent = (u.first_name?.[0] || '') + (u.last_name?.[0] || '');
+      status.innerHTML = u.is_online ? '<span class="online-indicator mr-1"></span>В сети' : 'Был(а) недавно';
+      const conv = DataService.getConversation(u.id);
+      const blocked = DataService.isBlocked(u.id);
+      msgs.innerHTML = conv.length === 0 ?
+        '<p class="text-xs text-center my-auto" style="color: var(--text-secondary);">Начните диалог!</p>' :
+        conv.map(m => {
+          const own = m.senderId === this._currentUser?.id;
+          return `<div class="${own ? 'chat-msg-own' : 'chat-msg-other'}">${this._escapeHtml(m.content)}<div class="text-[0.6rem] mt-1 opacity-70 mono">${new Date(m.createdAt).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</div></div>`;
+        }).join('');
+      msgs.scrollTop = msgs.scrollHeight;
+      const input = document.getElementById('chatInput');
+      if (input) input.disabled = blocked;
+      if (blocked) msgs.innerHTML += '<p class="text-xs text-center mt-2" style="color: var(--accent-crimson);">Пользователь заблокирован</p>';
+    },
+
+    sendMessage() {
+      if (!this._currentUser || !this._currentChatUser) return;
+      if (DataService.isBlocked(this._currentChatUser)) { alert('Пользователь заблокирован. Разблокируйте для отправки.'); return; }
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
+      const msg = DataService.sendMessage(this._currentChatUser, text);
+      input.value = '';
+      this.renderChatMessages();
+      this.renderChatList();
+      // Симуляция живого ответа
+      const partner = DataService.get('profiles').find(p => p.id === this._currentChatUser);
+      if (partner && !DataService.isBlocked(partner.id)) {
+        setTimeout(() => {
+          const replies = [
+            'Согласен!', 'Интересно!', 'Давай обсудим позже.', 'А что по этому поводу думает совет?',
+            'Спасибо за сообщение!', 'Ок, я понял.', 'Напиши подробнее.', 'Здорово!', 'Я подумаю.'
+          ];
+          const reply = { id: 'm' + Date.now(), senderId: partner.id, senderName: `${partner.first_name} ${partner.last_name}`, receiverId: this._currentUser.id, content: replies[Math.floor(Math.random() * replies.length)], isRead: false, createdAt: new Date().toISOString() };
+          const list = DataService.getMessages();
+          list.push(reply);
+          DataService.saveMessages(list);
+          if (this._currentChatUser === partner.id) this.renderChatMessages();
+          this.renderChatList();
+        }, 1200 + Math.random() * 1500);
+      }
+    },
+
+    blockCurrentChatUser() {
+      if (!this._currentChatUser) return;
+      if (DataService.isBlocked(this._currentChatUser)) {
+        DataService.unblockUser(this._currentChatUser);
+      } else {
+        DataService.blockUser(this._currentChatUser);
+      }
+      this.openChat(this._currentChatUser);
+      this.renderFriends();
+    },
+
+    // ===== ДРУЗЬЯ =====
+    renderFriends() {
+      if (!this._currentUser) {
+        document.getElementById('friendRequests').innerHTML = '<p class="text-xs" style="color: var(--text-secondary);">Войдите.</p>';
+        document.getElementById('friendsList').innerHTML = '';
+        document.getElementById('blockedList').innerHTML = '';
+        return;
+      }
+      const profiles = DataService.get('profiles');
+      const fsh = DataService.getFriendships();
+      const incoming = fsh.filter(f => f.addresseeId === this._currentUser.id && f.status === 'pending');
+      const accepted = fsh.filter(f => f.status === 'accepted' && (f.requesterId === this._currentUser.id || f.addresseeId === this._currentUser.id));
+
+      document.getElementById('friendRequests').innerHTML = incoming.length ?
+        incoming.map(f => {
+          const u = profiles.find(p => p.id === f.requesterId);
+          if (!u) return '';
+          return `
+            <div class="flex items-center gap-2 p-2 rounded-xl mb-2" style="background: var(--bg-card);">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500/20 to-indigo-500/20 flex items-center justify-center text-xs font-bold" style="color: var(--accent-blue);">${u.first_name?.[0] || '?'}</div>
+              <div class="flex-1 min-w-0">
+                <div class="text-xs font-semibold truncate" style="color: var(--text-primary);">${u.first_name} ${u.last_name}</div>
+                <div class="text-[0.6rem]" style="color: var(--text-secondary);">${u.grade} класс</div>
+              </div>
+              <button class="btn-primary text-[0.65rem] py-1 px-2" onclick="App.acceptFriend('${f.id}')">Принять</button>
+              <button class="btn-ghost text-[0.65rem] py-1 px-2" onclick="App.rejectFriend('${f.id}')">×</button>
+            </div>`;
+        }).join('') :
+        '<p class="text-xs" style="color: var(--text-secondary);">Нет новых заявок.</p>';
+
+      document.getElementById('friendsList').innerHTML = accepted.length ?
+        accepted.map(f => {
+          const otherId = f.requesterId === this._currentUser.id ? f.addresseeId : f.requesterId;
+          const u = profiles.find(p => p.id === otherId);
+          if (!u) return '';
+          return `
+            <div class="flex items-center gap-2 p-2 rounded-xl mb-2" style="background: var(--bg-card);">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500/20 to-indigo-500/20 flex items-center justify-center text-xs font-bold" style="color: var(--accent-blue);">${u.first_name?.[0] || '?'}</div>
+              <div class="flex-1 min-w-0">
+                <div class="text-xs font-semibold truncate" style="color: var(--text-primary);">${u.first_name} ${u.last_name}</div>
+                <div class="text-[0.6rem]" style="color: var(--text-secondary);">${u.grade} класс</div>
+              </div>
+              <button class="btn-ghost text-[0.65rem] py-1 px-2" onclick="App.openChatFromFriends('${u.id}')">Чат</button>
+              <button class="btn-ghost text-[0.65rem] py-1 px-2" onclick="App.removeFriend('${f.id}')">×</button>
+            </div>`;
+        }).join('') :
+        '<p class="text-xs" style="color: var(--text-secondary);">Пока нет друзей. Отправьте заявку из чата!</p>';
+
+      const blocked = DataService.getBlocked();
+      document.getElementById('blockedList').innerHTML = blocked.length ?
+        blocked.map(id => {
+          const u = profiles.find(p => p.id === id);
+          if (!u) return '';
+          return `
+            <div class="flex items-center gap-2 p-2 rounded-xl mb-2" style="background: var(--bg-card);">
+              <div class="w-8 h-8 rounded-full bg-slate-500/20 flex items-center justify-center text-xs font-bold">${u.first_name?.[0] || '?'}</div>
+              <div class="flex-1"><div class="text-xs font-semibold" style="color: var(--text-primary);">${u.first_name} ${u.last_name}</div></div>
+              <button class="btn-ghost text-[0.65rem] py-1 px-2" onclick="App.unblockUser('${id}')">Разблокировать</button>
+            </div>`;
+        }).join('') :
+        '<p class="text-xs" style="color: var(--text-secondary);">Список пуст.</p>';
+    },
+
+    openChatFromFriends(userId) {
+      this.switchSocialTab('chats');
+      this.openChat(userId);
+    },
+
+    acceptFriend(id) { DataService.acceptFriendRequest(id); this.renderFriends(); },
+    rejectFriend(id) { DataService.rejectFriendRequest(id); this.renderFriends(); },
+    removeFriend(id) { DataService.removeFriend(id); this.renderFriends(); },
+    unblockUser(id) { DataService.unblockUser(id); this.renderFriends(); this.renderChatList(); if (this._currentChatUser === id) this.renderChatMessages(); },
+
+    // ===== ИИ =====
+    setCalcMode(mode) {
+      this._calcMode = mode;
+      document.querySelectorAll('.calc-mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+      this.recalc();
+    },
+
+    recalc() {
+      const num = parseFloat(document.getElementById('calcNumber').value) || 0;
+      const pct = parseFloat(document.getElementById('calcPercent').value) || 0;
+      const el = document.getElementById('calcFormula');
+      if (!el) return;
+      let result = 0, formula = '';
+      if (this._calcMode === 'percent') {
+        result = num * pct / 100;
+        formula = `${pct}% от ${num} = ${parseFloat(result.toFixed(2))}`;
+      } else if (this._calcMode === 'discount') {
+        result = num - (num * pct / 100);
+        formula = `${num} − ${pct}% = ${parseFloat(result.toFixed(2))} (скидка ${parseFloat((num * pct / 100).toFixed(2))})`;
+      } else if (this._calcMode === 'markup') {
+        result = num + (num * pct / 100);
+        formula = `${num} + ${pct}% = ${parseFloat(result.toFixed(2))} (наценка ${parseFloat((num * pct / 100).toFixed(2))})`;
+      }
+      el.textContent = (num || pct) ? formula : '—';
+    },
+
+    sendCalcToAI() {
+      const num = document.getElementById('calcNumber').value;
+      const pct = document.getElementById('calcPercent').value;
+      if (!num || !pct) { alert('Введите число и процент.'); return; }
+      const formula = document.getElementById('calcFormula').textContent;
+      const input = document.getElementById('aiInput');
+      input.value = `Проверь расчёт: ${formula}`;
+      this.aiSend();
+    },
+
+    aiSend() {
+      const input = document.getElementById('aiInput');
+      const text = input.value.trim();
+      if (!text) return;
+      const chat = document.getElementById('aiChat');
+      chat.innerHTML += `
+        <div class="flex gap-2 justify-end">
+          <div class="p-3 rounded-2xl rounded-tr-sm text-sm max-w-[85%]" style="background: var(--accent-blue); color: #fff;">${this._escapeHtml(text)}</div>
+        </div>`;
+      input.value = '';
+      const resp = AIAssistant.getResponse(text);
+      setTimeout(() => {
+        chat.innerHTML += `
+          <div class="flex gap-2">
+            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shrink-0">
+              <i data-lucide="bot" class="w-3.5 h-3.5 text-white"></i>
+            </div>
+            <div class="p-3 rounded-2xl rounded-tl-sm text-sm max-w-[85%]" style="background: var(--bg-card); color: var(--text-primary);">${this._formatAi(resp)}</div>
+          </div>`;
+        chat.scrollTop = chat.scrollHeight;
+        lucide.createIcons();
+      }, 400);
+      chat.scrollTop = chat.scrollHeight;
+    },
+    aiQuick(text) { document.getElementById('aiInput').value = text; this.aiSend(); },
+    _formatAi(t) { return t.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>'); },
+    _escapeHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; },
+
+    // ===== АДМИНКА =====
+    renderAdminContentFields() {
+      const c = document.getElementById('adminContentFields');
+      const content = DataService._data.site_content || {};
+      const labels = {
+        hero_title: 'Заголовок Hero',
+        hero_subtitle: 'Подзаголовок Hero',
+        events_heading: 'Заголовок мероприятий',
+        events_subheading: 'Подзаголовок мероприятий',
+        best_student_heading: 'Заголовок лучшего ученика',
+        best_student_subheading: 'Подзаголовок лучшего ученика',
+        top6_heading: 'Заголовок Топ-6',
+        top6_subheading: 'Подзаголовок Топ-6',
+        ideas_heading: 'Заголовок идей',
+        ideas_subheading: 'Подзаголовок идей',
+        contacts_heading: 'Заголовок контактов',
+        rules_heading: 'Заголовок правил',
+        rules_subheading: 'Подзаголовок правил',
+        best_student_month: 'Месяц лучшего ученика',
+        best_student_name: 'Имя лучшего ученика',
+        best_student_meta: 'Класс и направление',
+        best_student_reason_1: 'Причина №1',
+        best_student_reason_2: 'Причина №2',
+        best_student_reason_3: 'Причина №3'
+      };
+      c.innerHTML = Object.keys(labels).map(k => `
+        <div>
+          <label class="text-xs font-medium mb-1 block" style="color: var(--text-secondary);">${labels[k]}</label>
+          <input type="text" class="input-field text-sm" value="${this._escapeHtml(content[k] || '')}" onchange="App.saveContent('${k}', this.value)">
+        </div>`).join('');
+    },
+
+    saveContent(k, v) {
+      DataService.setContent(k, v);
+      document.querySelectorAll(`[data-editable-text="${k}"]`).forEach(el => {
+        if (k === 'hero_title') el.innerHTML = v.replace('№37', '<span class="text-gradient">№37</span>');
+        else el.textContent = v;
+      });
+    },
+
+    // ===== РЕДАКТОР КНОПОК =====
+    renderAdminButtonFields() {
+      const c = document.getElementById('adminButtonFields');
+      const buttons = document.querySelectorAll('[data-editable-btn]');
+      const custom = DataService.getCustomButtons();
+      const all = [];
+      buttons.forEach(b => {
+        all.push({
+          key: b.getAttribute('data-editable-btn'),
+          text: b.textContent.trim(),
+          icon: b.querySelector('i')?.getAttribute('data-lucide') || '',
+          isCustom: false
+        });
+      });
+      custom.forEach(cb => all.push({ ...cb, isCustom: true }));
+      c.innerHTML = all.map(btn => `
+        <div class="btn-editor-card">
+          <div class="flex items-center gap-2 mb-2">
+            <input type="text" class="input-field text-xs" value="${this._escapeHtml(btn.text)}" onchange="App.updateButtonText('${btn.key}', this.value)" placeholder="Текст">
+            <input type="text" class="input-field text-xs" value="${btn.icon || ''}" onchange="App.updateButtonIcon('${btn.key}', this.value)" placeholder="Иконка Lucide">
+            ${btn.isCustom ? `<button class="btn-ghost text-xs py-1 px-2" onclick="App.deleteCustomButton('${btn.key}')">×</button>` : ''}
+          </div>
+          <div class="text-[0.6rem] mono" style="color: var(--text-secondary);">data-editable-btn="${btn.key}"</div>
+        </div>`).join('');
+    },
+
+    updateButtonText(key, value) {
+      const el = document.querySelector(`[data-editable-btn="${key}"]`);
+      if (el) {
+        // Сохраняем иконку
+        const icon = el.querySelector('i');
+        if (icon) {
+          const iconHTML = icon.outerHTML;
+          el.innerHTML = iconHTML + ' ' + value;
+        } else {
+          el.innerHTML = value;
+        }
+        lucide.createIcons();
+      }
+      const list = DataService.getCustomButtons();
+      const cb = list.find(b => b.key === key);
+      if (cb) { cb.text = value; DataService.saveCustomButtons(list); }
+    },
+
+    updateButtonIcon(key, iconName) {
+      const el = document.querySelector(`[data-editable-btn="${key}"]`);
+      if (el) {
+        const oldIcon = el.querySelector('i');
+        if (oldIcon) oldIcon.setAttribute('data-lucide', iconName || 'circle');
+        lucide.createIcons();
+      }
+      const list = DataService.getCustomButtons();
+      const cb = list.find(b => b.key === key);
+      if (cb) { cb.icon = iconName; DataService.saveCustomButtons(list); }
+    },
+
+    createCustomButton() {
+      const key = document.getElementById('newBtnKey').value.trim();
+      const text = document.getElementById('newBtnText').value.trim();
+      const loc = document.getElementById('newBtnLocation').value;
+      const icon = document.getElementById('newBtnIcon').value.trim() || 'star';
+      const action = document.getElementById('newBtnAction').value;
+      const value = document.getElementById('newBtnValue').value.trim();
+      if (!key || !text) { alert('Заполните ключ и текст.'); return; }
+      const list = DataService.getCustomButtons();
+      if (list.find(b => b.key === key)) { alert('Ключ уже существует.'); return; }
+      list.push({ key, text, location: loc, icon, action, value });
+      DataService.saveCustomButtons(list);
+      this.renderCustomButtons();
+      this.renderAdminButtonFields();
+      document.getElementById('newBtnKey').value = '';
+      document.getElementById('newBtnText').value = '';
+      document.getElementById('newBtnIcon').value = '';
+      document.getElementById('newBtnValue').value = '';
+      alert('Кнопка создана!');
+    },
+
+    deleteCustomButton(key) {
+      const list = DataService.getCustomButtons().filter(b => b.key !== key);
+      DataService.saveCustomButtons(list);
+      this.renderCustomButtons();
+      this.renderAdminButtonFields();
+    },
+
+    renderCustomButtons() {
+      const list = DataService.getCustomButtons();
+      document.querySelectorAll('.custom-header-btn, .custom-hero-btn').forEach(el => el.remove());
+      list.forEach(b => {
+        const html = `<button class="custom-${b.location}-btn btn-ghost text-xs py-2 px-3" data-editable-btn="${b.key}" onclick="App.executeCustomAction('${b.key}')"><i data-lucide="${b.icon}" class="w-3.5 h-3.5"></i> ${b.text}</button>`;
+        if (b.location === 'header') {
+          const header = document.querySelector('header .flex.items-center.gap-1\\.5');
+          if (header) header.insertAdjacentHTML('beforeend', html);
+        } else {
+          const hero = document.querySelector('#hero .flex.flex-col.sm\\:flex-row.items-center.justify-center.gap-3');
+          if (hero) hero.insertAdjacentHTML('beforeend', html);
+        }
+      });
+      lucide.createIcons();
+    },
+
+    executeCustomAction(key) {
+      const list = DataService.getCustomButtons();
+      const b = list.find(x => x.key === key);
+      if (!b) return;
+      if (b.action === 'modal') this.openModal(b.value);
+      else if (b.action === 'scroll') { const el = document.querySelector(b.value); if (el) el.scrollIntoView({ behavior: 'smooth' }); }
+      else if (b.action === 'external') window.open(b.value, '_blank');
+      else if (b.action === 'js') { try { new Function(b.value)(); } catch (e) { alert('Ошибка в JS: ' + e.message); } }
+    },
+
+    // ===== ФОТО ЛУЧШЕГО УЧЕНИКА =====
+    triggerPhotoUpload() {
+      if (!DataService.isAdmin()) { alert('Загрузка фото доступна администратору.'); return; }
+      document.getElementById('bestStudentFileInput').click();
+    },
+
+    handlePhotoFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxSize = 800;
+          let w = img.width, h = img.height;
+          if (w > maxSize || h > maxSize) {
+            if (w > h) { h = h * maxSize / w; w = maxSize; }
+            else { w = w * maxSize / h; h = maxSize; }
+          }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+          const bs = DataService.getBestStudent();
+          bs.avatar_url = dataUrl;
+          DataService.setBestStudent(bs);
+          this.renderBestStudent();
+          this.fillBestStudentAdmin();
+          // Cloud upload
+          if (DataService._isCloud && DataService._supabase) {
+            try {
+              const blob = this._dataURLtoBlob(dataUrl);
+              const path = `best-student/${Date.now()}.jpg`;
+              DataService._supabase.storage.from('avatars').upload(path, blob).then(() => {
+                DataService._supabase.storage.from('avatars').getPublicUrl(path).then(({ data }) => {
+                  if (data?.publicUrl) {
+                    bs.avatar_url = data.publicUrl;
+                    DataService.setBestStudent(bs);
+                    this.renderBestStudent();
+                  }
+                });
+              }).catch(err => console.warn('Storage upload error:', err));
+            } catch (e) {}
+          }
+          alert('Фото загружено и сохранено!');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
+
+    _dataURLtoBlob(dataUrl) {
+      const arr = dataUrl.split(',');
+      const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8 = new Uint8Array(n);
+      while (n--) u8[n] = bstr.charCodeAt(n);
+      return new Blob([u8], { type: mime });
+    },
+
+    fillBestStudentAdmin() {
+      const d = DataService.getBestStudent();
+      const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+      set('adminBsName', d.full_name || '');
+      set('adminBsMeta', d.grade || '');
+      set('adminBsMonth', d.month_label || '');
+      set('adminBsPoints', d.points || '');
+      set('adminBsR1', d.reason_1 || '');
+      set('adminBsR2', d.reason_2 || '');
+      set('adminBsR3', d.reason_3 || '');
+      const preview = document.getElementById('adminPhotoPreview');
+      if (preview && d.avatar_url) preview.style.backgroundImage = `url(${d.avatar_url})`;
+    },
+
+    saveBestStudent() {
+      const d = DataService.getBestStudent();
+      d.full_name = document.getElementById('adminBsName').value.trim();
+      d.grade = document.getElementById('adminBsMeta').value.trim();
+      d.month_label = document.getElementById('adminBsMonth').value.trim();
+      d.points = parseInt(document.getElementById('adminBsPoints').value) || 0;
+      d.reason_1 = document.getElementById('adminBsR1').value.trim();
+      d.reason_2 = document.getElementById('adminBsR2').value.trim();
+      d.reason_3 = document.getElementById('adminBsR3').value.trim();
+      DataService.setBestStudent(d);
+      DataService.setContent('best_student_name', d.full_name);
+      DataService.setContent('best_student_meta', d.grade);
+      DataService.setContent('best_student_month', d.month_label);
+      DataService.setContent('best_student_reason_1', d.reason_1);
+      DataService.setContent('best_student_reason_2', d.reason_2);
+      DataService.setContent('best_student_reason_3', d.reason_3);
+      this.renderBestStudent();
+      this.renderAdminContentFields();
+      alert('Данные лучшего ученика сохранены!');
+    },
+
+    // ===== SUPABASE =====
+    saveSupabase() {
+      const url = document.getElementById('supabaseUrl').value.trim();
+      const key = document.getElementById('supabaseAnonKey').value.trim();
+      if (!url || !key) { alert('Заполните оба поля.'); return; }
+      localStorage.setItem(STORAGE_KEYS.SUPABASE, JSON.stringify({ url, key }));
+      DataService._checkSupabase();
+      document.getElementById('supabaseStatus').textContent = DataService._isCloud ? '✅ Облачный режим (Supabase + Realtime)' : '⚠ Ошибка подключения.';
+      document.getElementById('supabaseStatus').style.color = DataService._isCloud ? '#22C55E' : '#F59E0B';
+    },
+
+    testSupabase() {
+      const st = document.getElementById('supabaseStatus');
+      if (DataService._isCloud) { st.textContent = '✅ Соединение с Supabase установлено. Realtime активен.'; st.style.color = '#22C55E'; }
+      else { st.textContent = '⚠ Supabase не подключён. Автономный режим.'; st.style.color = '#F59E0B'; }
+    },
+
+    copySQL() {
+      const sql = `-- SQL-схема для Supabase (Лицей №37)
+CREATE TABLE profiles (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), email TEXT UNIQUE NOT NULL, first_name TEXT NOT NULL, last_name TEXT NOT NULL, grade TEXT, direction TEXT, bio TEXT, avatar_url TEXT, points INTEGER DEFAULT 0, role TEXT DEFAULT 'student', is_online BOOLEAN DEFAULT false, created_at TIMESTAMPTZ DEFAULT now());
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "profiles_select" ON profiles FOR SELECT USING (true);
+CREATE POLICY "profiles_update" ON profiles FOR UPDATE USING (auth.uid() = id);
+CREATE TABLE posts (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), author_id UUID REFERENCES profiles(id) ON DELETE CASCADE, author_name TEXT, author_grade TEXT, tag TEXT, content TEXT NOT NULL, likes_count INTEGER DEFAULT 0, created_at TIMESTAMPTZ DEFAULT now());
+ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "posts_select" ON posts FOR SELECT USING (true);
+CREATE POLICY "posts_insert" ON posts FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE TABLE post_comments (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), post_id UUID REFERENCES posts(id) ON DELETE CASCADE, author_name TEXT, author_grade TEXT, text TEXT NOT NULL, created_at TIMESTAMPTZ DEFAULT now());
+ALTER TABLE post_comments ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "comments_select" ON post_comments FOR SELECT USING (true);
+CREATE POLICY "comments_insert" ON post_comments FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE TABLE friendships (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), requester_id UUID REFERENCES profiles(id) ON DELETE CASCADE, addressee_id UUID REFERENCES profiles(id) ON DELETE CASCADE, status TEXT DEFAULT 'pending', created_at TIMESTAMPTZ DEFAULT now());
+ALTER TABLE friendships ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "friendships_select" ON friendships FOR SELECT USING (auth.uid() = requester_id OR auth.uid() = addressee_id);
+CREATE POLICY "friendships_insert" ON friendships FOR INSERT WITH CHECK (auth.uid() = requester_id);
+CREATE TABLE messages (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), sender_id UUID REFERENCES profiles(id) ON DELETE CASCADE, receiver_id UUID REFERENCES profiles(id) ON DELETE CASCADE, content TEXT NOT NULL, is_read BOOLEAN DEFAULT false, created_at TIMESTAMPTZ DEFAULT now());
+ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "messages_select" ON messages FOR SELECT USING (auth.uid() = sender_id OR auth.uid() = receiver_id);
+CREATE POLICY "messages_insert" ON messages FOR INSERT WITH CHECK (auth.uid() = sender_id);
+CREATE TABLE events (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), date_label TEXT, category TEXT, title TEXT NOT NULL, description TEXT, location TEXT, time_label TEXT, participants_count INTEGER DEFAULT 0, created_at TIMESTAMPTZ DEFAULT now());
+ALTER TABLE events ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "events_select" ON events FOR SELECT USING (true);
+CREATE TABLE best_student (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), month_label TEXT, full_name TEXT, grade TEXT, direction TEXT, avatar_url TEXT, reason_1 TEXT, reason_2 TEXT, reason_3 TEXT, points INTEGER DEFAULT 0, updated_at TIMESTAMPTZ DEFAULT now());
+ALTER TABLE best_student ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "best_student_select" ON best_student FOR SELECT USING (true);
+CREATE TABLE ideas (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), author_name TEXT, grade TEXT, proposal TEXT NOT NULL, status TEXT DEFAULT 'На рассмотрении', created_at TIMESTAMPTZ DEFAULT now());
+ALTER TABLE ideas ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "ideas_select" ON ideas FOR SELECT USING (true);
+CREATE POLICY "ideas_insert" ON ideas FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE TABLE site_content (key TEXT PRIMARY KEY, value TEXT, category TEXT DEFAULT 'general');
+ALTER TABLE site_content ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "site_content_select" ON site_content FOR SELECT USING (true);
+CREATE TABLE custom_code (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), name TEXT, type TEXT, code TEXT, is_active BOOLEAN DEFAULT true);
+ALTER TABLE custom_code ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "custom_code_select" ON custom_code FOR SELECT USING (auth.role() = 'authenticated');
+CREATE TABLE ai_knowledge (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), topic TEXT, keywords TEXT[], answer TEXT);
+ALTER TABLE ai_knowledge ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "ai_knowledge_select" ON ai_knowledge FOR SELECT USING (true);
+-- Storage bucket for avatars:
+-- INSERT INTO storage.buckets (id, name, public) VALUES ('avatars', 'avatars', true);
+`;
+      navigator.clipboard.writeText(sql).then(() => alert('SQL-схема скопирована!')).catch(() => alert('Не удалось скопировать.'));
+    },
+
+    // ===== КОД =====
+    saveCustomCode() {
+      const code = document.getElementById('customCodeEditor').value;
+      try {
+        new Function(code);
+        localStorage.setItem(STORAGE_KEYS.CUSTOM_CODE, code);
+        const st = document.getElementById('codeStatus');
+        st.textContent = '✅ Код сохранён и выполнен.';
+        st.style.color = '#22C55E';
+        try { eval(code); } catch (e) { st.textContent = '⚠ Ошибка выполнения: ' + e.message; st.style.color = '#F59E0B'; }
+      } catch (e) {
+        const st = document.getElementById('codeStatus');
+        st.textContent = '❌ Синтаксическая ошибка: ' + e.message;
+        st.style.color = '#EF4444';
+      }
+    },
+    resetCustomCode() {
+      localStorage.removeItem(STORAGE_KEYS.CUSTOM_CODE);
+      document.getElementById('customCodeEditor').value = '';
+      const st = document.getElementById('codeStatus');
+      st.textContent = 'Код сброшен.';
+      st.style.color = 'var(--text-secondary)';
+    },
+    loadCustomCode() {
+      const saved = localStorage.getItem(STORAGE_KEYS.CUSTOM_CODE);
+      if (saved) {
+        document.getElementById('customCodeEditor').value = saved;
+        try { eval(saved); } catch (e) { console.warn('Custom code error:', e); }
+      }
+    },
+
+    bindEvents() {
+      document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
+      document.getElementById('mobileMenuOpen').addEventListener('click', () => {
+        document.getElementById('mobileMenuPanel').classList.add('open');
+        document.getElementById('mobileMenuBackdrop').classList.add('active');
+      });
+      document.getElementById('mobileMenuClose').addEventListener('click', () => {
+        document.getElementById('mobileMenuPanel').classList.remove('open');
+        document.getElementById('mobileMenuBackdrop').classList.remove('active');
+      });
+      document.getElementById('mobileMenuBackdrop').addEventListener('click', () => {
+        document.getElementById('mobileMenuPanel').classList.remove('open');
+        document.getElementById('mobileMenuBackdrop').classList.remove('active');
+      });
+      document.querySelectorAll('.modal-overlay').forEach(o => {
+        o.addEventListener('click', (e) => {
+          if (e.target === o) { o.classList.remove('active'); document.body.style.overflow = ''; }
+        });
+      });
+      document.querySelectorAll('.event-filter-btn').forEach(b => {
+        b.addEventListener('click', () => {
+          document.querySelectorAll('.event-filter-btn').forEach(x => {
+            x.classList.remove('active');
+            x.style.background = 'var(--input-bg)';
+            x.style.color = 'var(--text-secondary)';
+          });
+          b.classList.add('active');
+          b.style.background = 'var(--accent-blue)';
+          b.style.color = '#fff';
+          this._currentEventFilter = b.dataset.filter;
+          this.renderEvents();
+        });
+      });
+      document.querySelectorAll('.top6-filter').forEach(b => {
+        b.addEventListener('click', () => {
+          document.querySelectorAll('.top6-filter').forEach(x => {
+            x.classList.remove('active');
+            x.style.background = 'transparent';
+            x.style.color = 'var(--text-secondary)';
+            x.style.boxShadow = 'none';
+          });
+          b.classList.add('active');
+          b.style.background = 'var(--bg-card)';
+          b.style.color = 'var(--text-primary)';
+          b.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+          this._currentTop6Period = b.dataset.period;
+          this.renderTop6();
+        });
+      });
+      document.querySelectorAll('.admin-tab').forEach(t => {
+        t.addEventListener('click', () => {
+          document.querySelectorAll('.admin-tab').forEach(x => {
+            x.classList.remove('active');
+            x.style.background = 'var(--input-bg)';
+            x.style.color = 'var(--text-secondary)';
+          });
+          t.classList.add('active');
+          t.style.background = 'var(--accent-blue)';
+          t.style.color = '#fff';
+          document.querySelectorAll('.admin-tab-panel').forEach(p => p.classList.add('hidden'));
+          const map = { content: 'adminTabContent', buttons: 'adminTabButtons', bestStudent: 'adminTabBestStudent', supabase: 'adminTabSupabase', code: 'adminTabCode' };
+          const el = document.getElementById(map[t.dataset.tab]);
+          if (el) el.classList.remove('hidden');
+        });
+      });
+      document.querySelectorAll('.mobile-nav-link').forEach(l => {
+        l.addEventListener('click', () => {
+          document.getElementById('mobileMenuPanel').classList.remove('open');
+          document.getElementById('mobileMenuBackdrop').classList.remove('active');
+        });
+      });
+    },
+
+    initScrollAnimations() {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    App.init();
+    setTimeout(() => lucide.createIcons(), 100);
+  });
+  window.App = App;
+  </script>
+</body>
+</html>
