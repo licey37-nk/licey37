@@ -1,0 +1,3554 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>МБОУ «Лицей №37» • Нижнекамск — Образовательный портал</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --indigo:#2563EB;
+  --indigo-dark:#1e40af;
+  --emerald:#10B981;
+  --gold:#F59E0B;
+  --gold-light:#FCD34D;
+  --bg:#F8FAFC;
+  --surface:#FFFFFF;
+  --surface-glass:rgba(255,255,255,0.72);
+  --border:#E2E8F0;
+  --text:#0F172A;
+  --text-muted:#64748B;
+  --text-light:#94A3B8;
+  --danger:#EF4444;
+  --shadow-sm:0 1px 3px rgba(15,23,42,0.06),0 1px 2px rgba(15,23,42,0.04);
+  --shadow-md:0 4px 12px rgba(15,23,42,0.08),0 2px 4px rgba(15,23,42,0.04);
+  --shadow-lg:0 12px 32px rgba(15,23,42,0.12),0 4px 8px rgba(15,23,42,0.06);
+  --shadow-xl:0 24px 48px rgba(15,23,42,0.16);
+  --radius-sm:8px;
+  --radius-md:14px;
+  --radius-lg:20px;
+  --radius-xl:28px;
+  --transition:all 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 8% 12%,rgba(37,99,235,0.06),transparent 42%),
+    radial-gradient(circle at 92% 8%,rgba(16,185,129,0.05),transparent 40%),
+    radial-gradient(circle at 50% 100%,rgba(245,158,11,0.04),transparent 50%);
+  pointer-events:none;
+  z-index:0;
+}
+a{color:var(--indigo);text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+input,textarea,select{font-family:inherit;font-size:inherit;}
+img{max-width:100%;display:block;}
+::-webkit-scrollbar{width:10px;height:10px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:10px;border:2px solid var(--bg);}
+::-webkit-scrollbar-thumb:hover{background:#94A3B8;}
+
+/* ============ HEADER ============ */
+.site-header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:var(--surface-glass);
+  backdrop-filter:blur(18px) saturate(180%);
+  -webkit-backdrop-filter:blur(18px) saturate(180%);
+  border-bottom:1px solid rgba(226,232,240,0.8);
+  box-shadow:0 1px 0 rgba(15,23,42,0.03);
+}
+.header-inner{
+  max-width:1440px;
+  margin:0 auto;
+  padding:0 20px;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  height:68px;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  flex-shrink:0;
+  cursor:pointer;
+  user-select:none;
+}
+.brand-logo{
+  width:42px;height:42px;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--indigo) 0%,#3B82F6 50%,var(--emerald) 100%);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:800;font-size:17px;
+  box-shadow:0 4px 14px rgba(37,99,235,0.32);
+  position:relative;
+  overflow:hidden;
+}
+.brand-logo::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,0.25) 50%,transparent 60%);
+}
+.brand-text{display:flex;flex-direction:column;line-height:1.2;}
+.brand-title{font-weight:800;font-size:14.5px;letter-spacing:-0.2px;color:var(--text);white-space:nowrap;}
+.brand-sub{font-size:11px;color:var(--text-muted);font-weight:500;white-space:nowrap;}
+
+.nav-tabs{
+  display:flex;
+  gap:4px;
+  flex:1;
+  justify-content:center;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+.nav-tabs::-webkit-scrollbar{display:none;}
+.nav-tab{
+  padding:8px 16px;
+  border-radius:11px;
+  font-size:13.5px;
+  font-weight:600;
+  color:var(--text-muted);
+  white-space:nowrap;
+  transition:var(--transition);
+  position:relative;
+  display:flex;align-items:center;gap:6px;
+}
+.nav-tab:hover{background:rgba(37,99,235,0.07);color:var(--indigo);}
+.nav-tab.active{background:var(--indigo);color:#fff;box-shadow:0 4px 12px rgba(37,99,235,0.28);}
+.nav-tab.active:hover{background:var(--indigo-dark);color:#fff;}
+
+.header-auth{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  flex-shrink:0;
+}
+.btn{
+  padding:9px 18px;
+  border-radius:11px;
+  font-size:13.5px;
+  font-weight:600;
+  transition:var(--transition);
+  display:inline-flex;align-items:center;gap:6px;
+  white-space:nowrap;
+}
+.btn-primary{background:var(--indigo);color:#fff;box-shadow:0 4px 12px rgba(37,99,235,0.28);}
+.btn-primary:hover{background:var(--indigo-dark);transform:translateY(-1px);box-shadow:0 6px 18px rgba(37,99,235,0.36);}
+.btn-ghost{background:rgba(37,99,235,0.08);color:var(--indigo);}
+.btn-ghost:hover{background:rgba(37,99,235,0.14);}
+.btn-outline{background:transparent;color:var(--text);border:1.5px solid var(--border);}
+.btn-outline:hover{border-color:var(--indigo);color:var(--indigo);}
+.btn-success{background:var(--emerald);color:#fff;box-shadow:0 4px 12px rgba(16,185,129,0.28);}
+.btn-success:hover{background:#059669;transform:translateY(-1px);}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-danger:hover{background:#DC2626;}
+.btn-sm{padding:6px 12px;font-size:12.5px;border-radius:9px;}
+.btn-block{width:100%;justify-content:center;}
+
+.user-chip{
+  display:flex;align-items:center;gap:9px;
+  padding:5px 6px 5px 12px;
+  background:rgba(37,99,235,0.06);
+  border-radius:12px;
+  cursor:pointer;
+  transition:var(--transition);
+  border:1px solid transparent;
+}
+.user-chip:hover{border-color:rgba(37,99,235,0.2);background:rgba(37,99,235,0.1);}
+.user-chip-avatar{
+  width:34px;height:34px;border-radius:10px;
+  background:linear-gradient(135deg,var(--indigo),var(--emerald));
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:700;font-size:14px;
+  overflow:hidden;flex-shrink:0;
+}
+.user-chip-avatar img{width:100%;height:100%;object-fit:cover;}
+.user-chip-info{display:flex;flex-direction:column;line-height:1.15;}
+.user-chip-name{font-size:13px;font-weight:700;}
+.user-chip-grade{font-size:11px;color:var(--text-muted);}
+
+/* ============ MAIN ============ */
+.main-wrap{
+  max-width:1440px;
+  margin:0 auto;
+  padding:28px 20px 60px;
+  width:100%;
+  flex:1;
+  position:relative;
+  z-index:1;
+}
+.page{display:none;animation:pageFade 0.35s ease;}
+.page.active{display:block;}
+@keyframes pageFade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+.section-title{
+  font-size:22px;font-weight:800;letter-spacing:-0.4px;
+  margin-bottom:4px;display:flex;align-items:center;gap:9px;
+}
+.section-sub{color:var(--text-muted);font-size:14px;margin-bottom:22px;}
+
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);
+  transition:var(--transition);
+}
+.card-pad{padding:22px;}
+
+/* Hero */
+.hero{
+  background:linear-gradient(135deg,#1e3a8a 0%,#2563EB 45%,#3B82F6 75%,#10B981 130%);
+  border-radius:var(--radius-xl);
+  padding:44px 40px;
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+  margin-bottom:28px;
+  box-shadow:0 20px 50px rgba(37,99,235,0.25);
+}
+.hero::before{
+  content:'';position:absolute;right:-60px;top:-60px;
+  width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,0.18),transparent 70%);
+}
+.hero::after{
+  content:'';position:absolute;left:-40px;bottom:-80px;
+  width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,rgba(16,185,129,0.3),transparent 70%);
+}
+.hero-content{position:relative;z-index:1;max-width:640px;}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(255,255,255,0.16);
+  backdrop-filter:blur(8px);
+  padding:6px 14px;border-radius:100px;
+  font-size:12.5px;font-weight:600;margin-bottom:16px;
+  border:1px solid rgba(255,255,255,0.2);
+}
+.hero h1{font-size:34px;font-weight:800;letter-spacing:-0.8px;line-height:1.15;margin-bottom:12px;}
+.hero p{font-size:15px;opacity:0.92;line-height:1.6;margin-bottom:22px;}
+.hero-stats{display:flex;gap:32px;flex-wrap:wrap;}
+.hero-stat-num{font-size:26px;font-weight:800;letter-spacing:-0.5px;}
+.hero-stat-lbl{font-size:12px;opacity:0.82;font-weight:500;}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.grid-auto{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;}
+
+/* Best student */
+.best-student-card{
+  background:linear-gradient(135deg,#FFFBEB 0%,#FEF3C7 100%);
+  border:1px solid #FDE68A;
+  border-radius:var(--radius-lg);
+  padding:24px;
+  position:relative;
+  overflow:hidden;
+}
+.best-student-card::before{
+  content:'🏆';position:absolute;right:-10px;top:-10px;
+  font-size:100px;opacity:0.08;transform:rotate(-15deg);
+}
+.best-student-head{display:flex;align-items:center;gap:14px;margin-bottom:16px;position:relative;z-index:1;}
+.best-avatar{
+  width:76px;height:76px;border-radius:20px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-light));
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;font-weight:800;color:#fff;
+  overflow:hidden;flex-shrink:0;
+  box-shadow:0 8px 20px rgba(245,158,11,0.35);
+  border:3px solid #fff;
+}
+.best-avatar img{width:100%;height:100%;object-fit:cover;}
+.best-name{font-size:19px;font-weight:800;letter-spacing:-0.3px;}
+.best-grade{font-size:13px;color:#B45309;font-weight:600;margin-top:2px;}
+.best-achievements{font-size:14px;color:#78350F;line-height:1.6;position:relative;z-index:1;background:rgba(255,255,255,0.5);padding:12px 14px;border-radius:12px;}
+
+/* Top students list */
+.top-list{display:flex;flex-direction:column;gap:10px;}
+.top-item{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 14px;border-radius:13px;
+  background:var(--bg);
+  transition:var(--transition);
+}
+.top-item:hover{background:#EEF2FF;transform:translateX(3px);}
+.top-rank{
+  width:30px;height:30px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:13px;flex-shrink:0;
+  background:#E2E8F0;color:var(--text-muted);
+}
+.top-rank.r1{background:linear-gradient(135deg,#F59E0B,#FCD34D);color:#fff;box-shadow:0 4px 10px rgba(245,158,11,0.3);}
+.top-rank.r2{background:linear-gradient(135deg,#94A3B8,#CBD5E1);color:#fff;}
+.top-rank.r3{background:linear-gradient(135deg,#B45309,#D97706);color:#fff;}
+.top-ava{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--indigo),var(--emerald));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;overflow:hidden;flex-shrink:0;}
+.top-ava img{width:100%;height:100%;object-fit:cover;}
+.top-info{flex:1;min-width:0;}
+.top-name{font-weight:700;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.top-grade{font-size:11.5px;color:var(--text-muted);}
+.top-points{font-weight:800;color:var(--indigo);font-size:13.5px;white-space:nowrap;}
+
+/* Schedule */
+.schedule-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}
+.schedule-item{
+  background:var(--bg);
+  border-radius:13px;
+  padding:13px 15px;
+  display:flex;align-items:center;gap:11px;
+  border-left:3px solid var(--indigo);
+  transition:var(--transition);
+}
+.schedule-item:hover{background:#EEF2FF;transform:translateY(-2px);box-shadow:var(--shadow-sm);}
+.schedule-num{
+  width:32px;height:32px;border-radius:9px;
+  background:var(--indigo);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:13px;flex-shrink:0;
+}
+.schedule-time{font-weight:700;font-size:13.5px;}
+.schedule-lbl{font-size:11px;color:var(--text-muted);}
+
+/* News */
+.news-item{
+  padding:16px 0;
+  border-bottom:1px solid var(--border);
+  display:flex;gap:14px;
+}
+.news-item:last-child{border-bottom:none;padding-bottom:0;}
+.news-item:first-child{padding-top:0;}
+.news-date{
+  flex-shrink:0;width:54px;text-align:center;
+  background:linear-gradient(135deg,var(--indigo),#3B82F6);
+  color:#fff;border-radius:12px;padding:8px 0;
+  box-shadow:0 4px 10px rgba(37,99,235,0.22);
+}
+.news-date-day{font-size:20px;font-weight:800;line-height:1;}
+.news-date-mon{font-size:10px;text-transform:uppercase;opacity:0.85;margin-top:2px;font-weight:600;}
+.news-body{flex:1;min-width:0;}
+.news-title{font-weight:700;font-size:14.5px;margin-bottom:3px;}
+.news-text{font-size:13px;color:var(--text-muted);line-height:1.55;}
+
+/* ============ SOCIAL FEED ============ */
+.social-layout{display:grid;grid-template-columns:280px 1fr 300px;gap:22px;align-items:start;}
+.sidebar-card{padding:18px;position:sticky;top:88px;}
+.sidebar-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.friend-req{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.friend-req:last-child{border-bottom:none;}
+.friend-ava{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--indigo),var(--emerald));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0;}
+.friend-ava img{width:100%;height:100%;object-fit:cover;border-radius:10px;}
+.friend-info{flex:1;min-width:0;}
+.friend-name{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.friend-grade{font-size:11px;color:var(--text-muted);}
+.friend-actions{display:flex;gap:5px;flex-shrink:0;}
+.icon-btn{
+  width:30px;height:30px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;transition:var(--transition);
+  background:var(--bg);
+}
+.icon-btn:hover{transform:scale(1.1);}
+.icon-btn.accept:hover{background:#D1FAE5;}
+.icon-btn.reject:hover{background:#FEE2E2;}
+
+.compose-card{padding:16px;margin-bottom:18px;}
+.compose-row{display:flex;gap:12px;align-items:flex-start;}
+.compose-ava{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--indigo),var(--emerald));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;flex-shrink:0;overflow:hidden;}
+.compose-ava img{width:100%;height:100%;object-fit:cover;}
+.compose-body{flex:1;min-width:0;}
+.compose-textarea{
+  width:100%;border:1.5px solid var(--border);border-radius:13px;
+  padding:12px 14px;font-size:14px;resize:vertical;min-height:70px;
+  transition:var(--transition);background:var(--bg);
+}
+.compose-textarea:focus{outline:none;border-color:var(--indigo);background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+.compose-tools{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px;}
+.compose-tools-left{display:flex;gap:6px;}
+.tool-btn{
+  padding:6px 12px;border-radius:9px;font-size:12.5px;font-weight:600;
+  background:var(--bg);color:var(--text-muted);transition:var(--transition);
+  display:flex;align-items:center;gap:5px;
+}
+.tool-btn:hover{background:#EEF2FF;color:var(--indigo);}
+
+.post-card{margin-bottom:18px;padding:18px;animation:pageFade 0.3s ease;}
+.post-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px;}
+.post-ava{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--indigo),var(--emerald));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;flex-shrink:0;overflow:hidden;}
+.post-ava img{width:100%;height:100%;object-fit:cover;}
+.post-author{font-weight:700;font-size:14px;}
+.post-meta{font-size:12px;color:var(--text-muted);margin-top:1px;}
+.post-content{font-size:14.5px;line-height:1.6;margin-bottom:12px;white-space:pre-wrap;word-wrap:break-word;}
+.post-image{border-radius:14px;margin-bottom:12px;max-height:440px;object-fit:cover;width:100%;border:1px solid var(--border);}
+.post-actions{display:flex;gap:6px;padding-top:10px;border-top:1px solid var(--border);}
+.post-action-btn{
+  padding:7px 14px;border-radius:9px;font-size:13px;font-weight:600;
+  color:var(--text-muted);transition:var(--transition);
+  display:flex;align-items:center;gap:6px;
+}
+.post-action-btn:hover{background:#F1F5F9;color:var(--indigo);}
+.post-action-btn.liked{color:var(--danger);background:#FEF2F2;}
+.post-action-btn.liked:hover{background:#FEE2E2;}
+.comments-wrap{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:none;}
+.comments-wrap.open{display:block;}
+.comment-item{display:flex;gap:9px;margin-bottom:10px;}
+.comment-ava{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#8B5CF6,#EC4899);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;flex-shrink:0;}
+.comment-body{flex:1;background:var(--bg);border-radius:11px;padding:8px 12px;}
+.comment-author{font-weight:700;font-size:12.5px;}
+.comment-text{font-size:13px;line-height:1.5;margin-top:2px;}
+.comment-input-row{display:flex;gap:8px;margin-top:10px;}
+.comment-input{flex:1;border:1.5px solid var(--border);border-radius:11px;padding:8px 12px;font-size:13px;transition:var(--transition);}
+.comment-input:focus{outline:none;border-color:var(--indigo);box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+
+/* Chat */
+.chat-tabs{display:flex;gap:4px;margin-bottom:12px;}
+.chat-tab{padding:7px 12px;border-radius:9px;font-size:12.5px;font-weight:600;color:var(--text-muted);transition:var(--transition);}
+.chat-tab.active{background:var(--indigo);color:#fff;}
+.chat-tab:hover:not(.active){background:var(--bg);}
+.chat-list{max-height:420px;overflow-y:auto;margin-bottom:10px;display:flex;flex-direction:column;gap:2px;}
+.chat-list::-webkit-scrollbar{width:6px;}
+.chat-list::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:10px;}
+.chat-msg{padding:7px 11px;border-radius:11px;font-size:13px;line-height:1.5;max-width:92%;word-wrap:break-word;}
+.chat-msg.own{background:var(--indigo);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
+.chat-msg.other{background:var(--bg);align-self:flex-start;border-bottom-left-radius:4px;}
+.chat-msg-author{font-size:11px;font-weight:700;color:var(--indigo);margin-bottom:2px;}
+.chat-msg-time{font-size:10px;opacity:0.6;margin-top:3px;}
+.chat-input-row{display:flex;gap:8px;}
+.chat-input{flex:1;border:1.5px solid var(--border);border-radius:11px;padding:9px 13px;font-size:13px;transition:var(--transition);}
+.chat-input:focus{outline:none;border-color:var(--indigo);box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+
+/* Search friends */
+.search-row{display:flex;gap:8px;margin-bottom:14px;}
+.search-input{flex:1;border:1.5px solid var(--border);border-radius:11px;padding:9px 13px;font-size:13px;transition:var(--transition);}
+.search-input:focus{outline:none;border-color:var(--indigo);box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+
+/* ============ GAMES ============ */
+.filter-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px;}
+.chip{
+  padding:8px 16px;border-radius:100px;font-size:13px;font-weight:600;
+  background:var(--surface);border:1.5px solid var(--border);color:var(--text-muted);
+  transition:var(--transition);
+}
+.chip:hover{border-color:var(--indigo);color:var(--indigo);}
+.chip.active{background:var(--indigo);color:#fff;border-color:var(--indigo);box-shadow:0 4px 12px rgba(37,99,235,0.28);}
+
+.event-card{
+  padding:22px;
+  border-radius:var(--radius-lg);
+  border:1px solid var(--border);
+  background:var(--surface);
+  transition:var(--transition);
+  position:relative;
+  overflow:hidden;
+}
+.event-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.event-card-tag{
+  display:inline-block;padding:4px 11px;border-radius:100px;
+  font-size:11px;font-weight:700;margin-bottom:11px;
+  background:rgba(37,99,235,0.1);color:var(--indigo);
+}
+.event-card-tag.gold{background:rgba(245,158,11,0.12);color:#B45309;}
+.event-card-tag.green{background:rgba(16,185,129,0.12);color:#047857;}
+.event-card h3{font-size:16.5px;font-weight:800;letter-spacing:-0.3px;margin-bottom:7px;}
+.event-card p{font-size:13.5px;color:var(--text-muted);line-height:1.6;margin-bottom:14px;}
+.event-card-meta{display:flex;gap:14px;font-size:12px;color:var(--text-light);margin-bottom:14px;}
+.event-card-meta span{display:flex;align-items:center;gap:4px;}
+
+/* Quiz */
+.quiz-box{padding:26px;}
+.quiz-progress{height:7px;background:var(--bg);border-radius:100px;overflow:hidden;margin-bottom:20px;}
+.quiz-progress-bar{height:100%;background:linear-gradient(90deg,var(--indigo),var(--emerald));border-radius:100px;transition:width 0.4s ease;}
+.quiz-question{font-size:17px;font-weight:700;margin-bottom:18px;line-height:1.45;}
+.quiz-options{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
+.quiz-option{
+  padding:14px 18px;border-radius:13px;
+  border:1.5px solid var(--border);background:var(--bg);
+  font-size:14px;font-weight:500;text-align:left;
+  transition:var(--transition);
+}
+.quiz-option:hover:not(:disabled){border-color:var(--indigo);background:#EEF2FF;}
+.quiz-option.correct{background:#D1FAE5;border-color:var(--emerald);color:#047857;font-weight:700;}
+.quiz-option.wrong{background:#FEE2E2;border-color:var(--danger);color:#B91C1C;}
+.quiz-option:disabled{cursor:default;}
+.quiz-result{text-align:center;padding:20px;}
+.quiz-result-emoji{font-size:52px;margin-bottom:12px;}
+.quiz-result h3{font-size:22px;font-weight:800;margin-bottom:8px;}
+.quiz-result p{color:var(--text-muted);margin-bottom:18px;}
+
+/* ============ PROFILE ============ */
+.profile-hero{
+  background:linear-gradient(135deg,#1e3a8a,#2563EB 60%,#10B981 140%);
+  border-radius:var(--radius-xl);
+  padding:34px;
+  color:#fff;
+  display:flex;gap:24px;align-items:center;
+  margin-bottom:24px;
+  position:relative;overflow:hidden;
+  box-shadow:0 16px 40px rgba(37,99,235,0.22);
+}
+.profile-hero::before{content:'';position:absolute;right:-50px;top:-50px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.15),transparent 70%);}
+.profile-avatar-lg{
+  width:110px;height:110px;border-radius:28px;
+  background:linear-gradient(135deg,rgba(255,255,255,0.3),rgba(255,255,255,0.15));
+  display:flex;align-items:center;justify-content:center;
+  font-size:42px;font-weight:800;color:#fff;
+  overflow:hidden;flex-shrink:0;
+  border:3px solid rgba(255,255,255,0.4);
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+  position:relative;z-index:1;
+}
+.profile-avatar-lg img{width:100%;height:100%;object-fit:cover;}
+.profile-info{flex:1;position:relative;z-index:1;min-width:0;}
+.profile-name{font-size:26px;font-weight:800;letter-spacing:-0.5px;margin-bottom:4px;}
+.profile-sub{font-size:14px;opacity:0.9;margin-bottom:12px;}
+.profile-badges{display:flex;gap:8px;flex-wrap:wrap;}
+.profile-badge{background:rgba(255,255,255,0.2);backdrop-filter:blur(8px);padding:6px 13px;border-radius:100px;font-size:12.5px;font-weight:600;border:1px solid rgba(255,255,255,0.25);display:flex;align-items:center;gap:5px;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
+.stat-card{padding:20px;border-radius:var(--radius-lg);background:var(--surface);border:1px solid var(--border);text-align:center;transition:var(--transition);}
+.stat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
+.stat-val{font-size:30px;font-weight:800;letter-spacing:-0.5px;margin-bottom:2px;background:linear-gradient(135deg,var(--indigo),var(--emerald));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-lbl{font-size:12.5px;color:var(--text-muted);font-weight:600;}
+
+.achievement{
+  display:flex;align-items:center;gap:13px;
+  padding:14px;border-radius:14px;
+  background:linear-gradient(135deg,#FFFBEB,#FEF3C7);
+  border:1px solid #FDE68A;margin-bottom:10px;
+}
+.achievement-icon{font-size:26px;flex-shrink:0;}
+.achievement-title{font-weight:700;font-size:13.5px;color:#78350F;}
+.achievement-desc{font-size:12px;color:#92400E;}
+
+/* ============ FOOTER ============ */
+.site-footer{
+  background:#0F172A;
+  color:#CBD5E1;
+  padding:44px 0 0;
+  margin-top:auto;
+  position:relative;
+  z-index:1;
+}
+.footer-inner{max-width:1440px;margin:0 auto;padding:0 20px;}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:36px;padding-bottom:34px;}
+.footer-brand{display:flex;align-items:center;gap:11px;margin-bottom:14px;}
+.footer-brand-logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--indigo),var(--emerald));display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:16px;}
+.footer-brand-title{font-weight:800;font-size:15px;color:#fff;}
+.footer-brand-sub{font-size:12px;color:#94A3B8;}
+.footer-desc{font-size:13px;line-height:1.65;color:#94A3B8;margin-bottom:16px;}
+.footer-col-title{font-weight:700;font-size:13.5px;color:#fff;margin-bottom:14px;text-transform:uppercase;letter-spacing:0.5px;}
+.footer-link{display:block;font-size:13px;color:#94A3B8;margin-bottom:9px;transition:var(--transition);}
+.footer-link:hover{color:#fff;transform:translateX(3px);}
+.footer-bottom{
+  border-top:1px solid #1E293B;
+  padding:20px 0;
+  display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.footer-copy{font-size:12.5px;color:#64748B;}
+.admin-trigger{
+  font-size:11.5px;color:#475569;transition:var(--transition);
+  padding:5px 10px;border-radius:7px;
+}
+.admin-trigger:hover{color:#94A3B8;background:#1E293B;}
+
+/* ============ AI ASSISTANT ============ */
+.ai-fab{
+  position:fixed;
+  bottom:26px;right:26px;
+  z-index:2000;
+  padding:14px 22px;
+  border-radius:100px;
+  background:linear-gradient(135deg,var(--indigo),#3B82F6 55%,var(--emerald) 130%);
+  color:#fff;
+  font-weight:700;font-size:14px;
+  display:flex;align-items:center;gap:9px;
+  box-shadow:0 10px 30px rgba(37,99,235,0.45),0 4px 10px rgba(16,185,129,0.3);
+  cursor:pointer;
+  transition:var(--transition);
+  animation:fabPulse 2.6s ease-in-out infinite;
+}
+.ai-fab:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 16px 40px rgba(37,99,235,0.55);animation:none;}
+@keyframes fabPulse{
+  0%,100%{box-shadow:0 10px 30px rgba(37,99,235,0.45),0 4px 10px rgba(16,185,129,0.3),0 0 0 0 rgba(37,99,235,0.4);}
+  50%{box-shadow:0 10px 30px rgba(37,99,235,0.45),0 4px 10px rgba(16,185,129,0.3),0 0 0 14px rgba(37,99,235,0);}
+}
+.ai-fab-emoji{font-size:19px;}
+
+.ai-panel{
+  position:fixed;
+  bottom:96px;right:26px;
+  width:420px;max-width:calc(100vw - 32px);
+  height:600px;max-height:calc(100vh - 130px);
+  background:var(--surface);
+  border-radius:22px;
+  box-shadow:0 24px 60px rgba(15,23,42,0.28),0 8px 20px rgba(15,23,42,0.12);
+  display:flex;flex-direction:column;
+  z-index:2001;
+  overflow:hidden;
+  border:1px solid var(--border);
+  transform:translateY(20px) scale(0.96);
+  opacity:0;
+  pointer-events:none;
+  transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.ai-panel.open{transform:translateY(0) scale(1);opacity:1;pointer-events:auto;}
+.ai-header{
+  background:linear-gradient(135deg,var(--indigo),#3B82F6 60%,var(--emerald) 140%);
+  padding:16px 18px;color:#fff;
+  display:flex;align-items:center;gap:11px;
+  flex-shrink:0;
+}
+.ai-header-ava{
+  width:40px;height:40px;border-radius:12px;
+  background:rgba(255,255,255,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0;
+  border:1.5px solid rgba(255,255,255,0.3);
+}
+.ai-header-info{flex:1;min-width:0;}
+.ai-header-title{font-weight:800;font-size:14.5px;display:flex;align-items:center;gap:7px;}
+.ai-header-status{font-size:11.5px;opacity:0.9;display:flex;align-items:center;gap:5px;}
+.ai-status-dot{width:7px;height:7px;border-radius:50%;background:#4ADE80;box-shadow:0 0 0 3px rgba(74,222,128,0.3);}
+.ai-header-close{width:32px;height:32px;border-radius:9px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:16px;transition:var(--transition);color:#fff;}
+.ai-header-close:hover{background:rgba(255,255,255,0.28);}
+.ai-messages{
+  flex:1;overflow-y:auto;padding:16px;
+  display:flex;flex-direction:column;gap:12px;
+  background:linear-gradient(180deg,#FAFBFC,#F1F5F9);
+}
+.ai-messages::-webkit-scrollbar{width:6px;}
+.ai-messages::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:10px;}
+.ai-msg{max-width:88%;padding:11px 14px;border-radius:15px;font-size:13.5px;line-height:1.6;animation:msgIn 0.3s ease;word-wrap:break-word;}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.ai-msg.user{align-self:flex-end;background:var(--indigo);color:#fff;border-bottom-right-radius:5px;}
+.ai-msg.bot{align-self:flex-start;background:#fff;border:1px solid var(--border);border-bottom-left-radius:5px;box-shadow:var(--shadow-sm);}
+.ai-msg.bot strong{color:var(--indigo);}
+.ai-msg .reminder-badge{display:block;background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;padding:7px 11px;border-radius:9px;margin-bottom:8px;font-size:12.5px;font-weight:600;}
+.ai-typing{align-self:flex-start;padding:12px 16px;background:#fff;border:1px solid var(--border);border-radius:15px;display:flex;gap:4px;}
+.ai-typing span{width:7px;height:7px;border-radius:50%;background:#94A3B8;animation:typing 1.3s infinite;}
+.ai-typing span:nth-child(2){animation-delay:0.18s;}
+.ai-typing span:nth-child(3){animation-delay:0.36s;}
+@keyframes typing{0%,60%,100%{transform:translateY(0);opacity:0.4;}30%{transform:translateY(-6px);opacity:1;}}
+.ai-input-row{
+  padding:12px;border-top:1px solid var(--border);
+  display:flex;gap:9px;background:#fff;flex-shrink:0;
+}
+.ai-input{
+  flex:1;border:1.5px solid var(--border);border-radius:13px;
+  padding:11px 15px;font-size:13.5px;transition:var(--transition);
+  resize:none;max-height:100px;
+}
+.ai-input:focus{outline:none;border-color:var(--indigo);box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+.ai-send-btn{
+  width:44px;height:44px;border-radius:13px;
+  background:var(--indigo);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;transition:var(--transition);flex-shrink:0;
+}
+.ai-send-btn:hover{background:var(--indigo-dark);transform:scale(1.05);}
+
+/* ============ MODALS ============ */
+.modal-overlay{
+  position:fixed;inset:0;z-index:3000;
+  background:rgba(15,23,42,0.55);
+  backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.25s ease;
+}
+.modal-overlay.open{opacity:1;pointer-events:auto;}
+.modal-box{
+  background:var(--surface);
+  border-radius:22px;
+  width:100%;max-width:460px;
+  max-height:90vh;overflow-y:auto;
+  box-shadow:var(--shadow-xl);
+  transform:translateY(18px) scale(0.97);
+  transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.modal-overlay.open .modal-box{transform:translateY(0) scale(1);}
+.modal-head{
+  padding:20px 24px 0;
+  display:flex;justify-content:space-between;align-items:flex-start;
+}
+.modal-title{font-size:19px;font-weight:800;letter-spacing:-0.3px;}
+.modal-close{width:32px;height:32px;border-radius:9px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:16px;transition:var(--transition);color:var(--text-muted);flex-shrink:0;}
+.modal-close:hover{background:#FEE2E2;color:var(--danger);}
+.modal-body{padding:18px 24px 24px;}
+.form-group{margin-bottom:15px;}
+.form-label{display:block;font-size:12.5px;font-weight:700;color:var(--text-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.3px;}
+.form-input,.form-select,.form-textarea{
+  width:100%;border:1.5px solid var(--border);border-radius:11px;
+  padding:11px 14px;font-size:14px;transition:var(--transition);
+  background:var(--bg);
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--indigo);background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,0.1);}
+.form-textarea{resize:vertical;min-height:80px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-hint{font-size:11.5px;color:var(--text-light);margin-top:5px;}
+
+/* Admin panel */
+.admin-modal .modal-box{max-width:860px;}
+.admin-tabs{display:flex;gap:4px;padding:0 24px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+.admin-tabs::-webkit-scrollbar{display:none;}
+.admin-tab{
+  padding:12px 14px;font-size:13px;font-weight:600;
+  color:var(--text-muted);white-space:nowrap;
+  border-bottom:2.5px solid transparent;
+  transition:var(--transition);
+}
+.admin-tab.active{color:var(--indigo);border-bottom-color:var(--indigo);}
+.admin-tab:hover:not(.active){color:var(--text);}
+.admin-pane{display:none;padding:20px 24px 24px;}
+.admin-pane.active{display:block;}
+
+/* Toast */
+.toast-container{
+  position:fixed;bottom:26px;left:50%;transform:translateX(-50%);
+  z-index:5000;display:flex;flex-direction:column;gap:9px;
+  pointer-events:none;align-items:center;
+}
+.toast{
+  background:#0F172A;color:#fff;
+  padding:12px 20px;border-radius:13px;
+  font-size:13.5px;font-weight:600;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+  display:flex;align-items:center;gap:9px;
+  animation:toastIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events:auto;
+  max-width:90vw;
+}
+@keyframes toastIn{from{opacity:0;transform:translateY(20px) scale(0.9);}to{opacity:1;transform:translateY(0) scale(1);}}
+.toast.success{background:linear-gradient(135deg,#047857,#10B981);}
+.toast.error{background:linear-gradient(135deg,#B91C1C,#EF4444);}
+.toast.info{background:linear-gradient(135deg,#1e40af,#2563EB);}
+
+.empty-state{text-align:center;padding:36px 20px;color:var(--text-muted);}
+.empty-state-emoji{font-size:44px;margin-bottom:10px;opacity:0.7;}
+.empty-state p{font-size:14px;}
+
+.loading-spinner{width:22px;height:22px;border:2.5px solid var(--border);border-top-color:var(--indigo);border-radius:50%;animation:spin 0.7s linear infinite;margin:16px auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:1180px){
+  .social-layout{grid-template-columns:1fr 1fr;}
+  .social-layout .sidebar-right{display:none;}
+}
+@media (max-width:960px){
+  .grid-3{grid-template-columns:1fr 1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .social-layout{grid-template-columns:1fr;}
+  .social-layout .sidebar-left{position:static;}
+}
+@media (max-width:768px){
+  .header-inner{height:auto;padding:10px 14px;flex-wrap:wrap;gap:10px;}
+  .brand{order:1;}
+  .header-auth{order:2;margin-left:auto;}
+  .nav-tabs{order:3;width:100%;justify-content:flex-start;padding-bottom:2px;}
+  .brand-text .brand-sub{display:none;}
+  .hero{padding:30px 22px;}
+  .hero h1{font-size:25px;}
+  .grid-2,.grid-3{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr;}
+  .profile-hero{flex-direction:column;text-align:center;padding:26px 20px;}
+  .profile-badges{justify-content:center;}
+  .ai-panel{width:calc(100vw - 24px);right:12px;bottom:84px;height:calc(100vh - 110px);}
+  .ai-fab{bottom:18px;right:18px;padding:12px 18px;font-size:13px;}
+  .main-wrap{padding:18px 14px 50px;}
+  .form-row{grid-template-columns:1fr;}
+  .user-chip-info{display:none;}
+}
+@media (max-width:480px){
+  .hero-stats{gap:20px;}
+  .hero-stat-num{font-size:22px;}
+  .btn{padding:8px 13px;font-size:12.5px;}
+  .nav-tab{padding:7px 12px;font-size:12.5px;}
+  .post-card{padding:14px;}
+  .chat-tabs{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand" onclick="switchPage('home')">
+      <div class="brand-logo">37</div>
+      <div class="brand-text">
+        <div class="brand-title">МБОУ «Лицей №37»</div>
+        <div class="brand-sub">Нижнекамск • Республика Татарстан</div>
+      </div>
+    </div>
+
+    <nav class="nav-tabs" id="navTabs">
+      <button class="nav-tab active" data-page="home" onclick="switchPage('home')">🏠 Главная</button>
+      <button class="nav-tab" data-page="social" onclick="switchPage('social')">💬 Соцсеть</button>
+      <button class="nav-tab" data-page="games" onclick="switchPage('games')">🎮 Игры и События</button>
+      <button class="nav-tab" data-page="profile" onclick="switchPage('profile')">👤 Мой профиль</button>
+    </nav>
+
+    <div class="header-auth" id="headerAuth">
+      <button class="btn btn-ghost" onclick="openAuthModal('login')">Войти</button>
+      <button class="btn btn-primary" onclick="openAuthModal('register')">Регистрация</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ MAIN ============ -->
+<main class="main-wrap">
+
+  <!-- ===== HOME PAGE ===== -->
+  <section class="page active" id="page-home">
+    <div class="hero">
+      <div class="hero-content">
+        <div class="hero-badge">🏛️ Официальный образовательный портал</div>
+        <h1>Добро пожаловать в Лицей №37!</h1>
+        <p>Современная школьная экосистема: учёба, общение, игры и интеллектуальное развитие. Учись, общайся и побеждай вместе с нами.</p>
+        <div class="hero-stats">
+          <div><div class="hero-stat-num" id="statStudents">—</div><div class="hero-stat-lbl">Учеников</div></div>
+          <div><div class="hero-stat-num" id="statPosts">—</div><div class="hero-stat-lbl">Постов</div></div>
+          <div><div class="hero-stat-num" id="statEvents">—</div><div class="hero-stat-lbl">Событий</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:22px;">
+      <div class="card card-pad">
+        <div class="section-title" style="font-size:18px;">🏆 Лучший ученик месяца</div>
+        <div class="section-sub" style="margin-bottom:16px;">Гордость нашего лицея</div>
+        <div class="best-student-card" id="bestStudentCard">
+          <div class="best-student-head">
+            <div class="best-avatar" id="bestAvatar">🏅</div>
+            <div>
+              <div class="best-name" id="bestName">Загрузка...</div>
+              <div class="best-grade" id="bestGrade">—</div>
+            </div>
+          </div>
+          <div class="best-achievements" id="bestAchievements">Данные подгружаются из облака...</div>
+        </div>
+      </div>
+
+      <div class="card card-pad">
+        <div class="section-title" style="font-size:18px;">⭐ Топ-5 активных учеников</div>
+        <div class="section-sub" style="margin-bottom:16px;">Рейтинг по баллам активности</div>
+        <div class="top-list" id="topStudentsList">
+          <div class="empty-state"><div class="empty-state-emoji">📊</div><p>Загрузка рейтинга...</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:22px;">
+      <div class="card card-pad">
+        <div class="section-title" style="font-size:18px;">🔔 Расписание звонков</div>
+        <div class="section-sub" style="margin-bottom:16px;">Учебный день в Лицее №37</div>
+        <div class="schedule-grid" id="scheduleGrid">
+          <div class="schedule-item"><div class="schedule-num">1</div><div><div class="schedule-time">08:00 – 08:45</div><div class="schedule-lbl">1 урок</div></div></div>
+          <div class="schedule-item"><div class="schedule-num">2</div><div><div class="schedule-time">08:55 – 09:40</div><div class="schedule-lbl">2 урок</div></div></div>
+          <div class="schedule-item"><div class="schedule-num">3</div><div><div class="schedule-time">09:55 – 10:40</div><div class="schedule-lbl">3 урок</div></div></div>
+          <div class="schedule-item"><div class="schedule-num">4</div><div><div class="schedule-time">11:00 – 11:45</div><div class="schedule-lbl">4 урок</div></div></div>
+          <div class="schedule-item"><div class="schedule-num">5</div><div><div class="schedule-time">12:05 – 12:50</div><div class="schedule-lbl">5 урок</div></div></div>
+          <div class="schedule-item"><div class="schedule-num">6</div><div><div class="schedule-time">13:00 – 13:45</div><div class="schedule-lbl">6 урок</div></div></div>
+          <div class="schedule-item"><div class="schedule-num">7</div><div><div class="schedule-time">13:55 – 14:40</div><div class="schedule-lbl">7 урок</div></div></div>
+        </div>
+      </div>
+
+      <div class="card card-pad">
+        <div class="section-title" style="font-size:18px;">📰 Новости лицея</div>
+        <div class="section-sub" style="margin-bottom:16px;">Последние события и объявления</div>
+        <div id="newsList">
+          <div class="news-item">
+            <div class="news-date"><div class="news-date-day">15</div><div class="news-date-mon">Май</div></div>
+            <div class="news-body"><div class="news-title">День открытых дверей</div><div class="news-text">Приглашаем будущих лицеистов и их родителей познакомиться с лицеем 20 мая в 10:00.</div></div>
+          </div>
+          <div class="news-item">
+            <div class="news-date"><div class="news-date-day">12</div><div class="news-date-mon">Май</div></div>
+            <div class="news-body"><div class="news-title">Победа в олимпиаде по информатике</div><div class="news-text">Наши ученики заняли 3 призовых места на республиканской олимпиаде!</div></div>
+          </div>
+          <div class="news-item">
+            <div class="news-date"><div class="news-date-day">8</div><div class="news-date-mon">Май</div></div>
+            <div class="news-body"><div class="news-title">Акция «Бессмертный полк»</div><div class="news-text">Лицеисты и педагоги приняли участие в праздновании Дня Победы.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SOCIAL PAGE ===== -->
+  <section class="page" id="page-social">
+    <div class="section-title">💬 Соцсеть Лицея</div>
+    <div class="section-sub">Общайтесь, делитесь новостями и находите друзей</div>
+
+    <div class="social-layout">
+      <aside class="sidebar-card card sidebar-left">
+        <div class="sidebar-title">🔍 Поиск одноклассников</div>
+        <div class="search-row">
+          <input class="search-input" id="friendSearchInput" placeholder="Имя или класс...">
+          <button class="btn btn-primary btn-sm" onclick="searchUsers()">Найти</button>
+        </div>
+        <div id="friendSearchResults"></div>
+        <div class="sidebar-title" style="margin-top:18px;">👋 Заявки в друзья</div>
+        <div id="friendRequestsList"><div class="empty-state" style="padding:16px;"><p style="font-size:12.5px;">Пока нет заявок</p></div></div>
+      </aside>
+
+      <div>
+        <div class="card compose-card" id="composeCard">
+          <div class="compose-row">
+            <div class="compose-ava" id="composeAva">?</div>
+            <div class="compose-body">
+              <textarea class="compose-textarea" id="postContent" placeholder="Что у вас нового? Поделитесь с лицеем..."></textarea>
+              <div class="compose-tools">
+                <div class="compose-tools-left">
+                  <button class="tool-btn" onclick="toggleImageInput()">🖼️ Картинка</button>
+                  <button class="tool-btn" onclick="insertLink()">🔗 Ссылка</button>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="createPost()">Опубликовать</button>
+              </div>
+              <div id="imageInputWrap" style="display:none;margin-top:10px;">
+                <input class="form-input" id="postImageUrl" placeholder="Вставьте URL картинки..." style="font-size:13px;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="feedList">
+          <div class="empty-state"><div class="empty-state-emoji">📝</div><p>Лента загружается...</p></div>
+        </div>
+      </div>
+
+      <aside class="sidebar-card card sidebar-right">
+        <div class="sidebar-title">💌 Личные сообщения</div>
+        <div class="chat-tabs">
+          <button class="chat-tab active" onclick="switchChatTab('general',this)">Общий чат</button>
+          <button class="chat-tab" onclick="switchChatTab('private',this)">Личные</button>
+        </div>
+        <div class="chat-list" id="chatList"></div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="chatInput" placeholder="Сообщение...">
+          <button class="btn btn-primary btn-sm" onclick="sendChatMessage()">➤</button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ===== GAMES PAGE ===== -->
+  <section class="page" id="page-games">
+    <div class="section-title">🎮 Игры и События</div>
+    <div class="section-sub">Интерактивные игры, викторины и мероприятия Движения Первых</div>
+
+    <div class="filter-chips" id="gamesFilters">
+      <button class="chip active" onclick="filterEvents('all',this)">Все</button>
+      <button class="chip" onclick="filterEvents('1-4',this)">1–4 классы</button>
+      <button class="chip" onclick="filterEvents('5-8',this)">5–8 классы</button>
+      <button class="chip" onclick="filterEvents('9-11',this)">9–11 классы</button>
+    </div>
+
+    <div class="grid-auto" id="eventsGrid" style="margin-bottom:30px;">
+      <div class="empty-state"><div class="empty-state-emoji">🎯</div><p>Загрузка событий...</p></div>
+    </div>
+
+    <div class="card quiz-box" id="quizBox">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div>
+          <div class="section-title" style="font-size:18px;">🧠 Мини-викторина</div>
+          <div class="section-sub" style="margin:0;">История Татарстана, Нижнекамска и школьные предметы</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:12px;color:var(--text-muted);font-weight:600;">Баллы</div>
+          <div style="font-size:22px;font-weight:800;color:var(--indigo);" id="quizScore">0</div>
+        </div>
+      </div>
+      <div id="quizContent">
+        <div class="quiz-progress"><div class="quiz-progress-bar" id="quizProgressBar" style="width:0%;"></div></div>
+        <div class="quiz-question" id="quizQuestion">Нажмите «Начать викторину», чтобы проверить свои знания!</div>
+        <div class="quiz-options" id="quizOptions"></div>
+        <button class="btn btn-primary" id="quizStartBtn" onclick="startQuiz()" style="width:100%;justify-content:center;">🚀 Начать викторину</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROFILE PAGE ===== -->
+  <section class="page" id="page-profile">
+    <div id="profileContent">
+      <div class="empty-state" style="padding:60px 20px;">
+        <div class="empty-state-emoji">🔐</div>
+        <p style="font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px;">Войдите в аккаунт</p>
+        <p style="margin-bottom:18px;">Чтобы просмотреть профиль и достижения</p>
+        <button class="btn btn-primary" onclick="openAuthModal('login')">Войти</button>
+        <button class="btn btn-outline" onclick="openAuthModal('register')" style="margin-left:8px;">Регистрация</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <div class="footer-brand-logo">37</div>
+          <div>
+            <div class="footer-brand-title">МБОУ «Лицей №37»</div>
+            <div class="footer-brand-sub">г. Нижнекамск, Республика Татарстан</div>
+          </div>
+        </div>
+        <div class="footer-desc">Официальный образовательный портал лицея. Современная экосистема для учёбы, общения и развития школьников.</div>
+        <div style="font-size:12.5px;color:#94A3B8;">📍 г. Нижнекамск, ул. Школьная, д. 37<br>📞 +7 (8555) 00-00-00</div>
+      </div>
+      <div>
+        <div class="footer-col-title">Навигация</div>
+        <a class="footer-link" onclick="switchPage('home')" style="cursor:pointer;">Главная</a>
+        <a class="footer-link" onclick="switchPage('social')" style="cursor:pointer;">Соцсеть</a>
+        <a class="footer-link" onclick="switchPage('games')" style="cursor:pointer;">Игры и События</a>
+        <a class="footer-link" onclick="switchPage('profile')" style="cursor:pointer;">Мой профиль</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Полезное</div>
+        <a class="footer-link" href="https://edu.tatar.ru" target="_blank">Электронное образование РТ</a>
+        <a class="footer-link" href="https://ru.wikipedia.org/wiki/Нижнекамск" target="_blank">О Нижнекамске</a>
+        <a class="footer-link" href="https://bolashak.gov.kz" target="_blank">Движение Первых</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Контакты</div>
+        <a class="footer-link" href="mailto:info@licey37.ru">info@licey37.ru</a>
+        <a class="footer-link" href="#">Пн–Пт: 08:00 – 17:00</a>
+        <a class="footer-link" href="#">Сб–Вс: выходной</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 МБОУ «Лицей №37» г. Нижнекамск. Все права защищены.</div>
+      <button class="admin-trigger" onclick="openAdminLogin()">🔒 Панель администрации</button>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ AI ASSISTANT ============ -->
+<button class="ai-fab" onclick="toggleAiPanel()">
+  <span class="ai-fab-emoji">🤖</span>
+  <span>ИИ-Наставник 37</span>
+</button>
+
+<div class="ai-panel" id="aiPanel">
+  <div class="ai-header">
+    <div class="ai-header-ava">🤖</div>
+    <div class="ai-header-info">
+      <div class="ai-header-title">ИИ-Наставник 37</div>
+      <div class="ai-header-status">
+        <span class="ai-status-dot"></span>
+        <span id="aiKnowledgeStatus">🧠 База знаний: загрузка...</span>
+      </div>
+    </div>
+    <button class="ai-header-close" onclick="toggleAiPanel()">✕</button>
+  </div>
+  <div class="ai-messages" id="aiMessages"></div>
+  <div class="ai-input-row">
+    <textarea class="ai-input" id="aiInput" rows="1" placeholder="Задайте вопрос или вставьте ссылку..."></textarea>
+    <button class="ai-send-btn" onclick="sendAiMessage()">➤</button>
+  </div>
+</div>
+
+<!-- ============ AUTH MODAL ============ -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title" id="authTitle">Вход</div>
+      <button class="modal-close" onclick="closeModal('authModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="authLoginForm">
+        <div class="form-group">
+          <label class="form-label">Email / Логин</label>
+          <input class="form-input" id="loginEmail" placeholder="example@mail.ru">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Пароль</label>
+          <input class="form-input" id="loginPassword" type="password" placeholder="••••••••">
+        </div>
+        <button class="btn btn-primary btn-block" onclick="doLogin()">Войти</button>
+        <p style="text-align:center;margin-top:14px;font-size:13px;color:var(--text-muted);">
+          Нет аккаунта? <a href="#" onclick="openAuthModal('register');return false;" style="font-weight:600;">Зарегистрируйтесь</a>
+        </p>
+      </div>
+      <div id="authRegisterForm" style="display:none;">
+        <div class="form-group">
+          <label class="form-label">Имя и Фамилия</label>
+          <input class="form-input" id="regFullName" placeholder="Иванов Иван">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Класс (цифра)</label>
+            <select class="form-select" id="regGradeNum">
+              <option value="">Выберите...</option>
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+              <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Буква класса</label>
+            <select class="form-select" id="regGradeLetter">
+              <option value="">Выберите...</option>
+              <option>А</option><option>Б</option><option>В</option><option>Г</option><option>Д</option><option>Е</option><option>К</option><option>М</option><option>Т</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" id="regEmail" placeholder="example@mail.ru">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Пароль</label>
+          <input class="form-input" id="regPassword" type="password" placeholder="Минимум 6 символов">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Роль</label>
+          <select class="form-select" id="regRole">
+            <option value="student">Ученик</option>
+            <option value="teacher">Учитель</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-block" onclick="doRegister()">Зарегистрироваться</button>
+        <p style="text-align:center;margin-top:14px;font-size:13px;color:var(--text-muted);">
+          Уже есть аккаунт? <a href="#" onclick="openAuthModal('login');return false;" style="font-weight:600;">Войдите</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ADMIN LOGIN MODAL ============ -->
+<div class="modal-overlay" id="adminLoginModal">
+  <div class="modal-box" style="max-width:400px;">
+    <div class="modal-head">
+      <div class="modal-title">🔒 Панель администрации</div>
+      <button class="modal-close" onclick="closeModal('adminLoginModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Пароль администратора</label>
+        <input class="form-input" id="adminPasswordInput" type="password" placeholder="Введите пароль...">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="checkAdminPassword()">Войти в панель</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ADMIN PANEL MODAL ============ -->
+<div class="modal-overlay admin-modal" id="adminPanelModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title">⚙️ Панель администрации</div>
+      <button class="modal-close" onclick="closeModal('adminPanelModal')">✕</button>
+    </div>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('content',this)">Контент</button>
+      <button class="admin-tab" onclick="switchAdminTab('best',this)">Лучший ученик</button>
+      <button class="admin-tab" onclick="switchAdminTab('events',this)">События</button>
+      <button class="admin-tab" onclick="switchAdminTab('users',this)">Пользователи</button>
+      <button class="admin-tab" onclick="switchAdminTab('code',this)">Свой код</button>
+    </div>
+    <div class="admin-pane active" id="adminPane-content">
+      <div class="form-group">
+        <label class="form-label">Заголовок главной страницы</label>
+        <input class="form-input" id="adminHeroTitle" placeholder="Добро пожаловать в Лицей №37!">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Подзаголовок</label>
+        <textarea class="form-textarea" id="adminHeroSubtitle"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Расписание звонков (JSON)</label>
+        <textarea class="form-textarea" id="adminSchedule" placeholder='[{"num":1,"time":"08:00 – 08:45"}]'></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Новости (JSON)</label>
+        <textarea class="form-textarea" id="adminNews" placeholder='[{"day":"15","mon":"Май","title":"...","text":"..."}]'></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Новый пароль администратора</label>
+        <input class="form-input" id="adminNewPassword" placeholder="Оставьте пустым, чтобы не менять">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="saveAdminContent()">💾 Сохранить в Supabase</button>
+    </div>
+    <div class="admin-pane" id="adminPane-best">
+      <div class="form-group">
+        <label class="form-label">Имя ученика</label>
+        <input class="form-input" id="adminBestName" placeholder="Иванов Иван">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Класс</label>
+        <input class="form-input" id="adminBestGrade" placeholder="9А">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Фото (URL или Base64)</label>
+        <input class="form-input" id="adminBestPhoto" placeholder="https://...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Достижения</label>
+        <textarea class="form-textarea" id="adminBestAchievements"></textarea>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="saveAdminBestStudent()">💾 Сохранить в Supabase</button>
+    </div>
+    <div class="admin-pane" id="adminPane-events">
+      <div id="adminEventsList" style="margin-bottom:16px;"></div>
+      <div style="border-top:1px solid var(--border);padding-top:16px;">
+        <div class="form-group">
+          <label class="form-label">Название события</label>
+          <input class="form-input" id="adminEventTitle" placeholder="Название">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Описание</label>
+          <textarea class="form-textarea" id="adminEventDesc"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Классы</label>
+            <select class="form-select" id="adminEventGrades">
+              <option value="1-4">1–4</option>
+              <option value="5-8">5–8</option>
+              <option value="9-11">9–11</option>
+              <option value="all">Все</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Дата</label>
+            <input class="form-input" id="adminEventDate" placeholder="20 мая">
+          </div>
+        </div>
+        <button class="btn btn-success btn-block" onclick="addAdminEvent()">➕ Добавить событие</button>
+      </div>
+    </div>
+    <div class="admin-pane" id="adminPane-users">
+      <div class="section-sub" style="margin-bottom:14px;">Начисление баллов и модерация</div>
+      <div id="adminUsersList"></div>
+    </div>
+    <div class="admin-pane" id="adminPane-code">
+      <div class="form-group">
+        <label class="form-label">Дополнительный HTML/CSS/JS код</label>
+        <textarea class="form-textarea" id="adminCustomCode" style="min-height:180px;font-family:monospace;font-size:12.5px;" placeholder="<style>...</style> или <script>...</script>"></textarea>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="saveAdminCustomCode()">💾 Сохранить в Supabase</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TOAST ============ -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+/* ============================================================
+   SUPABASE INIT
+   ============================================================ */
+const SUPABASE_URL = "https://ektyxbnzkreekdjrdnnk.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_q60_3k3m7l3G8w8y7t30FA_2_jD4H1M";
+let supabaseClient = null;
+let supabaseReady = false;
+
+try {
+  if (window.supabase && window.supabase.createClient) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    supabaseReady = true;
+  }
+} catch (e) {
+  console.warn("Supabase init error:", e);
+  supabaseReady = false;
+}
+
+/* ============================================================
+   STATE & LOCAL STORAGE HELPERS
+   ============================================================ */
+const LS = {
+  currentUser: 'licey37_currentUser',
+  profiles: 'licey37_profiles',
+  posts: 'licey37_posts',
+  comments: 'licey37_comments',
+  friends: 'licey37_friends',
+  messages: 'licey37_messages',
+  events: 'licey37_events',
+  bestStudent: 'licey37_bestStudent',
+  siteContent: 'licey37_siteContent',
+  adminPassword: 'licey37_adminPassword',
+  customCode: 'licey37_customCode',
+  aiHistory: 'licey37_aiHistory',
+  aiNickname: 'licey37_aiNickname',
+  aiReminders: 'licey37_aiReminders',
+  aiContext: 'licey37_aiContext',
+  quizScore: 'licey37_quizScore',
+  likes: 'licey37_likes'
+};
+
+function lsGet(key, fallback) {
+  try {
+    const v = localStorage.getItem(key);
+    return v ? JSON.parse(v) : fallback;
+  } catch (e) { return fallback; }
+}
+function lsSet(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+}
+
+let currentUser = lsGet(LS.currentUser, null);
+let allProfiles = lsGet(LS.profiles, []);
+let allPosts = lsGet(LS.posts, []);
+let allComments = lsGet(LS.comments, []);
+let allFriends = lsGet(LS.friends, []);
+let allMessages = lsGet(LS.messages, []);
+let allEvents = lsGet(LS.events, []);
+let bestStudentData = lsGet(LS.bestStudent, {
+  name: 'Петрова Анна',
+  grade: '10А',
+  photo: '',
+  achievements: 'Победитель республиканской олимпиады по информатике, капитан школьной команды КВН, отличница учёбы.'
+});
+let siteContentData = lsGet(LS.siteContent, {});
+let adminPassword = lsGet(LS.adminPassword, 'admin37');
+let customCodeData = lsGet(LS.customCode, '');
+let userLikes = lsGet(LS.likes, {});
+let quizScoreTotal = lsGet(LS.quizScore, 0);
+let activeChatTab = 'general';
+let currentChatPrivateUser = null;
+
+/* ============================================================
+   UTILS
+   ============================================================ */
+function uid() {
+  return 'id_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function fmtTime(iso) {
+  try {
+    const d = new Date(iso);
+    const now = new Date();
+    const diff = (now - d) / 1000;
+    if (diff < 60) return 'только что';
+    if (diff < 3600) return Math.floor(diff/60) + ' мин назад';
+    if (diff < 86400) return Math.floor(diff/3600) + ' ч назад';
+    return d.toLocaleDateString('ru-RU', {day:'numeric',month:'short'});
+  } catch (e) { return ''; }
+}
+function timeShort(iso) {
+  try {
+    return new Date(iso).toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit'});
+  } catch (e) { return ''; }
+}
+function initials(name) {
+  if (!name) return '?';
+  return name.split(' ').filter(Boolean).slice(0,2).map(w => w[0]).join('').toUpperCase();
+}
+function showToast(msg, type) {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast ' + (type || 'info');
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateY(12px)'; t.style.transition = 'all 0.3s'; }, 3000);
+  setTimeout(() => t.remove(), 3400);
+}
+
+/* ============================================================
+   PAGE NAVIGATION
+   ============================================================ */
+function switchPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('page-' + name);
+  if (page) page.classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.page === name);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (name === 'social') { renderFeed(); renderFriendRequests(); renderChat(); renderSearchResults(); }
+  if (name === 'games') { renderEvents(); }
+  if (name === 'profile') { renderProfile(); }
+  if (name === 'home') { renderHome(); }
+}
+
+/* ============================================================
+   AUTH
+   ============================================================ */
+function openAuthModal(mode) {
+  document.getElementById('authLoginForm').style.display = mode === 'login' ? 'block' : 'none';
+  document.getElementById('authRegisterForm').style.display = mode === 'register' ? 'block' : 'none';
+  document.getElementById('authTitle').textContent = mode === 'login' ? 'Вход' : 'Регистрация';
+  document.getElementById('authModal').classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if (!email || !password) { showToast('Заполните все поля', 'error'); return; }
+
+  let profile = null;
+  if (supabaseReady && supabaseClient) {
+    try {
+      const { data, error } = await supabaseClient.from('profiles').select('*').eq('email', email).limit(1);
+      if (!error && data && data.length) profile = data[0];
+    } catch (e) {}
+  }
+  if (!profile) {
+    profile = allProfiles.find(p => p.email === email && p.password === password);
+  }
+  if (!profile) { showToast('Неверный email или пароль', 'error'); return; }
+
+  currentUser = profile;
+  lsSet(LS.currentUser, currentUser);
+  closeModal('authModal');
+  showToast('Добро пожаловать, ' + (profile.full_name || profile.name || 'ученик') + '!', 'success');
+  updateHeaderAuth();
+  renderProfile();
+  renderFeed();
+  renderComposeAvatar();
+  renderHome();
+}
+
+async function doRegister() {
+  const fullName = document.getElementById('regFullName').value.trim();
+  const gradeNum = document.getElementById('regGradeNum').value;
+  const gradeLetter = document.getElementById('regGradeLetter').value;
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const role = document.getElementById('regRole').value;
+
+  if (!fullName || !gradeNum || !gradeLetter || !email || !password) {
+    showToast('Заполните все поля', 'error'); return;
+  }
+  if (password.length < 6) { showToast('Пароль должен быть минимум 6 символов', 'error'); return; }
+
+  const exists = allProfiles.find(p => p.email === email);
+  if (exists) { showToast('Пользователь с таким email уже существует', 'error'); return; }
+
+  const profile = {
+    id: uid(),
+    full_name: fullName,
+    grade_num: parseInt(gradeNum),
+    grade_letter: gradeLetter,
+    role: role,
+    avatar_url: '',
+    bio: '',
+    points: 0,
+    email: email,
+    password: password,
+    created_at: new Date().toISOString()
+  };
+
+  allProfiles.push(profile);
+  lsSet(LS.profiles, allProfiles);
+
+  if (supabaseReady && supabaseClient) {
+    try { await supabaseClient.from('profiles').insert([profile]); } catch (e) {}
+  }
+
+  currentUser = profile;
+  lsSet(LS.currentUser, currentUser);
+  closeModal('authModal');
+  showToast('Регистрация успешна! Добро пожаловать в Лицей №37!', 'success');
+  updateHeaderAuth();
+  renderProfile();
+  renderHome();
+  renderFeed();
+  renderComposeAvatar();
+}
+
+function doLogout() {
+  currentUser = null;
+  localStorage.removeItem(LS.currentUser);
+  updateHeaderAuth();
+  renderProfile();
+  renderFeed();
+  renderComposeAvatar();
+  switchPage('home');
+  showToast('Вы вышли из аккаунта', 'info');
+}
+
+function updateHeaderAuth() {
+  const el = document.getElementById('headerAuth');
+  if (currentUser) {
+    const name = currentUser.full_name || currentUser.name || 'Ученик';
+    const grade = currentUser.grade_num ? currentUser.grade_num + (currentUser.grade_letter || '') : '';
+    el.innerHTML = `
+      <div class="user-chip" onclick="switchPage('profile')">
+        <div class="user-chip-avatar">${currentUser.avatar_url ? `<img src="${escHtml(currentUser.avatar_url)}" alt="">` : initials(name)}</div>
+        <div class="user-chip-info">
+          <div class="user-chip-name">${escHtml(name)}</div>
+          <div class="user-chip-grade">${escHtml(grade)}</div>
+        </div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="doLogout()">Выйти</button>
+    `;
+  } else {
+    el.innerHTML = `
+      <button class="btn btn-ghost" onclick="openAuthModal('login')">Войти</button>
+      <button class="btn btn-primary" onclick="openAuthModal('register')">Регистрация</button>
+    `;
+  }
+}
+  /* ============================================================
+   AI ASSISTANT — KNOWLEDGE BASE + SEARCH
+   ============================================================ */
+let aiKnowledge = {
+  cards: [],
+  index: {},
+  loaded: false,
+  loading: false,
+  fileCount: 0
+};
+let aiConversation = lsGet(LS.aiHistory, []);
+let aiNickname = lsGet(LS.aiNickname, '');
+let aiReminders = lsGet(LS.aiReminders, []);
+let aiContext = lsGet(LS.aiContext, { topics: [], lastMessages: [] });
+let aiMessageCounter = 0;
+
+const AI_FILE_LIST = ['omni_brain', ...Array.from({length: 40}, (_, i) => 'b' + (i + 1) + '.txt')];
+
+/* ---------- Стемминг (упрощённый русский) ---------- */
+function stem(word) {
+  if (!word) return '';
+  let w = word.toLowerCase().replace(/[^а-яёa-z0-9]/gi, '');
+  if (w.length <= 3) return w;
+  const suffixes = ['иями','ями','ами','ов','ев','ий','ый','ой','ая','ое','ые','ых','им','ем','ом','ах','ях','ам','ям','ую','юю','ешь','ишь','ете','ите','ут','ют','ат','ят','ла','ло','ли','ть','ся','сь','ов','ев','е','у','ю','а','я','ы','и','о'];
+  for (const s of suffixes) {
+    if (w.length - s.length >= 3 && w.endsWith(s)) { w = w.slice(0, -s.length); break; }
+  }
+  return w;
+}
+
+function tokenize(text) {
+  if (!text) return [];
+  return String(text).toLowerCase()
+    .replace(/[^а-яёa-z0-9\s]/gi, ' ')
+    .split(/\s+/)
+    .filter(w => w.length > 1)
+    .map(stem);
+}
+
+/* ---------- Парсинг файлов знаний ---------- */
+function parseKnowledgeFile(text, filename) {
+  const cards = [];
+  if (!text) return cards;
+  const trimmed = text.trim();
+
+  // JSONL (с поддержкой склеенных }{ )
+  if ((trimmed.startsWith('{') || trimmed.includes('}{')) && trimmed.includes('"id"')) {
+    const normalized = trimmed.replace(/\}\s*\{/g, '}\n{');
+    const lines = normalized.split('\n');
+    for (const line of lines) {
+      const l = line.trim();
+      if (!l || !l.startsWith('{')) continue;
+      try {
+        const obj = JSON.parse(l);
+        cards.push(normalizeCard(obj, filename));
+      } catch (e) {}
+    }
+    return cards;
+  }
+
+  // JSON-массив
+  if (trimmed.startsWith('[')) {
+    try {
+      const arr = JSON.parse(trimmed);
+      if (Array.isArray(arr)) {
+        arr.forEach(obj => cards.push(normalizeCard(obj, filename)));
+        return cards;
+      }
+    } catch (e) {}
+  }
+
+  // Обычный текст — нарезаем на чанки
+  const chunks = trimmed.split(/\n\s*\n/).filter(c => c.trim().length > 20);
+  if (!chunks.length) {
+    if (trimmed.length > 20) cards.push(normalizeCard({ sum: trimmed, full: trimmed }, filename));
+  } else {
+    chunks.forEach((chunk, i) => {
+      if (chunk.length <= 800) {
+        cards.push(normalizeCard({ sum: chunk.slice(0, 200), full: chunk }, filename, i));
+      } else {
+        for (let j = 0; j < chunk.length; j += 700) {
+          const part = chunk.slice(j, j + 700);
+          cards.push(normalizeCard({ sum: part.slice(0, 180), full: part }, filename, i + '_' + j));
+        }
+      }
+    });
+  }
+  return cards;
+}
+
+function normalizeCard(obj, filename, idx) {
+  const card = {
+    id: obj.id || filename + '_' + (idx || Math.random().toString(36).slice(2,6)),
+    sub: obj.sub || obj.top || '',
+    gr: obj.gr || '',
+    top: obj.top || '',
+    kw: obj.kw || '',
+    sum: obj.sum || obj.part1_essence || '',
+    full: obj.full || '',
+    ex: obj.ex || obj.part4_examples || '',
+    hack: obj.hack || obj.part5_traps_hack || '',
+    part1_essence: obj.part1_essence || '',
+    part2_theory: obj.part2_theory || '',
+    part3_algorithm: obj.part3_algorithm || '',
+    part4_examples: obj.part4_examples || '',
+    part5_traps_hack: obj.part5_traps_hack || '',
+    source: filename
+  };
+  // Собираем весь текст
+  const allText = [
+    card.sub, card.top, card.kw, card.sum, card.full, card.ex, card.hack,
+    card.part1_essence, card.part2_theory, card.part3_algorithm,
+    card.part4_examples, card.part5_traps_hack
+  ].filter(Boolean).join(' ');
+  card._fulltext = allText;
+  card._titleTokens = tokenize((card.top || '') + ' ' + (card.sub || '') + ' ' + (card.kw || ''));
+  card._bodyTokens = tokenize(allText);
+  return card;
+}
+
+/* ---------- Построение инвертированного индекса ---------- */
+function buildIndex() {
+  const idx = {};
+  aiKnowledge.cards.forEach((card, i) => {
+    const titleSet = new Set(card._titleTokens);
+    const bodySet = new Set(card._bodyTokens);
+    titleSet.forEach(t => {
+      if (!idx[t]) idx[t] = {};
+      idx[t][i] = (idx[t][i] || 0) + 3;
+    });
+    bodySet.forEach(t => {
+      if (!idx[t]) idx[t] = {};
+      idx[t][i] = (idx[t][i] || 0) + 1;
+    });
+  });
+  aiKnowledge.index = idx;
+}
+
+/* ---------- Поиск по карточкам ---------- */
+function searchKnowledge(query, topK) {
+  topK = topK || 5;
+  if (!aiKnowledge.cards.length) return [];
+  const qTokens = tokenize(query);
+  if (!qTokens.length) return [];
+  const scores = {};
+  qTokens.forEach(t => {
+    const postings = aiKnowledge.index[t];
+    if (!postings) return;
+    Object.keys(postings).forEach(i => {
+      scores[i] = (scores[i] || 0) + postings[i];
+    });
+  });
+  return Object.keys(scores)
+    .map(i => ({ card: aiKnowledge.cards[i], score: scores[i] }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, topK);
+}
+
+/* ---------- Умная загрузка базы знаний ---------- */
+async function loadAiKnowledgeBase() {
+  if (aiKnowledge.loading || aiKnowledge.loaded) return;
+  aiKnowledge.loading = true;
+  updateAiKnowledgeStatus('🧠 База знаний: загрузка...');
+  let failStreak = 0;
+  const allCards = [];
+
+  for (let i = 0; i < AI_FILE_LIST.length; i++) {
+    const fname = AI_FILE_LIST[i];
+    try {
+      const resp = await fetch(fname, { cache: 'force-cache' });
+      if (!resp.ok) throw new Error('404');
+      const text = await resp.text();
+      if (!text || text.trim().length < 10) throw new Error('empty');
+      const cards = parseKnowledgeFile(text, fname);
+      if (cards.length) {
+        allCards.push(...cards);
+        aiKnowledge.fileCount++;
+      }
+      failStreak = 0;
+    } catch (e) {
+      failStreak++;
+      if (failStreak >= 3) break;
+    }
+  }
+
+  aiKnowledge.cards = allCards;
+  buildIndex();
+  aiKnowledge.loaded = true;
+  aiKnowledge.loading = false;
+  updateAiKnowledgeStatus('🧠 База знаний: ' + allCards.length + ' карточек');
+}
+
+function updateAiKnowledgeStatus(text) {
+  const el = document.getElementById('aiKnowledgeStatus');
+  if (el) el.textContent = text;
+}
+
+/* ---------- Чтение ссылок через r.jina.ai ---------- */
+async function fetchWebPage(url) {
+  try {
+    const proxied = 'https://r.jina.ai/' + url;
+    const resp = await fetch(proxied);
+    if (!resp.ok) return null;
+    const text = await resp.text();
+    return text.slice(0, 5000);
+  } catch (e) {
+    return null;
+  }
+}
+
+/* ---------- Поиск в Википедии ---------- */
+async function searchWikipedia(query) {
+  try {
+    const url = 'https://ru.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srsearch=' + encodeURIComponent(query) + '&srlimit=1';
+    const resp = await fetch(url);
+    const data = await resp.json();
+    if (!data.query || !data.query.search || !data.query.search.length) return null;
+    const title = data.query.search[0].title;
+    const snippet = data.query.search[0].snippet.replace(/<[^>]+>/g, '');
+    const pageUrl = 'https://ru.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title);
+    try {
+      const sumResp = await fetch(pageUrl);
+      const sumData = await sumResp.json();
+      return { title: title, extract: sumData.extract || snippet };
+    } catch (e) {
+      return { title: title, extract: snippet };
+    }
+  } catch (e) {
+    return null;
+  }
+}
+
+/* ---------- NLG: генерация живого ответа ---------- */
+function generateLivingAnswer(query, card, wikiInfo, nickname) {
+  const greet = nickname
+    ? ['Смотри, ' + nickname + ',', 'Принято, ' + nickname + '!', 'Так, ' + nickname + ',', nickname + ', слушай:']
+    : ['Смотри,', 'Так,', 'Разбираемся:', 'Давай по порядку:'];
+  const opener = greet[Math.floor(Math.random() * greet.length)];
+
+  let answer = opener + ' ';
+
+  if (card) {
+    const topic = card.top || card.sub || 'эта тема';
+    answer += `по теме «${topic}» — вот что важно знать.\n\n`;
+    answer += `**Коротко по сути:**\n${card.sum || card.part1_essence || 'Основная информация находится ниже.'}\n\n`;
+    if (card.part2_theory || card.full) {
+      answer += `**Подробный разбор:**\n${(card.part2_theory || card.full || '').slice(0, 1200)}\n\n`;
+    }
+    if (card.part3_algorithm) {
+      answer += `**Алгоритм:**\n${card.part3_algorithm}\n\n`;
+    }
+    if (card.part4_examples || card.ex) {
+      answer += `**Примеры:**\n${(card.part4_examples || card.ex || '').slice(0, 700)}\n\n`;
+    }
+    if (card.part5_traps_hack || card.hack) {
+      answer += `**💡 Лайфхак:**\n${(card.part5_traps_hack || card.hack || '').slice(0, 500)}\n`;
+    }
+    return answer;
+  }
+
+  if (wikiInfo) {
+    answer += `нашёл информацию в Википедии по запросу «${query}»:\n\n`;
+    answer += `**${wikiInfo.title}**\n${wikiInfo.extract}\n\n`;
+    answer += `💡 Хочешь подробнее — уточни вопрос, и я разберу тему глубже.`;
+    return answer;
+  }
+
+  answer += `к сожалению, по запросу «${query}» у меня пока нет точных данных в базе знаний Лицея. `;
+  answer += `Попробуй переформулировать вопрос или спросить о другом — я помогу с учёбой, историей Татарстана, школьными предметами и всем, что есть в моей базе!`;
+  return answer;
+}
+
+/* ---------- Память: никнейм, напоминания, контекст ---------- */
+function detectNickname(text) {
+  const patterns = [
+    /называй меня\s+([А-ЯЁA-Zа-яёa-z\s]+)/i,
+    /зови меня\s+([А-ЯЁA-Zа-яёa-z\s]+)/i,
+    /обращайся ко мне\s+([А-ЯЁA-Zа-яёa-z\s]+)/i,
+    /можешь звать меня\s+([А-ЯЁA-Zа-яёa-z\s]+)/i
+  ];
+  for (const re of patterns) {
+    const m = text.match(re);
+    if (m && m[1]) {
+      const nick = m[1].trim().split(/\s+/).slice(0, 2).join(' ');
+      if (nick.length >= 2 && nick.length <= 30) return nick;
+    }
+  }
+  return null;
+}
+
+function detectReminder(text) {
+  const re = /напомни\s+через\s+(\d+)\s+сообщени[йяе]\s*,?\s*(?:что|о том,?\s*что)?\s*(.+)/i;
+  const m = text.match(re);
+  if (m && m[1] && m[2]) {
+    return { count: parseInt(m[1]), text: m[2].trim(), active: true, triggered: false };
+  }
+  return null;
+}
+
+function checkReminders() {
+  aiMessageCounter++;
+  let reminderMsg = null;
+  aiReminders.forEach(r => {
+    if (r.active && !r.triggered && aiMessageCounter >= r.count) {
+      reminderMsg = `⏰ Напоминание (прошло ${aiMessageCounter} сообщений): ${r.text}`;
+      r.triggered = true;
+      r.active = false;
+    }
+  });
+  lsSet(LS.aiReminders, aiReminders);
+  return reminderMsg;
+}
+
+function isFollowUp(text) {
+  const lower = text.toLowerCase();
+  const followUps = ['объясни проще', 'приведи ещё пример', 'приведи еще пример', 'расскажи подробнее', 'а как на огэ', 'а как на егэ', 'подробнее', 'проще', 'ещё', 'еще'];
+  return followUps.some(f => lower.includes(f));
+}
+
+/* ---------- Главный обработчик сообщений ИИ ---------- */
+async function handleAiMessage(text) {
+  const lower = text.toLowerCase().trim();
+  if (!lower) return;
+
+  // Проверка ссылки
+  const urlMatch = text.match(/https?:\/\/[^\s]+/);
+  if (urlMatch) {
+    const url = urlMatch[0];
+    const pageText = await fetchWebPage(url);
+    if (pageText) {
+      const summary = pageText.slice(0, 800).replace(/\s+/g, ' ');
+      return `🔗 Прочитал страницу по ссылке.\n\n**Кратко:** ${summary}...`;
+    } else {
+      return `Не удалось загрузить страницу по ссылке. Проверь адрес или попробуй другую ссылку.`;
+    }
+  }
+
+  // Сначала ищем в базе знаний
+  let results = searchKnowledge(text, 3);
+  let bestCard = results.length ? results[0].card : null;
+
+  // Если нет — идём в Википедию
+  let wikiInfo = null;
+  if (!bestCard) {
+    wikiInfo = await searchWikipedia(text);
+  }
+
+  // Учёт контекста
+  if (isFollowUp(lower) && aiContext.topics.length) {
+    const lastTopic = aiContext.topics[aiContext.topics.length - 1];
+    if (!bestCard) {
+      const ctxResults = searchKnowledge(lastTopic, 1);
+      if (ctxResults.length) bestCard = ctxResults[0].card;
+    }
+  }
+
+  // Сохраняем контекст
+  if (bestCard) {
+    const t = bestCard.top || bestCard.sub;
+    if (t && !aiContext.topics.includes(t)) {
+      aiContext.topics.push(t);
+      if (aiContext.topics.length > 3) aiContext.topics.shift();
+    }
+  }
+  aiContext.lastMessages.push(text);
+  if (aiContext.lastMessages.length > 3) aiContext.lastMessages.shift();
+  lsSet(LS.aiContext, aiContext);
+
+  return generateLivingAnswer(text, bestCard, wikiInfo, aiNickname);
+}
+
+async function sendAiMessage() {
+  const input = document.getElementById('aiInput');
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  input.style.height = 'auto';
+
+  appendAiMessage('user', text);
+
+  // Проверка никнейма
+  const detectedNick = detectNickname(text);
+  if (detectedNick) {
+    aiNickname = detectedNick;
+    lsSet(LS.aiNickname, aiNickname);
+    appendAiMessage('bot', `Принято, ${aiNickname}! Теперь буду обращаться к тебе именно так. 😊`);
+    return;
+  }
+
+  // Проверка напоминания
+  const reminder = detectReminder(text);
+  if (reminder) {
+    aiReminders.push(reminder);
+    lsSet(LS.aiReminders, aiReminders);
+    appendAiMessage('bot', `Хорошо! Напомню через ${reminder.count} сообщений: «${reminder.text}».`);
+    return;
+  }
+
+  // Проверка счётчика напоминаний
+  const reminderTrigger = checkReminders();
+
+  showAiTyping();
+
+  try {
+    // Загружаем базу знаний при первом сообщении
+    if (!aiKnowledge.loaded && !aiKnowledge.loading) {
+      await loadAiKnowledgeBase();
+    }
+    const answer = await handleAiMessage(text);
+    removeAiTyping();
+    let fullAnswer = answer;
+    if (reminderTrigger) {
+      fullAnswer = `<span class="reminder-badge">${escHtml(reminderTrigger)}</span>` + answer;
+    }
+    appendAiMessage('bot', fullAnswer, true);
+  } catch (e) {
+    removeAiTyping();
+    appendAiMessage('bot', 'Произошла ошибка при обработке запроса. Попробуй ещё раз.');
+  }
+}
+
+function appendAiMessage(role, text, isHtml) {
+  const cont = document.getElementById('aiMessages');
+  if (!cont) return;
+  const div = document.createElement('div');
+  div.className = 'ai-msg ' + (role === 'user' ? 'user' : 'bot');
+  if (isHtml) {
+    div.innerHTML = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+  } else {
+    div.textContent = text;
+  }
+  cont.appendChild(div);
+  cont.scrollTop = cont.scrollHeight;
+
+  aiConversation.push({ role, text, ts: Date.now() });
+  if (aiConversation.length > 50) aiConversation.shift();
+  lsSet(LS.aiHistory, aiConversation);
+}
+
+function showAiTyping() {
+  const cont = document.getElementById('aiMessages');
+  if (!cont) return;
+  const typing = document.createElement('div');
+  typing.className = 'ai-typing';
+  typing.id = 'aiTyping';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+  cont.appendChild(typing);
+  cont.scrollTop = cont.scrollHeight;
+}
+
+function removeAiTyping() {
+  const t = document.getElementById('aiTyping');
+  if (t) t.remove();
+}
+
+function toggleAiPanel() {
+  const panel = document.getElementById('aiPanel');
+  if (!panel) return;
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open')) {
+    if (!aiKnowledge.loaded && !aiKnowledge.loading) loadAiKnowledgeBase();
+    if (!aiConversation.length) {
+      appendAiMessage('bot', 'Привет! Я ИИ-Наставник Лицея №37. 🤖\n\nМогу помочь с учёбой, рассказать про историю Татарстана и Нижнекамска, ответить на вопросы по школьным предметам. Также могу прочитать любую ссылку и найти информацию в интернете.\n\nЧем помочь?');
+    }
+    const input = document.getElementById('aiInput');
+    if (input) setTimeout(() => input.focus(), 300);
+  }
+}
+
+/* ---------- Enter для отправки ИИ-сообщения ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+  const aiInput = document.getElementById('aiInput');
+  if (aiInput) {
+    aiInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendAiMessage();
+      }
+    });
+    aiInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+    });
+  }
+
+  const chatInput = document.getElementById('chatInput');
+  if (chatInput) {
+    chatInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') sendChatMessage();
+    });
+  }
+
+  const friendSearch = document.getElementById('friendSearchInput');
+  if (friendSearch) {
+    friendSearch.addEventListener('keydown', e => {
+      if (e.key === 'Enter') searchUsers();
+    });
+  }
+
+  const adminPwd = document.getElementById('adminPasswordInput');
+  if (adminPwd) {
+    adminPwd.addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkAdminPassword();
+    });
+  }
+});
+
+/* ============================================================
+   ADMIN PANEL
+   ============================================================ */
+function openAdminLogin() {
+  document.getElementById('adminPasswordInput').value = '';
+  document.getElementById('adminLoginModal').classList.add('open');
+}
+
+async function checkAdminPassword() {
+  const input = document.getElementById('adminPasswordInput');
+  if (!input) return;
+  const pwd = input.value.trim();
+  if (!pwd) { showToast('Введите пароль', 'error'); return; }
+
+  let correctPwd = adminPassword || 'admin37';
+  if (supabaseReady && supabaseClient) {
+    try {
+      const { data, error } = await supabaseClient.from('site_content').select('*').eq('key', 'admin_password').limit(1);
+      if (!error && data && data.length) {
+        correctPwd = data[0].value;
+      }
+    } catch (e) {}
+  }
+
+  if (pwd === correctPwd) {
+    closeModal('adminLoginModal');
+    document.getElementById('adminPanelModal').classList.add('open');
+    loadAdminData();
+    showToast('Добро пожаловать в панель администрации', 'success');
+  } else {
+    showToast('Неверный пароль', 'error');
+  }
+}
+
+async function loadAdminData() {
+  // Заполняем поля из site_content
+  document.getElementById('adminHeroTitle').value = siteContentData.hero_title || '';
+  document.getElementById('adminHeroSubtitle').value = siteContentData.hero_subtitle || '';
+  document.getElementById('adminSchedule').value = JSON.stringify(siteContentData.schedule || [], null, 2);
+  document.getElementById('adminNews').value = JSON.stringify(siteContentData.news || [], null, 2);
+
+  document.getElementById('adminBestName').value = bestStudentData.name || '';
+  document.getElementById('adminBestGrade').value = bestStudentData.grade || '';
+  document.getElementById('adminBestPhoto').value = bestStudentData.photo || '';
+  document.getElementById('adminBestAchievements').value = bestStudentData.achievements || '';
+
+  document.getElementById('adminCustomCode').value = customCodeData || '';
+
+  renderAdminEventsList();
+  renderAdminUsersList();
+}
+
+function switchAdminTab(tab, btn) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.admin-pane').forEach(p => p.classList.remove('active'));
+  const pane = document.getElementById('adminPane-' + tab);
+  if (pane) pane.classList.add('active');
+}
+
+async function saveSiteContentKey(key, value) {
+  if (supabaseReady && supabaseClient) {
+    try {
+      const { data } = await supabaseClient.from('site_content').select('*').eq('key', key).limit(1);
+      if (data && data.length) {
+        await supabaseClient.from('site_content').update({ value: value }).eq('key', key);
+      } else {
+        await supabaseClient.from('site_content').insert([{ key: key, value: value }]);
+      }
+    } catch (e) { console.warn('saveSiteContentKey error:', e); }
+  }
+}
+
+async function saveAdminContent() {
+  const heroTitle = document.getElementById('adminHeroTitle').value.trim();
+  const heroSubtitle = document.getElementById('adminHeroSubtitle').value.trim();
+  let schedule = [];
+  let news = [];
+  try { schedule = JSON.parse(document.getElementById('adminSchedule').value || '[]'); } catch (e) { showToast('Ошибка в JSON расписания', 'error'); return; }
+  try { news = JSON.parse(document.getElementById('adminNews').value || '[]'); } catch (e) { showToast('Ошибка в JSON новостей', 'error'); return; }
+  const newPassword = document.getElementById('adminNewPassword').value.trim();
+
+  siteContentData.hero_title = heroTitle;
+  siteContentData.hero_subtitle = heroSubtitle;
+  siteContentData.schedule = schedule;
+  siteContentData.news = news;
+  lsSet(LS.siteContent, siteContentData);
+
+  await saveSiteContentKey('hero_title', heroTitle);
+  await saveSiteContentKey('hero_subtitle', heroSubtitle);
+  await saveSiteContentKey('schedule', schedule);
+  await saveSiteContentKey('news', news);
+
+  if (newPassword) {
+    adminPassword = newPassword;
+    lsSet(LS.adminPassword, adminPassword);
+    await saveSiteContentKey('admin_password', newPassword);
+    document.getElementById('adminNewPassword').value = '';
+  }
+
+  renderHome();
+  showToast('Контент сохранён в Supabase!', 'success');
+}
+
+async function saveAdminBestStudent() {
+  const name = document.getElementById('adminBestName').value.trim();
+  const grade = document.getElementById('adminBestGrade').value.trim();
+  const photo = document.getElementById('adminBestPhoto').value.trim();
+  const achievements = document.getElementById('adminBestAchievements').value.trim();
+
+  bestStudentData = { name, grade, photo, achievements };
+  lsSet(LS.bestStudent, bestStudentData);
+
+  if (supabaseReady && supabaseClient) {
+    try {
+      const { data } = await supabaseClient.from('best_student').select('*').limit(1);
+      const payload = { name, grade, photo, achievements };
+      if (data && data.length) {
+        await supabaseClient.from('best_student').update(payload).eq('id', data[0].id);
+      } else {
+        await supabaseClient.from('best_student').insert([payload]);
+      }
+    } catch (e) { console.warn('saveBestStudent error:', e); }
+  }
+
+  renderHome();
+  showToast('Лучший ученик сохранён в Supabase!', 'success');
+}
+
+function renderAdminEventsList() {
+  const el = document.getElementById('adminEventsList');
+  if (!el) return;
+  const events = getEvents();
+  if (!events.length) {
+    el.innerHTML = '<p style="font-size:13px;color:var(--text-muted);">Нет событий</p>';
+    return;
+  }
+  el.innerHTML = events.map(e => `
+    <div class="friend-req">
+      <div class="friend-ava" style="background:linear-gradient(135deg,#F59E0B,#FCD34D);">${e.icon || '🎯'}</div>
+      <div class="friend-info">
+        <div class="friend-name">${escHtml(e.title)}</div>
+        <div class="friend-grade">${escHtml(e.grades)} • ${escHtml(e.date || '')}</div>
+      </div>
+      <div class="friend-actions">
+        <button class="icon-btn reject" onclick="deleteAdminEvent('${e.id}')">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+
+async function addAdminEvent() {
+  const title = document.getElementById('adminEventTitle').value.trim();
+  const desc = document.getElementById('adminEventDesc').value.trim();
+  const grades = document.getElementById('adminEventGrades').value;
+  const date = document.getElementById('adminEventDate').value.trim();
+  if (!title) { showToast('Введите название', 'error'); return; }
+
+  const ev = {
+    id: uid(),
+    title, desc, grades, date,
+    icon: '🎯', tag: 'Событие'
+  };
+  allEvents.push(ev);
+  lsSet(LS.events, allEvents);
+
+  if (supabaseReady && supabaseClient) {
+    try { await supabaseClient.from('events').insert([ev]); } catch (e) {}
+  }
+
+  document.getElementById('adminEventTitle').value = '';
+  document.getElementById('adminEventDesc').value = '';
+  document.getElementById('adminEventDate').value = '';
+  renderAdminEventsList();
+  renderEvents();
+  showToast('Событие добавлено в Supabase!', 'success');
+}
+
+async function deleteAdminEvent(id) {
+  allEvents = allEvents.filter(e => e.id !== id);
+  lsSet(LS.events, allEvents);
+  if (supabaseReady && supabaseClient) {
+    try { await supabaseClient.from('events').delete().eq('id', id); } catch (e) {}
+  }
+  renderAdminEventsList();
+  renderEvents();
+  showToast('Событие удалено', 'info');
+}
+
+function renderAdminUsersList() {
+  const el = document.getElementById('adminUsersList');
+  if (!el) return;
+  if (!allProfiles.length) {
+    el.innerHTML = '<p style="font-size:13px;color:var(--text-muted);">Нет пользователей</p>';
+    return;
+  }
+  el.innerHTML = allProfiles.map(p => {
+    const name = p.full_name || p.name || 'Ученик';
+    const grade = p.grade_num ? p.grade_num + (p.grade_letter || '') : '';
+    return `<div class="friend-req">
+      <div class="friend-ava">${p.avatar_url ? `<img src="${escHtml(p.avatar_url)}" alt="">` : initials(name)}</div>
+      <div class="friend-info">
+        <div class="friend-name">${escHtml(name)}</div>
+        <div class="friend-grade">${escHtml(grade)} • ${p.role === 'teacher' ? 'Учитель' : 'Ученик'} • ${p.points || 0} б.</div>
+      </div>
+      <div class="friend-actions">
+        <button class="icon-btn" onclick="adminAddPoints('${p.id}',10)" title="+10 баллов">➕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function adminAddPoints(userId, amount) {
+  const p = allProfiles.find(x => x.id === userId);
+  if (!p) return;
+  p.points = (p.points || 0) + amount;
+  lsSet(LS.profiles, allProfiles);
+  if (currentUser && currentUser.id === userId) {
+    currentUser.points = p.points;
+    lsSet(LS.currentUser, currentUser);
+  }
+  if (supabaseReady && supabaseClient) {
+    try { await supabaseClient.from('profiles').update({ points: p.points }).eq('id', userId); } catch (e) {}
+  }
+  renderAdminUsersList();
+  renderHome();
+  renderProfile();
+  showToast('Начислено ' + amount + ' баллов', 'success');
+}
+
+async function saveAdminCustomCode() {
+  const code = document.getElementById('adminCustomCode').value;
+  customCodeData = code;
+  lsSet(LS.customCode, code);
+
+  if (supabaseReady && supabaseClient) {
+    try {
+      const { data } = await supabaseClient.from('custom_code').select('*').limit(1);
+      if (data && data.length) {
+        await supabaseClient.from('custom_code').update({ code: code }).eq('id', data[0].id);
+      } else {
+        await supabaseClient.from('custom_code').insert([{ code: code }]);
+      }
+    } catch (e) { console.warn('saveCustomCode error:', e); }
+  }
+
+  applyCustomCode(code);
+  showToast('Код сохранён в Supabase!', 'success');
+}
+
+function applyCustomCode(code) {
+  if (!code) return;
+  const existing = document.getElementById('customCodeContainer');
+  if (existing) existing.remove();
+  const container = document.createElement('div');
+  container.id = 'customCodeContainer';
+  container.innerHTML = code;
+  // Выполняем скрипты вручную
+  container.querySelectorAll('script').forEach(oldScript => {
+    const newScript = document.createElement('script');
+    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+    newScript.textContent = oldScript.textContent;
+    oldScript.replaceWith(newScript);
+  });
+  document.body.appendChild(container);
+}
+
+/* ============================================================
+   SUPABASE: ЗАГРУЗКА ДАННЫХ И REALTIME
+   ============================================================ */
+async function loadFromSupabase() {
+  if (!supabaseReady || !supabaseClient) return;
+
+  // Профили
+  try {
+    const { data, error } = await supabaseClient.from('profiles').select('*');
+    if (!error && data && data.length) {
+      // Сливаем с локальными
+      data.forEach(remote => {
+        const idx = allProfiles.findIndex(p => p.id === remote.id);
+        if (idx >= 0) allProfiles[idx] = { ...allProfiles[idx], ...remote };
+        else allProfiles.push(remote);
+      });
+      lsSet(LS.profiles, allProfiles);
+    }
+  } catch (e) {}
+
+  // Посты
+  try {
+    const { data, error } = await supabaseClient.from('posts').select('*').order('created_at', { ascending: false }).limit(100);
+    if (!error && data && data.length) {
+      const merged = [...data];
+      allPosts.forEach(local => {
+        if (!merged.find(r => r.id === local.id)) merged.push(local);
+      });
+      allPosts = merged.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      lsSet(LS.posts, allPosts);
+    }
+  } catch (e) {}
+
+  // Комментарии
+  try {
+    const { data, error } = await supabaseClient.from('comments').select('*');
+    if (!error && data && data.length) {
+      const merged = [...data];
+      allComments.forEach(local => {
+        if (!merged.find(r => r.id === local.id)) merged.push(local);
+      });
+      allComments = merged;
+      lsSet(LS.comments, allComments);
+    }
+  } catch (e) {}
+
+  // Друзья
+  try {
+    const { data, error } = await supabaseClient.from('friends').select('*');
+    if (!error && data && data.length) {
+      const merged = [...data];
+      allFriends.forEach(local => {
+        if (!merged.find(r => r.id === local.id)) merged.push(local);
+      });
+      allFriends = merged;
+      lsSet(LS.friends, allFriends);
+    }
+  } catch (e) {}
+
+  // Сообщения
+  try {
+    const { data, error } = await supabaseClient.from('messages').select('*').order('created_at', { ascending: true }).limit(200);
+    if (!error && data && data.length) {
+      const merged = [...data];
+      allMessages.forEach(local => {
+        if (!merged.find(r => r.id === local.id)) merged.push(local);
+      });
+      allMessages = merged;
+      lsSet(LS.messages, allMessages);
+    }
+  } catch (e) {}
+
+  // События
+  try {
+    const { data, error } = await supabaseClient.from('events').select('*');
+    if (!error && data && data.length) {
+      const merged = [...data];
+      allEvents.forEach(local => {
+        if (!merged.find(r => r.id === local.id)) merged.push(local);
+      });
+      allEvents = merged;
+      lsSet(LS.events, allEvents);
+    }
+  } catch (e) {}
+
+  // Best student
+  try {
+    const { data, error } = await supabaseClient.from('best_student').select('*').limit(1);
+    if (!error && data && data.length) {
+      bestStudentData = { name: data[0].name, grade: data[0].grade, photo: data[0].photo, achievements: data[0].achievements };
+      lsSet(LS.bestStudent, bestStudentData);
+    }
+  } catch (e) {}
+
+  // site_content
+  try {
+    const { data, error } = await supabaseClient.from('site_content').select('*');
+    if (!error && data && data.length) {
+      data.forEach(row => {
+        if (row.key === 'admin_password') { adminPassword = row.value; lsSet(LS.adminPassword, row.value); }
+        else siteContentData[row.key] = row.value;
+      });
+      lsSet(LS.siteContent, siteContentData);
+    }
+  } catch (e) {}
+
+  // custom_code
+  try {
+    const { data, error } = await supabaseClient.from('custom_code').select('*').limit(1);
+    if (!error && data && data.length) {
+      customCodeData = data[0].code || '';
+      lsSet(LS.customCode, customCodeData);
+      applyCustomCode(customCodeData);
+    }
+  } catch (e) {}
+
+  renderHome();
+  renderFeed();
+  renderEvents();
+  renderProfile();
+  renderFriendRequests();
+  renderChat();
+}
+
+function setupRealtime() {
+  if (!supabaseReady || !supabaseClient) return;
+  try {
+    supabaseClient.channel('public-posts')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'posts' }, payload => {
+        const p = payload.new;
+        if (p && !allPosts.find(x => x.id === p.id)) {
+          allPosts.unshift(p);
+          lsSet(LS.posts, allPosts);
+          renderFeed();
+        }
+      })
+      .subscribe();
+
+    supabaseClient.channel('public-messages')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+        const m = payload.new;
+        if (m && !allMessages.find(x => x.id === m.id)) {
+          allMessages.push(m);
+          lsSet(LS.messages, allMessages);
+          renderChat();
+        }
+      })
+      .subscribe();
+
+    supabaseClient.channel('public-comments')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'comments' }, payload => {
+        const c = payload.new;
+        if (c && !allComments.find(x => x.id === c.id)) {
+          allComments.push(c);
+          lsSet(LS.comments, allComments);
+          renderFeed();
+        }
+      })
+      .subscribe();
+  } catch (e) { console.warn('Realtime setup error:', e); }
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+async function initApp() {
+  // Загружаем кастомный код
+  applyCustomCode(customCodeData);
+
+  // Заполняем квиз
+  const qs = document.getElementById('quizScore');
+  if (qs) qs.textContent = quizScoreTotal;
+
+  // Обновляем шапку и страницы
+  updateHeaderAuth();
+  renderComposeAvatar();
+  renderHome();
+  renderFeed();
+  renderEvents();
+  renderProfile();
+  renderFriendRequests();
+  renderChat();
+
+  // Загружаем с сервера
+  if (supabaseReady) {
+    await loadFromSupabase();
+    setupRealtime();
+  }
+
+  // Восстанавливаем AI-контекст
+  const aiStatus = document.getElementById('aiKnowledgeStatus');
+  if (aiStatus) aiStatus.textContent = '🧠 База знаний: нажмите на чат для загрузки';
+
+  // Если есть история ИИ — восстанавливаем
+  if (aiConversation.length) {
+    const cont = document.getElementById('aiMessages');
+    if (cont) {
+      aiConversation.slice(-20).forEach(m => {
+        const div = document.createElement('div');
+        div.className = 'ai-msg ' + (m.role === 'user' ? 'user' : 'bot');
+        div.textContent = m.text;
+        cont.appendChild(div);
+      });
+    }
+  }
+
+  // Счётчик сообщений ИИ
+  aiMessageCounter = 0;
+}
+
+document.addEventListener('DOMContentLoaded', initApp);
+
+/* Экспорт для inline-обработчиков */
+window.switchPage = switchPage;
+window.openAuthModal = openAuthModal;
+window.closeModal = closeModal;
+window.doLogin = doLogin;
+window.doRegister = doRegister;
+window.doLogout = doLogout;
+window.toggleImageInput = toggleImageInput;
+window.insertLink = insertLink;
+window.createPost = createPost;
+window.toggleLike = toggleLike;
+window.toggleComments = toggleComments;
+window.addComment = addComment;
+window.searchUsers = searchUsers;
+window.sendFriendRequest = sendFriendRequest;
+window.respondFriendRequest = respondFriendRequest;
+window.switchChatTab = switchChatTab;
+window.sendChatMessage = sendChatMessage;
+window.filterEvents = filterEvents;
+window.joinEvent = joinEvent;
+window.startQuiz = startQuiz;
+window.answerQuiz = answerQuiz;
+window.resetQuiz = resetQuiz;
+window.saveProfileEdits = saveProfileEdits;
+window.toggleAiPanel = toggleAiPanel;
+window.sendAiMessage = sendAiMessage;
+window.openAdminLogin = openAdminLogin;
+window.checkAdminPassword = checkAdminPassword;
+window.switchAdminTab = switchAdminTab;
+window.saveAdminContent = saveAdminContent;
+window.saveAdminBestStudent = saveAdminBestStudent;
+window.addAdminEvent = addAdminEvent;
+window.deleteAdminEvent = deleteAdminEvent;
+window.adminAddPoints = adminAddPoints;
+window.saveAdminCustomCode = saveAdminCustomCode;
+</script>
+</body>
+</html>
+/* ============================================================
+   AI ASSISTANT — KNOWLEDGE BASE + SEARCH
+   ============================================================ */
+let aiKnowledge = {
+  cards: [],
+  index: {},
+  loaded: false,
+  loading: false,
+  fileCount: 0
+};
+let aiConversation = lsGet(LS.aiHistory, []);
+let aiNickname = lsGet(LS.aiNickname, '');
+let aiReminders = lsGet(LS.aiReminders, []);
+let aiContext = lsGet(LS.aiContext, { topics: [], lastMessages: [] });
+let aiMessageCounter = 0;
+
+const AI_FILE_LIST = ['omni_brain', ...Array.from({length: 40}, (_, i) => 'b' + (i + 1) + '.txt')];
+
+/* ---------- Стемминг (упрощённый русский) ---------- */
+function stem(word) {
+  if (!word) return '';
+  let w = word.toLowerCase().replace(/[^а-яёa-z0-9]/gi, '');
+  if (w.length <= 3) return w;
+  const suffixes = ['иями','ями','ами','ов','ев','ий','ый','ой','ая','ое','ые','ых','им','ем','ом','ах','ях','ам','ям','ую','юю','ешь','ишь','ете','ите','ут','ют','ат','ят','ла','ло','ли','ть','ся','сь','ов','ев','е','у','ю','а','я','ы','и','о'];
+  for (const s of suffixes) {
+    if (w.length - s.length >= 3 && w.endsWith(s)) { w = w.slice(0, -s.length); break; }
+  }
+  return w;
+}
+
+function tokenize(text) {
+  if (!text) return [];
+  return String(text).toLowerCase()
+    .replace(/[^а-яёa-z0-9\s]/gi, ' ')
+    .split(/\s+/)
+    .filter(w => w.length > 1)
+    .map(stem);
+}
+
+/* ---------- Парсинг файлов знаний ---------- */
+function parseKnowledgeFile(text, filename) {
+  const cards = [];
+  if (!text) return cards;
+  const trimmed = text.trim();
+
+  // JSONL (с поддержкой склеенных }{ )
+  if ((trimmed.startsWith('{') || trimmed.includes('}{')) && trimmed.includes('"id"')) {
+    const normalized = trimmed.replace(/\}\s*\{/g, '}\n{');
+    const lines = normalized.split('\n');
+    for (const line of lines) {
+      const l = line.trim();
+      if (!l || !l.startsWith('{')) continue;
+      try {
+        const obj = JSON.parse(l);
+        cards.push(normalizeCard(obj, filename));
+      } catch (e) {}
+    }
+    return cards;
+  }
+
+  // JSON-массив
+  if (trimmed.startsWith('[')) {
+    try {
+      const arr = JSON.parse(trimmed);
+      if (Array.isArray(arr)) {
+        arr.forEach(obj => cards.push(normalizeCard(obj, filename)));
+        return cards;
+      }
+    } catch (e) {}
+  }
+
+  // Обычный текст — нарезаем на чанки
+  const chunks = trimmed.split(/\n\s*\n/).filter(c => c.trim().length > 20);
+  if (!chunks.length) {
+    if (trimmed.length > 20) cards.push(normalizeCard({ sum: trimmed, full: trimmed }, filename));
+  } else {
+    chunks.forEach((chunk, i) => {
+      if (chunk.length <= 800) {
+        cards.push(normalizeCard({ sum: chunk.slice(0, 200), full: chunk }, filename, i));
+      } else {
+        for (let j = 0; j < chunk.length; j += 700) {
+          const part = chunk.slice(j, j + 700);
+          cards.push(normalizeCard({ sum: part.slice(0, 180), full: part }, filename, i + '_' + j));
+        }
+      }
+    });
+  }
+  return cards;
+}
+
+function normalizeCard(obj, filename, idx) {
+  const card = {
+    id: obj.id || filename + '_' + (idx || Math.random().toString(36).slice(2,6)),
+    sub: obj.sub || obj.top || '',
+    gr: obj.gr || '',
+    top: obj.top || '',
+    kw: obj.kw || '',
+    sum: obj.sum || obj.part1_essence || '',
+    full: obj.full || '',
+    ex: obj.ex || obj.part4_examples || '',
+    hack: obj.hack || obj.part5_traps_hack || '',
+    part1_essence: obj.part1_essence || '',
+    part2_theory: obj.part2_theory || '',
+    part3_algorithm: obj.part3_algorithm || '',
+    part4_examples: obj.part4_examples || '',
+    part5_traps_hack: obj.part5_traps_hack || '',
+    source: filename
+  };
+  // Собираем весь текст
+  const allText = [
+    card.sub, card.top, card.kw, card.sum, card.full, card.ex, card.hack,
+    card.part1_essence, card.part2_theory, card.part3_algorithm,
+    card.part4_examples, card.part5_traps_hack
+  ].filter(Boolean).join(' ');
+  card._fulltext = allText;
+  card._titleTokens = tokenize((card.top || '') + ' ' + (card.sub || '') + ' ' + (card.kw || ''));
+  card._bodyTokens = tokenize(allText);
+  return card;
+}
+
+/* ---------- Построение инвертированного индекса ---------- */
+function buildIndex() {
+  const idx = {};
+  aiKnowledge.cards.forEach((card, i) => {
+    const titleSet = new Set(card._titleTokens);
+    const bodySet = new Set(card._bodyTokens);
+    titleSet.forEach(t => {
+      if (!idx[t]) idx[t] = {};
+      idx[t][i] = (idx[t][i] || 0) + 3;
+    });
+    bodySet.forEach(t => {
+      if (!idx[t]) idx[t] = {};
+      idx[t][i] = (idx[t][i] || 0) + 1;
+    });
+  });
+  aiKnowledge.index = idx;
+}
+
+/* ---------- Поиск по карточкам ---------- */
+function searchKnowledge(query, topK) {
+  topK = topK || 5;
+  if (!aiKnowledge.cards.length) return [];
+  const qTokens = tokenize(query);
+  if (!qTokens.length) return [];
+  const scores = {};
+  qTokens.forEach(t => {
+    const postings = aiKnowledge.index[t];
+    if (!postings) return;
+    Object.keys(postings).forEach(i => {
+      scores[i] = (scores[i] || 0) + postings[i];
+    });
+  });
+  return Object.keys(scores)
+    .map(i => ({ card: aiKnowledge.cards[i], score: scores[i] }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, topK);
+}
+
+/* ---------- Умная загрузка базы знаний ---------- */
+async function loadAiKnowledgeBase() {
+  if (aiKnowledge.loading || aiKnowledge.loaded) return;
+  aiKnowledge.loading = true;
+  updateAiKnowledgeStatus('🧠 База знаний: загрузка...');
+  let failStreak = 0;
+  const allCards = [];
+
+  for (let i = 0; i < AI_FILE_LIST.length; i++) {
+    const fname = AI_FILE_LIST[i];
+    try {
+      const resp = await fetch(fname, { cache: 'force-cache' });
+      if (!resp.ok) throw new Error('404');
+      const text = await resp.text();
+      if (!text || text.trim().length < 10) throw new Error('empty');
+      const cards = parseKnowledgeFile(text, fname);
+      if (cards.length) {
+        allCards.push(...cards);
+        aiKnowledge.fileCount++;
+      }
+      failStreak = 0;
+    } catch (e) {
+      failStreak++;
+      if (failStreak >= 3) break;
+    }
+  }
+
+  aiKnowledge.cards = allCards;
+  buildIndex();
+  aiKnowledge.loaded = true;
+  aiKnowledge.loading = false;
+  updateAiKnowledgeStatus('🧠 База знаний: ' + allCards.length + ' карточек');
+}
+
+function updateAiKnowledgeStatus(text) {
+  const el = document.getElementById('aiKnowledgeStatus');
+  if (el) el.textContent = text;
+}
+
+/* ---------- Чтение ссылок через r.jina.ai ---------- */
+async function fetchWebPage(url) {
+  try {
+    const proxied = 'https://r.jina.ai/' + url;
+    const resp = await fetch(proxied);
+    if (!resp.ok) return null;
+    const text = await resp.text();
+    return text.slice(0, 5000);
+  } catch (e) {
+    return null;
+  }
+}
+
+/* ---------- Поиск в Википедии ---------- */
+async function searchWikipedia(query) {
+  try {
+    const url = 'https://ru.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srsearch=' + encodeURIComponent(query) + '&srlimit=1';
+    const resp = await fetch(url);
+    const data = await resp.json();
+    if (!data.query || !data.query.search || !data.query.search.length) return null;
+    const title = data.query.search[0].title;
+    const snippet = data.query.search[0].snippet.replace(/<[^>]+>/g, '');
+    const pageUrl = 'https://ru.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title);
+    try {
+      const sumResp = await fetch(pageUrl);
+      const sumData = await sumResp.json();
+      return { title: title, extract: sumData.extract || snippet };
+    } catch (e) {
+      return { title: title, extract: snippet };
+    }
+  } catch (e) {
+    return null;
+  }
+}
+
+/* ---------- NLG: генерация живого ответа ---------- */
+function generateLivingAnswer(query, card, wikiInfo, nickname) {
+  const greet = nickname
+    ? ['Смотри, ' + nickname + ',', 'Принято, ' + nickname + '!', 'Так, ' + nickname + ',', nickname + ', слушай:']
+    : ['Смотри,', 'Так,', 'Разбираемся:', 'Давай по порядку:'];
+  const opener = greet[Math.floor(Math.random() * greet.length)];
+
+  let answer = opener + ' ';
+
+  if (card) {
+    const topic = card.top || card.sub || 'эта тема';
+    answer += `по теме «${topic}» — вот что важно знать.\n\n`;
+    answer += `**Коротко по сути:**\n${card.sum || card.part1_essence || 'Основная информация находится ниже.'}\n\n`;
+    if (card.part2_theory || card.full) {
+      answer += `**Подробный разбор:**\n${(card.part2_theory || card.full || '').slice(0, 1200)}\n\n`;
+    }
+    if (card.part3_algorithm) {
+      answer += `**Алгоритм:**\n${card.part3_algorithm}\n\n`;
+    }
+    if (card.part4_examples || card.ex) {
+      answer += `**Примеры:**\n${(card.part4_examples || card.ex || '').slice(0, 700)}\n\n`;
+    }
+    if (card.part5_traps_hack || card.hack) {
+      answer += `**💡 Лайфхак:**\n${(card.part5_traps_hack || card.hack || '').slice(0, 500)}\n`;
+    }
+    return answer;
+  }
+
+  if (wikiInfo) {
+    answer += `нашёл информацию в Википедии по запросу «${query}»:\n\n`;
+    answer += `**${wikiInfo.title}**\n${wikiInfo.extract}\n\n`;
+    answer += `💡 Хочешь подробнее — уточни вопрос, и я разберу тему глубже.`;
+    return answer;
+  }
+
+  answer += `к сожалению, по запросу «${query}» у меня пока нет точных данных в базе знаний Лицея. `;
+  answer += `Попробуй переформулировать вопрос или спросить о другом — я помогу с учёбой, историей Татарстана, школьными предметами и всем, что есть в моей базе!`;
+  return answer;
+}
+
+/* ---------- Память: никнейм, напоминания, контекст ---------- */
+function detectNickname(text) {
+  const patterns = [
+    /называй меня\s+([А-ЯЁA-Zа-яёa-z\s]+)/i,
+    /зови меня\s+([А-ЯЁA-Zа-яёa-z\s]+)/i,
+    /обращайся ко мне\s+([А-ЯЁA-Zа-яёa-z\s]+)/i,
+    /можешь звать меня\s+([А-ЯЁA-Zа-яёa-z\s]+)/i
+  ];
+  for (const re of patterns) {
+    const m = text.match(re);
+    if (m && m[1]) {
+      const nick = m[1].trim().split(/\s+/).slice(0, 2).join(' ');
+      if (nick.length >= 2 && nick.length <= 30) return nick;
+    }
+  }
+  return null;
+}
+
+function detectReminder(text) {
+  const re = /напомни\s+через\s+(\d+)\s+сообщени[йяе]\s*,?\s*(?:что|о том,?\s*что)?\s*(.+)/i;
+  const m = text.match(re);
+  if (m && m[1] && m[2]) {
+    return { count: parseInt(m[1]), text: m[2].trim(), active: true, triggered: false };
+  }
+  return null;
+}
+
+function checkReminders() {
+  aiMessageCounter++;
+  let reminderMsg = null;
+  aiReminders.forEach(r => {
+    if (r.active && !r.triggered && aiMessageCounter >= r.count) {
+      reminderMsg = `⏰ Напоминание (прошло ${aiMessageCounter} сообщений): ${r.text}`;
+      r.triggered = true;
+      r.active = false;
+    }
+  });
+  lsSet(LS.aiReminders, aiReminders);
+  return reminderMsg;
+}
+
+function isFollowUp(text) {
+  const lower = text.toLowerCase();
+  const followUps = ['объясни проще', 'приведи ещё пример', 'приведи еще пример', 'расскажи подробнее', 'а как на огэ', 'а как на егэ', 'подробнее', 'проще', 'ещё', 'еще'];
+  return followUps.some(f => lower.includes(f));
+}
+
+/* ---------- Главный обработчик сообщений ИИ ---------- */
+async function handleAiMessage(text) {
+  const lower = text.toLowerCase().trim();
+  if (!lower) return;
+
+  // Проверка ссылки
+  const urlMatch = text.match(/https?:\/\/[^\s]+/);
+  if (urlMatch) {
+    const url = urlMatch[0];
+    const pageText = await fetchWebPage(url);
+    if (pageText) {
+      const summary = pageText.slice(0, 800).replace(/\s+/g, ' ');
+      return `🔗 Прочитал страницу по ссылке.\n\n**Кратко:** ${summary}...`;
+    } else {
+      return `Не удалось загрузить страницу по ссылке. Проверь адрес или попробуй другую ссылку.`;
+    }
+  }
+
+  // Сначала ищем в базе знаний
+  let results = searchKnowledge(text, 3);
+  let bestCard = results.length ? results[0].card : null;
+
+  // Если нет — идём в Википедию
+  let wikiInfo = null;
+  if (!bestCard) {
+    wikiInfo = await searchWikipedia(text);
+  }
+
+  // Учёт контекста
+  if (isFollowUp(lower) && aiContext.topics.length) {
+    const lastTopic = aiContext.topics[aiContext.topics.length - 1];
+    if (!bestCard) {
+      const ctxResults = searchKnowledge(lastTopic, 1);
+      if (ctxResults.length) bestCard = ctxResults[0].card;
+    }
+  }
+
+  // Сохраняем контекст
+  if (bestCard) {
+    const t = bestCard.top || bestCard.sub;
+    if (t && !aiContext.topics.includes(t)) {
+      aiContext.topics.push(t);
+      if (aiContext.topics.length > 3) aiContext.topics.shift();
+    }
+  }
+  aiContext.lastMessages.push(text);
+  if (aiContext.lastMessages.length > 3) aiContext.lastMessages.shift();
+  lsSet(LS.aiContext, aiContext);
+
+  return generateLivingAnswer(text, bestCard, wikiInfo, aiNickname);
+}
+
+async function sendAiMessage() {
+  const input = document.getElementById('aiInput');
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  input.style.height = 'auto';
+
+  appendAiMessage('user', text);
+
+  // Проверка никнейма
+  const detectedNick = detectNickname(text);
+  if (detectedNick) {
+    aiNickname = detectedNick;
+    lsSet(LS.aiNickname, aiNickname);
+    appendAiMessage('bot', `Принято, ${aiNickname}! Теперь буду обращаться к тебе именно так. 😊`);
+    return;
+  }
+
+  // Проверка напоминания
+  const reminder = detectReminder(text);
+  if (reminder) {
+    aiReminders.push(reminder);
+    lsSet(LS.aiReminders, aiReminders);
+    appendAiMessage('bot', `Хорошо! Напомню через ${reminder.count} сообщений: «${reminder.text}».`);
+    return;
+  }
+
+  // Проверка счётчика напоминаний
+  const reminderTrigger = checkReminders();
+
+  showAiTyping();
+
+  try {
+    // Загружаем базу знаний при первом сообщении
+    if (!aiKnowledge.loaded && !aiKnowledge.loading) {
+      await loadAiKnowledgeBase();
+    }
+    const answer = await handleAiMessage(text);
+    removeAiTyping();
+    let fullAnswer = answer;
+    if (reminderTrigger) {
+      fullAnswer = `<span class="reminder-badge">${escHtml(reminderTrigger)}</span>` + answer;
+    }
+    appendAiMessage('bot', fullAnswer, true);
+  } catch (e) {
+    removeAiTyping();
+    appendAiMessage('bot', 'Произошла ошибка при обработке запроса. Попробуй ещё раз.');
+  }
+}
+
+function appendAiMessage(role, text, isHtml) {
+  const cont = document.getElementById('aiMessages');
+  if (!cont) return;
+  const div = document.createElement('div');
+  div.className = 'ai-msg ' + (role === 'user' ? 'user' : 'bot');
+  if (isHtml) {
+    div.innerHTML = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+  } else {
+    div.textContent = text;
+  }
+  cont.appendChild(div);
+  cont.scrollTop = cont.scrollHeight;
+
+  aiConversation.push({ role, text, ts: Date.now() });
+  if (aiConversation.length > 50) aiConversation.shift();
+  lsSet(LS.aiHistory, aiConversation);
+}
+
+function showAiTyping() {
+  const cont = document.getElementById('aiMessages');
+  if (!cont) return;
+  const typing = document.createElement('div');
+  typing.className = 'ai-typing';
+  typing.id = 'aiTyping';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+  cont.appendChild(typing);
+  cont.scrollTop = cont.scrollHeight;
+}
+
+function removeAiTyping() {
+  const t = document.getElementById('aiTyping');
+  if (t) t.remove();
+}
+
+function toggleAiPanel() {
+  const panel = document.getElementById('aiPanel');
+  if (!panel) return;
+  panel.classList.toggle('open');
+  if (panel.classList.contains('open')) {
+    if (!aiKnowledge.loaded && !aiKnowledge.loading) loadAiKnowledgeBase();
+    if (!aiConversation.length) {
+      appendAiMessage('bot', 'Привет! Я ИИ-Наставник Лицея №37. 🤖\n\nМогу помочь с учёбой, рассказать про историю Татарстана и Нижнекамска, ответить на вопросы по школьным предметам. Также могу прочитать любую ссылку и найти информацию в интернете.\n\nЧем помочь?');
+    }
+    const input = document.getElementById('aiInput');
+    if (input) setTimeout(() => input.focus(), 300);
+  }
+}
+
+/* ---------- Enter для отправки ИИ-сообщения ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+  const aiInput = document.getElementById('aiInput');
+  if (aiInput) {
+    aiInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendAiMessage();
+      }
+    });
+    aiInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+    });
+  }
+
+  const chatInput = document.getElementById('chatInput');
+  if (chatInput) {
+    chatInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') sendChatMessage();
+    });
+  }
+
+  const friendSearch = document.getElementById('friendSearchInput');
+  if (friendSearch) {
+    friendSearch.addEventListener('keydown', e => {
+      if (e.key === 'Enter') searchUsers();
+    });
+  }
+
+  const adminPwd = document.getElementById('adminPasswordInput');
+  if (adminPwd) {
+    adminPwd.addEventListener('keydown', e => {
+      if (e.key === 'Enter') checkAdminPassword();
+    });
+  }
+});
+
+/* ============================================================
+   ADMIN PANEL
+   ============================================================ */
+function openAdminLogin() {
+  document.getElementById('adminPasswordInput').value = '';
+  document.getElementById('adminLoginModal').classList.add('open');
+}
+
+async function checkAdminPassword() {
+  const input = document.getElementById('adminPasswordInput');
+  if (!input) return;
+  const pwd = input.value.trim();
+  if (!pwd) { showToast('Введите пароль', 'error'); return; }
+
+  let correctPwd = adminPassword || 'admin37';
+  if (supabaseReady && supabaseClient) {
+    try {
+      const { data, error } = await supabaseClient.from('site_content').select('*').eq('key', 'admin_password').limit(1);
+      if (!error && data && data.length) {
+        correctPwd = data[0].value;
+      }
+    } catch (e) {}
+  }
+
+  if (pwd === correctPwd) {
+    closeModal('adminLoginModal');
+    document.getElementById('adminPanelModal').classList.add('open');
+    loadAdminData();
+    showToast('Добро пожаловать в панель администрации', 'success');
+  } else {
+    showToast('Неверный пароль', 'error');
+  }
+}
+
+async function loadAdminData() {
+  // Заполняем поля из site_content
+  document.getElementById('adminHeroTitle').value = siteContentData.hero_title || '';
+  document.getElementById('adminHeroSubtitle').value = siteContentData.hero_subtitle || '';
+  document.getElementById('adminSchedule').value = JSON.stringify(siteContentData.schedule || [], null, 2);
+  document.getElementById('adminNews').value = JSON.stringify(siteContentData.news || [], null, 2);
+
+  document.getElementById('adminBestName').value = bestStudentData.name || '';
+  document.getElementById('adminBestGrade').value = bestStudentData.grade || '';
+  document.getElementById('adminBestPhoto').value = bestStudentData.photo || '';
+  document.getElementById('adminBestAchievements').value = bestStudentData.achievements || '';
+
+  document.getElementById('adminCustomCode').value = customCodeData || '';
+
+  renderAdminEventsList();
+  renderAdminUsersList();
+}
+
+function switchAdminTab(tab, btn) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.querySelectorAll('.admin-pane').forEach(p => p.classList.remove('active'));
+  const pane = document.getElementById('adminPane-' + tab);
+  if (pane) pane.classList.add('active');
+}
+
+async function saveSiteContentKey(key, value) {
+  if (supabaseReady && supabaseClient) {
+    try {
+      const { data } = await supabaseClient.from('site_content').select('*').eq('key', key).limit(1);
+      if (data && data.length) {
+        await supabaseClient.from('site_content').update({ value: value }).eq('key', key);
+      } else {
+        await supabaseClient.from('site_content').insert([{ key: key, value: value }]);
+      }
+    } catch (e) { console.warn('saveSiteContentKey error:', e); }
+  }
+}
+
+async function saveAdminContent() {
+  const heroTitle = document.getElementById('adminHeroTitle').value.trim();
+  const heroSubtitle = document.getElementById('adminHeroSubtitle').value.trim();
+  let schedule = [];
+  let news = [];
+  try { schedule = JSON.parse(document.getElementById('adminSchedule').value || '[]'); } catch (e) { showToast('Ошибка в JSON расписания', 'error'); return; }
+  try { news = JSON.parse(document.getElementById('adminNews').value || '[]'); } catch (e) { showToast('Ошибка в JSON новостей', 'error'); return; }
+  const newPassword = document.getElementById('adminNewPassword').value.trim();
+
+  siteContentData.hero_title = heroTitle;
+  siteContentData.hero_subtitle = heroSubtitle;
+  siteContentData.schedule = schedule;
+  siteContentData.news = news;
+  lsSet(LS.siteContent, siteContentData);
+
+  await saveSiteContentKey('hero_title', heroTitle);
+  await saveSiteContentKey('hero_subtitle', heroSubtitle);
+  await saveSiteContentKey('schedule', schedule);
+  await saveSiteContentKey('news', news);
+
+  if (newPassword) {
+    adminPassword = newPassword;
+    lsSet(LS.adminPassword, adminPassword);
+    await saveSiteContentKey('admin_password', newPassword);
+    document.getElementById('adminNewPassword').value = '';
+  }
+
+  renderHome();
+  showToast('Контент сохранён в Supabase!', 'success');
+}
+
+async function saveAdminBestStudent() {
+  const name = document.getElementById('adminBestName').value.trim();
+  const grade = document.getElementById('adminBestGrade').value.trim();
+  const photo = document.getElementById('adminBestPhoto').value.trim();
+  const achievements = document.getElementById('adminBestAchievements').value.trim();
+
+  bestStudentData = { name, grade, photo, achievements };
+  lsSet(LS.bestStudent, bestStudentData);
+
+  if (supabaseReady && supabaseClient) {
+    try {
+      const { data } = await supabaseClient.from('best_student').select('*').limit(1);
+      const payload = { name, grade, photo, achievements };
+      if (data && data.length) {
+        await supabaseClient.from('best_student').update(payload).eq('id', data[0].id);
+      } else {
+        await supabaseClient.from('best_student').insert([payload]);
+      }
+    } catch (e) { console.warn('saveBestStudent error:', e); }
+  }
+
+  renderHome();
+  showToast('Лучший ученик сохранён в Supabase!', 'success');
+}
+
+function renderAdminEventsList() {
+  const el = document.getElementById('adminEventsList');
+  if (!el) return;
+  const events = getEvents();
+  if (!events.length) {
+    el.innerHTML = '<p style="font-size:13px;color:var(--text-muted);">Нет событий</p>';
+    return;
+  }
+  el.innerHTML = events.map(e => `
+    <div class="friend-req">
+      <div class="friend-ava" style="background:linear-gradient(135deg,#F59E0B,#FCD34D);">${e.icon || '🎯'}</div>
+      <div class="friend-info">
+        <div class="friend-name">${escHtml(e.title)}</div>
+        <div class="friend-grade">${escHtml(e.grades)} • ${escHtml(e.date || '')}</div>
+      </div>
+      <div class="friend-actions">
+        <button class="icon-btn reject" onclick="deleteAdminEvent('${e.id}')">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+
+async function addAdminEvent() {
+  const title = document.getElementById('adminEventTitle').value.trim();
+  const desc = document.getElementById('adminEventDesc').value.trim();
+  const grades = document.getElementById('adminEventGrades').value;
+  const date = document.getElementById('adminEventDate').value.trim();
+  if (!title) { showToast('Введите название', 'error'); return; }
+
+  const ev = {
+    id: uid(),
+    title, desc, grades, date,
+    icon: '🎯', tag: 'Событие'
+  };
+  allEvents.push(ev);
+  lsSet(LS.events, allEvents);
+
+  if (supabaseReady && supabaseClient) {
+    try { await supabaseClient.from('events').insert([ev]); } catch (e) {}
+  }
+
+  document.getElementById('adminEventTitle').value = '';
+  document.getElementById('adminEventDesc').value = '';
+  document.getElementById('adminEventDate').value = '';
+  renderAdminEventsList();
+  renderEvents();
+  showToast('Событие добавлено в Supabase!', 'success');
+}
+
+async function deleteAdminEvent(id) {
+  allEvents = allEvents.filter(e => e.id !== id);
+  lsSet(LS.events, allEvents);
+  if (supabaseReady && supabaseClient) {
+    try { await supabaseClient.from('events').delete().eq('id', id); } catch (e) {}
+  }
+  renderAdminEventsList();
+  renderEvents();
+  showToast('Событие удалено', 'info');
+}
+
+function renderAdminUsersList() {
+  const el = document.getElementById('adminUsersList');
+  if (!el) return;
+  if (!allProfiles.length) {
+    el.innerHTML = '<p style="font-size:13px;color:var(--text-muted);">Нет пользователей</p>';
+    return;
+  }
+  el.innerHTML = allProfiles.map(p => {
+    const name = p.full_name || p.name || 'Ученик';
+    const grade = p.grade_num ? p.grade_num + (p.grade_letter || '') : '';
+    return `<div class="friend-req">
+      <div class="friend-ava">${p.avatar_url ? `<img src="${escHtml(p.avatar_url)}" alt="">` : initials(name)}</div>
+      <div class="friend-info">
+        <div class="friend-name">${escHtml(name)}</div>
+        <div class="friend-grade">${escHtml(grade)} • ${p.role === 'teacher' ? 'Учитель' : 'Ученик'} • ${p.points || 0} б.</div>
+      </div>
+      <div class="friend-actions">
+        <button class="icon-btn" onclick="adminAddPoints('${p.id}',10)" title="+10 баллов">➕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function adminAddPoints(userId, amount) {
+  const p = allProfiles.find(x => x.id === userId);
+  if (!p) return;
+  p.points = (p.points || 0) + amount;
+  lsSet(LS.profiles, allProfiles);
+  if (currentUser && currentUser.id === userId) {
+    currentUser.points = p.points;
+    lsSet(LS.currentUser, currentUser);
+  }
+  if (supabaseReady && supabaseClient) {
+    try { await supabaseClient.from('profiles').update({ points: p.points }).eq('id', userId); } catch (e) {}
+  }
+  renderAdminUsersList();
+  renderHome();
+  renderProfile();
+  showToast('Начислено ' + amount + ' баллов', 'success');
+}
+
+async function saveAdminCustomCode() {
+  const code = document.getElementById('adminCustomCode').value;
+  customCodeData = code;
+  lsSet(LS.customCode, code);
+
+  if (supabaseReady && supabaseClient) {
+    try {
+      const { data } = await supabaseClient.from('custom_code').select('*').limit(1);
+      if (data && data.length) {
+        await supabaseClient.from('custom_code').update({ code: code }).eq('id', data[0].id);
+      } else {
+        await supabaseClient.from('custom_code').insert([{ code: code }]);
+      }
+    } catch (e) { console.warn('saveCustomCode error:', e); }
+  }
+
+  applyCustomCode(code);
+  showToast('Код сохранён в Supabase!', 'success');
+}
+
+function applyCustomCode(code) {
+  if (!code) return;
+  const existing = document.getElementById('customCodeContainer');
+  if (existing) existing.remove();
+  const container = document.createElement('div');
+  container.id = 'customCodeContainer';
+  container.innerHTML = code;
+  // Выполняем скрипты вручную
+  container.querySelectorAll('script').forEach(oldScript => {
+    const newScript = document.createElement('script');
+    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+    newScript.textContent = oldScript.textContent;
+    oldScript.replaceWith(newScript);
+  });
+  document.body.appendChild(container);
+}
+
+/* ============================================================
+   SUPABASE: ЗАГРУЗКА ДАННЫХ И REALTIME
+   ============================================================ */
+async function loadFromSupabase() {
+  if (!supabaseReady || !supabaseClient) return;
+
+  // Профили
+  try {
+    const { data, error } = await supabaseClient.from('profiles').select('*');
+    if (!error && data && data.length) {
+      // Сливаем с локальными
+      data.forEach(remote => {
+        const idx = allProfiles.findIndex(p => p.id === remote.id);
+        if (idx >= 0) allProfiles[idx] = { ...allProfiles[idx], ...remote };
+        else allProfiles.push(remote);
+      });
+      lsSet(LS.profiles, allProfiles);
+    }
+  } catch (e) {}
+
+  // Посты
+  try {
+    const { data, error } = await supabaseClient.from('posts').select('*').order('created_at', { ascending: false }).limit(100);
+    if (!error && data && data.length) {
+      const merged = [...data];
+      allPosts.forEach(local => {
+        if (!merged.find(r => r.id === local.id)) merged.push(local);
+      });
+      allPosts = merged.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      lsSet(LS.posts, allPosts);
+    }
+  } catch (e) {}
+
+  // Комментарии
+  try {
+    const { data, error } = await supabaseClient.from('comments').select('*');
+    if (!error && data && data.length) {
+      const merged = [...data];
+      allComments.forEach(local => {
+        if (!merged.find(r => r.id === local.id)) merged.push(local);
+      });
+      allComments = merged;
+      lsSet(LS.comments, allComments);
+    }
+  } catch (e) {}
+
+  // Друзья
+  try {
+    const { data, error } = await supabaseClient.from('friends').select('*');
+    if (!error && data && data.length) {
+      const merged = [...data];
+      allFriends.forEach(local => {
+        if (!merged.find(r => r.id === local.id)) merged.push(local);
+      });
+      allFriends = merged;
+      lsSet(LS.friends, allFriends);
+    }
+  } catch (e) {}
+
+  // Сообщения
+  try {
+    const { data, error } = await supabaseClient.from('messages').select('*').order('created_at', { ascending: true }).limit(200);
+    if (!error && data && data.length) {
+      const merged = [...data];
+      allMessages.forEach(local => {
+        if (!merged.find(r => r.id === local.id)) merged.push(local);
+      });
+      allMessages = merged;
+      lsSet(LS.messages, allMessages);
+    }
+  } catch (e) {}
+
+  // События
+  try {
+    const { data, error } = await supabaseClient.from('events').select('*');
+    if (!error && data && data.length) {
+      const merged = [...data];
+      allEvents.forEach(local => {
+        if (!merged.find(r => r.id === local.id)) merged.push(local);
+      });
+      allEvents = merged;
+      lsSet(LS.events, allEvents);
+    }
+  } catch (e) {}
+
+  // Best student
+  try {
+    const { data, error } = await supabaseClient.from('best_student').select('*').limit(1);
+    if (!error && data && data.length) {
+      bestStudentData = { name: data[0].name, grade: data[0].grade, photo: data[0].photo, achievements: data[0].achievements };
+      lsSet(LS.bestStudent, bestStudentData);
+    }
+  } catch (e) {}
+
+  // site_content
+  try {
+    const { data, error } = await supabaseClient.from('site_content').select('*');
+    if (!error && data && data.length) {
+      data.forEach(row => {
+        if (row.key === 'admin_password') { adminPassword = row.value; lsSet(LS.adminPassword, row.value); }
+        else siteContentData[row.key] = row.value;
+      });
+      lsSet(LS.siteContent, siteContentData);
+    }
+  } catch (e) {}
+
+  // custom_code
+  try {
+    const { data, error } = await supabaseClient.from('custom_code').select('*').limit(1);
+    if (!error && data && data.length) {
+      customCodeData = data[0].code || '';
+      lsSet(LS.customCode, customCodeData);
+      applyCustomCode(customCodeData);
+    }
+  } catch (e) {}
+
+  renderHome();
+  renderFeed();
+  renderEvents();
+  renderProfile();
+  renderFriendRequests();
+  renderChat();
+}
+
+function setupRealtime() {
+  if (!supabaseReady || !supabaseClient) return;
+  try {
+    supabaseClient.channel('public-posts')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'posts' }, payload => {
+        const p = payload.new;
+        if (p && !allPosts.find(x => x.id === p.id)) {
+          allPosts.unshift(p);
+          lsSet(LS.posts, allPosts);
+          renderFeed();
+        }
+      })
+      .subscribe();
+
+    supabaseClient.channel('public-messages')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+        const m = payload.new;
+        if (m && !allMessages.find(x => x.id === m.id)) {
+          allMessages.push(m);
+          lsSet(LS.messages, allMessages);
+          renderChat();
+        }
+      })
+      .subscribe();
+
+    supabaseClient.channel('public-comments')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'comments' }, payload => {
+        const c = payload.new;
+        if (c && !allComments.find(x => x.id === c.id)) {
+          allComments.push(c);
+          lsSet(LS.comments, allComments);
+          renderFeed();
+        }
+      })
+      .subscribe();
+  } catch (e) { console.warn('Realtime setup error:', e); }
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+async function initApp() {
+  // Загружаем кастомный код
+  applyCustomCode(customCodeData);
+
+  // Заполняем квиз
+  const qs = document.getElementById('quizScore');
+  if (qs) qs.textContent = quizScoreTotal;
+
+  // Обновляем шапку и страницы
+  updateHeaderAuth();
+  renderComposeAvatar();
+  renderHome();
+  renderFeed();
+  renderEvents();
+  renderProfile();
+  renderFriendRequests();
+  renderChat();
+
+  // Загружаем с сервера
+  if (supabaseReady) {
+    await loadFromSupabase();
+    setupRealtime();
+  }
+
+  // Восстанавливаем AI-контекст
+  const aiStatus = document.getElementById('aiKnowledgeStatus');
+  if (aiStatus) aiStatus.textContent = '🧠 База знаний: нажмите на чат для загрузки';
+
+  // Если есть история ИИ — восстанавливаем
+  if (aiConversation.length) {
+    const cont = document.getElementById('aiMessages');
+    if (cont) {
+      aiConversation.slice(-20).forEach(m => {
+        const div = document.createElement('div');
+        div.className = 'ai-msg ' + (m.role === 'user' ? 'user' : 'bot');
+        div.textContent = m.text;
+        cont.appendChild(div);
+      });
+    }
+  }
+
+  // Счётчик сообщений ИИ
+  aiMessageCounter = 0;
+}
+
+document.addEventListener('DOMContentLoaded', initApp);
+
+/* Экспорт для inline-обработчиков */
+window.switchPage = switchPage;
+window.openAuthModal = openAuthModal;
+window.closeModal = closeModal;
+window.doLogin = doLogin;
+window.doRegister = doRegister;
+window.doLogout = doLogout;
+window.toggleImageInput = toggleImageInput;
+window.insertLink = insertLink;
+window.createPost = createPost;
+window.toggleLike = toggleLike;
+window.toggleComments = toggleComments;
+window.addComment = addComment;
+window.searchUsers = searchUsers;
+window.sendFriendRequest = sendFriendRequest;
+window.respondFriendRequest = respondFriendRequest;
+window.switchChatTab = switchChatTab;
+window.sendChatMessage = sendChatMessage;
+window.filterEvents = filterEvents;
+window.joinEvent = joinEvent;
+window.startQuiz = startQuiz;
+window.answerQuiz = answerQuiz;
+window.resetQuiz = resetQuiz;
+window.saveProfileEdits = saveProfileEdits;
+window.toggleAiPanel = toggleAiPanel;
+window.sendAiMessage = sendAiMessage;
+window.openAdminLogin = openAdminLogin;
+window.checkAdminPassword = checkAdminPassword;
+window.switchAdminTab = switchAdminTab;
+window.saveAdminContent = saveAdminContent;
+window.saveAdminBestStudent = saveAdminBestStudent;
+window.addAdminEvent = addAdminEvent;
+window.deleteAdminEvent = deleteAdminEvent;
+window.adminAddPoints = adminAddPoints;
+window.saveAdminCustomCode = saveAdminCustomCode;
+</script>
+</body>
+</html>
