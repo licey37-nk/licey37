@@ -2013,5 +2013,467 @@ function bindGlobal(){
   });
 })();
 </script>
+
+<script>
+/* ============================================================
+   ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИОНАЛЬНЫЕ МОДУЛИ
+   ============================================================ */
+
+/* ---------- КАПСУЛА ВРЕМЕНИ ---------- */
+var TIME_CAPSULES = {
+  create: function(data) {
+    var capsules = db('timeCapsules', []);
+    capsules.push({
+      id: uid(),
+      authorId: App.user ? App.user.id : null,
+      authorName: App.user ? (App.user.nickname || App.user.login) : 'Аноним',
+      message: data.message,
+      openDate: new Date(data.openDate).getTime(),
+      createdAt: Date.now(),
+      isPublic: data.isPublic
+    });
+    save('timeCapsules', capsules);
+    return true;
+  },
+  getActive: function() {
+    var now = Date.now();
+    return db('timeCapsules', []).filter(function(capsule) {
+      return capsule.openDate > now;
+    }).sort(function(a, b) {
+      return a.openDate - b.openDate;
+    });
+  },
+  getExpired: function() {
+    var now = Date.now();
+    return db('timeCapsules', []).filter(function(capsule) {
+      return capsule.openDate <= now;
+    }).sort(function(a, b) {
+      return b.openDate - a.openDate;
+    });
+  }
+};
+
+function renderTimeCapsuleSection() {
+  var active = TIME_CAPSULES.getActive();
+  var expired = TIME_CAPSULES.getExpired();
+  
+  return `
+  <section class="section">
+    <div class="section-head">
+      <h2>📸 Капсула времени Лицея №37</h2>
+      <button class="btn btn-primary" data-action="open-capsule-form">➕ Создать капсулу</button>
+    </div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Активные капсулы</h3>
+        ${active.length ? active.map(function(capsule) {
+          var daysLeft = Math.ceil((capsule.openDate - Date.now()) / (1000 * 60 * 60 * 24));
+          return `
+          <div class="card" style="margin-bottom:12px;padding:12px">
+            <div class="row" style="justify-content:space-between">
+              <b>${esc(capsule.authorName)}</b>
+              <span class="chip">Откроется через ${daysLeft} д.</span>
+            </div>
+            <p class="small muted">Дата открытия: ${new Date(capsule.openDate).toLocaleDateString()}</p>
+          </div>`;
+        }).join('') : '<p class="muted small">Нет активных капсул</p>'}
+      </div>
+      <div class="card">
+        <h3>Открытые капсулы</h3>
+        ${expired.length ? expired.slice(0, 3).map(function(capsule) {
+          return `
+          <div class="card" style="margin-bottom:12px;padding:12px">
+            <div class="row" style="justify-content:space-between">
+              <b>${esc(capsule.authorName)}</b>
+              <span class="chip">Открыта</span>
+            </div>
+            <p>${esc(capsule.message)}</p>
+            <p class="small muted">${fmtDate(capsule.openDate)}</p>
+          </div>`;
+        }).join('') : '<p class="muted small">Нет открытых капсул</p>'}
+      </div>
+    </div>
+  </section>`;
+}
+
+function openCapsuleForm() {
+  if(!App.user) { toast('Войдите, чтобы создать капсулу', 'err'); openLogin(); return; }
+  
+  openModal('Создать капсулу времени',
+    `<form data-form="time-capsule">
+      <label class="field"><span>Ваше послание в будущее</span>
+        <textarea class="input" name="message" required placeholder="Напишите что-то важное для будущих учеников..."></textarea>
+      </label>
+      <label class="field"><span>Дата открытия</span>
+        <input class="input" type="date" name="openDate" required min="${new Date().toISOString().split('T')[0]}">
+      </label>
+      <label class="field" style="margin-top:12px">
+        <input type="checkbox" name="isPublic" checked> Сделать публичной
+      </label>
+      <p class="small muted">Капсула будет запечатана до выбранной даты</p>
+      <button class="btn btn-primary btn-block" type="submit">🚀 Отправить в будущее</button>
+    </form>`
+  );
+}
+
+function submitCapsule(form) {
+  var message = form.message.value.trim();
+  if(!message) { toast('Напишите послание', 'err'); return; }
+  
+  var openDate = new Date(form.openDate.value);
+  if(isNaN(openDate.getTime())) { toast('Укажите корректную дату', 'err'); return; }
+  
+  TIME_CAPSULES.create({
+    message: message,
+    openDate: form.openDate.value,
+    isPublic: form.isPublic.checked
+  });
+  
+  addPoints(20);
+  closeModal();
+  render();
+  toast('Капсула создана! +20 баллов', 'ok');
+}
+
+/* ---------- ТАЙНЫЙ ДРУГ ---------- */
+var SECRET_FRIEND = {
+  sendCompliment: function(data) {
+    var compliments = db('compliments', []);
+    compliments.push({
+      id: uid(),
+      fromId: App.user ? App.user.id : null,
+      fromName: data.anonymous ? 'Аноним' : (App.user ? (App.user.nickname || App.user.login) : 'Аноним'),
+      toId: data.toId,
+      message: data.message,
+      sticker: data.sticker,
+      ts: Date.now()
+    });
+    save('compliments', compliments);
+    return true;
+  },
+  getReceived: function(userId) {
+    return db('compliments', []).filter(function(c) {
+      return c.toId === userId;
+    }).sort(function(a, b) {
+      return b.ts - a.ts;
+    });
+  }
+};
+
+function renderSecretFriendSection() {
+  return `
+  <section class="section">
+    <div class="section-head">
+      <h2>💌 Тайный друг / Почта комплиментов</h2>
+      <button class="btn btn-primary" data-action="open-compliment-form">✉️ Отправить комплимент</button>
+    </div>
+    <div class="card">
+      <h3>Полученные комплименты</h3>
+      ${App.user ? SECRET_FRIEND.getReceived(App.user.id).map(function(c) {
+        return `
+        <div class="card" style="margin-bottom:12px;padding:12px">
+          <div class="row" style="justify-content:space-between">
+            <b>От: ${esc(c.fromName)}</b>
+            <span class="chip">${fmtDate(c.ts)}</span>
+          </div>
+          <p>${esc(c.message)}</p>
+          ${c.sticker ? `<div style="font-size:24px;text-align:center">${c.sticker}</div>` : ''}
+        </div>`;
+      }).join('') : '<p class="muted small">Войдите, чтобы увидеть свои комплименты</p>'}
+    </div>
+  </section>`;
+}
+
+function openComplimentForm() {
+  if(!App.user) { toast('Войдите, чтобы отправить комплимент', 'err'); openLogin(); return; }
+  
+  var users = db('users', []).filter(function(u) { return u.id !== App.user.id; });
+  var userOptions = users.map(function(u) {
+    return `<option value="${esc(u.id)}">${esc(u.nickname || u.login)} (${esc(u.cls || '?')})</option>`;
+  }).join('');
+  
+  var stickers = ['❤️', '🌟', '🎉', '👍', '💯', '😊', '🌈', '⚡', '🎁', '🏆'];
+  var stickerOptions = stickers.map(function(s) {
+    return `<option value="${s}">${s}</option>`;
+  }).join('');
+  
+  openModal('Отправить комплимент',
+    `<form data-form="compliment">
+      <label class="field"><span>Кому</span>
+        <select class="input" name="toId" required>
+          <option value="">Выберите получателя</option>
+          ${userOptions}
+        </select>
+      </label>
+      <label class="field"><span>Стикер (необязательно)</span>
+        <select class="input" name="sticker">
+          <option value="">Без стикера</option>
+          ${stickerOptions}
+        </select>
+      </label>
+      <label class="field"><span>Текст комплимента</span>
+        <textarea class="input" name="message" required placeholder="Напишите что-то приятное..."></textarea>
+      </label>
+      <label class="field" style="margin-top:12px">
+        <input type="checkbox" name="anonymous" checked> Отправить анонимно
+      </label>
+      <button class="btn btn-primary btn-block" type="submit">✉️ Отправить</button>
+    </form>`
+  );
+}
+
+function submitCompliment(form) {
+  var message = form.message.value.trim();
+  if(!message) { toast('Напишите комплимент', 'err'); return; }
+  if(!form.toId.value) { toast('Выберите получателя', 'err'); return; }
+  
+  SECRET_FRIEND.sendCompliment({
+    toId: form.toId.value,
+    message: message,
+    sticker: form.sticker.value,
+    anonymous: form.anonymous.checked
+  });
+  
+  addPoints(5);
+  closeModal();
+  render();
+  toast('Комплимент отправлен! +5 баллов', 'ok');
+}
+
+/* ---------- ОБНОВЛЁННЫЕ ОБРАБОТЧИКИ ---------- */
+function bindAdditionalHandlers() {
+  document.addEventListener('click', function(e) {
+    var act = e.target.closest('[data-action]');
+    if(!act) return;
+    
+    var action = act.getAttribute('data-action');
+    if(action === 'open-capsule-form') { e.preventDefault(); openCapsuleForm(); }
+    else if(action === 'open-compliment-form') { e.preventDefault(); openComplimentForm(); }
+  });
+  
+  document.addEventListener('submit', function(e) {
+    var f = e.target;
+    var kind = f.getAttribute('data-form');
+    if(kind === 'time-capsule') { e.preventDefault(); submitCapsule(f); }
+    else if(kind === 'compliment') { e.preventDefault(); submitCompliment(f); }
+  });
+}
+
+/* ============================================================
+   ИНИЦИАЛИЗАЦИЯ ДОПОЛНИТЕЛЬНЫХ МОДУЛЕЙ
+   ============================================================ */
+(function initModules() {
+  // Инициализация модулей при загрузке
+  bindAdditionalHandlers();
+  
+  // Проверка и создание необходимых структур данных
+  if(!db('timeCapsules', null)) save('timeCapsules', []);
+  if(!db('compliments', null)) save('compliments', []);
+  
+  // Обновление рендера главной страницы
+  var oldPageHome = pageHome;
+  pageHome = function() {
+    var base = oldPageHome();
+    return base + renderTimeCapsuleSection() + renderSecretFriendSection();
+  };
+  
+  // Улучшенная валидация класса
+  var oldParseClass = parseClass;
+  parseClass = function(value) {
+    var m = /^(\d{1,2})\s*([АБВГДЕ])?$/i.exec(String(value || '').trim());
+    var num = (m && CLASS_NUMS.indexOf(m[1]) >= 0) ? m[1] : '5';
+    var letter = (m && m[2] && CLASS_LETTERS.indexOf(m[2].toUpperCase()) >= 0) ? m[2].toUpperCase() : 'А';
+    return [num, letter];
+  };
+})();
+
+</script>
+
+<script>
+/* ============================================================
+   УЛУЧШЕННЫЙ ИИ-НАСТАВНИК С ВЕБ-ПОИСКОМ И ПАМЯТЬЮ
+   ============================================================ */
+
+var AI = {
+  files: [],
+  loaded: false,
+  memory: db('aiMemory', { name: 'Босс', facts: [] }),
+  
+  loadFiles: function() {
+    var self = this;
+    var names = ['omni_brain', 'dataset.txt'].concat(
+      Array.from({length: 40}, (_, i) => 'b' + (i+1) + '.txt')
+    );
+    
+    return Promise.all(names.map(function(n) {
+      return fetch(n, { cache: 'no-store' })
+        .then(function(r) { return r.ok ? r.text() : null; })
+        .catch(function() { return null; });
+    })).then(function(res) {
+      self.files = res.filter(Boolean).map(function(t, i) {
+        return { name: names[i], text: t };
+      });
+      self.loaded = true;
+      return self.files.length;
+    });
+  },
+  
+  updateMemory: function(newFacts) {
+    this.memory.facts = (this.memory.facts || []).concat(newFacts)
+      .filter(f => f && f.trim())
+      .slice(-20); // Храним только последние 20 фактов
+    save('aiMemory', this.memory);
+  },
+  
+  searchLocal: function(q) {
+    if(!this.files.length) return null;
+    var words = q.toLowerCase().split(/[^а-яёa-z0-9]+/).filter(w => w.length > 2);
+    if(!words.length) return null;
+    
+    var best = null, bestScore = 0;
+    this.files.forEach(file => {
+      file.text.split(/\n\s*\n/).forEach(chunk => {
+        if(chunk.trim().length < 20) return;
+        var t = chunk.toLowerCase();
+        var sc = words.filter(w => t.includes(w)).length;
+        if(sc > bestScore) { bestScore = sc; best = chunk.trim(); }
+      });
+    });
+    
+    return best && bestScore >= Math.ceil(words.length/2) ? best.slice(0, 1200) : null;
+  },
+  
+  webSearch: function(q) {
+    return Promise.race([
+      fetch(`https://r.jina.ai/https://html.duckduckgo.com/html/?q=${encodeURIComponent(q)}`)
+        .then(r => r.ok ? r.text() : null)
+        .catch(() => null),
+      
+      fetch(`https://ru.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srsearch=${encodeURIComponent(q)}`)
+        .then(r => r.ok ? r.json() : null)
+        .then(j => j?.query?.search?.[0]?.snippet || null)
+        .catch(() => null)
+    ]).then(res => res || 'Не удалось найти информацию в интернете');
+  }
+};
+
+function enhanceAI() {
+  // Улучшенный интерфейс ИИ
+  var aiPanel = $('#aiPanel');
+  if(aiPanel) {
+    aiPanel.innerHTML = `
+    <header class='ai-head'>
+      <div class='ai-title'>
+        <span class='ai-dot'></span> 🤖 ИИ-наставник 37
+        <button class='btn btn-ghost btn-sm' id='aiMemoryBtn'>🧠 Карточка памяти</button>
+      </div>
+      <button class='icon-btn' id='aiClose'>✕</button>
+    </header>
+    <div class='ai-messages' id='aiMessages'></div>
+    <form class='ai-form' id='aiForm'>
+      <input class='input' id='aiInput' placeholder='Спросите что угодно...' autocomplete='off'>
+      <button class='btn btn-primary' type='submit'>➤</button>
+    </form>
+    <div class='ai-status' id='aiStatus'>Загрузка базы знаний…</div>`;
+  }
+
+  // Обработчик для кнопки памяти
+  $('#aiMemoryBtn')?.addEventListener('click', function() {
+    var mem = AI.memory;
+    var facts = mem.facts.length ? 
+      mem.facts.map((f, i) => `<li>${esc(f)}</li>`).join('') : 
+      '<li>Пока нет сохранённых фактов</li>';
+    
+    openModal('Карточка памяти ИИ', `
+      <div class='card'>
+        <h3>${esc(mem.name)}</h3>
+        <p class='small muted'>ИИ запомнил о вас:</p>
+        <ul>${facts}</ul>
+      </div>
+      <form data-form='ai-memory' style='margin-top:16px'>
+        <label class='field'><span>Добавить факт</span>
+          <input class='input' name='fact' placeholder='Например: увлекается робототехникой'>
+        </label>
+        <button class='btn btn-primary btn-block' type='submit'>💾 Сохранить</button>
+      </form>
+    `);
+  });
+
+  // Обработчик формы памяти
+  document.addEventListener('submit', function(e) {
+    if(e.target.getAttribute('data-form') === 'ai-memory') {
+      e.preventDefault();
+      var fact = e.target.fact.value.trim();
+      if(fact) {
+        AI.updateMemory([fact]);
+        toast('Факт сохранён в памяти ИИ', 'ok');
+        closeModal();
+      }
+    }
+  });
+
+  // Улучшенный обработчик вопросов
+  $('#aiForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var inp = $('#aiInput');
+    var q = inp.value.trim();
+    if(!q) return;
+    
+    aiPush('user', q);
+    inp.value = '';
+    var st = $('#aiStatus');
+    if(st) st.textContent = 'Думаю…';
+    
+    // Автоматическое извлечение фактов
+    if(q.includes('запомни') || q.includes('мне нравится') || q.includes('я увлекаюсь')) {
+      var fact = q.replace(/.*(запомни|нравится|увлекаюсь)/i, '').trim();
+      if(fact) {
+        AI.updateMemory([fact]);
+        aiPush('bot', `Запомнил: "${fact}". Можете спросить "что ты знаешь обо мне?"`);
+        if(st) st.textContent = AI.files.length ? 'База знаний: ' + AI.files.length + ' файл(ов)' : 'Отвечаю через Википедию';
+        return;
+      }
+    }
+    
+    // Поиск ответа
+    Promise.any([
+      AI.searchLocal(q),
+      AI.webSearch(q),
+      new Promise(r => setTimeout(r, 3000, 'Пока не нашёл точного ответа. Попробуйте переформулировать вопрос.'))
+    ]).then(function(ans) {
+      aiPush('bot', ans);
+      if(st) st.textContent = AI.files.length ? 'База знаний: ' + AI.files.length + ' файл(ов)' : 'Отвечаю через Википедию';
+      
+      // Автоматическое обновление памяти
+      if(App.user && ans.length > 40) {
+        var newFacts = [
+          `Класс: ${App.user.cls || 'не указан'}`,
+          `Интересы: ${App.user.about || 'не указаны'}`,
+          `Последний вопрос: ${q.slice(0, 50)}`
+        ];
+        AI.updateMemory(newFacts);
+      }
+    });
+  });
+
+  // Загрузка файлов при первом открытии
+  var aiFab = $('#aiFab');
+  if(aiFab) {
+    aiFab.addEventListener('click', function() {
+      if(!AI.loaded) {
+        AI.loadFiles().then(function(count) {
+          var st = $('#aiStatus');
+          if(st) st.textContent = count ? `База знаний: ${count} файл(ов)` : 'Использую только веб-поиск';
+        });
+      }
+    });
+  }
+}
+
+// Инициализация улучшенного ИИ
+enhanceAI();
+
+</script>
+
 </body>
 </html>
