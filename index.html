@@ -3906,10 +3906,10 @@
 
     const AVATAR_EMOJIS = ['🦊', '🐼', '🐨', '🦉', '🐯', '🚀'];
 
-    let supabase = null;
+    let sb37 = null;
     try {
       if (window.supabase && typeof window.supabase.createClient === 'function') {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        sb37 = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       } else {
         console.warn('Supabase SDK не загрузился (CDN недоступен) — портал работает в офлайн-режиме на localStorage.');
       }
@@ -3939,9 +3939,9 @@
     }
 
     async function syncKey(key, data) {
-      if (!supabase) return;
+      if (!sb37) return;
       try {
-        const answer = await supabase
+        const answer = await sb37
           .from(TABLE)
           .upsert({ key: key, value: data }, { onConflict: 'key' });
         if (answer.error) throw answer.error;
@@ -3951,9 +3951,9 @@
     }
 
     async function pullKey(key) {
-      if (!supabase) return dbLoad(key, null);
+      if (!sb37) return dbLoad(key, null);
       try {
-        const answer = await supabase
+        const answer = await sb37
           .from(TABLE)
           .select('value')
           .eq('key', key)
@@ -3972,9 +3972,9 @@
     }
 
     async function pullAll() {
-      if (!supabase) return;
+      if (!sb37) return;
       try {
-        const answer = await supabase.from(TABLE).select('key,value');
+        const answer = await sb37.from(TABLE).select('key,value');
         if (answer.error) throw answer.error;
         (answer.data || []).forEach(function (row) {
           if (row && row.key !== undefined && row.value !== undefined) {
