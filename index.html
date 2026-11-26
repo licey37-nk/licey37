@@ -2348,6 +2348,297 @@
       }
     }
 
+    /* ============ 19. ИГРОВАЯ ЛИЦЕЯ 37 ============ */
+    .quiz-progress-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .quiz-progress {
+      flex: 1;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--bg-soft);
+      overflow: hidden;
+    }
+
+    .quiz-progress-fill {
+      height: 100%;
+      width: 0;
+      background: var(--grad);
+      border-radius: 999px;
+      transition: width 0.3s;
+    }
+
+    .quiz-q {
+      font-size: 1.08rem;
+      font-weight: 700;
+      color: var(--text-strong);
+      margin-bottom: 14px;
+    }
+
+    .quiz-answers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .quiz-answer {
+      text-align: left;
+      padding: 13px 16px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.93rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quiz-answer:hover:not(:disabled) {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .quiz-answer.correct {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .quiz-answer.wrong {
+      background: var(--danger-soft);
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .quiz-result-box {
+      text-align: center;
+      padding: 18px 10px;
+    }
+
+    .reaction-zone {
+      max-width: 560px;
+      margin: 0 auto 12px;
+      padding: 56px 20px;
+      border-radius: 20px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 1.2rem;
+      cursor: pointer;
+      user-select: none;
+      background: var(--surface-soft);
+      border: 2px dashed var(--border);
+      color: var(--muted);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .reaction-zone.waiting {
+      background: var(--danger-soft);
+      border: 2px solid var(--danger);
+      color: var(--danger);
+    }
+
+    .reaction-zone.ready {
+      background: var(--accent-soft);
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 34px rgba(5, 150, 105, 0.35);
+    }
+
+    .reaction-zone.result {
+      background: var(--primary-soft);
+      border: 2px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .reaction-result {
+      text-align: center;
+      font-weight: 700;
+      min-height: 24px;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .record-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .record-table th {
+      text-align: left;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .record-table th,
+    .record-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .field-label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin: 12px 0 6px;
+      color: var(--text);
+    }
+
+    .compliment-grid {
+      display: grid;
+      grid-template-columns: minmax(260px, 380px) 1fr;
+      gap: 22px;
+    }
+
+    .compliment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 460px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .compliment-card {
+      display: flex;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+    }
+
+    .comp-sticker {
+      font-size: 1.9rem;
+      flex-shrink: 0;
+    }
+
+    .comp-head {
+      display: flex;
+      gap: 8px;
+      align-items: baseline;
+      flex-wrap: wrap;
+      margin-bottom: 3px;
+    }
+
+    /* ============ 20. ПРОФИЛЬ И МАГАЗИН НАГРАД ============ */
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      align-items: start;
+    }
+
+    .frame-gold {
+      box-shadow: 0 0 0 3px #f59e0b, 0 0 20px rgba(245, 158, 11, 0.55) !important;
+    }
+
+    .frame-neon {
+      box-shadow: 0 0 0 3px #38bdf8, 0 0 20px rgba(56, 189, 248, 0.6) !important;
+    }
+
+    .frame-emerald {
+      box-shadow: 0 0 0 3px #10b981, 0 0 20px rgba(16, 185, 129, 0.55) !important;
+    }
+
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(205px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .shop-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+      padding: 18px 14px;
+    }
+
+    .shop-ico {
+      font-size: 2.1rem;
+    }
+
+    .shop-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-strong);
+    }
+
+    .shop-price {
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    .own-badge {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.84rem;
+    }
+
+    .toggle-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font-size: 0.92rem;
+      cursor: pointer;
+      color: var(--text);
+    }
+
+    .hist-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.86rem;
+      max-height: 220px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .hist-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 5px;
+    }
+
+    .hist-plus { color: var(--accent); font-weight: 700; }
+    .hist-minus { color: var(--danger); font-weight: 700; }
+
+    .danger-zone {
+      border: 1.5px dashed var(--danger);
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 640px) {
+      .quiz-answers {
+        grid-template-columns: 1fr;
+      }
+
+      .compliment-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .reaction-zone {
+        padding: 44px 14px;
+        font-size: 1.05rem;
+      }
+    }
+
     /* ============ 14. АДАПТИВНОСТЬ ============ */
     @media (max-width: 960px) {
       .header-inner {
@@ -2426,7 +2717,7 @@
         <button data-tab="class">🏫 Мой класс</button>
         <button data-tab="market">🛍️ Барахолка</button>
         <button data-tab="social">💬 Соцсеть</button>
-        <button data-tab="games">🎮 Игры Первых</button>
+        <button data-tab="games">🎮 Игровая Лицея 37</button>
         <button data-tab="profile">👤 Профиль</button>
       </nav>
 
@@ -2796,15 +3087,63 @@
       <div class="section-title">
         <div class="section-icon">🎮</div>
         <div>
-          <h2>Игры Первых</h2>
-          <p>Викторины и интеллектуальные челленджи с баллами</p>
+          <h2 data-editable="games-title">Игровая Лицея 37</h2>
+          <p data-editable="games-desc">Викторина, тренажёр реакции и почта комплиментов — зарабатывай баллы!</p>
         </div>
       </div>
-      <div class="card stub-card">
-        <div class="stub-icon">🎮</div>
-        <h3>Игры Первых</h3>
-        <p>Готовятся образовательные викторины по школьным предметам и игры «Движения Первых» с начислением баллов.</p>
-        <span class="coming-badge"><span class="dot"></span>Наполняется на Шаге 4</span>
+
+      <div class="card" style="margin-bottom:20px;">
+        <h3 class="info-title" data-editable="quiz-title">🧠 Умная викторина Лицея №37</h3>
+        <p class="info-desc" data-editable="quiz-desc">10 случайных вопросов о лицее, Нижнекамске, Татарстане, Python, физике, математике и логике. +10 баллов за каждый правильный ответ!</p>
+        <div id="quiz-intro">
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn btn-primary" id="quiz-start-btn">🚀 Начать раунд (10 вопросов)</button>
+            <button class="btn btn-outline" id="ai-quiz-btn">🤖 Сгенерировать свежий раунд через ИИ-Наставника 37</button>
+          </div>
+        </div>
+        <div id="quiz-area" style="display:none;">
+          <div class="quiz-progress-row">
+            <div class="quiz-progress"><div class="quiz-progress-fill" id="quiz-progress-fill"></div></div>
+            <span class="field-hint" id="quiz-counter"></span>
+          </div>
+          <div class="quiz-q" id="quiz-question"></div>
+          <div class="quiz-answers" id="quiz-answers"></div>
+          <div class="field-hint" id="quiz-hint" style="margin-top:10px; min-height:20px;"></div>
+        </div>
+        <div id="quiz-result" style="display:none;"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <h3 class="info-title" data-editable="reaction-title">⚡ Мини-тренажёр скорости реакции — «Поймай импульс Лицея 37»</h3>
+        <p class="info-desc">Нажми на зону, приготовься, а когда она загорится зелёным — кликай как можно быстрее! Замер в миллисекундах, за школьный рекорд — +15 баллов.</p>
+        <div class="reaction-zone idle" id="reaction-zone">Нажми, чтобы начать</div>
+        <div class="reaction-result" id="reaction-result"></div>
+        <h4 style="margin:16px 0 10px;">🏆 Топ-10 рекордов учеников</h4>
+        <div id="reaction-records"></div>
+      </div>
+
+      <div class="card">
+        <h3 class="info-title" data-editable="compliments-title">💌 Тайный друг · Почта комплиментов Лицея №37</h3>
+        <p class="info-desc">Отправь добрую виртуальную открытку однокласснику, учителю или всему лицею — подними настроение!</p>
+        <div class="compliment-grid">
+          <div>
+            <label class="field-label">Стикер открытки</label>
+            <div class="beast-picker" id="comp-stickers" style="grid-template-columns:repeat(8, 1fr);"></div>
+            <label class="field-label" for="comp-to">Кому</label>
+            <select id="comp-to"></select>
+            <label class="field-label" for="comp-text">Пожелание</label>
+            <textarea id="comp-text" class="textarea-field" maxlength="300" placeholder="Ты — супер! Спасибо, что помогаешь с алгеброй..."></textarea>
+            <div class="field-row" style="margin-top:10px;">
+              <button type="button" class="deal-btn active" id="comp-mode-open">🙋 Открыто</button>
+              <button type="button" class="deal-btn" id="comp-mode-anon">🕵️ Анонимно</button>
+            </div>
+            <button class="btn btn-primary btn-block" id="comp-send" style="margin-top:10px;">💌 Отправить открытку</button>
+          </div>
+          <div>
+            <h4 style="margin-bottom:10px;">🌈 Лента добрых открыток лицея</h4>
+            <div class="compliment-list" id="compliment-list"></div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -2813,16 +3152,11 @@
       <div class="section-title">
         <div class="section-icon">👤</div>
         <div>
-          <h2>Профиль</h2>
-          <p>Твой аватар, класс, статус и баллы</p>
+          <h2 data-editable="profile-title">Мой профиль</h2>
+          <p data-editable="profile-desc">Аватар, статус, баллы, Магазин наград и настройки аккаунта</p>
         </div>
       </div>
-      <div class="card stub-card" id="profile-stub">
-        <div class="stub-icon">👤</div>
-        <h3>Личный профиль</h3>
-        <p>Войди или зарегистрируйся, чтобы увидеть свой профиль, аватар и накопленные баллы.</p>
-        <span class="coming-badge"><span class="dot"></span>Наполняется на Шаге 4</span>
-      </div>
+      <div id="profile-box"></div>
     </section>
   </main>
 
@@ -3082,7 +3416,16 @@
 
     const AVATAR_EMOJIS = ['🦊', '🐼', '🐨', '🦉', '🐯', '🚀'];
 
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    let supabase = null;
+    try {
+      if (window.supabase && typeof window.supabase.createClient === 'function') {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      } else {
+        console.warn('Supabase SDK не загрузился (CDN недоступен) — портал работает в офлайн-режиме на localStorage.');
+      }
+    } catch (e) {
+      console.warn('Не удалось инициализировать Supabase — портал работает локально.', e);
+    }
 
     /* ============ ПРОСЛОЙКА БД: Supabase + localStorage ============ */
     function dbLoad(key, fallback) {
@@ -3105,6 +3448,7 @@
     }
 
     async function syncKey(key, data) {
+      if (!supabase) return;
       try {
         const answer = await supabase
           .from(TABLE)
@@ -3116,6 +3460,7 @@
     }
 
     async function pullKey(key) {
+      if (!supabase) return dbLoad(key, null);
       try {
         const answer = await supabase
           .from(TABLE)
@@ -3136,6 +3481,7 @@
     }
 
     async function pullAll() {
+      if (!supabase) return;
       try {
         const answer = await supabase.from(TABLE).select('key,value');
         if (answer.error) throw answer.error;
@@ -3249,6 +3595,7 @@
         btn.classList.toggle('active', btn.dataset.tab === name);
       });
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (name === 'games') { fillComplimentTargets(); renderCompliments(); renderReactionRecords(); }
       if (name === 'profile') renderProfileTab();
       if (name === 'class') renderClassTab();
       if (name === 'market') renderMarket();
@@ -3473,6 +3820,13 @@
           points: START_POINTS,
           status: 'Новичок',
           isAdmin: false,
+          owned: [],
+          frame: null,
+          customStatus: null,
+          theme: null,
+          about: '',
+          volunteer: false,
+          history: [{ ts: Date.now(), delta: START_POINTS, reason: '🎁 Стартовые баллы за регистрацию' }],
           createdAt: new Date().toISOString()
         };
 
@@ -3574,14 +3928,16 @@
         return;
       }
 
-      const status = statusFor(user.points || 0);
+      const wantedTheme = user && user.theme ? 'theme-' + user.theme : null;
+      if (wantedTheme && document.body.className !== wantedTheme) document.body.className = wantedTheme;
+
       area.innerHTML =
         '<div class="user-badge">' +
-          avatarHtml(user.avatar) +
+          avatarHtml(user.avatar, frameClass(user.frame)) +
           '<div class="user-info">' +
             '<div class="user-name">' + esc(user.name) + '</div>' +
             '<div class="user-meta"><span class="user-class">' + esc(classLabel(user)) + '</span>' +
-            '<span>' + status.icon + ' ' + esc(status.title) + '</span></div>' +
+            '<span>' + esc(displayStatus(user)) + '</span></div>' +
           '</div>' +
           '<div class="user-points">💎 ' + Number(user.points || 0) + ' б.</div>' +
           '<button class="btn btn-ghost btn-sm" id="logout-btn" title="Выйти">Выйти</button>' +
@@ -3615,41 +3971,304 @@
 
     /* ============ ВКЛАДКА ПРОФИЛЯ ============ */
     function renderProfileTab() {
-      const stub = document.getElementById('profile-stub');
+      const box = document.getElementById('profile-box');
       const user = getCurrentUser();
+      if (!box) return;
 
       if (!user) {
-        stub.innerHTML =
-          '<div class="stub-icon">👤</div>' +
-          '<h3>Личный профиль</h3>' +
-          '<p>Войди или зарегистрируйся, чтобы увидеть свой профиль, аватар и накопленные баллы.</p>' +
-          '<div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">' +
-            '<button class="btn btn-primary" id="profile-login-btn">Войти</button>' +
-            '<button class="btn btn-outline" id="profile-register-btn">Регистрация</button>' +
+        box.innerHTML =
+          '<div class="card stub-card">' +
+            '<div class="stub-icon">👤</div>' +
+            '<h3>Личный профиль</h3>' +
+            '<p>Войди или зарегистрируйся, чтобы увидеть свой профиль, баллы, историю начислений и Магазин наград.</p>' +
+            '<div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">' +
+              '<button class="btn btn-primary" id="profile-login-btn">Войти</button>' +
+              '<button class="btn btn-outline" id="profile-register-btn">Регистрация</button>' +
+            '</div>' +
           '</div>';
         document.getElementById('profile-login-btn').addEventListener('click', function () { openModal('modal-login'); });
         document.getElementById('profile-register-btn').addEventListener('click', function () { openModal('modal-register'); });
         return;
       }
 
-      const status = statusFor(user.points || 0);
       const created = new Date(user.createdAt);
       const createdStr = isNaN(created.getTime()) ? '' : created.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+      const history = (user.history || []).slice().reverse().slice(0, 10);
 
-      stub.innerHTML =
-        '<div style="display:flex; flex-direction:column; align-items:center; gap:8px;">' +
-          avatarHtml(user.avatar) +
-          '<h3 style="margin-top:6px;">' + esc(user.name) + '</h3>' +
-          '<div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:center;">' +
-            '<span class="user-class" style="font-size:0.9rem; padding:4px 12px;">' + esc(classLabel(user)) + ' класс</span>' +
-            '<span class="coming-badge" style="background:var(--accent-soft); color:var(--accent);">' + status.icon + ' ' + esc(status.title) + '</span>' +
+      box.innerHTML =
+        '<div class="profile-grid">' +
+          '<div class="card" style="text-align:center;">' +
+            avatarHtml(user.avatar, frameClass(user.frame)) +
+            '<h3 style="margin-top:10px;">' + esc(user.name) + '</h3>' +
+            '<div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:center; margin-top:6px;">' +
+              '<span class="user-class" style="font-size:0.9rem; padding:4px 12px;">' + esc(classIdOf(user.grade, user.letter)) + ' класс</span>' +
+              '<span class="coming-badge" style="background:var(--accent-soft); color:var(--accent);">' + esc(displayStatus(user)) + '</span>' +
+            '</div>' +
+            '<div class="user-points" style="font-size:1.15rem; margin-top:10px;">💎 ' + Number(user.points || 0) + ' баллов</div>' +
+            (user.about ? '<p class="info-desc" style="margin-top:8px;">' + esc(user.about) + '</p>' : '') +
+            (user.volunteer ? '<div style="margin-top:10px;"><span class="vol-tag">🤝 Волонтёр Банка взаимопомощи</span></div>' : '') +
+            (createdStr ? '<div class="field-hint" style="margin-top:6px;">На портале с ' + esc(createdStr) + '</div>' : '') +
           '</div>' +
-          '<div class="user-points" style="font-size:1.05rem; margin-top:8px;">💎 ' + Number(user.points || 0) + ' баллов</div>' +
-          (createdStr ? '<div class="field-hint">На портале с ' + esc(createdStr) + '</div>' : '') +
-          '<p style="margin-top:14px;">Редактирование профиля, история баллов и Магазин наград появятся на Шаге 4.</p>' +
+          '<div class="card">' +
+            '<h3 class="info-title">✏️ Редактировать профиль</h3>' +
+            '<div class="field"><label for="pf-name">Имя / никнейм</label><input type="text" id="pf-name" maxlength="32" value="' + esc(user.name) + '"></div>' +
+            '<div class="field"><label>Класс (цифра 1–11 и буква А–Д)</label><div class="field-row"><select id="pf-grade"></select><select id="pf-letter"></select></div></div>' +
+            '<div class="field"><label>Аватар</label>' +
+              '<div class="beast-picker" id="pf-avatars" style="grid-template-columns:repeat(6, 1fr);"></div>' +
+              '<input type="file" id="pf-photo" accept="image/*" hidden>' +
+              '<button type="button" class="btn btn-outline btn-sm" id="pf-photo-btn" style="margin-top:8px;">🖼️ Загрузить своё фото</button>' +
+            '</div>' +
+            '<div class="field"><label for="pf-about">О себе</label><textarea id="pf-about" class="textarea-field" maxlength="200" placeholder="Мои увлечения, любимые предметы...">' + esc(user.about || '') + '</textarea></div>' +
+            '<label class="toggle-row"><input type="checkbox" id="pf-vol"' + (user.volunteer ? ' checked' : '') + '> 🤝 Готов помогать с предметами в Банке взаимопомощи</label>' +
+            '<button class="btn btn-primary btn-block" id="pf-save" style="margin-top:12px;">💾 Сохранить изменения</button>' +
+          '</div>' +
+          '<div class="card">' +
+            '<h3 class="info-title">📜 История начисления баллов</h3>' +
+            (history.length
+              ? '<div class="hist-list">' + history.map(function (h) {
+                  return '<div class="hist-row"><span>' + fmtDateTime(h.ts) + ' · ' + esc(h.reason || 'Баллы') + '</span><span class="' + (h.delta >= 0 ? 'hist-plus' : 'hist-minus') + '">' + (h.delta >= 0 ? '+' : '') + Number(h.delta) + '</span></div>';
+                }).join('') + '</div>'
+              : '<p class="empty-line">Пока начислений не было — пройди викторину или отметь домашку!</p>') +
+          '</div>' +
+        '</div>' +
+        '<div class="card" style="margin-top:20px;">' +
+          '<h3 class="info-title" data-editable="shop-title">🎨 Магазин наград за баллы</h3>' +
+          '<p class="info-desc">Покупай рамки аватара, уникальные статусы и темы оформления сайта — активируются мгновенно!</p>' +
+          '<div class="shop-grid" id="shop-grid"></div>' +
+        '</div>' +
+        '<div class="danger-zone">' +
+          '<b>⚠️ Опасная зона</b>' +
+          '<p class="info-desc">Удаление аккаунта необратимо: пропадут профиль, баллы и все покупки.</p>' +
+          '<button class="btn btn-danger btn-sm" id="pf-delete-btn">🗑️ Удалить мой аккаунт</button>' +
         '</div>';
+
+      fillClassSelect(document.getElementById('pf-grade'), document.getElementById('pf-letter'));
+      document.getElementById('pf-grade').value = String(user.grade);
+      document.getElementById('pf-letter').value = user.letter;
+      renderPfAvatars();
+      renderShop();
     }
 
+    const SHOP_ITEMS = [
+      { id: 'frame-gold', kind: 'frame', name: 'Золотой контур', icon: '🥇', price: 30, desc: 'Рамка аватара' },
+      { id: 'frame-neon', kind: 'frame', name: 'Неоновый киберпанк', icon: '💠', price: 50, desc: 'Рамка аватара' },
+      { id: 'frame-emerald', kind: 'frame', name: 'Изумрудный лидер', icon: '🟢', price: 40, desc: 'Рамка аватара' },
+      { id: 'status-python', kind: 'status', name: '⚡ Гений Python', icon: '🐍', price: 35, value: '⚡ Гений Python', desc: 'Уникальный статус' },
+      { id: 'status-pride', kind: 'status', name: '🏆 Гордость Лицея 37', icon: '🏆', price: 45, value: '🏆 Гордость Лицея 37', desc: 'Уникальный статус' },
+      { id: 'status-activist', kind: 'status', name: '🔥 Активист Лицея', icon: '🔥', price: 30, value: '🔥 Активист Лицея', desc: 'Уникальный статус' },
+      { id: 'theme-light', kind: 'theme', name: 'Светлая классика', icon: '☀️', price: 0, value: 'light', desc: 'Тема всего сайта' },
+      { id: 'theme-neon', kind: 'theme', name: 'Ночной неон', icon: '🌃', price: 60, value: 'neon', desc: 'Тема всего сайта' },
+      { id: 'theme-tatar', kind: 'theme', name: 'Изумрудный Татарстан', icon: '💚', price: 50, value: 'tatar', desc: 'Тема всего сайта' }
+    ];
+
+    function frameClass(id) {
+      if (id === 'frame-gold') return 'frame-gold';
+      if (id === 'frame-neon') return 'frame-neon';
+      if (id === 'frame-emerald') return 'frame-emerald';
+      return '';
+    }
+
+    function displayStatus(user) {
+      if (user.customStatus) return user.customStatus;
+      const st = statusFor(user.points || 0);
+      return st.icon + ' ' + st.title;
+    }
+
+    function renderPfAvatars() {
+      const wrap = document.getElementById('pf-avatars');
+      const user = getCurrentUser();
+      if (!wrap || !user) return;
+      wrap.innerHTML = AVATAR_EMOJIS.map(function (em) {
+        const active = user.avatar && user.avatar.type === 'emoji' && user.avatar.value === em;
+        return '<button type="button" class="beast-option ch-emoji' + (active ? ' selected' : '') + '" data-pf-emoji="' + em + '"><span class="beast-emoji">' + em + '</span></button>';
+      }).join('');
+    }
+
+    function renderShop() {
+      const grid = document.getElementById('shop-grid');
+      const user = getCurrentUser();
+      if (!grid || !user) return;
+      const owned = user.owned || [];
+      const mainHtml = SHOP_ITEMS.map(function (item) {
+        const isOwned = owned.indexOf(item.id) !== -1;
+        const active = (item.kind === 'frame' && user.frame === item.id) ||
+          (item.kind === 'status' && user.customStatus === item.value) ||
+          (item.kind === 'theme' && (user.theme || 'light') === item.value);
+        let action;
+        if (!isOwned) {
+          action = '<button type="button" class="btn btn-primary btn-sm" data-shop-buy="' + item.id + '"' + ((user.points || 0) < item.price ? ' disabled' : '') + '>Купить · 💎 ' + item.price + '</button>';
+        } else if (item.kind === 'theme') {
+          action = active ? '<span class="own-badge">✅ Активна</span>' : '<button type="button" class="btn btn-outline btn-sm" data-shop-use="' + item.id + '">Активировать</button>';
+        } else {
+          action = active ? '<span class="own-badge">✅ Надето</span>' : '<button type="button" class="btn btn-outline btn-sm" data-shop-use="' + item.id + '">Надеть</button>';
+        }
+        return '<div class="card shop-item">' +
+          '<div class="shop-ico">' + item.icon + '</div>' +
+          '<div class="shop-name">' + esc(item.name) + '</div>' +
+          '<div class="field-hint">' + esc(item.desc) + '</div>' +
+          '<div class="shop-price">💎 ' + item.price + '</div>' +
+          action +
+        '</div>';
+      }).join('');
+      const custom = dbLoad('shopCustomRewards', []);
+      const customHtml = Array.isArray(custom) ? custom.map(function (r) {
+        const stock = Number(r.stock || 0);
+        return '<div class="card shop-item">' +
+          '<div class="shop-ico">' + esc(r.icon || '🎁') + '</div>' +
+          '<div class="shop-name">' + esc(r.name) + '</div>' +
+          (r.desc ? '<div class="field-hint">' + esc(r.desc) + '</div>' : '') +
+          '<div class="shop-price">💎 ' + Number(r.price || 0) + '</div>' +
+          (stock <= 0 ? '<span class="own-badge">Распродано</span>' : '<span class="field-hint">Осталось: ' + stock + ' шт.</span>') +
+        '</div>';
+      }).join('') : '';
+      grid.innerHTML = mainHtml + customHtml;
+    }
+
+    function buyShopItem(id) {
+      const user = getCurrentUser();
+      const item = SHOP_ITEMS.find(function (x) { return x.id === id; });
+      if (!user || !item) return;
+      const users = getUsers();
+      const u = users.find(function (x) { return x.id === user.id; });
+      if (!u) return;
+      u.owned = u.owned || [];
+      if (u.owned.indexOf(id) !== -1) return;
+      if ((u.points || 0) < item.price) { toast('Не хватает баллов: нужно 💎 ' + item.price + '.', 'error'); return; }
+      u.points = (u.points || 0) - item.price;
+      u.owned.push(id);
+      u.history = u.history || [];
+      u.history.push({ ts: Date.now(), delta: -item.price, reason: '🛍️ Покупка: ' + item.name });
+      saveUsers(users);
+      useShopItem(id, true);
+      toast('🎉 Покупка совершена: ' + item.name + '!', 'success');
+    }
+
+    function useShopItem(id, justBought) {
+      const user = getCurrentUser();
+      const item = SHOP_ITEMS.find(function (x) { return x.id === id; });
+      if (!user || !item) return;
+      const users = getUsers();
+      const u = users.find(function (x) { return x.id === user.id; });
+      if (!u) return;
+      u.owned = u.owned || [];
+      if (u.owned.indexOf(id) === -1) return;
+      if (item.kind === 'frame') {
+        u.frame = justBought || u.frame !== id ? id : null;
+        toast(u.frame ? '🥇 Рамка «' + item.name + '» надета!' : 'Рамка снята.', 'success');
+      } else if (item.kind === 'status') {
+        u.customStatus = justBought || u.customStatus !== item.value ? item.value : null;
+        toast(u.customStatus ? 'Статус «' + item.name + '» активирован!' : 'Статус снят.', 'success');
+      } else if (item.kind === 'theme') {
+        u.theme = item.value;
+        document.body.className = 'theme-' + item.value;
+        toast('🎨 Тема «' + item.name + '» активирована для всего сайта!', 'success');
+      }
+      saveUsers(users);
+      updateAuthUI();
+      updateStats();
+      renderProfileTab();
+    }
+
+    function applyAvatar(avatar) {
+      const user = getCurrentUser();
+      if (!user) return;
+      const users = getUsers();
+      const u = users.find(function (x) { return x.id === user.id; });
+      if (!u) return;
+      u.avatar = avatar;
+      saveUsers(users);
+      updateAuthUI();
+      renderProfileTab();
+      toast('🖼️ Аватар обновлён!', 'success');
+    }
+
+    function saveProfileChanges() {
+      const cur = getCurrentUser();
+      if (!cur) return;
+      const users = getUsers();
+      const u = users.find(function (x) { return x.id === cur.id; });
+      if (!u) return;
+      const name = document.getElementById('pf-name').value.trim();
+      const grade = document.getElementById('pf-grade').value;
+      const letter = document.getElementById('pf-letter').value;
+      const about = document.getElementById('pf-about').value.trim();
+      const volunteer = document.getElementById('pf-vol').checked;
+      if (name.length < 2) { toast('Имя слишком короткое.', 'error'); return; }
+      if (users.some(function (x) { return x.id !== u.id && (x.name || '').toLowerCase() === name.toLowerCase(); })) {
+        toast('Это имя уже занято другим учеником.', 'error');
+        return;
+      }
+      if (!isValidClass(grade, letter)) { toast('Класс: цифра 1–11 и буква строго А, Б, В, Г или Д.', 'error'); return; }
+      u.name = name;
+      u.grade = Number(grade);
+      u.letter = String(letter).toUpperCase();
+      u.about = about;
+      u.volunteer = volunteer;
+      const vols = getList('volunteers');
+      const vi = vols.findIndex(function (v) { return v.userId === u.id; });
+      if (volunteer) {
+        const entry = vi !== -1 ? vols[vi] : { id: makeId('vol'), userId: u.id, subjects: ['Математика'], note: '', createdAt: Date.now() };
+        entry.name = u.name;
+        entry.classId = classIdOf(u.grade, u.letter);
+        entry.avatar = u.avatar;
+        entry.note = about || entry.note;
+        if (vi === -1) vols.push(entry); else vols[vi] = entry;
+        dbSave('volunteers', vols);
+      } else if (vi !== -1) {
+        vols.splice(vi, 1);
+        dbSave('volunteers', vols);
+      }
+      saveUsers(users);
+      updateAuthUI();
+      updateStats();
+      renderProfileTab();
+      renderVolunteers();
+      toast('💾 Профиль сохранён!', 'success');
+    }
+
+    function deleteMyAccount() {
+      const user = getCurrentUser();
+      if (!user) return;
+      if (!confirm('Точно удалить свой аккаунт? Это действие необратимо!')) return;
+      if (!confirm('Последнее подтверждение: удалить профиль «' + user.name + '» навсегда?')) return;
+      const users = getUsers();
+      const idx = users.findIndex(function (x) { return x.id === user.id; });
+      if (idx !== -1) users.splice(idx, 1);
+      saveUsers(users);
+      dbSave('volunteers', getList('volunteers').filter(function (v) { return v.userId !== user.id; }));
+      setSessionUserId(null);
+      document.body.className = 'theme-light';
+      updateAuthUI();
+      updateStats();
+      renderProfileTab();
+      setTab('home');
+      toast('Аккаунт удалён. Мы будем скучать! 💙', 'info');
+    }
+
+    document.getElementById('profile-box').addEventListener('click', function (e) {
+      const buyBtn = e.target.closest('[data-shop-buy]');
+      if (buyBtn) { buyShopItem(buyBtn.dataset.shopBuy); return; }
+      const useBtn = e.target.closest('[data-shop-use]');
+      if (useBtn) { useShopItem(useBtn.dataset.shopUse, false); return; }
+      if (e.target.closest('#pf-delete-btn')) { deleteMyAccount(); return; }
+      if (e.target.closest('#pf-photo-btn')) { document.getElementById('pf-photo').click(); return; }
+      const avaBtn = e.target.closest('[data-pf-emoji]');
+      if (avaBtn) { applyAvatar({ type: 'emoji', value: avaBtn.dataset.pfEmoji }); return; }
+      if (e.target.closest('#pf-save')) { saveProfileChanges(); }
+    });
+
+    document.getElementById('profile-box').addEventListener('change', async function (e) {
+      if (e.target.id !== 'pf-photo') return;
+      const f = (e.target.files || [])[0];
+      e.target.value = '';
+      if (!f) return;
+      try {
+        const dataUrl = await compressImageToAvatar(f);
+        applyAvatar({ type: 'image', value: dataUrl });
+      } catch (err) {
+        toast('Не удалось обработать фото.', 'error');
+      }
+    });
     /* ============ ШАГ 2: ГЛАВНАЯ СТРАНИЦА И МОЙ КЛАСС ============ */
 
     const BEASTS = [
@@ -3699,11 +4318,14 @@
       return String(grade) + String(letter).toUpperCase();
     }
 
-    function addPointsToUser(userId, delta) {
+    function addPointsToUser(userId, delta, reason) {
       const users = getUsers();
       const u = users.find(function (x) { return x.id === userId; });
       if (!u) return;
       u.points = (u.points || 0) + delta;
+      u.history = u.history || [];
+      u.history.push({ ts: Date.now(), delta: delta, reason: reason || 'Баллы' });
+      if (u.history.length > 100) u.history = u.history.slice(-100);
       saveUsers(users);
       updateAuthUI();
       updateStats();
@@ -5322,6 +5944,322 @@
       toast('🤝 Ты в банке взаимопомощи! Спасибо, что помогаешь!', 'success');
     });
 
+    /* ============ ШАГ 4: ИГРОВАЯ ЛИЦЕЯ 37 ============ */
+
+    const QUIZ_BANK = [
+      { q: 'В каком городе находится наш лицей №37?', answers: ['Нижнекамск', 'Казань', 'Набережные Челны', 'Альметьевск'], correct: 0 },
+      { q: 'В каком году был основан Нижнекамск?', answers: ['1966', '1955', '1979', '1990'], correct: 0 },
+      { q: 'Столица Республики Татарстан?', answers: ['Казань', 'Бугульма', 'Зеленодольск', 'Нижнекамск'], correct: 0 },
+      { q: 'Какая река протекает у Нижнекамска?', answers: ['Кама', 'Волга', 'Урал', 'Свияга'], correct: 0 },
+      { q: 'Какой крупнейший нефтехимический комбинат находится в Нижнекамске?', answers: ['Нижнекамскнефтехим', 'Газпром', 'Лукойл', 'Татнефть-уголь'], correct: 0 },
+      { q: 'Какой гигантский шинный завод работает в Нижнекамске?', answers: ['Нижнекамскшина', 'Кама-Сталь', 'Татшина-soft', 'Шинник'], correct: 0 },
+      { q: 'Какие цвета на флаге Республики Татарстан?', answers: ['Зелёный, белый, красный', 'Синий, жёлтый, белый', 'Красный, синий, чёрный', 'Бирюзовый, оранжевый, белый'], correct: 0 },
+      { q: 'Как называется башня — символ Казанского кремля?', answers: ['Башня Сююмбике', 'Спасская башня', 'Башня Сущёвская', 'Часовая башня'], correct: 0 },
+      { q: 'Какой дракон — легендарный символ Казани?', answers: ['Зилант', 'Горыныч', 'Смауг', 'Чиполлино'], correct: 0 },
+      { q: 'Национальное татарское блюдо — треугольник из теста с мясом?', answers: ['Эчпочмак', 'Плов', 'Блины', 'Пельмени'], correct: 0 },
+      { q: 'Как в Python вывести текст на экран?', answers: ['print("Привет")', 'echo "Привет"', 'console.log("Привет")', 'say("Привет")'], correct: 0 },
+      { q: 'Какой тип данных в Python хранит целые числа?', answers: ['int', 'float', 'str', 'bool'], correct: 0 },
+      { q: 'Что вернёт len("лицей") в Python?', answers: ['5', '4', '6', 'Ошибку'], correct: 0 },
+      { q: 'Какой оператор в Python даёт остаток от деления?', answers: ['%', '/', '//', '**'], correct: 0 },
+      { q: 'Как объявляется функция в Python?', answers: ['def my_func():', 'function my_func()', 'fun my_func():', 'create my_func():'], correct: 0 },
+      { q: 'С какого числа начинается индексация списков в Python?', answers: ['0', '1', '-1', 'С любого'], correct: 0 },
+      { q: 'Что делает range(5) в Python?', answers: ['Числа 0, 1, 2, 3, 4', 'Числа 1, 2, 3, 4, 5', 'Только число 5', 'Ошибку'], correct: 0 },
+      { q: 'Какой оператор — логическое «И» в Python?', answers: ['and', '&&', 'plus', 'or'], correct: 0 },
+      { q: 'С какого символа начинается комментарий в Python?', answers: ['#', '//', '--', '!!'], correct: 0 },
+      { q: 'Какой тип в Python хранит изменяемую коллекцию пар «ключ-значение»?', answers: ['dict', 'list', 'tuple', 'int'], correct: 0 },
+      { q: 'Приблизительная скорость света?', answers: ['300 000 км/с', '150 000 км/с', '1 000 000 км/с', '30 000 км/с'], correct: 0 },
+      { q: 'Какая сила притягивает тела к Земле?', answers: ['Гравитация', 'Магнитная', 'Электрическая', 'Ядерная'], correct: 0 },
+      { q: 'В чём измеряется сила тока?', answers: ['Ампер', 'Вольт', 'Ом', 'Ньютон'], correct: 0 },
+      { q: 'Какая формула выражает плотность вещества?', answers: ['ρ = m / V', 'ρ = V / m', 'ρ = m × V', 'ρ = F / m'], correct: 0 },
+      { q: 'Каким прибором измеряют напряжение?', answers: ['Вольтметр', 'Амперметр', 'Барометр', 'Спидометр'], correct: 0 },
+      { q: 'Чему равна сумма углов треугольника?', answers: ['180°', '360°', '90°', '270°'], correct: 0 },
+      { q: 'Чему приблизительно равно число π?', answers: ['3,14', '2,71', '1,62', '9,81'], correct: 0 },
+      { q: 'Корень уравнения 2x + 6 = 14?', answers: ['4', '3', '8', '10'], correct: 0 },
+      { q: 'Наименьшее простое число?', answers: ['2', '1', '0', '3'], correct: 0 },
+      { q: 'Сколько будет 15% от 200?', answers: ['30', '15', '25', '45'], correct: 0 },
+      { q: 'Сколько минут в трёх четвертях часа?', answers: ['45', '40', '50', '30'], correct: 0 },
+      { q: 'Все лицеисты носят сменную обувь. Петя — лицеист. Носит ли Петя сменку?', answers: ['Да', 'Нет', 'Неизвестно', 'Иногда'], correct: 0 },
+      { q: 'Что тяжелее: килограмм пуха или килограмм железа?', answers: ['Одинаково', 'Пух', 'Железо', 'Зависит от объема'], correct: 0 },
+      { q: 'Продолжи ряд: 2, 4, 8, 16, ...?', answers: ['32', '20', '24', '18'], correct: 0 },
+      { q: 'Если вчера была среда, какой сегодня день?', answers: ['Четверг', 'Пятница', 'Вторник', 'Суббота'], correct: 0 },
+      { q: 'Найди лишнее: круг, квадрат, треугольник, куб', answers: ['Куб', 'Круг', 'Квадрат', 'Треугольник'], correct: 0 },
+      { q: 'Кто написал «Евгения Онегина»?', answers: ['А. С. Пушкин', 'М. Ю. Лермонтов', 'Л. Н. Толстой', 'Н. А. Некрасов'], correct: 0 },
+      { q: 'Габдулла Тукай — это...', answers: ['Великий татарский поэт', 'Татарский космонавт', 'Хан Золотой Орды', 'Композитор'], correct: 0 }
+    ];
+
+    const COMPLIMENT_STICKERS = ['💖', '🌸', '⭐', '🍀', '🎈', '🤗', '🌞', '🍪'];
+
+    const BAD_WORDS = ['дурак', 'идиот', 'кретин', 'тупой', 'тупица', 'урод', 'лох', 'сдохни', 'заткнись', 'ненавижу', 'ничтожество', 'бесишь'];
+
+    let compSticker = '💖';
+    let compMode = 'open';
+    let quizRound = [];
+    let quizIndex = 0;
+    let quizScore = 0;
+    let quizLock = false;
+    let reactionState = 'idle';
+    let reactionTimer = null;
+    let reactionStart = 0;
+
+    function generateQuizRound() {
+      const pool = QUIZ_BANK.slice();
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+      }
+      return pool.slice(0, 10).map(function (q) {
+        const idx = [0, 1, 2, 3];
+        for (let i = idx.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const t = idx[i]; idx[i] = idx[j]; idx[j] = t;
+        }
+        return { q: q.q, answers: idx.map(function (i) { return q.answers[i]; }), correct: idx.indexOf(q.correct) };
+      });
+    }
+
+    window.aiGenerateQuizQuestions = async function () {
+      return generateQuizRound();
+    };
+
+    function startQuiz(questions) {
+      quizRound = questions;
+      quizIndex = 0;
+      quizScore = 0;
+      document.getElementById('quiz-intro').style.display = 'none';
+      document.getElementById('quiz-result').style.display = 'none';
+      document.getElementById('quiz-area').style.display = 'block';
+      renderQuizQuestion();
+    }
+
+    function renderQuizQuestion() {
+      const q = quizRound[quizIndex];
+      document.getElementById('quiz-progress-fill').style.width = Math.round(quizIndex / quizRound.length * 100) + '%';
+      document.getElementById('quiz-counter').textContent = 'Вопрос ' + (quizIndex + 1) + ' из ' + quizRound.length + ' · ✅ ' + quizScore;
+      document.getElementById('quiz-question').textContent = q.q;
+      document.getElementById('quiz-hint').textContent = '';
+      const wrap = document.getElementById('quiz-answers');
+      wrap.innerHTML = q.answers.map(function (a, i) {
+        return '<button type="button" class="quiz-answer" data-qi="' + i + '">' + esc(a) + '</button>';
+      }).join('');
+      quizLock = false;
+    }
+
+    document.getElementById('quiz-answers').addEventListener('click', function (e) {
+      const btn = e.target.closest('.quiz-answer');
+      if (!btn || quizLock) return;
+      quizLock = true;
+      const q = quizRound[quizIndex];
+      const picked = Number(btn.dataset.qi);
+      this.querySelectorAll('.quiz-answer').forEach(function (b, i) {
+        b.disabled = true;
+        if (i === q.correct) b.classList.add('correct');
+        else if (i === picked) b.classList.add('wrong');
+      });
+      if (picked === q.correct) {
+        quizScore++;
+        document.getElementById('quiz-hint').textContent = '✅ Верно! +10 баллов';
+        const user = getCurrentUser();
+        if (user) addPointsToUser(user.id, 10, '🧠 Викторина: правильный ответ');
+      } else {
+        document.getElementById('quiz-hint').textContent = '❌ Не совсем... Правильный ответ подсвечен зелёным.';
+      }
+      setTimeout(function () {
+        quizIndex++;
+        if (quizIndex >= quizRound.length) finishQuiz();
+        else renderQuizQuestion();
+      }, 1100);
+    });
+
+    function finishQuiz() {
+      document.getElementById('quiz-area').style.display = 'none';
+      const res = document.getElementById('quiz-result');
+      res.style.display = 'block';
+      const user = getCurrentUser();
+      res.innerHTML =
+        '<div class="quiz-result-box">' +
+          '<div style="font-size:2.2rem;">' + (quizScore >= 8 ? '🏆' : quizScore >= 5 ? '🎯' : '💪') + '</div>' +
+          '<h3>Результат: ' + quizScore + ' из ' + quizRound.length + '</h3>' +
+          '<p class="info-desc">' + (user ? 'Начислено 💎 +' + (quizScore * 10) + ' баллов в твой профиль!' : 'Войди в аккаунт, чтобы получать баллы за ответы!') + '</p>' +
+          '<button class="btn btn-primary" id="quiz-again-btn">🔄 Ещё раунд</button>' +
+        '</div>';
+      document.getElementById('quiz-again-btn').addEventListener('click', function () {
+        startQuiz(generateQuizRound());
+      });
+    }
+
+    document.getElementById('quiz-start-btn').addEventListener('click', function () { startQuiz(generateQuizRound()); });
+    document.getElementById('ai-quiz-btn').addEventListener('click', async function () {
+      const btn = this;
+      btn.disabled = true;
+      btn.textContent = '🤖 ИИ-Наставник 37 готовит вопросы...';
+      let round = null;
+      try {
+        if (typeof window.aiGenerateQuizQuestions === 'function') round = await window.aiGenerateQuizQuestions();
+      } catch (e) { round = null; }
+      if (!Array.isArray(round) || round.length < 5 || !round.every(function (q) { return q && q.q && Array.isArray(q.answers) && q.answers.length === 4 && typeof q.correct === 'number'; })) {
+        round = generateQuizRound();
+      }
+      btn.disabled = false;
+      btn.textContent = '🤖 Сгенерировать свежий раунд через ИИ-Наставника 37';
+      startQuiz(round);
+    });
+
+    /* ---- Тренажёр реакции ---- */
+
+    function renderReactionRecords() {
+      const wrap = document.getElementById('reaction-records');
+      if (!wrap) return;
+      const records = getList('reaction').slice().sort(function (a, b) { return a.ms - b.ms; }).slice(0, 10);
+      if (!records.length) {
+        wrap.innerHTML = '<p class="empty-line">Рекордов пока нет — стань первым в таблице!</p>';
+        return;
+      }
+      const medals = ['🥇', '🥈', '🥉'];
+      wrap.innerHTML = '<table class="record-table"><thead><tr><th>#</th><th>Ученик</th><th>Класс</th><th>Время</th><th>Дата</th></tr></thead><tbody>' +
+        records.map(function (r, i) {
+          return '<tr><td>' + (medals[i] || (i + 1)) + '</td><td>' + esc(r.name) + '</td><td>' + esc(r.classId || '') + '</td><td><b>' + Number(r.ms) + ' мс</b></td><td>' + fmtDate(r.date) + '</td></tr>';
+        }).join('') + '</tbody></table>';
+    }
+
+    document.getElementById('reaction-zone').addEventListener('click', function () {
+      if (reactionState === 'idle') {
+        reactionState = 'waiting';
+        this.className = 'reaction-zone waiting';
+        this.textContent = 'Приготовься... ЖДИ зелёный! 🟡';
+        const self = this;
+        reactionTimer = setTimeout(function () {
+          reactionState = 'ready';
+          reactionStart = Date.now();
+          self.className = 'reaction-zone ready';
+          self.textContent = 'ЖМИ! ⚡';
+        }, 1400 + Math.floor(Math.random() * 2600));
+      } else if (reactionState === 'waiting') {
+        clearTimeout(reactionTimer);
+        reactionState = 'idle';
+        this.className = 'reaction-zone idle';
+        this.textContent = 'Фальстарт! 😅 Нажми, чтобы попробовать снова';
+        const res = document.getElementById('reaction-result');
+        res.textContent = 'Рано! Дождись зелёного света.';
+        res.style.color = 'var(--danger)';
+      } else if (reactionState === 'ready') {
+        const ms = Date.now() - reactionStart;
+        reactionState = 'idle';
+        this.className = 'reaction-zone result';
+        this.textContent = ms + ' мс — нажми, чтобы сыграть ещё';
+        handleReactionResult(ms);
+      }
+    });
+
+    function handleReactionResult(ms) {
+      const res = document.getElementById('reaction-result');
+      const user = getCurrentUser();
+      if (!user) {
+        res.style.color = '';
+        res.textContent = '⚡ ' + ms + ' мс — хороший результат! Войди, чтобы попасть в таблицу рекордов.';
+        return;
+      }
+      const list = getList('reaction');
+      const best = list.length ? Math.min.apply(null, list.map(function (r) { return r.ms; })) : Infinity;
+      const isRecord = ms < best;
+      list.push({ id: makeId('rec'), userId: user.id, name: user.name, classId: classIdOf(user.grade, user.letter), ms: ms, date: todayStr() });
+      list.sort(function (a, b) { return a.ms - b.ms; });
+      dbSave('reaction', list.slice(0, 50));
+      renderReactionRecords();
+      if (isRecord) {
+        addPointsToUser(user.id, 15, '⚡ Рекорд реакции: ' + ms + ' мс');
+        res.style.color = 'var(--accent)';
+        res.textContent = '⚡ ' + ms + ' мс — НОВЫЙ РЕКОРД ЛИЦЕЯ! +15 баллов в профиль!';
+      } else {
+        res.style.color = '';
+        res.textContent = '⚡ ' + ms + ' мс — отлично! Рекорд лицея пока: ' + best + ' мс.';
+      }
+    }
+
+    /* ---- Почта комплиментов ---- */
+
+    function renderStickers() {
+      const wrap = document.getElementById('comp-stickers');
+      if (!wrap) return;
+      wrap.innerHTML = COMPLIMENT_STICKERS.map(function (s) {
+        return '<button type="button" class="beast-option ch-emoji' + (s === compSticker ? ' selected' : '') + '" data-sticker="' + s + '"><span class="beast-emoji">' + s + '</span></button>';
+      }).join('');
+    }
+
+    document.getElementById('comp-stickers').addEventListener('click', function (e) {
+      const btn = e.target.closest('[data-sticker]');
+      if (!btn) return;
+      compSticker = btn.dataset.sticker;
+      renderStickers();
+    });
+
+    function setCompMode(mode) {
+      compMode = mode;
+      document.getElementById('comp-mode-open').classList.toggle('active', mode === 'open');
+      document.getElementById('comp-mode-anon').classList.toggle('active', mode === 'anon');
+    }
+
+    document.getElementById('comp-mode-open').addEventListener('click', function () { setCompMode('open'); });
+    document.getElementById('comp-mode-anon').addEventListener('click', function () { setCompMode('anon'); });
+
+    function fillComplimentTargets() {
+      const sel = document.getElementById('comp-to');
+      if (!sel) return;
+      const prev = sel.value;
+      const users = getUsers().slice().sort(function (a, b) { return (a.name || '').localeCompare(b.name || '', 'ru'); });
+      sel.innerHTML = '<option value="all">🎁 Всему Лицею №37</option>' +
+        users.map(function (u) {
+          return '<option value="' + esc(u.id) + '">' + esc(u.name) + ' · ' + esc(classIdOf(u.grade, u.letter)) + '</option>';
+        }).join('');
+      if (prev) sel.value = prev;
+    }
+
+    function containsBadWord(text) {
+      const t = ' ' + text.toLowerCase().replace(/[^а-яёa-z0-9]+/gi, ' ') + ' ';
+      return BAD_WORDS.some(function (w) { return t.indexOf(w) !== -1; });
+    }
+
+    document.getElementById('comp-send').addEventListener('click', function () {
+      const text = document.getElementById('comp-text').value.trim();
+      if (text.length < 5) { toast('Напиши тёплое пожелание (минимум 5 символов).', 'error'); return; }
+      if (containsBadWord(text)) { toast('В Почте комплиментов только добрые слова 💙 — переформулируй, пожалуйста.', 'error'); return; }
+      const toId = document.getElementById('comp-to').value;
+      let toName = 'Всему Лицею №37';
+      if (toId !== 'all') {
+        const pu = getUserById(toId);
+        if (!pu) { toast('Получатель не найден.', 'error'); return; }
+        toName = pu.name;
+      }
+      const user = getCurrentUser();
+      const list = getList('compliments');
+      list.push({
+        id: makeId('comp'), toId: toId, toName: toName,
+        fromName: compMode === 'open' && user ? user.name : 'Тайный друг 🕵️',
+        fromClass: compMode === 'open' && user ? classIdOf(user.grade, user.letter) : '',
+        sticker: compSticker, text: text, ts: Date.now()
+      });
+      dbSave('compliments', list);
+      document.getElementById('comp-text').value = '';
+      renderCompliments();
+      toast('💌 Открытка отправлена: ' + toName + '!', 'success');
+    });
+
+    function renderCompliments() {
+      const wrap = document.getElementById('compliment-list');
+      if (!wrap) return;
+      const items = getList('compliments').slice().sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); }).slice(0, 30);
+      wrap.innerHTML = items.length
+        ? items.map(function (c) {
+            return '<div class="compliment-card">' +
+              '<div class="comp-sticker">' + esc(c.sticker) + '</div>' +
+              '<div style="min-width:0;">' +
+                '<div class="comp-head"><b>' + esc(c.toName) + '</b><span class="field-hint">от ' + esc(c.fromName) + (c.fromClass ? ' · ' + esc(c.fromClass) : '') + ' · ' + fmtDateTime(c.ts) + '</span></div>' +
+                '<div style="font-size:0.9rem;">' + esc(c.text) + '</div>' +
+              '</div>' +
+            '</div>';
+          }).join('')
+        : '<p class="empty-line">Открыток пока нет — отправь первую и подними кому-то настроение!</p>';
+    }
+
     /* ============ ЗАПУСК ============ */
     async function boot() {
       fillClassSelects();
@@ -5355,6 +6293,10 @@
       renderCapsules();
       updateLikeCounter();
       setIdeaMode('open');
+      renderStickers();
+      fillComplimentTargets();
+      renderCompliments();
+      renderReactionRecords();
       renderMarket();
       renderVolunteerChecks();
       renderSocial();
