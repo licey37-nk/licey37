@@ -15,40 +15,15 @@ HEADERS = {
     "Content-Type": "application/json",
 }
 
-log_lines = []
-
-def log(msg):
-    print(msg)
-    log_lines.append(msg)
-
-def make_request(url, method="GET", data=None):
-    req = urllib.request.Request(url, method=method, headers=HEADERS)
-    if data is not None:
-        req.data = json.dumps(data).encode("utf-8")
+def make_request(url, data):
+    req = urllib.request.Request(url, data=json.dumps(data).encode("utf-8"), headers=HEADERS, method="POST")
     try:
-        with urllib.request.urlopen(req, timeout=120) as resp:
+        with urllib.request.urlopen(req, timeout=180) as resp:
             return resp.status, resp.read().decode("utf-8", errors="replace")
     except urllib.error.HTTPError as e:
         return e.code, e.read().decode("utf-8", errors="replace")
     except Exception as e:
         return 0, str(e)
-
-def extract_json(text):
-    if not text:
-        return None
-    try:
-        return json.loads(text)
-    except:
-        pass
-    patterns = [r'```(?:json)?\s*(\{.*?\})\s*```', r'(\{.*\})']
-    for pat in patterns:
-        match = re.search(pat, text, re.DOTALL)
-        if match:
-            try:
-                return json.loads(match.group(1))
-            except:
-                continue
-    return None
 
 def smart_replace(content, old_block, new_block):
     if old_block in content:
@@ -73,17 +48,14 @@ def main():
 
     prompt = (
         "Ты — Senior Fullstack-разработчик портала МБОУ «Лицей №37» г. Нижнекамск.\n"
-        "Внимательно изучи текущий код `index.html` и ДОПОЛНИ его всеми запрошенными функциями через инструмент `edits` (НИЧЕГО не удаляй из уже работающего кода!).\n"
-        "Для вставки нового HTML-блока бери в `old` последние 3–5 строк перед `</body>`, а для добавления нового JS-кода бери в `old` последние 3–5 строк перед `</script>`.\n\n"
-        "Верни СТРОГО валидный JSON без лишнего текста:\n"
-        "{\n"
-        "  \"reply\": \"подробный отчёт на русском, какие функции добавлены\",\n"
-        "  \"files\": [],\n"
-        "  \"edits\": [{\"path\": \"index.html\", \"old\": \"точный фрагмент из конца index.html\", \"new\": \"обновлённый фрагмент с новым кодом\"}]\n"
-        "}\n\n"
-        f"Текущий index.html:\n```html\n{current_html}\n```\n\n"
-        f"Задача:\n{ISSUE_BODY}\n"
-        "Верни только JSON."
+        "НЕ ИСПОЛЬЗУЙ JSON! Возвращай изменения строго в специальных XML-тегах:\n"
+        "1. Для полной перезаписи или создания файла:\n"
+        "<FILE path=\"index.html\">\nполный код файла без markdown-обёртки\n</FILE>\n\n"
+        "2. Для точечного редактирования без потери старого кода:\n"
+        "<EDIT path=\"index.html\">\n<OLD>\nточные 3-5 строк из существующего кода\n</OLD>\n<NEW>\nновые строки\n</NEW>\n</EDIT>\n\n"
+        "В конце напиши 2–3 предложения отчёта на русском языке.\n\n"
+        f"Текущий index.html (строк: {len(current_html.splitlines())}):\n{current_html}\n\n"
+        f"Задача пользователя:\n{ISSUE_BODY}"
     )
 
     payload = {
@@ -94,44 +66,51 @@ def main():
     }
 
     for base in BASE_URLS:
-        status, body = make_request(f"{base}/chat/completions", "POST", data=payload)
-        log(f"[POST] {base} -> {status}")
+        status, body = make_request(f"{base}/chat/completions", payload)
         if status == 200:
-            try:
-                content = json.loads(body)["choices"]["message"]["content"]
-                obj = extract_json(content)
-                if obj:
-                    reply = obj.get("reply", "Готово.")
-                    edited, failed = [], []
-                    for ed in obj.get("edits", []):
-                        path = ed.get("path", "").strip()
-                        old_txt = ed.get("old", "")
-                        new_txt = ed.get("new", "")
-                        if path and os.path.exists(path) and old_txt:
-                            with open(path, "r", encoding="utf-8") as fh:
-                                file_data = fh.read()
-                            updated, ok = smart_replace(file_data, old_txt, new_txt)
-                            if ok:
-                                with open(path, "w", encoding="utf-8") as fh:
-                                    fh.write(updated)
-                                edited.append(path)
-                            else:
-                                failed.append(old_txt[:60])
-                    rep = f"🤖 **{reply}**\n\n"
-                    if edited:
-                        rep += "✅ **Успешно обновлены файлы:** " + ", ".join(f"`{x}`" for x in edited)
-                    if failed:
-                        rep += "\n⚠️ **Не найдены фрагменты:** " + ", ".join(f"`{x}...`" for x in failed)
-                    with open("r.txt", "w", encoding="utf-8") as f:
-                        f.write(rep)
-                    return
-            except Exception as e:
-                log(f"Ошибка разбора ответа: {e}")
-        else:
-            log(f"Ответ сервера: {body[:300]}")
+            content = json.loads(body)["choices"][0]["message"]["content"]
+            created, edited, failed = [], [], []
+
+            for m in re.finditer(r'<FILE\s+path=["\']([^"\']+)["\']>\s*(.*?)\s*</FILE>', content, re.DOTALL):
+                path, code = m.group(1).strip(), m.group(2)
+                code = re.sub(r'^```[a-zA-Z]*\s*|\s*```$', '', code.strip())
+                if path and not path.startswith("/") and ".." not in path:
+                    if os.path.dirname(path):
+                        os.makedirs(os.path.dirname(path), exist_ok=True)
+                    with open(path, "w", encoding="utf-8") as fh:
+                        fh.write(code)
+                    created.append(path)
+
+            for m in re.finditer(r'<EDIT\s+path=["\']([^"\']+)["\']>\s*<OLD>\s*(.*?)\s*</OLD>\s*<NEW>\s*(.*?)\s*</NEW>\s*</EDIT>', content, re.DOTALL):
+                path, old_t, new_t = m.group(1).strip(), m.group(2), m.group(3)
+                if path and os.path.exists(path):
+                    with open(path, "r", encoding="utf-8") as fh:
+                        f_data = fh.read()
+                    upd, ok = smart_replace(f_data, old_t, new_t)
+                    if ok:
+                        with open(path, "w", encoding="utf-8") as fh:
+                            fh.write(upd)
+                        edited.append(path)
+                    else:
+                        failed.append(old_t[:50])
+
+            summary = re.sub(r'<(FILE|EDIT).*?</\1>', '', content, flags=re.DOTALL).strip()
+            rep = f"🤖 **Готово!** {summary[:500]}\n\n"
+            if created:
+                rep += "✅ **Перезаписаны/созданы:** " + ", ".join(f"`{x}`" for x in created) + "\n"
+            if edited:
+                rep += "✅ **Точечно обновлены:** " + ", ".join(f"`{x}`" for x in edited) + "\n"
+            if failed:
+                rep += "⚠️ **Не совпали блоки:** " + ", ".join(f"`{x}...`" for x in failed) + "\n"
+            if not created and not edited and not failed:
+                rep += f"⚠️ Модель не вернула теги `<FILE>` или `<EDIT>`. Начало ответа:\n```\n{content[:400]}\n```"
+
+            with open("r.txt", "w", encoding="utf-8") as f:
+                f.write(rep)
+            return
 
     with open("r.txt", "w", encoding="utf-8") as f:
-        f.write("❌ Не удалось выполнить запрос:\n" + "\n".join(log_lines))
+        f.write("❌ Ошибка связи с сервером Zveno AI.")
 
 if __name__ == "__main__":
     main()
