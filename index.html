@@ -140,7 +140,36 @@
       <button class="apply-btn">✍️ Подать заявку</button>
     </section>
     
-    <section class="ideas-section">
+    <section class="social-network-section">
+  <h2>💬 Соцсеть Лицея №37</h2>
+  <div class="social-controls">
+    <button id="create-post-btn">➕ Создать пост</button>
+    <input type="text" id="social-search" placeholder="Поиск по имени/классу...">
+  </div>
+  <div id="social-feed"></div>
+</section>
+
+<section class="channels-section">
+  <h2>📢 Каналы и Сообщества Лицея №37</h2>
+  <button id="create-channel-btn">➕ Создать канал / сообщество</button>
+  <div id="channels-list"></div>
+</section>
+
+<section class="help-section">
+  <h2>🤝 Банк взаимопомощи учеников</h2>
+  <select id="help-subject">
+    <option value="all">Все предметы</option>
+    <option value="math">Математика</option>
+    <option value="physics">Физика</option>
+    <option value="python">Python/Информатика</option>
+    <option value="russian">Русский язык</option>
+    <option value="english">Английский</option>
+    <option value="chemistry">Химия</option>
+  </select>
+  <div id="volunteers-list"></div>
+</section>
+
+<section class="ideas-section">
   <h2>📮 Ящик идей и предложений Лицея №37</h2>
 </section>
 
@@ -234,6 +263,12 @@ const SUPABASE_ANON_KEY = "sb_publishable_q60_3k3m7l3G8w8y7t30FA_2_jD4H1M";
 // Tables
 const MARKETPLACE_LISTINGS = 'marketplace_listings';
 const MARKETPLACE_CHATS = 'marketplace_chats';
+const SOCIAL_POSTS = 'social_posts';
+const SOCIAL_COMMENTS = 'social_comments';
+const SOCIAL_LIKES = 'social_likes';
+const SOCIAL_CHANNELS = 'social_channels';
+const SOCIAL_SUBSCRIPTIONS = 'social_subscriptions';
+const HELP_VOLUNTEERS = 'help_volunteers';
 const SITE_CONTENT = 'site_content';
 const ADMIN_USERS = 'admin_users';
 const SCRIPTS_LIBRARY = 'scripts_library';
@@ -457,6 +492,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Initial load
   loadMarketplace();
+  loadSocialFeed();
+  loadChannels();
+  loadVolunteers();
   
   // Admin panel logic
   const adminBtns = document.querySelectorAll('.admin-btn');
@@ -602,6 +640,124 @@ document.addEventListener('DOMContentLoaded', function() {
           document.querySelector(`#${btn.dataset.tab}-tab`).style.display = 'block';
         });
       });
+      
+      // Social network logic
+      const socialFeed = document.getElementById('social-feed');
+      const createPostBtn = document.getElementById('create-post-btn');
+      const socialSearch = document.getElementById('social-search');
+      
+      async function loadSocialFeed() {
+        const { data: posts, error } = await supabase
+          .from(SOCIAL_POSTS)
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (error) {
+          console.error('Error loading posts:', error);
+          return;
+        }
+        
+        renderSocialFeed(posts);
+      }
+      
+      function renderSocialFeed(posts) {
+        socialFeed.innerHTML = posts.map(post => `
+          <div class="post-card" data-id="${post.id}">
+            <div class="post-header">
+              <img src="${post.author_avatar}" alt="Avatar" class="post-avatar">
+              <div class="post-info">
+                <h3>${post.author_name}</h3>
+                <p class="post-class">${post.class}</p>
+              </div>
+              ${post.user_id === supabase.auth.user()?.id ? `
+                <div class="post-controls">
+                  <button class="edit-post-btn" data-id="${post.id}">✏️ Изменить</button>
+                  <button class="delete-post-btn" data-id="${post.id}">🗑️ Удалить</button>
+                </div>
+              ` : ''}
+            </div>
+            <div class="post-content">
+              ${post.text}
+              ${post.images.map(img => `<img src="${img}" alt="Post image" class="post-image">`).join('')}
+            </div>
+            <div class="post-footer">
+              <button class="like-btn" data-id="${post.id}">❤️ ${post.likes_count}</button>
+              <button class="comment-btn" data-id="${post.id}">💬 Комментарии</button>
+            </div>
+            <div class="comments-section" style="display: none;">
+              <div class="comments-list"></div>
+              <form class="comment-form">
+                <textarea placeholder="Ваш комментарий"></textarea>
+                <button type="submit">Отправить</button>
+              </form>
+            </div>
+          </div>
+        `).join('');
+      }
+      
+      // Channels logic
+      const channelsList = document.getElementById('channels-list');
+      const createChannelBtn = document.getElementById('create-channel-btn');
+      
+      async function loadChannels() {
+        const { data: channels, error } = await supabase
+          .from(SOCIAL_CHANNELS)
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (error) {
+          console.error('Error loading channels:', error);
+          return;
+        }
+        
+        renderChannels(channels);
+      }
+      
+      function renderChannels(channels) {
+        channelsList.innerHTML = channels.map(channel => `
+          <div class="channel-card" data-id="${channel.id}">
+            <img src="${channel.avatar}" alt="Channel avatar" class="channel-avatar">
+            <div class="channel-info">
+              <h3>${channel.name}</h3>
+              <p>${channel.description}</p>
+              <p>Подписчики: ${channel.subscribers_count}</p>
+              <button class="subscribe-btn" data-id="${channel.id}">${channel.is_subscribed ? 'Отписаться' : 'Подписаться'}</button>
+            </div>
+          </div>
+        `).join('');
+      }
+      
+      // Volunteers logic
+      const volunteersList = document.getElementById('volunteers-list');
+      const helpSubject = document.getElementById('help-subject');
+      
+      async function loadVolunteers() {
+        const { data: volunteers, error } = await supabase
+          .from(HELP_VOLUNTEERS)
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (error) {
+          console.error('Error loading volunteers:', error);
+          return;
+        }
+        
+        renderVolunteers(volunteers);
+      }
+      
+      function renderVolunteers(volunteers) {
+        volunteersList.innerHTML = volunteers.map(volunteer => `
+          <div class="volunteer-card" data-id="${volunteer.id}">
+            <img src="${volunteer.avatar}" alt="Volunteer avatar" class="volunteer-avatar">
+            <div class="volunteer-info">
+              <h3>${volunteer.name}</h3>
+              <p>Класс: ${volunteer.class}</p>
+              <p>Предметы: ${volunteer.subjects.join(', ')}</p>
+              <button class="help-btn" data-id="${volunteer.id}">💬 Попросить помощи</button>
+            </div>
+          </div>
+        `).join('');
+      }
       
       // Event listeners for modals
       // ...
