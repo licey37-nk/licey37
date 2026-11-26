@@ -351,5 +351,80 @@
       });
     });
   </script>
+
+  <div id="ai-mentor-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 999;">
+    <button id="ai-mentor-toggle" style="padding: 0.75rem 1.25rem; border-radius: var(--radius); background-color: var(--primary); color: white; border: none; cursor: pointer; box-shadow: var(--shadow);">🤖 ИИ-Наставник 37</button>
+    <div id="ai-mentor-chat" style="display: none; position: fixed; bottom: 80px; right: 20px; width: 350px; background-color: white; border-radius: var(--radius); box-shadow: var(--shadow);">
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid var(--bg);">
+        <button id="memory-card-btn" style="background: none; border: none; cursor: pointer;">🧠 Карточка памяти</button>
+        <button id="close-chat-btn" style="background: none; border: none; cursor: pointer; font-size: 1.25rem;">✕</button>
+      </div>
+      <div id="ai-chat-messages" style="padding: 1rem; height: 300px; overflow-y: auto;"></div>
+      <div style="padding: 1rem; border-top: 1px solid var(--bg);">
+        <input id="ai-chat-input" type="text" placeholder="Ваше сообщение..." style="width: 100%; padding: 0.5rem; border-radius: var(--radius); border: 1px solid var(--bg);">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const aiMentorWidget = document.getElementById('ai-mentor-widget');
+    const aiMentorToggle = document.getElementById('ai-mentor-toggle');
+    const aiMentorChat = document.getElementById('ai-mentor-chat');
+    const closeChatBtn = document.getElementById('close-chat-btn');
+    const memoryCardBtn = document.getElementById('memory-card-btn');
+    const aiChatMessages = document.getElementById('ai-chat-messages');
+    const aiChatInput = document.getElementById('ai-chat-input');
+
+    aiMentorToggle.addEventListener('click', () => {
+      aiMentorChat.style.display = aiMentorChat.style.display === 'none' ? 'block' : 'none';
+    });
+
+    closeChatBtn.addEventListener('click', () => {
+      aiMentorChat.style.display = 'none';
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!aiMentorWidget.contains(event.target)) {
+        aiMentorChat.style.display = 'none';
+      }
+    });
+
+    memoryCardBtn.addEventListener('click', () => {
+      const facts = JSON.parse(localStorage.getItem('ai_medical_facts') || '[]');
+      aiChatMessages.innerHTML = facts.map(fact => `<div>${fact}</div>`).join('');
+    });
+
+    aiChatInput.addEventListener('keypress', async (event) => {
+      if (event.key === 'Enter') {
+        const message = aiChatInput.value.trim();
+        if (message) {
+          aiChatMessages.innerHTML += `<div>Вы: ${message}</div>`;
+          aiChatInput.value = '';
+
+          const response = await fetch('https://r.jina.ai/https://html.duckduckgo.com/html/?q=' + encodeURIComponent(message));
+          const data = await response.text();
+          aiChatMessages.innerHTML += `<div>ИИ: ${data}</div>`;
+        }
+      }
+    });
+
+    const filesToLoad = [
+      'omni_brain', 'dataset.txt', 'b1.txt', 'b2.txt', 'b3.txt', 'b4.txt', 'b5.txt', 'b6.txt', 'b7.txt', 'b8.txt', 'b9.txt', 'b10.txt',
+      'b11.txt', 'b12.txt', 'b13.txt', 'b14.txt', 'b15.txt', 'b16.txt', 'b17.txt', 'b18.txt', 'b19.txt', 'b20.txt', 'b21.txt', 'b22.txt',
+      'b23.txt', 'b24.txt', 'b25.txt', 'b26.txt', 'b27.txt', 'b28.txt', 'b29.txt', 'b30.txt', 'b31.txt', 'b32.txt', 'b33.txt', 'b34.txt',
+      'b35.txt', 'b36.txt', 'b37.txt', 'b38.txt', 'b39.txt', 'b40.txt'
+    ];
+
+    filesToLoad.forEach(file => {
+      fetch(file)
+        .then(response => response.text())
+        .then(data => {
+          // Process the data as needed
+        })
+        .catch(() => {
+          // Ignore 404 errors
+        });
+    });
+  </script>
 </body>
 </html>
