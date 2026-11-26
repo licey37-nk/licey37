@@ -3086,6 +3086,36 @@
     body.theme-neon .wire-user, body.theme-neon .wire-node, body.theme-neon .chm-sec { background:rgba(15,23,42,0.65); border-color:rgba(56,189,248,0.35); }
     body.theme-tatar .wire-user, body.theme-tatar .wire-node, body.theme-tatar .chm-sec { background:#fff; border-color:#a7f3d0; }
     @media (max-width:640px) { .wire-cols { gap:40px; } .broadcast-inner { padding:12px; } }
+    .wg-palette { display:grid; grid-template-columns:repeat(10, 1fr); gap:6px; margin-top:8px; }
+    .wg-color { width:100%; aspect-ratio:1; border-radius:8px; border:2px solid rgba(15,23,42,0.08); cursor:pointer; transition:transform 0.12s; padding:0; }
+    .wg-color:hover { transform:scale(1.15); }
+    .wg-color.selected { border-color:#1d4ed8; box-shadow:0 0 0 3px rgba(29,78,216,0.25); }
+    .text-widget { display:inline-block; margin:4px 6px; cursor:pointer; line-height:1.25; max-width:100%; word-break:break-word; }
+    .tw-float { position:fixed; bottom:90px; right:20px; z-index:900; max-width:260px; text-align:center; }
+    .wire-inspector { margin-top:10px; min-height:20px; }
+    .wire-insp-card { background:rgba(59,130,246,0.08); border:1.5px solid rgba(59,130,246,0.35); border-radius:14px; padding:12px 14px; }
+    .wire-insp-card b { font-size:0.9rem; }
+    .wire-insp-card p { margin:6px 0; font-size:0.85rem; }
+    .wire-insp-status { display:inline-block; padding:2px 10px; border-radius:999px; font-size:0.75rem; font-weight:700; }
+    .wire-insp-status.on { background:#dcfce7; color:#15803d; }
+    .wire-insp-status.off { background:#fee2e2; color:#b91c1c; }
+    .wire-insp-list { margin:6px 0 0; padding-left:18px; font-size:0.8rem; color:#334155; }
+    .wave-chart { position:relative; margin-top:8px; }
+    .wave-chart svg { width:100%; height:auto; display:block; }
+    .wline { fill:none; stroke:#3b82f6; stroke-width:3.5; stroke-linecap:round; stroke-linejoin:round; filter:drop-shadow(0 3px 6px rgba(59,130,246,0.35)); }
+    .wgrid { stroke:rgba(100,116,139,0.18); stroke-width:1; }
+    .wgrid-txt { fill:#64748b; font-size:11px; font-family:Inter, sans-serif; }
+    .wave-dot { fill:#fff; stroke:#3b82f6; stroke-width:2.5; cursor:pointer; filter:drop-shadow(0 0 5px rgba(59,130,246,0.8)); transition:r 0.12s; }
+    .wave-dot:hover { r:7; }
+    .warea { opacity:0.9; }
+    .wave-tip { position:absolute; transform:translateX(-50%); background:#0f172a; color:#fff; padding:6px 12px; border-radius:10px; font-size:0.78rem; pointer-events:none; white-space:nowrap; box-shadow:0 8px 20px rgba(15,23,42,0.3); z-index:5; }
+    .wg-script { margin:8px 0; border:1px solid #e2e8f0; border-radius:12px; padding:8px 12px; }
+    .wg-script summary { cursor:pointer; font-weight:600; font-size:0.88rem; }
+    .wg-script textarea { width:100%; margin-top:6px; font-family:monospace; font-size:0.8rem; }
+    @media (max-width: 640px) {
+      .wg-palette { grid-template-columns:repeat(6, 1fr); }
+      .tw-float { bottom:80px; right:12px; max-width:200px; }
+    }
   </style>
 </head>
 <body class="theme-light">
@@ -3112,6 +3142,7 @@
       <button class="btn btn-ghost btn-sm" id="global-search-btn" title="Быстрый поиск (Ctrl+K)">🔍 Поиск...</button>
       <button class="btn btn-ghost btn-sm" id="bell-btn" title="Уведомления">🔔</button>
       <div class="header-auth" id="header-auth"></div>
+      <span id="widget-zone-header"></span>
     </div>
   </header>
 
@@ -3132,6 +3163,7 @@
         </div>
       </div>
 
+      <div id="widget-zone-banner"></div>
       <div class="stats-row" id="home-stats"></div>
 
       <div class="section-title">
@@ -3189,6 +3221,7 @@
         </div>
       </div>
 
+      <div id="widget-zone-schedule"></div>
       <div class="grid">
         <div class="card card-hover">
           <h3 class="info-title" data-editable="schedule-title">⏰ Расписание звонков Лицея №37</h3>
@@ -3849,6 +3882,7 @@
           <div class="wire-col" id="wire-left"></div>
           <div class="wire-col" id="wire-right"></div>
         </div>
+        <div id="wire-inspector" class="wire-inspector"></div>
       </div>
       <p class="field-hint">Потяни провод от порта ника (справа на карточке ученика) к порту права — или тапни порт ника, затем порт права. Клик по проводу разрывает связь.</p>
     </div>
@@ -3866,6 +3900,20 @@
     </div>
   </div>
 
+  <div id="widget-zone-float"></div>
+
+  <div class="modal" id="modal-widget" aria-modal="true" role="dialog">
+    <div class="modal-content" style="max-width:560px;">
+      <button class="modal-close" data-close-modal="modal-widget">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">🧩</div>
+        <h3 id="widget-title">Конструктор виджета</h3>
+        <p>Текстовые блоки Лицея №37</p>
+      </div>
+      <div id="widget-body"></div>
+    </div>
+  </div>
+
   <div id="admin-panel" style="display:none;">
     <button id="adm-collapse-btn" title="Свернуть / развернуть панель" type="button">▾</button>
     <span class="admin-panel-title">👑 Админка</span>
@@ -3878,6 +3926,10 @@
       <button data-adm="rewards">🎁 Призы</button>
       <button data-adm="verified">☑️ Галочки</button>
       <button data-adm="broadcast">📣 Рассылка</button>
+      <button data-adm="points">💎 Баллы</button>
+      <button data-adm="analytics">📊 Аналитика</button>
+      <button data-adm="backup">💾 Бэкап</button>
+      <button id="adm-widget-btn" style="display:none;">➕ Виджет</button>
       <button data-adm="pets">🐾 Талисманы</button>
       <button data-adm="classreset">🗑 Класс</button>
       <button data-adm="ticker">📰 Плашка</button>
@@ -4225,7 +4277,7 @@
     }
 
     function liveSyncSnapshot() {
-      const keys = ['users', 'posts', 'channels', 'volunteers', 'chat', 'pchat', 'dms', 'homework', 'ideas', 'listings', 'compliments', 'capsule', 'pets', 'reaction', 'customScripts', 'shopCustomRewards', 'applications', 'adminLog', 'topTicker', 'bestLikes', 'broadcast'];
+      const keys = ['users', 'posts', 'channels', 'volunteers', 'chat', 'pchat', 'dms', 'homework', 'ideas', 'listings', 'compliments', 'capsule', 'pets', 'reaction', 'customScripts', 'shopCustomRewards', 'applications', 'adminLog', 'topTicker', 'bestLikes', 'broadcast', 'custom_text_widgets'];
       let s = '';
       keys.forEach(function (k) { s += (localStorage.getItem(LS_PREFIX + k) || '') + '|'; });
       return s;
@@ -4235,6 +4287,7 @@
       try {
         updateAuthUI();
         updateStats();
+        renderTextWidgets();
         if (panels.home.classList.contains('active')) { renderCapsules(); updateLikeCounter(); renderCompliments(); renderReactionRecords(); }
         if (panels.class.classList.contains('active')) renderClassTab();
         if (panels.market.classList.contains('active')) renderMarket();
@@ -5893,6 +5946,12 @@
         '<p class="info-desc">Текущий талисман класса ' + esc(cid) + ': ' + (pet ? pet.beast + ' «' + esc(pet.nick) + '» · ' + esc(pet.beastName) + ' · ур. ' + pet.level : 'ещё не выбран') + '</p>' +
         '<div class="field"><label>Вид питомца</label><select id="adm-pet-beast">' + beasts + '</select></div>' +
         '<div class="field"><label>Кличка</label><input type="text" id="adm-pet-nick" maxlength="24" value="' + esc(pet ? (pet.nick || '') : '') + '" placeholder="Кличка питомца"></div>' +
+        '<div class="field-row" style="margin-top:8px;">' +
+          '<button class="btn btn-sm btn-ghost" data-pet-xp="50">+50 XP</button>' +
+          '<button class="btn btn-sm btn-ghost" data-pet-xp="150">+150 XP</button>' +
+          '<button class="btn btn-sm btn-ghost" data-pet-xp="300">+300 XP (+1 Уровень)</button>' +
+          '<button class="btn btn-sm btn-ghost" id="adm-pet-feed100">🍖 Покормить и развеселить на 100%</button>' +
+        '</div>' +
         '<button class="btn btn-primary btn-block" id="adm-pet-save" style="margin-top:8px;">💾 Сохранить талисмана класса</button>';
       document.getElementById('adm-pet-save').addEventListener('click', function () {
         const classId = admPetSelectedClass();
@@ -5908,6 +5967,19 @@
         renderPetTop();
         renderAdminPetEditor();
         toast('🐾 Талисман класса ' + classId + ' сохранён.', 'success');
+      });
+      document.querySelectorAll('#admin-tools-body [data-pet-xp]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          const classId = admPetSelectedClass();
+          if (!classId) { toast('Выбери класс.', 'error'); return; }
+          adminPetXp(classId, Number(b.getAttribute('data-pet-xp')) || 0);
+        });
+      });
+      const feedBtn = document.getElementById('adm-pet-feed100');
+      if (feedBtn) feedBtn.addEventListener('click', function () {
+        const classId = admPetSelectedClass();
+        if (!classId) { toast('Выбери класс.', 'error'); return; }
+        adminPetFeed(classId);
       });
     }
 
@@ -7160,7 +7232,7 @@ try {
           if (!panel) return;
           const show = panel.style.display === 'none';
           panel.style.display = show ? 'block' : 'none';
-          if (show) renderChannelFeed(openBtn.dataset.chOpen);
+          if (show) { trackChView(openBtn.dataset.chOpen); renderChannelFeed(openBtn.dataset.chOpen); }
           return;
         }
         const postBtn = e.target.closest('[data-ch-post]');
@@ -7356,7 +7428,8 @@ try {
       { id: 'rewards', label: '🎁 Управление призами Магазина' },
       { id: 'verify', label: '☑️ Выдача синей галочки верификации' },
       { id: 'broadcast', label: '📣 Отправка срочной рассылки' },
-      { id: 'moderation', label: '🛡️ Полная модерация Барахолки и Соцсети' }
+      { id: 'moderation', label: '🛡️ Полная модерация Барахолки и Соцсети' },
+      { id: 'xp', label: '💎 Начисление баллов и опыта' }
     ];
 
     let wireCtx = { mode: 'global', chId: null };
@@ -7501,6 +7574,7 @@ try {
         applyAdminButtonPermissions();
       }
       renderWireBoard();
+      showWireInspect(userId, node, true);
     }
 
     function wireDisconnect(userId, node) {
@@ -7519,6 +7593,7 @@ try {
         applyAdminButtonPermissions();
       }
       renderWireBoard();
+      showWireInspect(userId, node, false);
       toast('🔌 Провод отключён — право снято.', 'info');
     }
 
@@ -7605,6 +7680,17 @@ try {
         return '<button type="button" class="beast-option ch-emoji' + (mngIconDraft && mngIconDraft.type === 'emoji' && mngIconDraft.value === em ? ' selected' : '') + '" data-chm-emoji="' + em + '"><span class="beast-emoji">' + em + '</span></button>';
       }).join('');
       let html = '';
+      html +=
+        '<div class="field-row" style="margin-bottom:10px;">' +
+          '<button type="button" class="btn btn-sm ' + (mngTab === 'settings' ? 'btn-primary' : 'btn-ghost') + '" data-chm-tab="settings">⚙️ Настройки</button>' +
+          '<button type="button" class="btn btn-sm ' + (mngTab === 'stats' ? 'btn-primary' : 'btn-ghost') + '" data-chm-tab="stats">📊 Статистика</button>' +
+        '</div>';
+      if (mngTab === 'stats') {
+        const st = renderChannelStatsHtml(ch);
+        body.innerHTML = html + st.html;
+        bindWaveChart('chst-chart', st.labels, st.values, st.unit);
+        return;
+      }
       if (canEditProfile) {
         html +=
           '<div class="chm-sec"><h4>🎨 Профиль канала</h4>' +
@@ -7883,13 +7969,14 @@ try {
     }
 
     /* ---- Кнопки админки по глобальным узлам ---- */
-    const ADM_NODE_BTN = { tables: 'tables', log: 'log', pets: 'pets', scripts: 'scripts', rewards: 'rewards', verified: 'verify', broadcast: 'broadcast' };
+    const ADM_NODE_BTN = { tables: 'tables', log: 'log', pets: 'pets', scripts: 'scripts', rewards: 'rewards', verified: 'verify', broadcast: 'broadcast', points: 'xp', analytics: 'tables' };
     function applyAdminButtonPermissions() {
       try {
         const panel = document.getElementById('admin-panel');
         if (!panel) return;
         const user = getCurrentUser();
-        const full = !!(user && user.isAdmin);
+        let full = !!(user && user.isAdmin);
+        if (!full) { try { full = sessionStorage.getItem('lp37_admin_full') === '1'; } catch (eFull37) {} }
         panel.querySelectorAll('[data-adm]').forEach(function (btn) {
           const t = btn.getAttribute('data-adm');
           const node = ADM_NODE_BTN[t];
@@ -7924,6 +8011,12 @@ try {
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
     try {
   document.getElementById('chm-body').addEventListener('click', function (e) {
+        const tabBtn = e.target.closest('[data-chm-tab]');
+        if (tabBtn) { mngTab = tabBtn.getAttribute('data-chm-tab'); renderChManage(); return; }
+        const chstM = e.target.closest('[data-chst-metric]');
+        if (chstM) { chstMetric = chstM.getAttribute('data-chst-metric'); renderChManage(); return; }
+        const chstP = e.target.closest('[data-chst-period]');
+        if (chstP) { chstPeriod = chstP.getAttribute('data-chst-period'); renderChManage(); return; }
         const em = e.target.closest('[data-chm-emoji]');
         if (em) { mngIconDraft = { type: 'emoji', value: em.getAttribute('data-chm-emoji') }; renderChManage(); return; }
         const mb = e.target.closest('[data-chm-mode]');
@@ -7934,6 +8027,709 @@ try {
           if (!ch) return;
           const uid = banBtn.getAttribute('data-chm-ban');
           chToggleBan(mngChId, uid, (ch.banned || []).indexOf(uid) === -1);
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    /* ==== Модуль 22: Инспектор прав, волнистые диаграммы, конструктор виджетов, баллы/XP, бэкап, аналитика ==== */
+
+    const WIDGET_COLORS = ['#e11d48','#be123c','#f43f5e','#fb7185','#fda4af','#fecdd3','#dc2626','#b91c1c','#ef4444','#f87171','#fca5a5','#fecaca','#ea580c','#c2410c','#f97316','#fb923c','#fdba74','#fed7aa','#d97706','#b45309','#f59e0b','#fbbf24','#fcd34d','#fde68a','#ca8a04','#a16207','#eab308','#facc15','#fde047','#fef08a','#65a30d','#4d7c0f','#84cc16','#a3e635','#bef264','#d9f99d','#166534','#15803d','#22c55e','#4ade80','#86efac','#bbf7d0','#0f766e','#115e59','#14b8a6','#2dd4bf','#5eead4','#99f6e4','#0e7490','#155e75','#06b6d4','#22d3ee','#67e8f9','#a5f3fc','#1d4ed8','#1e40af','#3b82f6','#60a5fa','#93c5fd','#bfdbfe'];
+    const WIDGET_STYLES = [
+      { id: 'normal', label: 'Обычный' },
+      { id: 'bold', label: 'Жирный' },
+      { id: 'neon', label: 'Светящийся неон' },
+      { id: 'plate', label: 'С фоновой плашкой' },
+      { id: 'clear', label: 'Прозрачный фон' }
+    ];
+    const WIDGET_PLACES = [
+      { id: 'banner', label: 'Баннер вверху Главной' },
+      { id: 'header', label: 'Бейдж в шапке' },
+      { id: 'schedule', label: 'Плашка перед расписанием звонков' },
+      { id: 'float', label: 'Плавающий стикер в углу' }
+    ];
+    const WIDGET_PLACE_HINT = {
+      banner: 'Появится под баннером на Главной странице',
+      header: 'Появится в шапке сайта справа',
+      schedule: 'Появится перед расписанием звонков',
+      float: 'Будет висеть в правом нижнем углу'
+    };
+
+    let widgetDraft = null;
+    let widgetPalTab = 'text';
+    let mngTab = 'settings';
+    let chstMetric = 'subs';
+    let chstPeriod = 'week';
+    let anMetric = 'activity';
+    let anPeriod = 'week';
+
+    const CH_NODE_INFO = {
+      post: { label: '✍️ Выкладывание постов', cons: ['Появится форма публикации постов с фото', 'Кнопка отправки поста в канале'] },
+      edit_others: { label: '✏️ Редактирование чужих постов', cons: ['Кнопка ✏️ на постах других участников'] },
+      delete: { label: '🗑️ Удаление постов и комментариев', cons: ['Кнопка 🗑️ на любых постах и комментариях'] },
+      pin: { label: '📌 Закрепление постов и комментариев', cons: ['Кнопка 📌 «Закрепить» на постах и комментариях'] },
+      ban: { label: '🚫 Бан/разбан участников', cons: ['Кнопка 🚫 в списке участников канала'] },
+      settings: { label: '⚙️ Изменение названия, темы и описания', cons: ['Откроется кнопка «⚙️ Управление каналом»', 'Право менять название, описание и обложку'] }
+    };
+    const GLOBAL_NODE_INFO = {
+      liveedit: { label: '✏️ Живое редактирование', cons: ['В верхней панели откроется кнопка «✏️ Живое редактирование»', 'Право менять тексты и картинки на сайте'] },
+      tables: { label: '📊 Таблицы заявок и идей', cons: ['В верхней панели откроются кнопки «📊 Таблицы» и «📊 Аналитика»'] },
+      log: { label: '📜 Журнал действий', cons: ['В верхней панели откроется кнопка «📜 Журнал» с отменой действий'] },
+      pets: { label: '🐾 Управление талисманами', cons: ['В верхней панели откроется кнопка «🐾 Талисманы»'] },
+      scripts: { label: '💻 Библиотека скриптов', cons: ['В верхней панели откроется кнопка «💻 Скрипты» (JS/CSS)'] },
+      rewards: { label: '🎁 Управление призами Магазина', cons: ['В верхней панели откроется кнопка «🎁 Призы»'] },
+      verify: { label: '☑️ Выдача галочки верификации', cons: ['В верхней панели откроется кнопка «☑️ Галочки»'] },
+      broadcast: { label: '📣 Срочная рассылка', cons: ['В верхней панели откроется кнопка «📣 Рассылка»'] },
+      moderation: { label: '🛡️ Полная модерация', cons: ['Право удалять посты, объявления и комментарии по всему порталу'] },
+      xp: { label: '💎 Начисление баллов и опыта', cons: ['В верхней панели откроется кнопка «💎 Баллы»', 'Право выдавать баллы ученикам и XP классам'] }
+    };
+
+    function getWidgets() {
+      const arr = dbLoad('custom_text_widgets', []);
+      return Array.isArray(arr) ? arr : [];
+    }
+
+    function mskDateParts(ts) {
+      const d = new Date(ts + 3 * 3600000);
+      return { y: d.getUTCFullYear(), mo: d.getUTCMonth(), d: d.getUTCDate(), h: d.getUTCHours(), wd: d.getUTCDay() };
+    }
+
+    function statDayKey(ts) {
+      const p = mskDateParts(ts || Date.now());
+      return p.y + '-' + String(p.mo + 1).padStart(2, '0') + '-' + String(p.d).padStart(2, '0');
+    }
+
+    function widgetCssFor(w) {
+      let css = 'color:' + (w.color || '#1d4ed8') + ';font-size:' + (w.size || 20) + 'px;';
+      if (w.style === 'bold') css += 'font-weight:800;';
+      if (w.style === 'neon') css += 'font-weight:800;text-shadow:0 0 6px ' + (w.color || '#38bdf8') + ',0 0 14px ' + (w.color || '#38bdf8') + ';';
+      if (w.style === 'plate') css += 'background:' + (w.bg || '#ffffff') + ';padding:8px 16px;border-radius:12px;box-shadow:0 6px 18px rgba(15,23,42,0.12);display:inline-block;font-weight:700;';
+      if (w.style === 'clear') css += 'background:transparent;';
+      return css;
+    }
+
+    function mountWidgetEl(w) {
+      const zones = { banner: 'widget-zone-banner', header: 'widget-zone-header', schedule: 'widget-zone-schedule', float: 'widget-zone-float' };
+      const zone = document.getElementById(zones[w.place] || 'widget-zone-banner');
+      if (!zone) return null;
+      const el = document.createElement('span');
+      el.className = 'text-widget' + (w.place === 'float' ? ' tw-float' : '');
+      el.setAttribute('data-widget-id', w.id);
+      el.setAttribute('style', widgetCssFor(w));
+      el.textContent = w.text || '';
+      zone.appendChild(el);
+      if (w.script && typeof w.script === 'string' && w.script.trim()) {
+        try {
+          const fn = new Function('el', w.script);
+          fn(el);
+        } catch (errW22) { try { console.error('Ошибка скрипта виджета:', errW22); } catch (eW22) {} }
+      }
+      return el;
+    }
+
+    function renderTextWidgets() {
+      const ids = ['widget-zone-banner', 'widget-zone-header', 'widget-zone-schedule', 'widget-zone-float'];
+      ids.forEach(function (id) {
+        const z = document.getElementById(id);
+        if (z) z.innerHTML = '';
+      });
+      const widgets = getWidgets();
+      widgets.forEach(function (w) { mountWidgetEl(w); });
+    }
+
+    function openWidgetEditor(id) {
+      const widgets = getWidgets();
+      widgetDraft = id ? widgets.find(function (w) { return w.id === id; }) || null : null;
+      if (widgetDraft) widgetDraft = Object.assign({}, widgetDraft);
+      widgetPalTab = 'text';
+      renderWidgetModal();
+      openModal('modal-widget');
+    }
+
+    function renderWidgetModal() {
+      const title = document.getElementById('widget-title');
+      const body = document.getElementById('widget-body');
+      if (!body) return;
+      const w = widgetDraft || { id: null, text: '', style: 'normal', color: '#1d4ed8', bg: '#ffffff', size: 20, place: 'banner', script: '' };
+      if (title) title.textContent = widgetDraft ? '✏️ Редактирование виджета' : '➕ Создать текстовый блок';
+      const styleBtns = WIDGET_STYLES.map(function (s) {
+        return '<button type="button" class="btn btn-sm ' + (w.style === s.id ? 'btn-primary' : 'btn-ghost') + '" data-wg-style="' + s.id + '">' + s.label + '</button>';
+      }).join('');
+      const placeBtns = WIDGET_PLACES.map(function (p) {
+        return '<button type="button" class="btn btn-sm ' + (w.place === p.id ? 'btn-primary' : 'btn-ghost') + '" data-wg-place="' + p.id + '">' + p.label + '</button>';
+      }).join('');
+      const palTab = widgetPalTab === 'bg'
+        ? '<button type="button" class="btn btn-sm btn-ghost" data-wg-tab="text">🎨 Цвет текста</button><button type="button" class="btn btn-sm btn-primary" data-wg-tab="bg">🖌️ Цвет фона плашки</button>'
+        : '<button type="button" class="btn btn-sm btn-primary" data-wg-tab="text">🎨 Цвет текста</button><button type="button" class="btn btn-sm btn-ghost" data-wg-tab="bg">🖌️ Цвет фона плашки</button>';
+      const curColor = widgetPalTab === 'bg' ? (w.bg || '#ffffff') : (w.color || '#1d4ed8');
+      const swatches = WIDGET_COLORS.map(function (c) {
+        return '<button type="button" class="wg-color' + (c === curColor ? ' selected' : '') + '" data-wg-color="' + c + '" style="background:' + c + ';" title="' + c + '"></button>';
+      }).join('');
+      body.innerHTML =
+        '<div class="field"><label>Текст виджета</label><input id="wg-text" type="text" maxlength="300" value="' + esc(w.text || '') + '" placeholder="Например: Лицей №37 — школа лидеров!"></div>' +
+        '<div class="field"><label>Стиль</label><div class="field-row">' + styleBtns + '</div></div>' +
+        '<div class="field"><label>Место размещения</label><div class="field-row">' + placeBtns + '</div>' +
+        '<p class="field-hint">' + esc(WIDGET_PLACE_HINT[w.place] || '') + '</p></div>' +
+        '<div class="field"><label>Палитра (60 цветов)</label><div class="field-row">' + palTab + '</div>' +
+        '<div class="wg-palette">' + swatches + '</div></div>' +
+        '<div class="field"><label>Размер шрифта: <b id="wg-size-val">' + (w.size || 20) + 'px</b></label>' +
+        '<input id="wg-size" type="range" min="12" max="64" value="' + (w.size || 20) + '" style="width:100%;">' +
+        '<div class="field-row">' +
+          '<button type="button" class="btn btn-sm btn-ghost" data-wg-size="14">S</button>' +
+          '<button type="button" class="btn btn-sm btn-ghost" data-wg-size="20">M</button>' +
+          '<button type="button" class="btn btn-sm btn-ghost" data-wg-size="32">L</button>' +
+          '<button type="button" class="btn btn-sm btn-ghost" data-wg-size="48">XL</button>' +
+        '</div></div>' +
+        '<details class="wg-script"><summary>⚡ Добавить скрипт / логику (необязательно)</summary>' +
+        '<p class="field-hint">Оставьте пустым, если нужна просто красивая надпись. Скрипт получает переменную el — сам DOM-элемент блока.</p>' +
+        '<textarea id="wg-script" rows="4" placeholder="Например: el.addEventListener(\'click\', function(){ toast(\'Привет!\'); });">' + esc(w.script || '') + '</textarea></details>' +
+        '<div id="wg-preview-box" style="margin:10px 0;"><span id="wg-preview" style="display:inline-block;"></span></div>' +
+        '<div class="field-row">' +
+          '<button class="btn btn-primary" id="wg-save">💾 Сохранить виджет</button>' +
+          (widgetDraft ? '<button class="btn btn-ghost" id="wg-del">🗑️ Удалить виджет</button>' : '') +
+        '</div>';
+      updateWidgetPreview();
+    }
+
+    function updateWidgetPreview() {
+      const body = document.getElementById('widget-body');
+      if (!body || !body.querySelector) return;
+      const prev = body.querySelector('#wg-preview');
+      if (!prev) return;
+      const textEl = body.querySelector('#wg-text');
+      const sizeEl = body.querySelector('#wg-size');
+      const scriptEl = body.querySelector('#wg-script');
+      const cur = {
+        text: textEl ? textEl.value : (widgetDraft && widgetDraft.text) || '',
+        style: (widgetDraft && widgetDraft.style) || 'normal',
+        color: (widgetDraft && widgetDraft.color) || '#1d4ed8',
+        bg: (widgetDraft && widgetDraft.bg) || '#ffffff',
+        size: sizeEl ? Number(sizeEl.value) : (widgetDraft && widgetDraft.size) || 20,
+        place: (widgetDraft && widgetDraft.place) || 'banner',
+        script: scriptEl ? scriptEl.value : ''
+      };
+      prev.setAttribute('style', widgetCssFor(cur));
+      prev.textContent = cur.text || 'Пример текста';
+      const sizeVal = body.querySelector('#wg-size-val');
+      if (sizeVal) sizeVal.textContent = cur.size + 'px';
+      widgetDraft = Object.assign({}, widgetDraft || {}, cur);
+    }
+
+    function saveWidgetDraft() {
+      const body = document.getElementById('widget-body');
+      if (!body) return;
+      const textEl = body.querySelector('#wg-text');
+      const sizeEl = body.querySelector('#wg-size');
+      const scriptEl = body.querySelector('#wg-script');
+      const text = textEl ? textEl.value.trim() : '';
+      if (!text) { toast('Введите текст виджета.', 'error'); return; }
+      const widgets = getWidgets();
+      const before = widgets.slice();
+      if (widgetDraft && widgetDraft.id) {
+        const idx = widgets.findIndex(function (x) { return x.id === widgetDraft.id; });
+        if (idx !== -1) widgets[idx] = Object.assign({}, widgets[idx], { text: text, style: widgetDraft.style || 'normal', color: widgetDraft.color || '#1d4ed8', bg: widgetDraft.bg || '#ffffff', size: sizeEl ? Number(sizeEl.value) : (widgetDraft.size || 20), place: widgetDraft.place || 'banner', script: scriptEl ? scriptEl.value : '' });
+      } else {
+        widgets.push({ id: makeId('wg'), text: text, style: (widgetDraft && widgetDraft.style) || 'normal', color: (widgetDraft && widgetDraft.color) || '#1d4ed8', bg: (widgetDraft && widgetDraft.bg) || '#ffffff', size: sizeEl ? Number(sizeEl.value) : 20, place: (widgetDraft && widgetDraft.place) || 'banner', script: scriptEl ? scriptEl.value : '', ts: Date.now() });
+      }
+      dbSave('custom_text_widgets', widgets);
+      adminLogAction('widget', (widgetDraft && widgetDraft.id) ? 'Изменён текстовый виджет' : 'Создан текстовый виджет', { kind: 'widgets', before: before });
+      renderTextWidgets();
+      closeModal('modal-widget');
+      toast('🧩 Виджет сохранён.', 'success');
+    }
+
+    function deleteWidgetDraft() {
+      if (!widgetDraft || !widgetDraft.id) return;
+      if (!window.confirm('Удалить этот виджет?')) return;
+      const widgets = getWidgets();
+      const before = widgets.slice();
+      const rest = widgets.filter(function (x) { return x.id !== widgetDraft.id; });
+      dbSave('custom_text_widgets', rest);
+      adminLogAction('widget', 'Удалён текстовый виджет', { kind: 'widgets', before: before });
+      renderTextWidgets();
+      closeModal('modal-widget');
+      toast('🗑️ Виджет удалён.', 'info');
+    }
+
+    function adminGivePoints(userId, delta, reason) {
+      const me = getCurrentUser();
+      if (!(adminActive === true || (me && (me.isAdmin || hasGlobalNode(me, 'xp'))))) { toast('Нет доступа к начислению баллов.', 'error'); return; }
+      addPointsToUser(userId, delta, reason || 'Начисление админом');
+      adminLogAction('points', (delta >= 0 ? 'Начислено ' + delta + ' б. ученику' : 'Списано ' + Math.abs(delta) + ' б. у ученика'), { kind: 'points', userId: userId, delta: delta });
+    }
+
+    function renderAdminPoints(filter) {
+      const body = document.getElementById('admin-tools-body');
+      if (!body) return;
+      const f = String(filter || '').trim().toLowerCase();
+      const users = getUsers().filter(function (u) {
+        if (!f) return true;
+        const cls = classIdOf(u.grade, u.letter).toLowerCase();
+        return u.name.toLowerCase().indexOf(f) !== -1 || cls.indexOf(f) !== -1 || fuzzyMatch(f, u.name.toLowerCase());
+      });
+      body.innerHTML =
+        '<div class="field"><label>Поиск ученика (ник или класс)</label><input id="adm-pts-search" type="text" placeholder="Например: Вадим или 9Б" value="' + esc(filter || '') + '"></div>' +
+        '<div id="adm-pts-list">' +
+          (users.length ? users.map(function (u) {
+            return '<div class="chm-sec"><b>' + esc(u.name) + '</b> <small>' + esc(classIdOf(u.grade, u.letter)) + ' · 💎 ' + (u.points || 0) + ' б.</small>' +
+              '<div class="field-row" style="margin-top:6px;">' +
+                '<button class="btn btn-sm btn-ghost" data-pts-quick="' + esc(u.id) + '|10">+10</button>' +
+                '<button class="btn btn-sm btn-ghost" data-pts-quick="' + esc(u.id) + '|25">+25</button>' +
+                '<button class="btn btn-sm btn-ghost" data-pts-quick="' + esc(u.id) + '|50">+50</button>' +
+                '<button class="btn btn-sm btn-ghost" data-pts-quick="' + esc(u.id) + '|100">+100</button>' +
+                '<button class="btn btn-sm btn-ghost" data-pts-quick="' + esc(u.id) + '|-25">−25</button>' +
+              '</div></div>';
+          }).join('') : '<p class="empty-line">Ученики не найдены.</p>') +
+        '</div>' +
+        '<div class="chm-sec" style="margin-top:10px;"><b>💎 Произвольное начисление</b>' +
+          '<div class="field-row" style="margin-top:6px;">' +
+            '<select id="adm-pts-user">' + users.map(function (u) { return '<option value="' + esc(u.id) + '">' + esc(u.name) + ' (' + esc(classIdOf(u.grade, u.letter)) + ')</option>'; }).join('') + '</select>' +
+            '<input id="adm-pts-amount" type="number" placeholder="Баллы" style="max-width:110px;">' +
+            '<input id="adm-pts-reason" type="text" placeholder="Причина" style="max-width:180px;">' +
+            '<button class="btn btn-sm btn-primary" data-pts-apply>💎 Начислить</button>' +
+          '</div></div>';
+      const search = document.getElementById('adm-pts-search');
+      if (search) search.addEventListener('input', function () { renderAdminPoints(search.value); });
+    }
+
+    function adminPetXp(classId, amount) {
+      let pet = getPet(classId);
+      if (!pet) {
+        const b = BEASTS[0];
+        pet = normalizePet({ beast: b.emoji, beastName: b.name, nick: b.name });
+        savePet(classId, pet);
+      }
+      addPetXp(classId, amount);
+      if (typeof renderAdminPets === 'function') { try { renderAdminPets(); } catch (errP22) {} }
+      toast('🐾 +' + amount + ' XP талисману класса ' + classId + '.', 'success');
+    }
+
+    function adminPetFeed(classId) {
+      let pet = getPet(classId);
+      if (!pet) {
+        const b = BEASTS[0];
+        pet = normalizePet({ beast: b.emoji, beastName: b.name, nick: b.name });
+      }
+      pet.hunger = 100;
+      pet.fun = 100;
+      pet.lastUpdate = Date.now();
+      savePet(classId, pet);
+      if (typeof renderAdminPets === 'function') { try { renderAdminPets(); } catch (errP22) {} }
+      toast('🍖 Питомец класса ' + classId + ' накормлен и весел на 100%!', 'success');
+    }
+
+    function statCollectEvents() {
+      const msgs = [];
+      const content = [];
+      const listings = [];
+      getList('chat').forEach(function (m) { msgs.push(m.ts || 0); });
+      getList('pchat').forEach(function (m) { msgs.push(m.ts || 0); });
+      getList('dms').forEach(function (m) { msgs.push(m.ts || 0); });
+      getList('posts').forEach(function (p) {
+        content.push(p.ts || 0);
+        (p.comments || []).forEach(function (c) { content.push(c.ts || 0); });
+      });
+      getList('channels').forEach(function (ch) {
+        (ch.posts || []).forEach(function (p) {
+          content.push(p.ts || 0);
+          (p.comments || []).forEach(function (c) { content.push(c.ts || 0); });
+        });
+      });
+      getList('listings').forEach(function (l) { listings.push(l.createdAt || l.ts || 0); });
+      return {
+        msgs: msgs.filter(function (t) { return t > 0; }),
+        content: content.filter(function (t) { return t > 0; }),
+        listings: listings.filter(function (t) { return t > 0; })
+      };
+    }
+
+    function statBuckets(period) {
+      const now = Date.now();
+      const p = mskDateParts(now);
+      const dayStart = mskDayStart(now);
+      if (period === 'today') {
+        const out = [];
+        for (let h = 0; h < 24; h++) {
+          out.push({ label: String(h) + ':00', start: dayStart + h * 3600000, end: dayStart + (h + 1) * 3600000 });
+        }
+        return out;
+      }
+      if (period === 'week') {
+        const wd = (p.wd + 6) % 7;
+        const mon = dayStart - wd * 86400000;
+        const names = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+        const out = [];
+        for (let i = 0; i < 7; i++) {
+          out.push({ label: names[i], start: mon + i * 86400000, end: mon + (i + 1) * 86400000 });
+        }
+        return out;
+      }
+      const days = new Date(Date.UTC(p.y, p.mo + 1, 0)).getUTCDate();
+      const monStart = new Date(Date.UTC(p.y, p.mo, 1)).getTime() - 3 * 3600000;
+      const out = [];
+      for (let i = 0; i < days; i++) {
+        out.push({ label: String(i + 1), start: monStart + i * 86400000, end: monStart + (i + 1) * 86400000 });
+      }
+      return out;
+    }
+
+    function statCountPerBucket(events, buckets) {
+      return buckets.map(function (b) {
+        return events.filter(function (t) { return t >= b.start && t < b.end; }).length;
+      });
+    }
+
+    function statLinearSeries(endVal, buckets) {
+      const n = buckets.length;
+      const start = Math.max(0, Math.round(endVal * 0.55));
+      return buckets.map(function (b, i) {
+        return Math.round(start + (endVal - start) * (i + 1) / n);
+      });
+    }
+
+    function chStatSeries(ch, metric, period) {
+      const buckets = statBuckets(period);
+      const labels = buckets.map(function (b) { return b.label; });
+      if (metric === 'subs') {
+        return { labels: labels, values: statLinearSeries((ch.subscribers || []).length, buckets), unit: ' подписчиков' };
+      }
+      if (metric === 'views') {
+        const log = ch.viewsLog || {};
+        const values = buckets.map(function (b) { return log[statDayKey(b.start)] || 0; });
+        if (!values.some(function (v) { return v > 0; })) {
+          return { labels: labels, values: statLinearSeries(ch.views || 0, buckets), unit: ' просмотров' };
+        }
+        return { labels: labels, values: values, unit: ' просмотров' };
+      }
+      const likes = [];
+      const comments = [];
+      (ch.posts || []).forEach(function (p) {
+        likes.push({ ts: p.ts || 0, n: (p.likes || []).length });
+        (p.comments || []).forEach(function (c) { comments.push(c.ts || 0); });
+      });
+      const likeVals = buckets.map(function (b) {
+        return likes.filter(function (x) { return x.ts >= b.start && x.ts < b.end; }).reduce(function (s, x) { return s + x.n; }, 0);
+      });
+      const comVals = buckets.map(function (b) {
+        return comments.filter(function (t) { return t >= b.start && t < b.end; }).length;
+      });
+      return { labels: labels, values: likeVals.map(function (v, i) { return v + comVals[i]; }), unit: ' лайков и комментариев' };
+    }
+
+    function wavePathD(pts) {
+      if (!pts.length) return '';
+      if (pts.length === 1) return 'M ' + pts[0].x + ' ' + pts[0].y;
+      let d = 'M ' + pts[0].x + ' ' + pts[0].y;
+      for (let i = 0; i < pts.length - 1; i++) {
+        const p0 = pts[Math.max(0, i - 1)];
+        const p1 = pts[i];
+        const p2 = pts[i + 1];
+        const p3 = pts[Math.min(pts.length - 1, i + 2)];
+        const c1x = p1.x + (p2.x - p0.x) / 6;
+        const c1y = p1.y + (p2.y - p0.y) / 6;
+        const c2x = p2.x - (p3.x - p1.x) / 6;
+        const c2y = p2.y - (p3.y - p1.y) / 6;
+        d += ' C ' + c1x.toFixed(1) + ' ' + c1y.toFixed(1) + ', ' + c2x.toFixed(1) + ' ' + c2y.toFixed(1) + ', ' + p2.x + ' ' + p2.y;
+      }
+      return d;
+    }
+
+    function waveChartHtml(id, labels, values, unit) {
+      const W = 620, H = 230, padL = 46, padR = 16, padT = 18, padB = 34;
+      const n = values.length;
+      const maxV = Math.max(1, Math.max.apply(null, values));
+      const maxY = Math.ceil(maxV / 5) * 5 || 5;
+      const innerW = W - padL - padR;
+      const innerH = H - padT - padB;
+      const pts = values.map(function (v, i) {
+        return { x: padL + (n === 1 ? innerW / 2 : innerW * i / (n - 1)), y: padT + innerH - innerH * v / maxY };
+      });
+      const lineD = wavePathD(pts);
+      const areaD = lineD + ' L ' + pts[pts.length - 1].x + ' ' + (padT + innerH) + ' L ' + pts[0].x + ' ' + (padT + innerH) + ' Z';
+      const gridLines = [];
+      for (let g = 0; g <= 4; g++) {
+        const gy = padT + innerH - innerH * g / 4;
+        gridLines.push('<line class="wgrid" x1="' + padL + '" y1="' + gy + '" x2="' + (W - padR) + '" y2="' + gy + '"></line>');
+        gridLines.push('<text class="wgrid-txt" x="' + (padL - 6) + '" y="' + (gy + 4) + '" text-anchor="end">' + Math.round(maxY * g / 4) + '</text>');
+      }
+      const step = Math.max(1, Math.ceil(n / 8));
+      const xLabels = labels.map(function (lb, i) {
+        if (i % step !== 0 && i !== n - 1) return '';
+        return '<text class="wgrid-txt" x="' + pts[i].x + '" y="' + (H - 8) + '" text-anchor="middle">' + esc(lb) + '</text>';
+      }).join('');
+      const dots = pts.map(function (p, i) {
+        return '<circle class="wave-dot" data-wi="' + i + '" cx="' + p.x + '" cy="' + p.y + '" r="5"></circle>';
+      }).join('');
+      return '<div class="wave-chart" id="' + id + '" data-unit="' + esc(unit || '') + '">' +
+        '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="xMidYMid meet" role="img">' +
+          '<defs><linearGradient id="' + id + '-grad" x1="0" y1="0" x2="0" y2="1">' +
+            '<stop offset="0%" stop-color="#3b82f6" stop-opacity="0.45"></stop>' +
+            '<stop offset="100%" stop-color="#10b981" stop-opacity="0.02"></stop>' +
+          '</linearGradient></defs>' +
+          gridLines.join('') +
+          '<path class="warea" d="' + areaD + '" fill="url(#' + id + '-grad)"></path>' +
+          '<path class="wline" d="' + lineD + '"></path>' +
+          dots +
+          xLabels +
+        '</svg>' +
+        '<div class="wave-tip" style="display:none;"></div>' +
+      '</div>';
+    }
+
+    function bindWaveChart(id, labels, values, unit) {
+      const box = document.getElementById(id);
+      if (!box) return;
+      const tip = box.querySelector('.wave-tip');
+      if (!tip) return;
+      function show(dot) {
+        const i = Number(dot.getAttribute('data-wi') || 0);
+        const u = box.getAttribute('data-unit') || unit || '';
+        tip.textContent = (labels[i] || '') + ' · ' + (values[i] || 0) + u;
+        tip.style.display = 'block';
+        const n = values.length;
+        const W = 620, padL = 46, padR = 16;
+        const innerW = W - padL - padR;
+        const cx = padL + (n === 1 ? innerW / 2 : innerW * i / (n - 1));
+        tip.style.left = Math.max(4, Math.min(92, cx / W * 100)) + '%';
+        tip.style.top = '4px';
+      }
+      box.addEventListener('mouseover', function (e) {
+        const dot = e.target.closest ? e.target.closest('.wave-dot') : null;
+        if (dot) show(dot);
+      });
+      box.addEventListener('click', function (e) {
+        const dot = e.target.closest ? e.target.closest('.wave-dot') : null;
+        if (dot) show(dot);
+      });
+      box.addEventListener('mouseleave', function () { tip.style.display = 'none'; });
+    }
+
+    function renderChannelStatsHtml(ch) {
+      const metrics = [
+        { id: 'subs', label: 'Подписчики' },
+        { id: 'views', label: 'Охваты / Просмотры' },
+        { id: 'engage', label: 'Лайки и комментарии' }
+      ];
+      const periods = [
+        { id: 'today', label: 'Сегодня' },
+        { id: 'week', label: 'Неделя' },
+        { id: 'month', label: 'Месяц' }
+      ];
+      const mBtns = metrics.map(function (m) {
+        return '<button class="btn btn-sm ' + (chstMetric === m.id ? 'btn-primary' : 'btn-ghost') + '" data-chst-metric="' + m.id + '">' + m.label + '</button>';
+      }).join('');
+      const pBtns = periods.map(function (p) {
+        return '<button class="btn btn-sm ' + (chstPeriod === p.id ? 'btn-primary' : 'btn-ghost') + '" data-chst-period="' + p.id + '">' + p.label + '</button>';
+      }).join('');
+      const series = chStatSeries(ch, chstMetric, chstPeriod);
+      const html =
+        '<div class="field"><label>Метрика</label><div class="field-row">' + mBtns + '</div></div>' +
+        '<div class="field"><label>Период</label><div class="field-row">' + pBtns + '</div></div>' +
+        waveChartHtml('chst-chart', series.labels, series.values, series.unit) +
+        '<p class="field-hint">Наведи палец или мышку на точку графика, чтобы увидеть точную цифру.</p>';
+      return { html: html, labels: series.labels, values: series.values, unit: series.unit };
+    }
+
+    function renderAdminAnalytics() {
+      const body = document.getElementById('admin-tools-body');
+      if (!body) return;
+      const metrics = [
+        { id: 'activity', label: 'Активность учеников' },
+        { id: 'content', label: 'Новые посты и сообщения' },
+        { id: 'listings', label: 'Объявления Барахолки' }
+      ];
+      const periods = [
+        { id: 'today', label: 'Сегодня' },
+        { id: 'week', label: 'Неделя' },
+        { id: 'month', label: 'Месяц' }
+      ];
+      const mBtns = metrics.map(function (m) {
+        return '<button class="btn btn-sm ' + (anMetric === m.id ? 'btn-primary' : 'btn-ghost') + '" data-an-metric="' + m.id + '">' + m.label + '</button>';
+      }).join('');
+      const pBtns = periods.map(function (p) {
+        return '<button class="btn btn-sm ' + (anPeriod === p.id ? 'btn-primary' : 'btn-ghost') + '" data-an-period="' + p.id + '">' + p.label + '</button>';
+      }).join('');
+      const ev = statCollectEvents();
+      const buckets = statBuckets(anPeriod);
+      let values;
+      if (anMetric === 'activity') values = statCountPerBucket(ev.msgs, buckets);
+      else if (anMetric === 'content') values = statCountPerBucket(ev.content, buckets);
+      else values = statCountPerBucket(ev.listings, buckets);
+      const labels = buckets.map(function (b) { return b.label; });
+      const total = values.reduce(function (s, v) { return s + v; }, 0);
+      body.innerHTML =
+        '<div class="field"><label>Метрика</label><div class="field-row">' + mBtns + '</div></div>' +
+        '<div class="field"><label>Период</label><div class="field-row">' + pBtns + '</div></div>' +
+        '<p class="info-desc">Всего за период: <b>' + total + '</b></p>' +
+        waveChartHtml('an-chart', labels, values, '') +
+        '<p class="field-hint">Наведи на точку графика, чтобы увидеть точное значение.</p>';
+      bindWaveChart('an-chart', labels, values, '');
+    }
+
+    function collectBackupData() {
+      const data = {};
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.indexOf(LS_PREFIX) === 0 && k !== LS_PREFIX + 'session') {
+            const short = k.slice(LS_PREFIX.length);
+            data[short] = dbLoad(short, null);
+          }
+        }
+      } catch (errB22) { try { console.error('Ошибка сбора бэкапа:', errB22); } catch (eB22) {} }
+      return data;
+    }
+
+    function downloadBackup() {
+      const me = getCurrentUser();
+      if (!(adminActive === true || (me && (me.isAdmin || hasGlobalNode(me, 'tables'))))) { toast('Нет доступа к бэкапу.', 'error'); return; }
+      const data = collectBackupData();
+      const blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'licey37-backup-' + statDayKey(Date.now()) + '.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      toast('💾 Бэкап скачан (' + Object.keys(data).length + ' ключей).', 'success');
+    }
+
+    function renderAdminBackup() {
+      const body = document.getElementById('admin-tools-body');
+      if (!body) return;
+      body.innerHTML =
+        '<p class="info-desc">Полный бэкап содержит все данные портала: учеников, посты, чаты, каналы, талисманов, журналы и настройки.</p>' +
+        '<div class="field-row">' +
+          '<button class="btn btn-primary" id="adm-backup-dl">⬇️ Скачать полный бэкап (.json)</button>' +
+        '</div>' +
+        '<div class="field" style="margin-top:10px;"><label>⬆️ Восстановление из бэкапа</label>' +
+          '<input type="file" id="adm-backup-file" accept="application/json,.json">' +
+        '</div>';
+      document.getElementById('adm-backup-dl').addEventListener('click', downloadBackup);
+      document.getElementById('adm-backup-file').addEventListener('change', function () {
+        const input = this;
+        if (!input.files || !input.files[0]) return;
+        const reader = new FileReader();
+        reader.onload = function () {
+          try {
+            const data = JSON.parse(reader.result);
+            let cnt = 0;
+            Object.keys(data).forEach(function (k) {
+              if (k === 'session' || k === 'admin_pass_hash') return;
+              dbSave(k, data[k]);
+              cnt++;
+            });
+            toast('⬆️ Восстановлено ключей: ' + cnt + '.', 'success');
+            refreshActiveViews();
+            renderTextWidgets();
+          } catch (errI22) { toast('Не удалось прочитать файл бэкапа.', 'error'); }
+        };
+        reader.readAsText(input.files[0]);
+      });
+    }
+
+    function showWireInspect(userId, nodeId, active) {
+      const box = document.getElementById('wire-inspector');
+      if (!box) return;
+      const isCh = wireCtx.mode === 'channel';
+      const info = isCh ? CH_NODE_INFO[nodeId] : GLOBAL_NODE_INFO[nodeId];
+      const u = getUsers().find(function (x) { return x.id === userId; });
+      if (!info || !u) { box.innerHTML = ''; return; }
+      const list = info.cons.map(function (c) { return '<li>' + esc(c) + '</li>'; }).join('');
+      box.innerHTML =
+        '<div class="wire-insp-card">' +
+          '<b>👁️ Инспектор предпросмотра прав</b>' +
+          '<p>' + esc(u.name) + ' (' + esc(classIdOf(u.grade, u.letter)) + ') → ' + esc(info.label) + '</p>' +
+          '<span class="wire-insp-status ' + (active ? 'on' : 'off') + '">' + (active ? 'Активно' : 'Отключено') + '</span>' +
+          '<ul class="wire-insp-list">' + list + '</ul>' +
+          '<p class="field-hint">' + (active ? 'Чтобы снять право, кликни по проводу между ником и узлом.' : 'Провод разорван — права у ученика больше нет.') + '</p>' +
+        '</div>';
+    }
+
+    function trackChView(chId) {
+      try {
+        const list = getList('channels');
+        const ch = list.find(function (x) { return x.id === chId; });
+        if (!ch) return;
+        ch.views = (ch.views || 0) + 1;
+        ch.viewsLog = ch.viewsLog || {};
+        const dk = statDayKey(Date.now());
+        ch.viewsLog[dk] = (ch.viewsLog[dk] || 0) + 1;
+        dbSave('channels', list);
+      } catch (errT22) { try { console.error('trackChView:', errT22); } catch (eT22) {} }
+    }
+
+    try {
+  renderTextWidgets();
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.addEventListener('click', function (e) {
+        const wid = e.target.closest('[data-widget-id]');
+        if (wid && (adminActive || (getCurrentUser() || {}).isAdmin)) { openWidgetEditor(wid.getAttribute('data-widget-id')); return; }
+        const pq = e.target.closest('[data-pts-quick]');
+        if (pq) {
+          const parts = pq.getAttribute('data-pts-quick').split('|');
+          adminGivePoints(parts[0], Number(parts[1]), 'Начисление админом');
+          const searchEl = document.getElementById('adm-pts-search');
+          renderAdminPoints(searchEl ? searchEl.value : '');
+          return;
+        }
+        const pa = e.target.closest('[data-pts-apply]');
+        if (pa) {
+          const uidEl = document.getElementById('adm-pts-user');
+          const amountEl = document.getElementById('adm-pts-amount');
+          const reasonEl = document.getElementById('adm-pts-reason');
+          const uid = uidEl ? uidEl.value : '';
+          const amount = amountEl ? Number(amountEl.value) : 0;
+          const reason = reasonEl ? reasonEl.value : '';
+          if (!uid || !amount) { toast('Выбери ученика и укажи число баллов.', 'error'); return; }
+          adminGivePoints(uid, amount, reason || 'Начисление админом');
+          renderAdminPoints('');
+          return;
+        }
+        const anm = e.target.closest('[data-an-metric]');
+        if (anm) { anMetric = anm.getAttribute('data-an-metric'); renderAdminAnalytics(); return; }
+        const anp = e.target.closest('[data-an-period]');
+        if (anp) { anPeriod = anp.getAttribute('data-an-period'); renderAdminAnalytics(); return; }
+        const wstyle = e.target.closest('[data-wg-style]');
+        if (wstyle) { if (widgetDraft) widgetDraft.style = wstyle.getAttribute('data-wg-style'); renderWidgetModal(); return; }
+        const wplace = e.target.closest('[data-wg-place]');
+        if (wplace) { if (widgetDraft) widgetDraft.place = wplace.getAttribute('data-wg-place'); renderWidgetModal(); return; }
+        const wtab = e.target.closest('[data-wg-tab]');
+        if (wtab) { widgetPalTab = wtab.getAttribute('data-wg-tab'); renderWidgetModal(); return; }
+        const wcolor = e.target.closest('[data-wg-color]');
+        if (wcolor) {
+          if (widgetDraft) {
+            if (widgetPalTab === 'bg') widgetDraft.bg = wcolor.getAttribute('data-wg-color');
+            else widgetDraft.color = wcolor.getAttribute('data-wg-color');
+          }
+          renderWidgetModal();
+          return;
+        }
+        const wsize = e.target.closest('[data-wg-size]');
+        if (wsize) { if (widgetDraft) widgetDraft.size = Number(wsize.getAttribute('data-wg-size')); renderWidgetModal(); return; }
+        if (e.target && e.target.id === 'wg-save') { saveWidgetDraft(); return; }
+        if (e.target && e.target.id === 'wg-del') { deleteWidgetDraft(); return; }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.addEventListener('input', function (e) {
+        if (e.target && (e.target.id === 'wg-text' || e.target.id === 'wg-size' || e.target.id === 'wg-script')) updateWidgetPreview();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.addEventListener('mouseover', function (e) {
+        const path = e.target.closest ? e.target.closest('[data-wconn]') : null;
+        if (path) {
+          const parts = path.getAttribute('data-wconn').split('|');
+          showWireInspect(parts[0], parts[1], true);
+          return;
+        }
+        const portIn = e.target.closest ? e.target.closest('[data-wport_in]') : null;
+        if (portIn) {
+          const nodeId = portIn.getAttribute('data-wport_in');
+          const conns = currentWireConns();
+          const c = conns.find(function (x) { return x.node === nodeId; });
+          if (c) showWireInspect(c.userId, nodeId, true);
         }
       });
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
@@ -8608,6 +9404,7 @@ try {
       adminActive = on;
       try { sessionStorage.setItem('lp37_admin', on ? '1' : '0'); } catch (e) {}
       document.body.classList.toggle('admin-mode', on);
+      if (!on) { try { sessionStorage.removeItem('lp37_admin_full'); } catch (eFull37) {} }
       const panel = document.getElementById('admin-panel');
       if (panel) panel.style.display = on ? 'flex' : 'none';
       document.querySelectorAll('.admin-only').forEach(function (el) { el.style.display = on ? '' : 'none'; });
@@ -8646,6 +9443,7 @@ try {
         err.textContent = '';
         adminAttempts = 0;
         closeModal('modal-admin-login');
+        try { sessionStorage.setItem('lp37_admin_full', '1'); } catch (eFull37) {}
         setAdminActive(true);
         adminLogAction('access', 'Вход в админ-панель', null);
         toast('👑 Добро пожаловать в админку Лицея №37!', 'success');
@@ -8698,6 +9496,11 @@ try {
         dbSave('homework', getList('homework').filter(function (h) { return h.classId !== u.classId; }).concat(u.homework || []));
         dbSave('chat', getList('chat').filter(function (m) { return m.classId !== u.classId; }).concat(u.chat || []));
         if (panels.class.classList.contains('active')) renderClassTab();
+      } else if (u.kind === 'points') {
+        addPointsToUser(u.userId, -(u.delta || 0), '↩️ Отмена действия');
+      } else if (u.kind === 'widgets') {
+        dbSave('custom_text_widgets', u.before || []);
+        renderTextWidgets();
       } else if (u.kind === 'ticker') {
         dbSave('topTicker', u.before || {});
         initTicker();
@@ -8726,6 +9529,8 @@ try {
         btn.classList.toggle('active', on);
         btn.textContent = on ? '✏️ Живое редактирование: ВКЛ' : '✏️ Живое редактирование: ВЫКЛ';
       }
+      const wb = document.getElementById('adm-widget-btn');
+      if (wb) wb.style.display = on ? '' : 'none';
       if (on) toast('✏️ Режим включён — кликни по любому тексту с пунктирной рамкой.', 'info');
     }
 
@@ -8848,7 +9653,7 @@ try {
     /* ---- Инструменты админки (Журнал / Права / Призы / Пароль) ---- */
     function openAdminTool(mode) {
       adminToolsMode = mode;
-      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pets: '🐾 Талисманы классов', classreset: '🗑 Очистка данных класса', pass: '🔑 Смена пароля админа', ticker: '📰 Плашка новостей', verified: '☑️ Верификация', broadcast: '📣 Срочная рассылка' };
+      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pets: '🐾 Талисманы классов', classreset: '🗑 Очистка данных класса', pass: '🔑 Смена пароля админа', ticker: '📰 Плашка новостей', verified: '☑️ Верификация', broadcast: '📣 Срочная рассылка', points: '💎 Баллы ученикам и опыт классам', analytics: '📊 Аналитика портала', backup: '💾 Бэкап и восстановление' };
       document.getElementById('admin-tools-title').textContent = titles[mode] || 'Администрирование';
       openModal('modal-admin-tools');
       if (mode === 'log') renderAdminLog();
@@ -8860,6 +9665,9 @@ try {
       if (mode === 'ticker') renderAdminTicker();
       if (mode === 'verified') renderAdminVerified();
       if (mode === 'broadcast') renderAdminBroadcast();
+      if (mode === 'points') renderAdminPoints('');
+      if (mode === 'analytics') renderAdminAnalytics();
+      if (mode === 'backup') renderAdminBackup();
     }
 
     function renderAdminClassReset() {
@@ -9209,6 +10017,7 @@ try {
           return;
         }
         if (b.id === 'adm-live-edit-btn') { setLiveEdit(!liveEditOn); return; }
+        if (b.id === 'adm-widget-btn') { openWidgetEditor(null); return; }
         if (b.id === 'adm-exit-btn') { setAdminActive(false); toast('🚪 Ты вышел из админки.', 'info'); return; }
         const t = b.getAttribute('data-adm');
         if (t === 'tables') openAdminTables('applications');
@@ -9218,6 +10027,9 @@ try {
         if (t === 'rewards') openAdminTool('rewards');
         if (t === 'verified') openAdminTool('verified');
         if (t === 'broadcast') openAdminTool('broadcast');
+        if (t === 'points') openAdminTool('points');
+        if (t === 'analytics') openAdminTool('analytics');
+        if (t === 'backup') openAdminTool('backup');
         if (t === 'pets') openAdminTool('pets');
         if (t === 'classreset') openAdminTool('classreset');
         if (t === 'ticker') openAdminTool('ticker');
