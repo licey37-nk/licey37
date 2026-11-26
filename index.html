@@ -1052,6 +1052,606 @@
       justify-content: center;
     }
 
+    /* ============ 15. ГЛАВНАЯ: КАРТОЧКИ, СОБЫТИЯ, КАПСУЛА ============ */
+    .info-title {
+      font-size: 1.08rem;
+      margin-bottom: 12px;
+    }
+
+    .info-desc {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-bottom: 12px;
+    }
+
+    .schedule-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .schedule-cols h4 {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 8px;
+    }
+
+    .sch-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    .sch-table td {
+      padding: 5px 6px;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .sch-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .sch-num {
+      color: var(--muted);
+      width: 26px;
+    }
+
+    .sch-time {
+      font-weight: 700;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+
+    .best-student {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .best-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--grad);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--gold, #f59e0b);
+      flex-shrink: 0;
+    }
+
+    .best-name {
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    .best-ach {
+      font-size: 0.84rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .like-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .like-counter {
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--accent);
+    }
+
+    .like-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .idea-toggle {
+      display: flex;
+      background: var(--bg-soft);
+      border-radius: 12px;
+      padding: 4px;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .idea-toggle button {
+      flex: 1;
+      padding: 8px;
+      border-radius: 9px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+      transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    }
+
+    .idea-toggle button.active {
+      background: var(--surface);
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .textarea-field {
+      width: 100%;
+      min-height: 84px;
+      resize: vertical;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+    }
+
+    .textarea-field:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--primary-soft);
+      background: var(--surface);
+    }
+
+    .event-card {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .event-date {
+      display: inline-flex;
+      align-self: flex-start;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+    }
+
+    .event-place {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .event-card .btn {
+      margin-top: auto;
+      align-self: flex-start;
+    }
+
+    .count-row {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      margin: 14px 0 4px;
+    }
+
+    .count-box {
+      text-align: center;
+      min-width: 64px;
+      background: var(--grad-soft);
+      border-radius: 12px;
+      padding: 8px 6px;
+    }
+
+    .count-num {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: var(--text-strong);
+    }
+
+    .count-label {
+      font-size: 0.68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .capsule-open-msg {
+      background: var(--grad-soft);
+      border-radius: 12px;
+      padding: 14px;
+      font-style: italic;
+      margin-top: 10px;
+      font-size: 0.92rem;
+    }
+
+    .btn[disabled] {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    /* ============ 16. МОЙ КЛАСС ============ */
+    .class-selector {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .class-selector select {
+      padding: 11px 14px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .class-selector select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--primary-soft);
+    }
+
+    .class-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .class-chip {
+      display: inline-flex;
+      align-items: center;
+      background: var(--grad);
+      color: #fff;
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 6px 18px;
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pet-card-top {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .pet-avatar {
+      width: 88px;
+      height: 88px;
+      border-radius: 24px;
+      background: var(--grad-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.6rem;
+      box-shadow: var(--shadow-sm);
+      flex-shrink: 0;
+    }
+
+    .pet-nick {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-strong);
+    }
+
+    .pet-kind {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .pet-rank {
+      display: inline-flex;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.78rem;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin: 6px 0;
+    }
+
+    .xp-bar {
+      height: 12px;
+      background: var(--bg-soft);
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 6px 0;
+    }
+
+    .xp-progress {
+      height: 100%;
+      background: var(--grad);
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    .pet-mood {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .beast-picker {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .beast-option {
+      aspect-ratio: 1;
+      border-radius: 14px;
+      border: 2px solid var(--border);
+      background: var(--input-bg);
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .beast-option:hover {
+      transform: translateY(-3px);
+      border-color: var(--primary);
+    }
+
+    .beast-option.selected {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+      box-shadow: 0 0 0 3px var(--primary-soft);
+      transform: scale(1.06);
+    }
+
+    .beast-nick-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .beast-nick-row input {
+      flex: 1;
+      padding: 11px 14px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .beast-nick-row input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--primary-soft);
+    }
+
+    .hw-form {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr auto;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .hw-form input,
+    .hw-form select {
+      padding: 11px 12px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .hw-form input:focus,
+    .hw-form select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--primary-soft);
+    }
+
+    .hw-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 10px;
+      background: var(--surface-soft);
+    }
+
+    .hw-item.hw-done {
+      opacity: 0.65;
+    }
+
+    .hw-item.hw-done .hw-text {
+      text-decoration: line-through;
+    }
+
+    .hw-subject {
+      display: inline-flex;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.75rem;
+      padding: 2px 10px;
+      border-radius: 999px;
+    }
+
+    .hw-text {
+      font-size: 0.9rem;
+      margin: 5px 0;
+    }
+
+    .hw-due {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .hw-due.overdue {
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    .hw-check {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: auto;
+      flex-shrink: 0;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .hw-check input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .chat-list {
+      max-height: 380px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding-right: 4px;
+    }
+
+    .chat-msg {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--grad);
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .chat-bubble {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 14px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chat-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+
+    .chat-author {
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    .chat-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 6px;
+    }
+
+    .chat-actions button {
+      font-size: 0.8rem;
+      opacity: 0.6;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .chat-actions button:hover {
+      opacity: 1;
+      transform: scale(1.12);
+    }
+
+    .chat-text {
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .chat-empty {
+      color: var(--muted);
+      text-align: center;
+      padding: 24px 0;
+      font-size: 0.9rem;
+    }
+
+    .chat-form {
+      display: flex;
+      gap: 10px;
+    }
+
+    #chat-input {
+      flex: 1;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      resize: none;
+      outline: none;
+      min-height: 46px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    #chat-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--primary-soft);
+    }
+
+    @media (max-width: 640px) {
+      .hw-form {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .schedule-cols {
+        grid-template-columns: 1fr;
+      }
+
+      .beast-picker {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .pet-card-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
     /* ============ 14. АДАПТИВНОСТЬ ============ */
     @media (max-width: 960px) {
       .header-inner {
@@ -1142,9 +1742,9 @@
     <!-- ВКЛАДКА 1: ГЛАВНАЯ -->
     <section id="tab-home" class="tab-panel active">
       <div class="hero-banner">
-        <div class="hero-badge">🎓 Официальный портал учеников</div>
-        <h1>Лицей №37</h1>
-        <p>Цифровая среда для учеников МБОУ «Лицей №37» города Нижнекамска: класс, барахолка, соцсеть, игры Первых и многое другое.</p>
+        <div class="hero-badge" data-editable="hero-badge">🎓 Официальный портал учеников</div>
+        <h1 data-editable="hero-title">Лицей №37</h1>
+        <p data-editable="hero-subtitle">Цифровая среда для учеников МБОУ «Лицей №37» города Нижнекамска: класс, барахолка, соцсеть, игры Первых и многое другое.</p>
         <div class="hero-actions">
           <button class="btn btn-white" id="hero-join-btn">🚀 Присоединиться</button>
           <button class="btn btn-transparent" data-tab="class">Узнать больше</button>
@@ -1199,6 +1799,142 @@
           <button class="btn btn-outline btn-sm" data-tab="profile">Мой счёт →</button>
         </div>
       </div>
+
+      <div class="section-title" style="margin-top:36px;">
+        <div class="section-icon">📊</div>
+        <div>
+          <h2>Полезное сегодня</h2>
+          <p>Расписание, герои лицея и твои идеи</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card card-hover">
+          <h3 class="info-title" data-editable="schedule-title">⏰ Расписание звонков Лицея №37</h3>
+          <div class="schedule-cols">
+            <div>
+              <h4 data-editable="schedule-shift1">1 смена</h4>
+              <table class="sch-table">
+                <tr><td class="sch-num">1.</td><td class="sch-time" data-editable="sch1-l1">8:00–8:45</td></tr>
+                <tr><td class="sch-num">2.</td><td class="sch-time" data-editable="sch1-l2">8:55–9:40</td></tr>
+                <tr><td class="sch-num">3.</td><td class="sch-time" data-editable="sch1-l3">9:50–10:35</td></tr>
+                <tr><td class="sch-num">4.</td><td class="sch-time" data-editable="sch1-l4">10:50–11:35</td></tr>
+                <tr><td class="sch-num">5.</td><td class="sch-time" data-editable="sch1-l5">11:45–12:30</td></tr>
+                <tr><td class="sch-num">6.</td><td class="sch-time" data-editable="sch1-l6">12:40–13:25</td></tr>
+              </table>
+            </div>
+            <div>
+              <h4 data-editable="schedule-shift2">2 смена</h4>
+              <table class="sch-table">
+                <tr><td class="sch-num">1.</td><td class="sch-time" data-editable="sch2-l1">13:35–14:20</td></tr>
+                <tr><td class="sch-num">2.</td><td class="sch-time" data-editable="sch2-l2">14:30–15:15</td></tr>
+                <tr><td class="sch-num">3.</td><td class="sch-time" data-editable="sch2-l3">15:25–16:10</td></tr>
+                <tr><td class="sch-num">4.</td><td class="sch-time" data-editable="sch2-l4">16:25–17:10</td></tr>
+                <tr><td class="sch-num">5.</td><td class="sch-time" data-editable="sch2-l5">17:20–18:05</td></tr>
+                <tr><td class="sch-num">6.</td><td class="sch-time" data-editable="sch2-l6">18:15–19:00</td></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-hover">
+          <h3 class="info-title" data-editable="best-title">🏆 Лучший ученик месяца</h3>
+          <div class="best-student">
+            <div class="best-avatar">🏆</div>
+            <div style="min-width:0;">
+              <div class="best-name" data-editable="best-name">Имя Фамилия</div>
+              <span class="user-class" data-editable="best-class">9Б</span>
+              <p class="best-ach" data-editable="best-ach">Победитель муниципального этапа олимпиады по математике.</p>
+            </div>
+          </div>
+          <div class="like-row">
+            <button class="btn btn-primary btn-sm" id="congrats-btn">👏 Поздравить</button>
+            <span class="like-counter" id="like-counter">0</span>
+            <span class="like-label">поздравлений</span>
+          </div>
+        </div>
+
+        <div class="card card-hover">
+          <h3 class="info-title" data-editable="ideas-title">📮 Ящик идей и предложений</h3>
+          <p class="info-desc" data-editable="ideas-desc">Предложи, как улучшить школу или мероприятия — администрация лицея читает каждое обращение.</p>
+          <div class="idea-toggle">
+            <button type="button" id="idea-mode-open" class="active">🙋 Открыто</button>
+            <button type="button" id="idea-mode-anon">🕵️ Анонимно</button>
+          </div>
+          <textarea id="idea-text" class="textarea-field" placeholder="Твоя идея — подпишемся твоим именем и классом..."></textarea>
+          <button class="btn btn-primary btn-block" id="idea-submit" style="margin-top:10px;">✉️ Отправить идею</button>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:36px;">
+        <div class="section-icon">📅</div>
+        <div>
+          <h2 data-editable="events-title">Мероприятия и Олимпиады Лицея №37</h2>
+          <p data-editable="events-desc">Ближайшие события — подавай заявку и участвуй</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card card-hover event-card">
+          <span class="event-date" data-editable="event-1-date">📅 15 декабря</span>
+          <h3 data-editable="event-1-title">«Безопасное колесо»</h3>
+          <p class="info-desc" data-editable="event-1-desc" style="margin-bottom:6px;">Городской конкурс по правилам дорожного движения среди 5–7 классов.</p>
+          <span class="event-place" data-editable="event-1-place">📍 Актовый зал</span>
+          <button class="btn btn-outline btn-sm apply-open-btn" data-event="Безопасное колесо">✍️ Подать заявку</button>
+        </div>
+        <div class="card card-hover event-card">
+          <span class="event-date" data-editable="event-2-date">📅 20 декабря</span>
+          <h3 data-editable="event-2-title">Олимпиада по математике</h3>
+          <p class="info-desc" data-editable="event-2-desc" style="margin-bottom:6px;">Школьный этап Всероссийской олимпиады школьников, 7–11 классы.</p>
+          <span class="event-place" data-editable="event-2-place">📍 Кабинет 302</span>
+          <button class="btn btn-outline btn-sm apply-open-btn" data-event="Олимпиада по математике">✍️ Подать заявку</button>
+        </div>
+        <div class="card card-hover event-card">
+          <span class="event-date" data-editable="event-3-date">📅 26 декабря</span>
+          <h3 data-editable="event-3-title">Новогодний бал Первых</h3>
+          <p class="info-desc" data-editable="event-3-desc" style="margin-bottom:6px;">Праздничная программа «Движения Первых» для всех учеников лицея.</p>
+          <span class="event-place" data-editable="event-3-place">📍 Актовый зал</span>
+          <button class="btn btn-outline btn-sm apply-open-btn" data-event="Новогодний бал Первых">✍️ Подать заявку</button>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:36px;">
+        <div class="section-icon">📸</div>
+        <div>
+          <h2 data-editable="capsule-title">Капсула времени Лицея №37 (2026)</h2>
+          <p data-editable="capsule-desc">Оставь послание будущим лицеистам — оно откроется в выбранный день</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h3 class="info-title">💌 Оставить послание в будущее</h3>
+          <div id="cap-author-fields">
+            <div class="field">
+              <label for="cap-name">Твоё имя</label>
+              <input type="text" id="cap-name" placeholder="Имя Фамилия" maxlength="32">
+            </div>
+            <div class="field">
+              <label>Класс</label>
+              <div class="field-row">
+                <select id="cap-grade"></select>
+                <select id="cap-letter"></select>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <label for="cap-message">Послание</label>
+            <textarea id="cap-message" class="textarea-field" placeholder="Дорогие лицеисты 2027 года..."></textarea>
+          </div>
+          <div class="field">
+            <label for="cap-date">Дата открытия капсулы</label>
+            <input type="date" id="cap-date">
+            <div class="field-hint">Например, 1 сентября 2027 или твой выпускной.</div>
+          </div>
+          <button class="btn btn-primary btn-block" id="capsule-submit">⏳ Запечатать послание</button>
+        </div>
+        <div class="grid" id="capsule-list" style="grid-column:1/-1;"></div>
+      </div>
     </section>
 
     <!-- ВКЛАДКА 2: МОЙ КЛАСС -->
@@ -1207,14 +1943,48 @@
         <div class="section-icon">🏫</div>
         <div>
           <h2>Мой класс</h2>
-          <p>Домашние задания, чат класса и питомец Ак Барс</p>
+          <p data-editable="class-desc">Талисман класса, дедлайны и закрытый чат</p>
         </div>
       </div>
-      <div class="card stub-card">
+
+      <div class="card stub-card" id="class-guest-box" style="display:none;">
         <div class="stub-icon">🏫</div>
-        <h3>Раздел «Мой класс»</h3>
-        <p>Здесь появятся доска домашних заданий, закрытый чат класса и виртуальный питомец — снежный барс Ак Барс.</p>
-        <span class="coming-badge"><span class="dot"></span>Наполняется на Шаге 2</span>
+        <h3>Выбери класс</h3>
+        <p>Войди в аккаунт — и ты попадёшь в свой класс автоматически. Или выбери класс, чтобы посмотреть его пространство.</p>
+        <div class="class-selector">
+          <select id="view-grade"></select>
+          <select id="view-letter"></select>
+          <button class="btn btn-primary" id="view-class-btn">Открыть класс</button>
+        </div>
+      </div>
+
+      <div id="class-space" style="display:none;">
+        <div class="class-toolbar">
+          <span class="class-chip" id="class-chip">9Б</span>
+          <button class="btn btn-ghost btn-sm" id="change-class-btn">🔄 Сменить класс</button>
+        </div>
+
+        <div class="card" id="pet-card" style="margin-bottom:20px;"></div>
+
+        <div class="card" style="margin-bottom:20px;">
+          <h3 class="info-title" data-editable="hw-title">📌 Доска дедлайнов и домашки</h3>
+          <div class="hw-form">
+            <select id="hw-subject"></select>
+            <input type="text" id="hw-text" placeholder="Описание задания" maxlength="200">
+            <input type="date" id="hw-date">
+            <button class="btn btn-primary" id="hw-add-btn">➕ Добавить</button>
+          </div>
+          <div id="hw-list"></div>
+        </div>
+
+        <div class="card">
+          <h3 class="info-title" data-editable="chat-title">💬 Закрытый чат класса</h3>
+          <div class="chat-list" id="chat-list"></div>
+          <div class="chat-form">
+            <textarea id="chat-input" rows="1" placeholder="Сообщение классу... (Enter — отправить)"></textarea>
+            <button class="btn btn-primary" id="chat-send-btn">➤</button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1375,6 +2145,38 @@
       <div class="modal-footer-link">
         Уже есть аккаунт? <a id="go-to-login">Войти</a>
       </div>
+    </div>
+  </div>
+
+  <!-- МОДАЛКА: ЗАЯВКА НА МЕРОПРИЯТИЕ -->
+  <div class="modal" id="modal-apply" aria-modal="true" role="dialog">
+    <div class="modal-content">
+      <button class="modal-close" data-close-modal="modal-apply">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">✍️</div>
+        <h3>Заявка на участие</h3>
+        <p id="apply-event-name">Мероприятие</p>
+      </div>
+      <div class="form-error" id="apply-error"></div>
+      <form id="apply-form">
+        <div class="field">
+          <label for="apply-fio">ФИО</label>
+          <input type="text" id="apply-fio" placeholder="Фамилия Имя" maxlength="64" required>
+        </div>
+        <div class="field">
+          <label>Класс</label>
+          <div class="field-row">
+            <select id="apply-grade" required></select>
+            <select id="apply-letter" required></select>
+          </div>
+          <div class="field-hint">Цифра 1–11, буква строго А, Б, В, Г или Д.</div>
+        </div>
+        <div class="field">
+          <label for="apply-contact">Контакт (телефон, Telegram или email)</label>
+          <input type="text" id="apply-contact" placeholder="Как с тобой связаться?" maxlength="64" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Отправить заявку</button>
+      </form>
     </div>
   </div>
 
@@ -1564,6 +2366,7 @@
       });
       window.scrollTo({ top: 0, behavior: 'smooth' });
       if (name === 'profile') renderProfileTab();
+      if (name === 'class') renderClassTab();
     }
 
     document.getElementById('main-nav').addEventListener('click', function (e) {
@@ -1871,6 +2674,8 @@
     function updateAuthUI() {
       const area = document.getElementById('header-auth');
       const user = getCurrentUser();
+      renderCapsuleAuthorArea();
+      updateLikeCounter();
 
       if (!user) {
         area.innerHTML =
@@ -1957,10 +2762,606 @@
         '</div>';
     }
 
+    /* ============ ШАГ 2: ГЛАВНАЯ СТРАНИЦА И МОЙ КЛАСС ============ */
+
+    const BEASTS = [
+      { emoji: '🐯', name: 'Амурский тигр' },
+      { emoji: '🐘', name: 'Индийский слон' },
+      { emoji: '🐺', name: 'Полярный волк' },
+      { emoji: '🦁', name: 'Золотой лев' },
+      { emoji: '🦅', name: 'Горный орёл' },
+      { emoji: '🦊', name: 'Огненный лис' },
+      { emoji: '🐻', name: 'Бурый медведь' },
+      { emoji: '🐼', name: 'Большая панда' },
+      { emoji: '🐆', name: 'Снежный барс' },
+      { emoji: '🦉', name: 'Мудрый филин' },
+      { emoji: '🐉', name: 'Нефритовый дракон' },
+      { emoji: '🐬', name: 'Дельфин' }
+    ];
+
+    const SUBJECTS = ['Алгебра', 'Геометрия', 'Физика', 'Химия', 'Русский язык', 'Литература', 'Английский язык', 'История', 'Обществознание', 'Биология', 'География', 'Информатика', 'Татарский язык', 'ОБЖ'];
+
+    function getList(key) {
+      const data = dbLoad(key, []);
+      return Array.isArray(data) ? data : [];
+    }
+
+    function makeId(prefix) {
+      return prefix + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+    }
+
+    function todayStr() {
+      const d = new Date();
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+
+    function fmtDate(iso) {
+      try {
+        return new Date(iso + 'T00:00:00').toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+      } catch (e) { return iso; }
+    }
+
+    function fmtDateTime(ts) {
+      try {
+        return new Date(ts).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+      } catch (e) { return ''; }
+    }
+
+    function classIdOf(grade, letter) {
+      return String(grade) + String(letter).toUpperCase();
+    }
+
+    function addPointsToUser(userId, delta) {
+      const users = getUsers();
+      const u = users.find(function (x) { return x.id === userId; });
+      if (!u) return;
+      u.points = (u.points || 0) + delta;
+      saveUsers(users);
+      updateAuthUI();
+      updateStats();
+      renderProfileTab();
+    }
+
+    function fillClassSelect(gradeSel, letterSel) {
+      if (!gradeSel || !letterSel) return;
+      gradeSel.innerHTML = '';
+      letterSel.innerHTML = '';
+      CLASS_GRADES.forEach(function (g) {
+        const opt = document.createElement('option');
+        opt.value = g;
+        opt.textContent = g + ' класс';
+        gradeSel.appendChild(opt);
+      });
+      CLASS_LETTERS.forEach(function (l) {
+        const opt = document.createElement('option');
+        opt.value = l;
+        opt.textContent = l;
+        letterSel.appendChild(opt);
+      });
+    }
+
+    /* ---- Ящик идей ---- */
+
+    let ideaMode = 'open';
+
+    function setIdeaMode(mode) {
+      ideaMode = mode;
+      const openBtn = document.getElementById('idea-mode-open');
+      const anonBtn = document.getElementById('idea-mode-anon');
+      if (openBtn && anonBtn) {
+        openBtn.classList.toggle('active', mode === 'open');
+        anonBtn.classList.toggle('active', mode === 'anon');
+      }
+      const textarea = document.getElementById('idea-text');
+      if (textarea) {
+        textarea.placeholder = mode === 'open'
+          ? 'Твоя идея — подпишемся твоим именем и классом...'
+          : 'Твоя идея — она будет отправлена анонимно...';
+      }
+    }
+
+    document.getElementById('idea-mode-open').addEventListener('click', function () { setIdeaMode('open'); });
+    document.getElementById('idea-mode-anon').addEventListener('click', function () { setIdeaMode('anon'); });
+
+    document.getElementById('idea-submit').addEventListener('click', function () {
+      const textarea = document.getElementById('idea-text');
+      const text = textarea.value.trim();
+      if (text.length < 10) { toast('Опиши идею подробнее — минимум 10 символов.', 'error'); return; }
+      const user = getCurrentUser();
+      if (ideaMode === 'open' && !user) {
+        toast('Чтобы подписать идею именем, войди в аккаунт или выбери «Анонимно».', 'error');
+        return;
+      }
+      const list = getList('ideas');
+      list.push({
+        id: makeId('idea'),
+        text: text,
+        mode: ideaMode,
+        name: ideaMode === 'open' && user ? user.name : 'Аноним',
+        classId: ideaMode === 'open' && user ? classIdOf(user.grade, user.letter) : null,
+        createdAt: Date.now()
+      });
+      dbSave('ideas', list);
+      textarea.value = '';
+      toast('Идея отправлена! Спасибо, что заботишься о лицее 💙', 'success');
+    });
+
+    /* ---- Лучший ученик месяца: поздравления ---- */
+
+    function updateLikeCounter() {
+      const likes = getList('bestLikes');
+      const counter = document.getElementById('like-counter');
+      const btn = document.getElementById('congrats-btn');
+      const user = getCurrentUser();
+      if (counter) counter.textContent = String(likes.length);
+      if (btn) {
+        const liked = user && likes.indexOf(user.id) !== -1;
+        btn.textContent = liked ? '❤️ Ты поздравил' : '👏 Поздравить';
+        btn.disabled = !!liked;
+      }
+    }
+
+    document.getElementById('congrats-btn').addEventListener('click', function () {
+      const user = getCurrentUser();
+      if (!user) {
+        openModal('modal-login');
+        toast('Войди, чтобы поздравить лучшего ученика.', 'info');
+        return;
+      }
+      const likes = getList('bestLikes');
+      const idx = likes.indexOf(user.id);
+      if (idx !== -1) {
+        likes.splice(idx, 1);
+        toast('Поздравление отменено.', 'info');
+      } else {
+        likes.push(user.id);
+        toast('👏 Спасибо за поздравление!', 'success');
+      }
+      dbSave('bestLikes', likes);
+      updateLikeCounter();
+    });
+
+    /* ---- Заявки на мероприятия ---- */
+
+    let applyEventTitle = '';
+
+    document.querySelectorAll('.apply-open-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        applyEventTitle = btn.dataset.event || '';
+        document.getElementById('apply-event-name').textContent = applyEventTitle;
+        showFormError('apply-error', '');
+        const user = getCurrentUser();
+        const fio = document.getElementById('apply-fio');
+        const grade = document.getElementById('apply-grade');
+        const letter = document.getElementById('apply-letter');
+        if (user) {
+          fio.value = user.name;
+          grade.value = String(user.grade);
+          letter.value = user.letter;
+        } else {
+          fio.value = '';
+        }
+        document.getElementById('apply-contact').value = '';
+        openModal('modal-apply');
+      });
+    });
+
+    document.getElementById('apply-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const fio = document.getElementById('apply-fio').value.trim();
+      const grade = document.getElementById('apply-grade').value;
+      const letter = document.getElementById('apply-letter').value;
+      const contact = document.getElementById('apply-contact').value.trim();
+      if (fio.length < 3) { showFormError('apply-error', 'Введи ФИО (минимум 3 символа).'); return; }
+      if (!isValidClass(grade, letter)) { showFormError('apply-error', 'Класс: цифра 1–11 и буква только А, Б, В, Г или Д.'); return; }
+      if (contact.length < 3) { showFormError('apply-error', 'Введи контакт для связи (телефон, Telegram или email).'); return; }
+      const list = getList('applications');
+      list.push({ id: makeId('app'), event: applyEventTitle, fio: fio, classId: classIdOf(grade, letter), contact: contact, createdAt: Date.now() });
+      dbSave('applications', list);
+      closeModal('modal-apply');
+      e.target.reset();
+      toast('✍️ Заявка на «' + applyEventTitle + '» отправлена!', 'success');
+    });
+
+    /* ---- Капсула времени ---- */
+
+    function renderCapsuleAuthorArea() {
+      const area = document.getElementById('cap-author-fields');
+      if (!area) return;
+      area.style.display = getCurrentUser() ? 'none' : 'block';
+    }
+
+    function renderCapsules() {
+      const wrap = document.getElementById('capsule-list');
+      if (!wrap) return;
+      const items = getList('capsule').slice().sort(function (a, b) { return (a.openDate || '').localeCompare(b.openDate || ''); });
+      if (!items.length) {
+        wrap.innerHTML = '<div class="card stub-card" style="grid-column:1/-1;"><div class="stub-icon">📸</div><h3>Пока ни одной капсулы</h3><p>Стань первым — оставь послание ученикам будущего!</p></div>';
+        return;
+      }
+      const now = Date.now();
+      wrap.innerHTML = items.map(function (item) {
+        const openAt = new Date(item.openDate + 'T00:00:00').getTime();
+        const who = esc(item.author || 'Аноним') + (item.classId ? ' · ' + esc(item.classId) : '');
+        if (now >= openAt) {
+          return '<div class="card capsule-open">' +
+            '<span class="event-date">💌 Открыта ' + fmtDate(item.openDate) + '</span>' +
+            '<h3>' + who + '</h3>' +
+            '<p class="info-desc">' + esc(item.message) + '</p>' +
+          '</div>';
+        }
+        const diff = Math.max(0, openAt - now);
+        const days = Math.floor(diff / 86400000);
+        const hours = Math.floor(diff / 3600000) % 24;
+        const minutes = Math.floor(diff / 60000) % 60;
+        return '<div class="card capsule-sealed">' +
+          '<div class="capsule-badge">🔒 Запечатано</div>' +
+          '<h3>Послание от ' + who + '</h3>' +
+          '<p class="info-desc">Откроется ' + fmtDate(item.openDate) + '</p>' +
+          '<div class="count-row">' +
+            '<div class="count-box"><b>' + days + '</b><span>дней</span></div>' +
+            '<div class="count-box"><b>' + hours + '</b><span>часов</span></div>' +
+            '<div class="count-box"><b>' + minutes + '</b><span>минут</span></div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    document.getElementById('capsule-submit').addEventListener('click', function () {
+      const user = getCurrentUser();
+      let author = '';
+      let classId = null;
+      if (user) {
+        author = user.name;
+        classId = classIdOf(user.grade, user.letter);
+      } else {
+        author = document.getElementById('cap-name').value.trim();
+        const grade = document.getElementById('cap-grade').value;
+        const letter = document.getElementById('cap-letter').value;
+        if (author.length < 2) { toast('Введи своё имя (или войди в аккаунт).', 'error'); return; }
+        if (!isValidClass(grade, letter)) { toast('Выбери класс: 1–11 и буква А, Б, В, Г или Д.', 'error'); return; }
+        classId = classIdOf(grade, letter);
+      }
+      const message = document.getElementById('cap-message').value.trim();
+      if (message.length < 5) { toast('Напиши послание — минимум 5 символов.', 'error'); return; }
+      const openDate = document.getElementById('cap-date').value;
+      if (!openDate) { toast('Выбери дату открытия капсулы.', 'error'); return; }
+      const list = getList('capsule');
+      list.push({ id: makeId('cap'), author: author, classId: classId, message: message, openDate: openDate, createdAt: Date.now() });
+      dbSave('capsule', list);
+      document.getElementById('cap-message').value = '';
+      document.getElementById('cap-date').value = '';
+      renderCapsules();
+      toast('📸 Капсула запечатана! Откроется ' + fmtDate(openDate) + '.', 'success');
+    });
+
+    /* ---- Пространство класса ---- */
+
+    let currentClass = null;
+
+    function renderClassTab() {
+      const guestBox = document.getElementById('class-guest-box');
+      const space = document.getElementById('class-space');
+      const changeBtn = document.getElementById('change-class-btn');
+      const user = getCurrentUser();
+      if (user) {
+        currentClass = classIdOf(user.grade, user.letter);
+        changeBtn.style.display = 'none';
+      } else {
+        currentClass = dbLoad('viewClass', null);
+        changeBtn.style.display = '';
+      }
+      if (!currentClass) {
+        guestBox.style.display = 'block';
+        space.style.display = 'none';
+        return;
+      }
+      guestBox.style.display = 'none';
+      space.style.display = 'block';
+      document.getElementById('class-chip').textContent = currentClass + ' класс';
+      renderPet();
+      renderHomework();
+      renderChat();
+    }
+
+    document.getElementById('view-class-btn').addEventListener('click', function () {
+      const grade = document.getElementById('view-grade').value;
+      const letter = document.getElementById('view-letter').value;
+      if (!isValidClass(grade, letter)) { toast('Выбери класс: 1–11 и буква А, Б, В, Г или Д.', 'error'); return; }
+      dbSave('viewClass', classIdOf(grade, letter));
+      renderClassTab();
+      toast('Открыт класс ' + classIdOf(grade, letter), 'success');
+    });
+
+    document.getElementById('change-class-btn').addEventListener('click', function () {
+      dbSave('viewClass', null);
+      renderClassTab();
+    });
+
+    /* ---- Талисман класса ---- */
+
+    function getPetsMap() {
+      const data = dbLoad('pets', {});
+      return data && typeof data === 'object' && !Array.isArray(data) ? data : {};
+    }
+
+    function getPet(classId) {
+      return getPetsMap()[classId] || null;
+    }
+
+    function savePet(classId, pet) {
+      const map = getPetsMap();
+      if (pet) map[classId] = pet; else delete map[classId];
+      dbSave('pets', map);
+    }
+
+    function petLevel(xp) { return Math.floor((xp || 0) / 100) + 1; }
+
+    function petRank(level) {
+      if (level >= 8) return 'Легенда школы';
+      if (level >= 5) return 'Гордость Лицея №37';
+      if (level >= 3) return 'Хранитель класса';
+      return 'Малыш-талисман';
+    }
+
+    function petMood(pet) {
+      if (pet.lastFed === todayStr()) return '😺 Сыт и доволен';
+      const y = new Date(Date.now() - 86400000);
+      const yStr = y.getFullYear() + '-' + String(y.getMonth() + 1).padStart(2, '0') + '-' + String(y.getDate()).padStart(2, '0');
+      if (pet.lastFed === yStr) return '🤔 Немного проголодался';
+      return '🍖 Голоден... покорми питомца!';
+    }
+
+    let pendingBeast = null;
+
+    function renderPet() {
+      const card = document.getElementById('pet-card');
+      if (!card || !currentClass) return;
+      const pet = getPet(currentClass);
+      if (!pet) {
+        pendingBeast = null;
+        const options = BEASTS.map(function (b, i) {
+          return '<button type="button" class="beast-option" data-beast="' + i + '">' +
+            '<span class="beast-emoji">' + b.emoji + '</span>' +
+            '<span class="beast-name">' + esc(b.name) + '</span>' +
+          '</button>';
+        }).join('');
+        card.innerHTML =
+          '<h3 class="info-title">🐾 Талисман класса ' + esc(currentClass) + '</h3>' +
+          '<p class="info-desc">Класс ещё не выбрал питомца. Выбери благородного зверя и придумай ему кличку!</p>' +
+          '<div class="beast-picker">' + options + '</div>' +
+          '<div class="beast-nick-row">' +
+            '<input type="text" id="beast-nick" placeholder="Кличка питомца" maxlength="24">' +
+            '<button class="btn btn-primary" id="beast-save-btn">✔️ Сохранить талисмана</button>' +
+          '</div>';
+        card.querySelectorAll('.beast-option').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            card.querySelectorAll('.beast-option').forEach(function (b) { b.classList.remove('selected'); });
+            btn.classList.add('selected');
+            pendingBeast = BEASTS[Number(btn.dataset.beast)];
+            const nick = document.getElementById('beast-nick');
+            if (nick && !nick.value.trim()) nick.value = pendingBeast.name;
+          });
+        });
+        document.getElementById('beast-save-btn').addEventListener('click', function () {
+          if (!pendingBeast) { toast('Сначала выбери зверя из коллекции.', 'error'); return; }
+          const nick = document.getElementById('beast-nick').value.trim() || pendingBeast.name;
+          savePet(currentClass, { beast: pendingBeast.emoji, beastName: pendingBeast.name, nick: nick, xp: 0, lastFed: null });
+          renderPet();
+          toast('🐾 Встречайте талисмана класса ' + currentClass + ' — ' + nick + '!', 'success');
+        });
+        return;
+      }
+      const level = petLevel(pet.xp);
+      const xpInLevel = (pet.xp || 0) % 100;
+      const fedToday = pet.lastFed === todayStr();
+      card.innerHTML =
+        '<div class="pet-layout">' +
+          '<div class="pet-avatar">' + pet.beast + '</div>' +
+          '<div style="min-width:0; flex:1;">' +
+            '<h3 class="info-title" style="margin-bottom:4px;">' + esc(pet.nick) + '</h3>' +
+            '<div class="pet-rank">' + petRank(level) + ' · ' + esc(pet.beastName) + ' · талисман класса ' + esc(currentClass) + '</div>' +
+            '<div class="xp-bar"><div class="xp-progress" style="width:' + xpInLevel + '%;"></div></div>' +
+            '<div class="pet-meta">Уровень ' + level + ' · XP: ' + (pet.xp || 0) + '/100 до следующего уровня</div>' +
+            '<div class="pet-mood">' + petMood(pet) + '</div>' +
+            '<div class="pet-actions">' +
+              '<button class="btn btn-primary btn-sm" id="feed-btn"' + (fedToday ? ' disabled' : '') + '>🍖 Покормить (+10 XP, раз в день)</button>' +
+              '<button class="btn btn-ghost btn-sm" id="pet-rechoose-btn">🔄 Выбрать заново</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      document.getElementById('feed-btn').addEventListener('click', function () {
+        const u = getCurrentUser();
+        if (!u) { openModal('modal-login'); toast('Войди, чтобы покормить питомца класса.', 'info'); return; }
+        const fresh = getPet(currentClass);
+        if (!fresh || fresh.lastFed === todayStr()) { renderPet(); return; }
+        fresh.xp = (fresh.xp || 0) + 10;
+        fresh.lastFed = todayStr();
+        savePet(currentClass, fresh);
+        renderPet();
+        toast('🍖 ' + fresh.nick + ' сыт! +10 XP классу.', 'success');
+      });
+      document.getElementById('pet-rechoose-btn').addEventListener('click', function () {
+        savePet(currentClass, null);
+        renderPet();
+      });
+    }
+
+    /* ---- Доска дедлайнов ---- */
+
+    function renderHomework() {
+      const wrap = document.getElementById('hw-list');
+      if (!wrap || !currentClass) return;
+      const user = getCurrentUser();
+      const items = getList('homework')
+        .filter(function (h) { return h.classId === currentClass; })
+        .sort(function (a, b) { return (a.dueDate || '').localeCompare(b.dueDate || ''); });
+      if (!items.length) {
+        wrap.innerHTML = '<p class="empty-line">Пока заданий нет — добавь первое!</p>';
+        return;
+      }
+      wrap.innerHTML = items.map(function (h) {
+        const done = user && (h.doneBy || []).indexOf(user.id) !== -1;
+        const overdue = !done && h.dueDate < todayStr();
+        return '<div class="hw-item' + (done ? ' hw-done' : '') + (overdue ? ' hw-overdue' : '') + '">' +
+          '<label class="hw-check"><input type="checkbox" data-hw="' + esc(h.id) + '"' + (done ? ' checked disabled' : '') + (!user ? ' disabled' : '') + '><span>Сделано ✓</span></label>' +
+          '<div class="hw-body">' +
+            '<span class="hw-subject">' + esc(h.subject) + '</span>' +
+            '<span class="hw-text">' + esc(h.text) + '</span>' +
+            '<span class="hw-due' + (overdue ? ' due-red' : '') + '">📅 до ' + fmtDate(h.dueDate) + (h.author ? ' · ' + esc(h.author) : '') + '</span>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    document.getElementById('hw-add-btn').addEventListener('click', function () {
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); toast('Войди, чтобы добавить задание на доску.', 'info'); return; }
+      const subject = document.getElementById('hw-subject').value;
+      const text = document.getElementById('hw-text').value.trim();
+      const dueDate = document.getElementById('hw-date').value;
+      if (!subject) { toast('Выбери предмет.', 'error'); return; }
+      if (text.length < 3) { toast('Опиши задание (минимум 3 символа).', 'error'); return; }
+      if (!dueDate) { toast('Выбери дату дедлайна.', 'error'); return; }
+      const list = getList('homework');
+      list.push({ id: makeId('hw'), classId: currentClass, subject: subject, text: text, dueDate: dueDate, doneBy: [], author: user.name, createdAt: Date.now() });
+      dbSave('homework', list);
+      document.getElementById('hw-text').value = '';
+      document.getElementById('hw-date').value = '';
+      renderHomework();
+      toast('📌 Задание добавлено на доску класса ' + currentClass + '.', 'success');
+    });
+
+    document.getElementById('hw-list').addEventListener('change', function (e) {
+      const checkbox = e.target.closest('input[data-hw]');
+      if (!checkbox || !checkbox.checked) return;
+      const user = getCurrentUser();
+      if (!user) { renderHomework(); return; }
+      const list = getList('homework');
+      const item = list.find(function (h) { return h.id === checkbox.dataset.hw; });
+      if (!item) return;
+      item.doneBy = item.doneBy || [];
+      if (item.doneBy.indexOf(user.id) !== -1) return;
+      item.doneBy.push(user.id);
+      dbSave('homework', list);
+      const pet = getPet(currentClass);
+      if (pet) {
+        pet.xp = (pet.xp || 0) + 5;
+        savePet(currentClass, pet);
+        renderPet();
+      }
+      addPointsToUser(user.id, 5);
+      renderHomework();
+      toast('✅ Готово! +5 баллов в профиль и +5 XP питомцу.', 'success');
+    });
+
+    /* ---- Закрытый чат класса ---- */
+
+    function chatAvatarHtml(avatar) {
+      if (avatar && avatar.type === 'image' && avatar.value) {
+        return '<div class="chat-ava" style="background-image:url(' + avatar.value + ');"></div>';
+      }
+      return '<div class="chat-ava">' + esc(avatar && avatar.value ? avatar.value : '🙂') + '</div>';
+    }
+
+    function renderChat() {
+      const wrap = document.getElementById('chat-list');
+      if (!wrap || !currentClass) return;
+      const user = getCurrentUser();
+      const messages = getList('chat')
+        .filter(function (m) { return m.classId === currentClass; })
+        .sort(function (a, b) { return (a.ts || 0) - (b.ts || 0); })
+        .slice(-50);
+      if (!messages.length) {
+        wrap.innerHTML = '<p class="empty-line">Сообщений пока нет — напиши первым!</p>';
+      } else {
+        wrap.innerHTML = messages.map(function (m) {
+          const mine = user && m.userId === user.id;
+          return '<div class="chat-msg">' +
+            chatAvatarHtml(m.avatar) +
+            '<div class="chat-bubble">' +
+              '<div class="chat-head"><span class="chat-author">' + esc(m.name) + '</span><span class="chat-time">' + fmtDateTime(m.ts) + (m.edited ? ' · изменено' : '') + '</span></div>' +
+              '<div class="chat-text">' + esc(m.text) + '</div>' +
+            '</div>' +
+            (mine
+              ? '<div class="chat-actions">' +
+                  '<button type="button" data-chat-edit="' + esc(m.id) + '" title="Редактировать">✏️</button>' +
+                  '<button type="button" data-chat-del="' + esc(m.id) + '" title="Удалить">🗑️</button>' +
+                '</div>'
+              : '') +
+          '</div>';
+        }).join('');
+      }
+      wrap.scrollTop = wrap.scrollHeight;
+    }
+
+    function sendChatMessage() {
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); toast('Войди, чтобы писать в чат класса.', 'info'); return; }
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+      const list = getList('chat');
+      list.push({ id: makeId('msg'), classId: currentClass, userId: user.id, name: user.name, avatar: user.avatar, text: text, ts: Date.now(), edited: false });
+      dbSave('chat', list);
+      input.value = '';
+      renderChat();
+    }
+
+    document.getElementById('chat-send-btn').addEventListener('click', sendChatMessage);
+    document.getElementById('chat-input').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendChatMessage();
+      }
+    });
+
+    document.getElementById('chat-list').addEventListener('click', function (e) {
+      const user = getCurrentUser();
+      if (!user) return;
+      const editBtn = e.target.closest('[data-chat-edit]');
+      const delBtn = e.target.closest('[data-chat-del]');
+      if (!editBtn && !delBtn) return;
+      const list = getList('chat');
+      const id = editBtn ? editBtn.dataset.chatEdit : delBtn.dataset.chatDel;
+      const msg = list.find(function (m) { return m.id === id && m.userId === user.id; });
+      if (!msg) return;
+      if (editBtn) {
+        const newText = prompt('Редактировать сообщение:', msg.text);
+        if (newText === null) return;
+        const trimmed = newText.trim();
+        if (!trimmed) { toast('Сообщение не может быть пустым.', 'error'); return; }
+        msg.text = trimmed;
+        msg.edited = true;
+        dbSave('chat', list);
+        renderChat();
+      } else {
+        if (!confirm('Удалить это сообщение?')) return;
+        const idx = list.indexOf(msg);
+        if (idx !== -1) list.splice(idx, 1);
+        dbSave('chat', list);
+        renderChat();
+      }
+    });
+
+    setInterval(function () {
+      if (panels.home.classList.contains('active')) renderCapsules();
+    }, 30000);
+
     /* ============ ЗАПУСК ============ */
     async function boot() {
       fillClassSelects();
       renderAvatarPicker();
+      fillClassSelect(document.getElementById('view-grade'), document.getElementById('view-letter'));
+      fillClassSelect(document.getElementById('cap-grade'), document.getElementById('cap-letter'));
+      fillClassSelect(document.getElementById('apply-grade'), document.getElementById('apply-letter'));
+      const hwSubjectSel = document.getElementById('hw-subject');
+      SUBJECTS.forEach(function (s) {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        hwSubjectSel.appendChild(opt);
+      });
       updateAuthUI();
       updateStats();
       renderProfileTab();
@@ -1976,6 +3377,10 @@
       updateAuthUI();
       updateStats();
       renderProfileTab();
+      renderClassTab();
+      renderCapsules();
+      updateLikeCounter();
+      setIdeaMode('open');
     }
 
     boot();
