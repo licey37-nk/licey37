@@ -2884,6 +2884,113 @@
       }
     }
 
+    /* ==================== 24. ЗАДАНИЕ 7 ==================== */
+    nav button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+
+    .bell-timer {
+      background: var(--grad);
+      color: #fff;
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 14px;
+      font-variant-numeric: tabular-nums;
+      box-shadow: var(--shadow-sm);
+      line-height: 1.5;
+    }
+    .bell-timer b { font-size: 1.2rem; }
+
+    .bell-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    .bell-table th {
+      text-align: left; padding: 8px 10px; color: var(--muted);
+      font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em;
+      border-bottom: 2px solid var(--border);
+    }
+    .bell-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); }
+    .bell-table .sch-time { font-weight: 700; font-variant-numeric: tabular-nums; }
+    .bell-table .sch-brk { color: var(--muted); font-size: 0.85rem; }
+    .bell-table tr.bell-now td {
+      background: var(--primary-soft);
+      font-weight: 800;
+      box-shadow: inset 3px 0 0 var(--primary);
+    }
+    .bell-table tr.bell-now .sch-time { color: var(--primary); }
+
+    .streak-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+      vertical-align: middle;
+      margin-left: 2px;
+      box-shadow: 0 2px 6px rgba(239, 68, 68, 0.35);
+    }
+
+    .gc-marks-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+    .gc-marks-row button {
+      min-width: 52px; font-weight: 800; font-size: 1.05rem;
+      border: 2px solid var(--border); background: var(--surface); border-radius: var(--radius-sm);
+    }
+    .gc-marks-row button:hover { border-color: var(--primary); color: var(--primary); }
+    .gc-chips { display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0; min-height: 26px; }
+    .gc-chip {
+      background: var(--primary-soft); color: var(--primary);
+      font-weight: 800; font-size: 0.9rem;
+      padding: 3px 10px; border-radius: 999px; cursor: pointer;
+      user-select: none; transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+    .gc-chip:hover { transform: scale(1.08); opacity: 0.85; }
+    .gc-result {
+      margin-top: 10px; padding: 12px 14px;
+      background: var(--bg-soft); border-radius: var(--radius-sm);
+      font-size: 1rem; line-height: 1.6;
+    }
+
+    #global-search-btn { white-space: nowrap; }
+    .gs-results { margin-top: 12px; max-height: 46vh; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+    .gs-item {
+      display: flex; gap: 10px; align-items: flex-start;
+      padding: 10px 12px; border-radius: var(--radius-sm);
+      background: var(--bg-soft); cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    .gs-item:hover { transform: translateY(-1px); background: var(--primary-soft); }
+    .gs-ico { font-size: 1.2rem; line-height: 1.3; }
+    .gs-title { display: block; font-weight: 700; font-size: 0.95rem; }
+    .gs-sub { display: block; color: var(--muted); font-size: 0.8rem; margin-top: 2px; }
+
+    #top-ticker {
+      background: var(--grad);
+      color: #fff;
+      font-weight: 800;
+      text-align: center;
+      padding: 8px 16px;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      overflow: hidden;
+      white-space: nowrap;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      z-index: 99;
+    }
+    #top-ticker[data-ticker-marquee="true"] #top-ticker-text {
+      display: inline-block;
+      padding-left: 100%;
+      animation: tickerRun 18s linear infinite;
+    }
+    @keyframes tickerRun {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #top-ticker[data-ticker-marquee="true"] #top-ticker-text { animation: none; padding-left: 0; }
+    }
+
   </style>
 </head>
 <body class="theme-light">
@@ -2907,9 +3014,12 @@
         <button data-tab="profile">👤 Профиль</button>
       </nav>
 
+      <button class="btn btn-ghost btn-sm" id="global-search-btn" title="Быстрый поиск (Ctrl+K)">🔍 Поиск...</button>
       <div class="header-auth" id="header-auth"></div>
     </div>
   </header>
+
+  <div id="top-ticker" data-ticker-marquee="false"><span id="top-ticker-text" data-editable="top_ticker">Лицей №37</span></div>
 
   <main>
     <!-- ВКЛАДКА 1: ГЛАВНАЯ -->
@@ -2984,30 +3094,8 @@
       <div class="grid">
         <div class="card card-hover">
           <h3 class="info-title" data-editable="schedule-title">⏰ Расписание звонков Лицея №37</h3>
-          <div class="schedule-cols">
-            <div>
-              <h4 data-editable="schedule-shift1">1 смена</h4>
-              <table class="sch-table">
-                <tr><td class="sch-num">1.</td><td class="sch-time" data-editable="sch1-l1">8:00–8:45</td></tr>
-                <tr><td class="sch-num">2.</td><td class="sch-time" data-editable="sch1-l2">8:55–9:40</td></tr>
-                <tr><td class="sch-num">3.</td><td class="sch-time" data-editable="sch1-l3">9:50–10:35</td></tr>
-                <tr><td class="sch-num">4.</td><td class="sch-time" data-editable="sch1-l4">10:50–11:35</td></tr>
-                <tr><td class="sch-num">5.</td><td class="sch-time" data-editable="sch1-l5">11:45–12:30</td></tr>
-                <tr><td class="sch-num">6.</td><td class="sch-time" data-editable="sch1-l6">12:40–13:25</td></tr>
-              </table>
-            </div>
-            <div>
-              <h4 data-editable="schedule-shift2">2 смена</h4>
-              <table class="sch-table">
-                <tr><td class="sch-num">1.</td><td class="sch-time" data-editable="sch2-l1">13:35–14:20</td></tr>
-                <tr><td class="sch-num">2.</td><td class="sch-time" data-editable="sch2-l2">14:30–15:15</td></tr>
-                <tr><td class="sch-num">3.</td><td class="sch-time" data-editable="sch2-l3">15:25–16:10</td></tr>
-                <tr><td class="sch-num">4.</td><td class="sch-time" data-editable="sch2-l4">16:25–17:10</td></tr>
-                <tr><td class="sch-num">5.</td><td class="sch-time" data-editable="sch2-l5">17:20–18:05</td></tr>
-                <tr><td class="sch-num">6.</td><td class="sch-time" data-editable="sch2-l6">18:15–19:00</td></tr>
-              </table>
-            </div>
-          </div>
+          <div class="bell-timer" id="bell-timer">⏰ Загружаем таймер звонков…</div>
+          <table class="bell-table" id="bell-table"></table>
         </div>
 
         <div class="card card-hover">
@@ -3161,6 +3249,29 @@
             <textarea id="chat-input" rows="1" placeholder="Сообщение классу... (Enter — отправить)"></textarea>
             <button class="btn btn-primary" id="chat-send-btn">➤</button>
           </div>
+        </div>
+
+        <div class="card">
+          <h3 class="info-title" data-editable="gc-title">🧮 Умный калькулятор оценок</h3>
+          <p class="info-desc">Введи текущие оценки и цель — калькулятор мгновенно покажет средний балл и сколько оценок подряд нужно до порога.</p>
+          <div class="gc-marks-row">
+            <button class="btn" data-gc-add="5">5</button>
+            <button class="btn" data-gc-add="4">4</button>
+            <button class="btn" data-gc-add="3">3</button>
+            <button class="btn" data-gc-add="2">2</button>
+            <input type="text" id="gc-input" class="input-field" style="flex:1; min-width:150px;" placeholder="Или строкой: 5543 5…" autocomplete="off">
+            <button class="btn btn-primary" id="gc-apply-input">Добавить</button>
+            <button class="btn btn-ghost" id="gc-clear">Очистить</button>
+          </div>
+          <div class="gc-chips" id="gc-chips"></div>
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:6px;">
+            <label class="field-label" for="gc-target" style="margin:0;">Цель:</label>
+            <select id="gc-target" class="input-field" style="max-width:280px;">
+              <option value="5">Выйти на 5 (порог 4.50)</option>
+              <option value="4">Выйти на 4 (порог 3.50)</option>
+            </select>
+          </div>
+          <div class="gc-result" id="gc-result">Добавь свои оценки, чтобы увидеть средний балл и цель.</div>
         </div>
       </div>
     </section>
@@ -3588,6 +3699,20 @@
     </div>
   </div>
 
+  <!-- ======== ШАГ 7: БЫСТРЫЙ ПОИСК ======== -->
+  <div class="modal" id="modal-search" aria-modal="true" role="dialog">
+    <div class="modal-content">
+      <button class="modal-close" data-close-modal="modal-search">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">🔍</div>
+        <h3>Быстрый поиск по сайту</h3>
+        <p>Ученики, Барахолка, посты, каналы и база знаний ИИ · Ctrl+K</p>
+      </div>
+      <input type="text" id="global-search-input" class="input-field" placeholder="🔍 Что ищем? Имя, товар, канал, тема…" autocomplete="off">
+      <div id="global-search-results" class="gs-results"></div>
+    </div>
+  </div>
+
   <!-- ======== ШАГ 5: СУПЕР-АДМИНКА ======== -->
   <div class="modal" id="modal-admin-login" aria-modal="true" role="dialog">
     <div class="modal-content">
@@ -3612,6 +3737,7 @@
     <button data-adm="scripts">💻 Скрипты</button>
     <button data-adm="rewards">🎁 Призы</button>
     <button data-adm="pets">🐾 Талисманы</button>
+    <button data-adm="ticker">📰 Плашка</button>
     <button data-adm="pass">🔑 Пароль</button>
     <button id="adm-exit-btn">🚪 Выйти</button>
   </div>
@@ -3878,27 +4004,58 @@
 
     function setTab(name) {
       if (!panels[name]) return;
-      Object.keys(panels).forEach(function (key) {
-        panels[key].classList.toggle('active', key === name);
+      document.querySelectorAll('.tab-panel').forEach(function (p) {
+        p.style.display = 'none';
+        p.classList.remove('active');
       });
+      const target = panels[name];
+      target.style.display = 'block';
+      target.classList.add('active');
       document.querySelectorAll('#main-nav button').forEach(function (btn) {
         btn.classList.toggle('active', btn.dataset.tab === name);
       });
-      const cascadePanel = panels[name];
-      cascadePanel.classList.add('anim-cascade');
-      setTimeout(function () { cascadePanel.classList.remove('anim-cascade'); }, 1800);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      if (name === 'games') { fillComplimentTargets(); renderCompliments(); renderReactionRecords(); }
-      if (name === 'profile') renderProfileTab();
-      if (name === 'class') renderClassTab();
-      if (name === 'market') renderMarket();
-      if (name === 'social') renderSocial();
+      try {
+        target.classList.add('anim-cascade');
+        setTimeout(function () { target.classList.remove('anim-cascade'); }, 1800);
+      } catch (eAnim) { console.error(eAnim); }
+      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (eScroll) { try { window.scrollTo(0, 0); } catch (eS2) {} }
+      try {
+        if (name === 'games') { fillComplimentTargets(); renderCompliments(); renderReactionRecords(); }
+        if (name === 'profile') renderProfileTab();
+        if (name === 'class') renderClassTab();
+        if (name === 'market') renderMarket();
+        if (name === 'social') renderSocial();
+      } catch (eRender) { console.error('Ошибка отрисовки вкладки ' + name + ':', eRender); }
     }
 
-    document.getElementById('main-nav').addEventListener('click', function (e) {
-      const btn = e.target.closest('button[data-tab]');
-      if (btn) setTab(btn.dataset.tab);
-    });
+    let lastTouchSwitch = 0;
+    let navTouch = null;
+
+    document.addEventListener('click', function (e) {
+      const btn = e.target && e.target.closest ? e.target.closest('#main-nav button[data-tab]') : null;
+      if (!btn) return;
+      if (Date.now() - lastTouchSwitch < 600) { e.preventDefault(); return; }
+      setTab(btn.dataset.tab);
+    }, true);
+
+    const navEl37 = document.getElementById('main-nav');
+    if (navEl37) {
+      navEl37.addEventListener('touchstart', function (e) {
+        const btn = e.target && e.target.closest ? e.target.closest('button[data-tab]') : null;
+        navTouch = btn && e.touches && e.touches[0] ? { x: e.touches[0].clientX, y: e.touches[0].clientY, tab: btn.dataset.tab } : null;
+      }, { passive: true });
+      navEl37.addEventListener('touchend', function (e) {
+        if (!navTouch) return;
+        const t = e.changedTouches && e.changedTouches[0];
+        const moved = t ? Math.abs(t.clientX - navTouch.x) + Math.abs(t.clientY - navTouch.y) : 0;
+        const tab = navTouch.tab;
+        navTouch = null;
+        if (moved > 12) return;
+        e.preventDefault();
+        lastTouchSwitch = Date.now();
+        setTab(tab);
+      }, { passive: false });
+    }
 
     document.addEventListener('click', function (e) {
       const navEl = e.target.closest('[data-tab]');
@@ -4234,7 +4391,7 @@
         '<div class="user-badge">' +
           avatarHtml(user.avatar, frameClass(user.frame)) +
           '<div class="user-info">' +
-            '<div class="user-name">' + esc(user.name) + '</div>' +
+            '<div class="user-name">' + esc(user.name) + (Number(user.streak || 0) > 0 ? ' <span class="streak-badge" title="Дней подряд">🔥 ' + Number(user.streak) + '</span>' : '') + '</div>' +
             '<div class="user-meta"><span class="user-class">' + esc(classLabel(user)) + '</span>' +
             '<span>' + esc(displayStatus(user)) + '</span></div>' +
           '</div>' +
@@ -4302,6 +4459,7 @@
             '<div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:center; margin-top:6px;">' +
               '<span class="user-class" style="font-size:0.9rem; padding:4px 12px;">' + esc(classIdOf(user.grade, user.letter)) + ' класс</span>' +
               '<span class="coming-badge" style="background:var(--accent-soft); color:var(--accent);">' + esc(displayStatus(user)) + '</span>' +
+              (Number(user.streak || 0) > 0 ? '<span class="streak-badge" title="Дней подряд">🔥 ' + Number(user.streak) + '</span>' : '') +
             '</div>' +
             '<div class="user-points" style="font-size:1.15rem; margin-top:10px;">💎 ' + Number(user.points || 0) + ' баллов</div>' +
             (user.about ? '<p class="info-desc" style="margin-top:8px;">' + esc(user.about) + '</p>' : '') +
@@ -6879,6 +7037,11 @@
         setSessionUserId(null);
       }
 
+      updateStreak();
+      initTicker();
+      renderBellSchedule();
+      updateBellTimer();
+
       updateAuthUI();
       updateStats();
       renderProfileTab();
@@ -7081,6 +7244,9 @@
         savePet(u.classId, u.before || null);
         if (currentClass === u.classId) renderPet();
         renderPetTop();
+      } else if (u.kind === 'ticker') {
+        dbSave('topTicker', u.before || {});
+        initTicker();
       }
       log.splice(log.indexOf(entry), 1);
       dbSave('adminLog', log);
@@ -7226,7 +7392,7 @@
     /* ---- Инструменты админки (Журнал / Права / Призы / Пароль) ---- */
     function openAdminTool(mode) {
       adminToolsMode = mode;
-      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pets: '🐾 Талисманы классов', pass: '🔑 Смена пароля админа' };
+      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pets: '🐾 Талисманы классов', pass: '🔑 Смена пароля админа', ticker: '📰 Плашка новостей' };
       document.getElementById('admin-tools-title').textContent = titles[mode] || 'Администрирование';
       openModal('modal-admin-tools');
       if (mode === 'log') renderAdminLog();
@@ -7234,6 +7400,7 @@
       if (mode === 'rewards') renderAdminRewards();
       if (mode === 'pass') renderAdminPass();
       if (mode === 'pets') renderAdminPets();
+      if (mode === 'ticker') renderAdminTicker();
     }
 
     function renderAdminLog() {
@@ -7502,6 +7669,7 @@
       if (t === 'scripts') toggleAdminDrawer(true);
       if (t === 'rewards') openAdminTool('rewards');
       if (t === 'pets') openAdminTool('pets');
+      if (t === 'ticker') openAdminTool('ticker');
       if (t === 'pass') openAdminTool('pass');
     });
 
@@ -7910,6 +8078,282 @@
     function initAiTutor() {
       updateAiStatus();
       aiLoadFiles();
+    }
+
+    /* ============ ШАГ 7: НАДЁЖНОСТЬ, ЗВОНКИ, ОГОНЁК, КАЛЬКУЛЯТОР, ПОИСК, ПЛАШКА ============ */
+    window.addEventListener('error', function (e) {
+      try { console.error('Глобальная ошибка JS:', e.message, 'строка', e.lineno); } catch (eL) {}
+    });
+    window.addEventListener('unhandledrejection', function (e) {
+      try { console.error('Необработанная ошибка промиса:', e.reason); } catch (eL) {}
+    });
+
+    /* ---- 1. Официальное расписание звонков и живой таймер по МСК ---- */
+    const BELL_SCHEDULE = [
+      { n: 1, start: '08:00', end: '08:40', brk: 15 },
+      { n: 2, start: '08:55', end: '09:35', brk: 15 },
+      { n: 3, start: '09:50', end: '10:30', brk: 15 },
+      { n: 4, start: '10:45', end: '11:25', brk: 15 },
+      { n: 5, start: '11:40', end: '12:20', brk: 10 },
+      { n: 6, start: '12:30', end: '13:10', brk: 10 },
+      { n: 7, start: '13:20', end: '14:00', brk: 10 },
+      { n: 8, start: '14:10', end: '14:50', brk: 15 },
+      { n: 9, start: '15:05', end: '15:45', brk: 0 }
+    ];
+
+    function pad2(num) { return String(num).length < 2 ? '0' + String(num) : String(num); }
+    function bellToMin(hhmm) {
+      const parts = String(hhmm).split(':');
+      return Number(parts[0]) * 60 + Number(parts[1]);
+    }
+    function mskSecondsNow(ts) {
+      const d = ts ? new Date(ts) : new Date();
+      return (d.getUTCHours() * 3600 + d.getUTCMinutes() * 60 + d.getUTCSeconds() + 10800) % 86400;
+    }
+    function mskDateStr(ts) {
+      const d = new Date((ts || Date.now()) + 3 * 60 * 60 * 1000);
+      return d.getUTCFullYear() + '-' + pad2(d.getUTCMonth() + 1) + '-' + pad2(d.getUTCDate());
+    }
+    function fmtBellCountdown(totalSec) {
+      const s = Math.max(0, Math.floor(totalSec));
+      return pad2(Math.floor(s / 60)) + ' мин. ' + pad2(s % 60) + ' сек.';
+    }
+    function bellState(nowSec) {
+      for (let i = 0; i < BELL_SCHEDULE.length; i++) {
+        const l = BELL_SCHEDULE[i];
+        const st = bellToMin(l.start) * 60;
+        const en = bellToMin(l.end) * 60;
+        if (nowSec >= st && nowSec < en) return { type: 'lesson', lesson: l, next: BELL_SCHEDULE[i + 1] || null, leftSec: en - nowSec };
+        if (l.brk > 0) {
+          const bEnd = i + 1 < BELL_SCHEDULE.length ? bellToMin(BELL_SCHEDULE[i + 1].start) * 60 : en + l.brk * 60;
+          if (nowSec >= en && nowSec < bEnd) return { type: 'break', lesson: l, next: BELL_SCHEDULE[i + 1] || null, leftSec: bEnd - nowSec };
+        }
+      }
+      return null;
+    }
+    function renderBellSchedule() {
+      const table = document.getElementById('bell-table');
+      if (!table) return;
+      let html = '<tr><th>Урок</th><th>Время (МСК)</th><th>Перемена</th></tr>';
+      BELL_SCHEDULE.forEach(function (l) {
+        html += '<tr data-bell="l' + l.n + '"><td class="sch-num">' + l.n + '.</td>' +
+          '<td class="sch-time">' + l.start + '–' + l.end + '</td>' +
+          '<td class="sch-brk">' + (l.brk > 0 ? l.brk + ' мин' : '—') + '</td></tr>';
+      });
+      table.innerHTML = html;
+    }
+    function updateBellTimer() {
+      const box = document.getElementById('bell-timer');
+      if (!box) return;
+      const st = bellState(mskSecondsNow());
+      const rows = document.querySelectorAll('#bell-table tr[data-bell]');
+      for (let i = 0; i < rows.length; i++) rows[i].classList.remove('bell-now');
+      if (st && st.type === 'lesson') {
+        const row = document.querySelector('#bell-table tr[data-bell="l' + st.lesson.n + '"]');
+        if (row) row.classList.add('bell-now');
+        box.innerHTML = 'До конца ' + st.lesson.n + ' урока: <b>' + fmtBellCountdown(st.leftSec) + '</b>';
+      } else if (st && st.type === 'break') {
+        const row = document.querySelector('#bell-table tr[data-bell="l' + st.lesson.n + '"]');
+        if (row) row.classList.add('bell-now');
+        const nextN = st.next ? st.next.n : st.lesson.n + 1;
+        box.innerHTML = 'До конца перемены (перед ' + nextN + ' уроком): <b>' + fmtBellCountdown(st.leftSec) + '</b>';
+      } else {
+        box.innerHTML = 'Уроки закончились · Первый звонок в 08:00 МСК';
+      }
+    }
+    setInterval(updateBellTimer, 1000);
+
+    /* ---- 2. Огонёк Лицея: счётчик дней подряд ---- */
+    function updateStreak() {
+      const uid = getSessionUserId();
+      if (!uid) return;
+      const users = getUsers();
+      const u = users.find(function (x) { return x.id === uid; });
+      if (!u) return;
+      const today = mskDateStr();
+      if (u.lastVisit === today) return;
+      const yesterday = mskDateStr(Date.now() - 86400000);
+      u.streak = u.lastVisit === yesterday ? Number(u.streak || 0) + 1 : 1;
+      u.lastVisit = today;
+      saveUsers(users);
+      addPointsToUser(uid, 5, '🔥 Огонёк Лицея: заход день №' + u.streak);
+      toast('🔥 Огонёк Лицея: ' + u.streak + ' дн. подряд! +5 баллов', 'success');
+      updateAuthUI();
+      renderProfileTab();
+    }
+
+    /* ---- 3. Умный калькулятор оценок ---- */
+    let gcMarks = [];
+    function gcRender() {
+      const chips = document.getElementById('gc-chips');
+      const out = document.getElementById('gc-result');
+      if (!chips || !out) return;
+      chips.innerHTML = gcMarks.length
+        ? gcMarks.map(function (m, i) { return '<span class="gc-chip" data-gc-del="' + i + '" title="Убрать оценку">' + m + ' ✕</span>'; }).join('')
+        : '<span class="field-hint">Оценок пока нет — нажимай кнопки 5/4/3/2 или добавь строкой.</span>';
+      if (!gcMarks.length) { out.innerHTML = 'Добавь свои оценки, чтобы увидеть средний балл и цель.'; return; }
+      const sum = gcMarks.reduce(function (a, b) { return a + b; }, 0);
+      const avg = sum / gcMarks.length;
+      const target = Number((document.getElementById('gc-target') || {}).value || 5);
+      const threshold = target === 4 ? 3.5 : 4.5;
+      if (avg >= threshold) {
+        out.innerHTML = 'Средний балл: <b>' + avg.toFixed(2) + '</b> · Цель уже достигнута! Так держать! 🎉';
+        return;
+      }
+      const need = Math.ceil((threshold * gcMarks.length - sum) / (target - threshold));
+      const proj = (sum + need * target) / (gcMarks.length + need);
+      out.innerHTML = 'Средний балл: <b>' + avg.toFixed(2) + '</b> · Чтобы выйти на ' + target +
+        ' (порог ' + threshold.toFixed(2) + '), нужно ещё <b>' + need + '</b> ' +
+        (target === 5 ? 'пятёрок' : 'четвёрок') + ' подряд → средний станет <b>' + proj.toFixed(2) + '</b>';
+    }
+    (function initGradeCalculator() {
+      document.querySelectorAll('[data-gc-add]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          if (gcMarks.length >= 40) { toast('Максимум 40 оценок.', 'info'); return; }
+          gcMarks.push(Number(btn.getAttribute('data-gc-add')));
+          gcRender();
+        });
+      });
+      const gcChips = document.getElementById('gc-chips');
+      if (gcChips) gcChips.addEventListener('click', function (e) {
+        const chip = e.target.closest('[data-gc-del]');
+        if (!chip) return;
+        gcMarks.splice(Number(chip.getAttribute('data-gc-del')), 1);
+        gcRender();
+      });
+      const gcInput = document.getElementById('gc-input');
+      if (gcInput) {
+        const applyGc = function () {
+          const nums = String(gcInput.value || '').split(/[^2-5]+/).filter(Boolean).map(Number)
+            .filter(function (n) { return n >= 2 && n <= 5; });
+          nums.forEach(function (n) { if (gcMarks.length < 40) gcMarks.push(n); });
+          gcInput.value = '';
+          gcRender();
+          if (nums.length) toast('Добавлено оценок: ' + nums.length, 'success');
+        };
+        const applyBtn = document.getElementById('gc-apply-input');
+        if (applyBtn) applyBtn.addEventListener('click', applyGc);
+        gcInput.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); applyGc(); }
+        });
+      }
+      const gcClearBtn = document.getElementById('gc-clear');
+      if (gcClearBtn) gcClearBtn.addEventListener('click', function () { gcMarks = []; gcRender(); });
+      const gcTargetSel = document.getElementById('gc-target');
+      if (gcTargetSel) gcTargetSel.addEventListener('change', gcRender);
+    })();
+
+    /* ---- 4. Глобальный быстрый поиск (Ctrl+K) ---- */
+    let gsActions = [];
+    function globalSearch(q) {
+      const box = document.getElementById('global-search-results');
+      if (!box) return;
+      gsActions = [];
+      const query = String(q || '').trim().toLowerCase();
+      if (query.length < 2) {
+        box.innerHTML = '<div class="field-hint">Введите минимум 2 символа — ищем по ученикам, объявлениям Барахолки, постам, каналам и базе знаний ИИ-Наставника.</div>';
+        return;
+      }
+      const res = [];
+      getUsers().forEach(function (u) {
+        if (res.length >= 20) return;
+        const label = (String(u.name || '') + ' ' + classIdOf(u.grade, u.letter)).toLowerCase();
+        if (label.indexOf(query) !== -1) {
+          res.push({ ico: '👤', title: u.name, sub: 'Ученик · ' + classIdOf(u.grade, u.letter), act: function () { setTab('social'); openDm(u.id); } });
+        }
+      });
+      getList('listings').forEach(function (l) {
+        if (res.length >= 20) return;
+        if (String(l.title || '').toLowerCase().indexOf(query) !== -1) {
+          res.push({ ico: '🛍️', title: l.title, sub: 'Барахолка · объявление', act: function () { setTab('market'); } });
+        }
+      });
+      getList('posts').forEach(function (p) {
+        if (res.length >= 20) return;
+        if (String(p.text || '').toLowerCase().indexOf(query) !== -1) {
+          res.push({ ico: '📰', title: String(p.text || '').slice(0, 60) + (String(p.text || '').length > 60 ? '…' : ''), sub: 'Пост в Соцсети', act: function () { setTab('social'); setSocialSub('feed'); } });
+        }
+      });
+      getList('channels').forEach(function (c) {
+        if (res.length >= 20) return;
+        const label = (String(c.name || '') + ' ' + String(c.desc || '')).toLowerCase();
+        if (label.indexOf(query) !== -1) {
+          res.push({ ico: '📢', title: c.name, sub: (c.mode === 'community' ? 'Сообщество · ' : 'Канал · ') + (c.subs || []).length + ' подписчиков', act: function () { setTab('social'); setSocialSub('channels'); } });
+        }
+      });
+      if (typeof aiSearchKnowledge === 'function') {
+        aiSearchKnowledge(query, 4).forEach(function (item) {
+          if (res.length >= 20) return;
+          res.push({ ico: '🤖', title: item.s, sub: String(item.t || '').slice(0, 90) + '…', act: function () { aiToggle(true); } });
+        });
+      }
+      gsActions = res;
+      box.innerHTML = res.length
+        ? res.map(function (r, i) {
+            return '<div class="gs-item" data-gs="' + i + '"><span class="gs-ico">' + r.ico + '</span>' +
+              '<span><span class="gs-title">' + esc(r.title) + '</span><span class="gs-sub">' + esc(r.sub) + '</span></span></div>';
+          }).join('')
+        : '<div class="field-hint">Ничего не найдено. Попробуй другое слово.</div>';
+    }
+    (function initGlobalSearch() {
+      const gsBtn = document.getElementById('global-search-btn');
+      if (gsBtn) gsBtn.addEventListener('click', function () {
+        openModal('modal-search');
+        const si = document.getElementById('global-search-input');
+        if (si) si.value = '';
+        globalSearch('');
+        if (si) setTimeout(function () { si.focus(); }, 120);
+      });
+      const gsInput = document.getElementById('global-search-input');
+      if (gsInput) gsInput.addEventListener('input', function () { globalSearch(gsInput.value); });
+      const gsBox = document.getElementById('global-search-results');
+      if (gsBox) gsBox.addEventListener('click', function (e) {
+        const item = e.target.closest('[data-gs]');
+        if (!item) return;
+        const act = gsActions[Number(item.getAttribute('data-gs'))];
+        closeModal('modal-search');
+        if (act) { try { act.act(); } catch (eAct) { console.error(eAct); } }
+      });
+      document.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K' || e.key === 'к' || e.key === 'К' || e.code === 'KeyK')) {
+          e.preventDefault();
+          const gsBtnK = document.getElementById('global-search-btn');
+          if (gsBtnK) gsBtnK.click();
+        }
+      });
+    })();
+
+    /* ---- 5. Плашка важных новостей (бегущая строка) ---- */
+    function initTicker() {
+      const wrap = document.getElementById('top-ticker');
+      const span = document.getElementById('top-ticker-text');
+      if (!wrap || !span) return;
+      let cfg = null;
+      try { cfg = dbLoad('topTicker', null); } catch (eTk) { cfg = null; }
+      if (cfg && typeof cfg.text === 'string' && cfg.text.trim()) span.textContent = cfg.text;
+      else span.textContent = 'Лицей №37';
+      wrap.setAttribute('data-ticker-marquee', cfg && cfg.marquee ? 'true' : 'false');
+    }
+    function renderAdminTicker() {
+      const body = document.getElementById('admin-tools-body');
+      if (!body) return;
+      const cfg = dbLoad('topTicker', {}) || {};
+      body.innerHTML =
+        '<p class="info-desc" style="margin-bottom:12px;">Текст плашки над шапкой. Максимум 200 символов. Бегущая строка плавно прокручивает текст по всей ширине.</p>' +
+        '<input type="text" id="adm-ticker-text" class="input-field" maxlength="200" placeholder="Текст плашки (по умолчанию — Лицей №37)" value="' + esc(cfg.text || '') + '" style="margin-bottom:10px;">' +
+        '<label class="field-label" style="display:flex; align-items:center; gap:8px; margin-bottom:12px; cursor:pointer;">' +
+          '<input type="checkbox" id="adm-ticker-marquee"' + (cfg.marquee ? ' checked' : '') + '> Включить плавную бегущую строку</label>' +
+        '<button class="btn btn-primary btn-block" id="adm-ticker-save">📰 Сохранить плашку</button>';
+      document.getElementById('adm-ticker-save').addEventListener('click', function () {
+        const before = dbLoad('topTicker', {}) || {};
+        const text = document.getElementById('adm-ticker-text').value.trim();
+        const marquee = document.getElementById('adm-ticker-marquee').checked;
+        dbSave('topTicker', { text: text, marquee: marquee });
+        adminLogAction('ticker', 'Изменена плашка новостей: «' + (text || 'Лицей №37') + '»' + (marquee ? ' (бегущая строка)' : ''), { kind: 'ticker', before: before });
+        initTicker();
+        toast('📰 Плашка обновлена!', 'success');
+        closeModal('modal-admin-tools');
+      });
     }
 
     boot();
