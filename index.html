@@ -3994,21 +3994,119 @@
       return dbLoad(key, null);
     }
 
+    const DEVICE_LOCAL_KEYS = ['session', 'viewClass'];
+
+    function mergeLists(localArr, cloudArr) {
+      const seen = {};
+      const out = [];
+      (Array.isArray(cloudArr) ? cloudArr : []).forEach(function (it) {
+        if (it && it.id !== undefined) {
+          if (!seen[it.id]) { seen[it.id] = true; out.push(it); }
+        } else out.push(it);
+      });
+      (Array.isArray(localArr) ? localArr : []).forEach(function (it) {
+        if (it && it.id !== undefined) {
+          if (!seen[it.id]) { seen[it.id] = true; out.push(it); }
+        }
+      });
+      return out;
+    }
+
+    function writeLs(key, value) {
+      try { localStorage.setItem(LS_PREFIX + key, JSON.stringify(value)); return true; } catch (e) { return false; }
+    }
+
+    function readLs(key) {
+      try { return JSON.parse(localStorage.getItem(LS_PREFIX + key)); } catch (e) { return null; }
+    }
+
+    function mergeIntoStorage(key, cloudData) {
+      if (DEVICE_LOCAL_KEYS.indexOf(key) !== -1) return;
+      const local = readLs(key);
+      let merged = cloudData;
+      if (Array.isArray(cloudData)) {
+        if (Array.isArray(local) && local.length) {
+          merged = mergeLists(local, cloudData);
+        }
+      } else if (cloudData && typeof cloudData === 'object' && local && typeof local === 'object' && !Array.isArray(local)) {
+        if (key === 'pets') {
+          merged = Object.assign({}, local);
+          Object.keys(cloudData).forEach(function (cid) {
+            const c = cloudData[cid];
+            const l = local[cid];
+            if (!l) { merged[cid] = c; return; }
+            const ct = typeof c.lastUpdate === 'number' ? c.lastUpdate : 0;
+            const lt = typeof l.lastUpdate === 'number' ? l.lastUpdate : 0;
+            if (ct > lt) merged[cid] = c;
+          });
+        }
+      }
+      writeLs(key, merged);
+      try {
+        if (JSON.stringify(merged) !== JSON.stringify(cloudData)) syncKey(key, merged);
+      } catch (e) {}
+    }
+
     async function pullAll() {
       if (!sb37) return;
       try {
         const answer = await sb37.from(TABLE).select('key,value');
         if (answer.error) throw answer.error;
         (answer.data || []).forEach(function (row) {
-          if (row && row.key !== undefined && row.value !== undefined) {
-            try {
-              localStorage.setItem(LS_PREFIX + row.key, JSON.stringify(row.value));
-            } catch (e) { /* ignore */ }
+          if (row && row.key !== undefined && row.value !== undefined && DEVICE_LOCAL_KEYS.indexOf(row.key) === -1) {
+            mergeIntoStorage(row.key, row.value);
           }
         });
       } catch (e) {
         console.warn('pullAll: облако недоступно, работаем на localStorage —', e && e.message);
       }
+    }
+
+    let liveSyncTimer = null;
+    let liveSyncBusy = false;
+
+    function liveSyncSnapshot() {
+      const keys = ['users', 'posts', 'channels', 'volunteers', 'chat', 'pchat', 'dms', 'homework', 'ideas', 'listings', 'compliments', 'capsule', 'pets', 'reaction', 'customScripts', 'shopCustomRewards', 'applications', 'adminLog', 'topTicker', 'bestLikes'];
+      let s = '';
+      keys.forEach(function (k) { s += (localStorage.getItem(LS_PREFIX + k) || '') + '|'; });
+      return s;
+    }
+
+    function refreshActiveViews() {
+      try {
+        updateAuthUI();
+        updateStats();
+        if (panels.home.classList.contains('active')) { renderCapsules(); updateLikeCounter(); renderCompliments(); renderReactionRecords(); }
+        if (panels.class.classList.contains('active')) renderClassTab();
+        if (panels.market.classList.contains('active')) renderMarket();
+        if (panels.social.classList.contains('active')) renderSocial();
+        if (panels.games.classList.contains('active')) { renderCompliments(); renderReactionRecords(); }
+        if (panels.profile.classList.contains('active')) renderProfileTab();
+      } catch (e) { try { console.error('refreshActiveViews:', e); } catch (e2) {} }
+    }
+
+    async function liveSyncTick() {
+      if (liveSyncBusy) return;
+      liveSyncBusy = true;
+      try {
+        const before = liveSyncSnapshot();
+        await pullAll();
+        if (liveSyncSnapshot() !== before) refreshActiveViews();
+      } catch (e) { /* тихо */ }
+      liveSyncBusy = false;
+    }
+
+    function startLiveSync() {
+      if (liveSyncTimer) return;
+      liveSyncTimer = setInterval(function () {
+        if (document.visibilityState === 'visible') liveSyncTick();
+      }, 15000);
+      try {
+        document.addEventListener('visibilitychange', function () {
+          if (document.visibilityState === 'visible') liveSyncTick();
+        });
+      } catch (e) {}
+      liveSyncTick();
     }
 
     /* ============ ПОЛЬЗОВАТЕЛИ И СЕССИЯ ============ */
@@ -7295,6 +7393,8 @@
       renderMarket();
       renderVolunteerChecks();
       renderSocial();
+
+      startLiveSync();
     }
 
 
