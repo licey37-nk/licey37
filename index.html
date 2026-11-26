@@ -1,1572 +1,1996 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang='ru' data-theme='light'>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>МБОУ «Лицей №37» • Нижнекамск</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta name='description' content='Официальный портал МБОУ «Лицей №37» г. Нижнекамск: барахолка, соцсеть, расписание звонков, олимпиады, ИИ-наставник.'>
+<title>МБОУ «Лицей №37» г. Нижнекамск — официальный портал</title>
 <style>
-:root{--indigo:#4F46E5;--emerald:#10B981;--gold:#F59E0B;--danger:#EF4444;--bg:#F8FAFC;--surface:#FFF;--text:#0F172A;--muted:#64748B;--border:#E2E8F0;--r:16px;--sh:0 4px 16px rgba(15,23,42,.06);--tr:.25s ease}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-body{background:var(--bg);color:var(--text);line-height:1.6;display:flex;flex-direction:column;min-height:100vh}
-a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer;border:none;background:none}
-img{max-width:100%;display:block}input,textarea,select{font-family:inherit;outline:none}
-.container{max-width:1200px;margin:0 auto;padding:32px 20px;width:100%;flex:1}
-.page-content{display:none}.page-content.active{display:block;animation:fade .3s ease}
-@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.grid-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
-.card-pad{padding:24px}
-.flex{display:flex}.flex-col{display:flex;flex-direction:column}.items-center{align-items:center}.justify-between{justify-content:space-between}
-.gap-2{gap:8px}.gap-4{gap:16px}.mt-4{margin-top:16px}.mb-4{margin-bottom:16px}.w-full{width:100%}
-.hidden{display:none!important}.text-muted{color:var(--muted)}.text-sm{font-size:13px}.fw-bold{font-weight:700}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border-radius:10px;font-size:14px;font-weight:600;transition:var(--tr)}
-.btn:active{transform:scale(.97)}
-.btn-primary{background:var(--indigo);color:#fff}.btn-primary:hover{background:#4338CA}
-.btn-outline{border:1.5px solid var(--border);background:#fff;color:var(--text)}.btn-outline:hover{border-color:var(--indigo);color:var(--indigo)}
-.btn-gold{background:linear-gradient(135deg,#F59E0B,#FCD34D);color:#78350F;font-weight:700}
-.btn-success{background:var(--emerald);color:#fff}.btn-danger{background:var(--danger);color:#fff}
-.btn-sm{padding:6px 12px;font-size:12px}.btn-block{width:100%}
-.form-group{margin-bottom:16px}.form-label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase}
-.form-control{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;background:#fff;font-size:14px;transition:var(--tr)}
-.form-control:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(79,70,229,.15)}
-textarea.form-control{resize:vertical;min-height:80px}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+:root{
+--bg:#f2f6fc;--bg2:#e8f0fb;--card:#ffffff;--text:#152238;--muted:#6b7c96;
+--brand:#2f6bff;--brand2:#7b5cff;--accent:#00c2a8;--danger:#ff4d6d;--warn:#ffb020;
+--border:rgba(21,34,56,.09);--shadow-sm:0 2px 10px rgba(21,34,56,.06);
+--shadow:0 12px 34px rgba(21,34,56,.09);--shadow-lg:0 28px 70px rgba(21,34,56,.16);
+--r:16px;--r-sm:12px;--r-lg:26px;--admin-h:56px;
+}
+[data-theme='dark']{--bg:#0f1522;--bg2:#141c2c;--card:#18202f;--text:#eaf0fb;--muted:#93a3bd;--border:rgba(255,255,255,.09);--shadow-sm:0 2px 10px rgba(0,0,0,.4);--shadow:0 12px 34px rgba(0,0,0,.45);--shadow-lg:0 28px 70px rgba(0,0,0,.6)}
+[data-theme='neon']{--bg:#070b16;--bg2:#0b1224;--card:#0e1730;--text:#e6f7ff;--muted:#7fa8c9;--brand:#00e5ff;--brand2:#b14cff;--accent:#39ff88;--border:rgba(0,229,255,.22);--shadow-sm:0 0 14px rgba(0,229,255,.18);--shadow:0 0 34px rgba(177,76,255,.25);--shadow-lg:0 0 70px rgba(0,229,255,.3)}
+body{margin:0;font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(900px 500px at 8% -5%,rgba(47,107,255,.16),transparent 60%),radial-gradient(800px 500px at 100% 0%,rgba(123,92,255,.14),transparent 60%),radial-gradient(700px 500px at 50% 110%,rgba(0,194,168,.12),transparent 60%)}
+body.no-scroll{overflow:hidden}
+img{max-width:100%;display:block}
+button{font-family:inherit}
+a{color:var(--brand);text-decoration:none}
+h1,h2,h3,h4{margin:0 0 10px;line-height:1.2;letter-spacing:-.02em}
+h1{font-size:clamp(26px,4.4vw,46px)}
+h2{font-size:clamp(20px,2.6vw,30px)}
+h3{font-size:clamp(17px,2vw,21px)}
+p{margin:0 0 10px}
 
-/* Шапка */
-.site-header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
-.header-inner{max-width:1200px;margin:0 auto;padding:0 20px;height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}
-.logo-area{display:flex;align-items:center;gap:12px;cursor:pointer}
-.logo-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--indigo),var(--emerald));color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800}
-.logo-text span{display:block}.logo-title{font-size:16px;font-weight:800}.logo-sub{font-size:11px;color:var(--muted)}
-.nav-menu{display:flex;gap:4px;flex:1;justify-content:center}
-.nav-item{padding:8px 16px;border-radius:100px;font-size:14px;font-weight:600;color:var(--muted);transition:var(--tr);cursor:pointer}
-.nav-item:hover{background:#EEF2FF;color:var(--indigo)}.nav-item.active{background:var(--indigo);color:#fff}
-.auth-area{display:flex;gap:8px}
-.user-badge{display:flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border-radius:100px;background:#fff;border:1px solid var(--border);cursor:pointer}
-.user-avatar{width:32px;height:32px;border-radius:50%;background:#EEF2FF;color:var(--indigo);display:flex;align-items:center;justify-content:center;font-weight:700;overflow:hidden}
-.user-avatar img{width:100%;height:100%;object-fit:cover}
-.user-info{display:flex;flex-direction:column;line-height:1.2}.user-name{font-size:13px;font-weight:700}.user-class{font-size:11px;color:var(--muted)}
+/* ---------- КНОПКИ / ИНПУТЫ ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:var(--r-sm);padding:11px 18px;font-size:15px;font-weight:600;cursor:pointer;transition:.18s ease;background:var(--card);color:var(--text);box-shadow:var(--shadow-sm)}
+.btn:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.btn:active{transform:translateY(0)}
+.btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 10px 26px rgba(47,107,255,.32)}
+.btn-accent{background:linear-gradient(135deg,var(--accent),#3ad0ff);color:#04231f}
+.btn-ghost{background:transparent;border-color:var(--border);box-shadow:none}
+.btn-ghost:hover{background:var(--bg2)}
+.btn-danger{background:linear-gradient(135deg,#ff4d6d,#ff7a45);color:#fff}
+.btn-sm{padding:7px 12px;font-size:13px;border-radius:10px}
+.btn-block{width:100%}
+.icon-btn{border:none;background:transparent;color:var(--muted);font-size:18px;cursor:pointer;border-radius:10px;width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;transition:.15s}
+.icon-btn:hover{background:var(--bg2);color:var(--text)}
+.input,select.input,textarea.input{width:100%;padding:11px 14px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--card);color:var(--text);font-size:15px;font-family:inherit;outline:none;transition:.15s}
+.input:focus{border-color:var(--brand);box-shadow:0 0 0 4px rgba(47,107,255,.14)}
+textarea.input{resize:vertical;min-height:90px}
+.field{display:block;margin-bottom:12px}
+.field>span{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;background:var(--bg2);color:var(--muted);font-size:13px;font-weight:600}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff}
+.muted{color:var(--muted)}
+.small{font-size:13px}
 
-/* Модалки */
-.modal{position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:var(--tr)}
-.modal.open{opacity:1;pointer-events:auto}
-.modal-box{background:#fff;width:100%;max-width:440px;border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,.2);transform:translateY(20px);transition:var(--tr);max-height:90vh;display:flex;flex-direction:column}
-.modal.open .modal-box{transform:translateY(0)}
-.modal-head{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.modal-title{font-size:20px;font-weight:800}.modal-close{width:32px;height:32px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:16px}
-.modal-body{padding:24px;overflow-y:auto}
+/* ---------- ШАПКА ---------- */
+.site-header{position:sticky;top:0;z-index:100;backdrop-filter:blur(16px);background:color-mix(in srgb,var(--card) 82%,transparent);border-bottom:1px solid var(--border);transition:top .2s}
+body.admin-on .site-header{top:var(--admin-h)}
+.header-inner{max-width:1240px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:11px;background:none;border:none;cursor:pointer;padding:0;color:var(--text)}
+.brand-logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;box-shadow:0 8px 22px rgba(47,107,255,.35)}
+.brand-text{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}
+.brand-text strong{font-size:16px}
+.brand-text small{font-size:12px;color:var(--muted)}
+.main-nav{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.nav-tab{border:none;background:transparent;color:var(--muted);font-size:14px;font-weight:600;padding:9px 13px;border-radius:12px;cursor:pointer;transition:.16s;white-space:nowrap}
+.nav-tab:hover{background:var(--bg2);color:var(--text)}
+.nav-tab.active{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 8px 20px rgba(47,107,255,.3)}
+.auth-area{display:flex;gap:8px;align-items:center}
+.user-chip{display:flex;align-items:center;gap:9px;padding:5px 12px 5px 5px;border-radius:999px;background:var(--bg2);cursor:pointer;border:1px solid var(--border)}
+.user-chip .ava{width:32px;height:32px;border-radius:50%;object-fit:cover;background:var(--brand)}
+.burger{display:none;border:none;background:var(--bg2);color:var(--text);font-size:20px;width:42px;height:42px;border-radius:12px;cursor:pointer}
 
-/* Админ-панель */
-.admin-bar{display:none;background:#0F172A;color:#fff;padding:10px 20px;font-size:13px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
-.admin-bar.active{display:flex}
-.admin-tools{display:flex;gap:8px}
-.admin-tools .btn{padding:6px 12px;font-size:12px;background:#1E293B;color:#CBD5E1}
-.toggle-switch{display:flex;align-items:center;gap:8px;cursor:pointer;background:#1E293B;padding:4px 12px;border-radius:6px}
-.toggle-track{width:32px;height:18px;background:#475569;border-radius:10px;position:relative;transition:var(--tr)}
-.toggle-track::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:#fff;border-radius:50%;transition:var(--tr)}
-.toggle-switch.on .toggle-track{background:var(--emerald)}.toggle-switch.on .toggle-track::after{transform:translateX(14px)}
+/* ---------- АДМИН-ПАНЕЛЬ ---------- */
+.admin-bar{position:sticky;top:0;z-index:130;min-height:var(--admin-h);display:flex;align-items:center;gap:10px;padding:8px 18px;background:linear-gradient(135deg,#1b1035,#3a1d6e 55%,#0f2a5c);color:#fff;overflow-x:auto;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.28)}
+.admin-bar .admin-title{font-weight:800;font-size:14px;letter-spacing:.02em}
+.admin-bar .btn{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.22);box-shadow:none;padding:8px 14px;font-size:13px}
+.admin-bar .btn:hover{background:rgba(255,255,255,.26)}
+.admin-bar .btn.on{background:linear-gradient(135deg,#39ff88,#00e5ff);color:#04231f;border-color:transparent}
 
-/* Барахолка */
-.market-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column}
-.market-gallery{position:relative;height:200px;background:#F1F5F9}
-.market-img{width:100%;height:100%;object-fit:cover;display:none}.market-img.active{display:block}
-.gallery-nav{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--sh)}
-.gallery-nav.prev{left:8px}.gallery-nav.next{right:8px}
-.market-body{padding:16px;flex:1;display:flex;flex-direction:column}
-.market-price{font-size:20px;font-weight:800;margin-bottom:4px}.market-title{font-size:15px;font-weight:700}
-.sold-badge{position:absolute;top:10px;left:10px;background:var(--danger);color:#fff;padding:4px 12px;border-radius:100px;font-size:12px;font-weight:700}
-.photo-slot{width:70px;height:70px;border:2px dashed var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden}
-.photo-slot img{width:100%;height:100%;object-fit:cover}
-.photo-slot .remove{position:absolute;top:2px;right:2px;width:18px;height:18px;background:var(--danger);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px}
+/* ---------- ОБЩИЙ КАРКАС ---------- */
+.app{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:26px 18px 90px}
+.section{margin-bottom:34px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow-sm);padding:20px;transition:.2s}
+.card:hover{box-shadow:var(--shadow)}
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.grid-4{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
 
-@media(max-width:768px){.nav-menu{display:none}.header-inner{height:auto;padding:12px;flex-wrap:wrap}.auth-area{width:100%;justify-content:flex-end}.form-row{grid-template-columns:1fr}}
+/* ---------- ГЕРОЙ ---------- */
+.hero{position:relative;overflow:hidden;border-radius:var(--r-lg);padding:44px 34px;background:linear-gradient(135deg,rgba(47,107,255,.14),rgba(123,92,255,.12) 45%,rgba(0,194,168,.14));border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:34px}
+.hero-inner{position:relative;z-index:2;max-width:760px}
+.hero h1{margin:14px 0 12px}
+.hero p{font-size:17px;color:var(--muted);max-width:640px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+.hero-stats{display:flex;gap:26px;flex-wrap:wrap;margin-top:26px}
+.hero-stat b{display:block;font-size:26px;background:linear-gradient(135deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-stat span{font-size:13px;color:var(--muted)}
+.hero-photo{position:absolute;right:-40px;bottom:-40px;width:340px;height:340px;border-radius:50%;object-fit:cover;opacity:.16;z-index:1}
+
+/* ---------- РАСПИСАНИЕ ---------- */
+.bell-table{width:100%;border-collapse:collapse;font-size:14px}
+.bell-table th,.bell-table td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border)}
+.bell-table th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.bell-table tr:last-child td{border-bottom:none}
+.bell-table tr:hover td{background:var(--bg2)}
+
+/* ---------- КАРТОЧКИ СОБЫТИЙ ---------- */
+.event-card{display:flex;flex-direction:column;gap:10px}
+.event-date{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--brand)}
+
+/* ---------- БАРАХОЛКА ---------- */
+.listing-card{display:flex;flex-direction:column;overflow:hidden;padding:0}
+.listing-photo{position:relative;aspect-ratio:4/3;background:var(--bg2);overflow:hidden}
+.listing-photo img{width:100%;height:100%;object-fit:cover}
+.photo-nav{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;border:none;background:rgba(0,0,0,.45);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.photo-nav.prev{left:8px}
+.photo-nav.next{right:8px}
+.photo-counter{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,.55);color:#fff;font-size:12px;padding:3px 9px;border-radius:999px}
+.listing-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.price{font-size:19px;font-weight:800;color:var(--brand)}
+.price.free{color:var(--accent)}
+.price.exchange{color:var(--brand2)}
+
+/* ---------- СОЦСЕТЬ ---------- */
+.post{display:flex;flex-direction:column;gap:12px}
+.post-head{display:flex;align-items:center;gap:11px}
+.ava{width:44px;height:44px;border-radius:50%;object-fit:cover;background:linear-gradient(135deg,var(--brand),var(--brand2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex:0 0 auto}
+.ava.sm{width:34px;height:34px;font-size:13px}
+.ava.lg{width:96px;height:96px;font-size:34px}
+.frame-gold{box-shadow:0 0 0 3px #f5c542,0 0 20px rgba(245,197,66,.65)}
+.frame-neon{box-shadow:0 0 0 3px #00e5ff,0 0 22px rgba(0,229,255,.75)}
+.frame-fire{box-shadow:0 0 0 3px #ff6a00,0 0 22px rgba(255,106,0,.7)}
+.post-image{border-radius:var(--r-sm);max-height:460px;width:100%;object-fit:cover}
+.post-actions{display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:10px}
+.act-btn{border:none;background:transparent;color:var(--muted);font-size:14px;font-weight:600;padding:7px 12px;border-radius:10px;cursor:pointer;transition:.15s}
+.act-btn:hover{background:var(--bg2);color:var(--text)}
+.act-btn.liked{color:var(--danger)}
+.comments{display:flex;flex-direction:column;gap:9px;border-top:1px solid var(--border);padding-top:12px}
+.comment{display:flex;gap:9px;align-items:flex-start}
+.comment-body{background:var(--bg2);border-radius:12px;padding:8px 12px;font-size:14px;flex:1}
+
+/* ---------- ЧАТ ---------- */
+.chat{display:flex;flex-direction:column;gap:9px;max-height:340px;overflow-y:auto;padding:6px 2px;margin-bottom:12px}
+.msg{max-width:78%;padding:9px 13px;border-radius:14px;font-size:14px;word-break:break-word}
+.msg.me{align-self:flex-end;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border-bottom-right-radius:4px}
+.msg.other{align-self:flex-start;background:var(--bg2);border-bottom-left-radius:4px}
+.msg .t{display:block;font-size:11px;opacity:.7;margin-top:4px}
+.chat-form{display:flex;gap:8px}
+
+/* ---------- ПРОФИЛЬ ---------- */
+.profile-head{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.reward-card{display:flex;flex-direction:column;gap:8px;text-align:center;align-items:center}
+.reward-icon{font-size:34px}
+
+/* ---------- ИГРЫ ---------- */
+.ttt{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:300px;margin:0 auto}
+.ttt-cell{aspect-ratio:1;border-radius:14px;border:1px solid var(--border);background:var(--bg2);font-size:34px;font-weight:800;cursor:pointer;color:var(--text);transition:.15s}
+.ttt-cell:hover{background:var(--card);transform:scale(1.03)}
+.ttt-cell.x{color:var(--brand)}
+.ttt-cell.o{color:var(--danger)}
+
+/* ---------- МОДАЛКИ ---------- */
+.modal-root{position:fixed;inset:0;z-index:400;display:flex;align-items:center;justify-content:center;padding:18px}
+.modal-backdrop{position:absolute;inset:0;background:rgba(9,15,28,.55);backdrop-filter:blur(6px)}
+.modal{position:relative;z-index:2;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;background:var(--card);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);border:1px solid var(--border);animation:pop .22s ease}
+.modal-wide{max-width:820px}
+@keyframes pop{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 22px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card);z-index:3;border-radius:var(--r-lg) var(--r-lg) 0 0}
+.modal-head h3{margin:0}
+.modal-body{padding:20px 22px 24px}
+
+/* ---------- ШТОРКА СКРИПТОВ ---------- */
+.drawer{position:fixed;inset:0;z-index:450}
+.drawer-backdrop{position:absolute;inset:0;background:rgba(9,15,28,.5);backdrop-filter:blur(4px)}
+.drawer-panel{position:absolute;top:0;right:0;bottom:0;width:min(520px,100%);background:var(--card);box-shadow:var(--shadow-lg);display:flex;flex-direction:column;animation:slide .25s ease}
+@keyframes slide{from{transform:translateX(100%)}to{transform:none}}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
+.drawer-head h3{margin:0}
+.drawer-body{padding:18px 20px;overflow-y:auto;flex:1}
+.script-item{border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:10px;background:var(--bg2)}
+.script-item.on{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,194,168,.16)}
+
+/* ---------- ИИ ---------- */
+.ai-fab{position:fixed;right:22px;bottom:22px;z-index:300;width:62px;height:62px;border-radius:50%;border:none;font-size:28px;cursor:pointer;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;box-shadow:0 16px 40px rgba(47,107,255,.45);transition:.2s}
+.ai-fab:hover{transform:scale(1.08) rotate(-6deg)}
+.ai-panel{position:fixed;right:22px;bottom:96px;z-index:310;width:min(400px,calc(100vw - 32px));height:min(560px,72vh);background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);display:flex;flex-direction:column;overflow:hidden;animation:pop .22s ease}
+.ai-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(47,107,255,.12),rgba(123,92,255,.12))}
+.ai-title{display:flex;align-items:center;gap:9px;font-weight:800;font-size:15px}
+.ai-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent);animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.ai-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.ai-msg{max-width:86%;padding:10px 14px;border-radius:14px;font-size:14px;white-space:pre-wrap;word-break:break-word}
+.ai-msg.bot{align-self:flex-start;background:var(--bg2);border-bottom-left-radius:4px}
+.ai-msg.user{align-self:flex-end;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;border-bottom-right-radius:4px}
+.ai-form{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border)}
+.ai-status{padding:0 14px 10px;font-size:11px;color:var(--muted)}
+
+/* ---------- ТОСТЫ ---------- */
+.toasts{position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:600;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{padding:11px 20px;border-radius:999px;background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow);font-size:14px;font-weight:600;animation:pop .2s ease}
+.toast.ok{border-color:var(--accent);color:var(--accent)}
+.toast.err{border-color:var(--danger);color:var(--danger)}
+
+/* ---------- ПОДВАЛ ---------- */
+.site-footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:26px 18px;text-align:center;color:var(--muted);font-size:13px}
+
+/* ---------- ЖИВОЕ РЕДАКТИРОВАНИЕ ---------- */
+body.live-edit [data-editable]{outline:2px dashed var(--warn);outline-offset:4px;cursor:crosshair;border-radius:6px}
+body.live-edit [data-editable]:hover{background:rgba(255,176,32,.14)}
+
+/* ---------- АДАПТИВ ---------- */
+@media(max-width:980px){
+.main-nav{order:3;width:100%;display:none;margin:8px 0 0;padding-top:8px;border-top:1px solid var(--border)}
+.main-nav.open{display:flex}
+.nav-tab{flex:1 1 auto;text-align:center}
+.burger{display:inline-flex;align-items:center;justify-content:center;margin-left:auto}
+.auth-area{margin-left:auto}
+.hero{padding:32px 22px}
+.hero-photo{width:220px;height:220px;right:-60px;bottom:-60px}
+}
+@media(max-width:720px){
+:root{--admin-h:48px}
+.header-inner{padding:8px 12px;gap:10px}
+.brand-text small{display:none}
+.app{padding:18px 12px 100px}
+.hero{padding:26px 18px;border-radius:20px}
+.hero-stats{gap:18px}
+.card{padding:16px}
+.modal-body{padding:16px}
+.modal-head{padding:14px 16px}
+.ai-panel{right:10px;left:10px;width:auto;bottom:88px}
+.ai-fab{right:14px;bottom:14px;width:56px;height:56px;font-size:25px}
+.admin-bar{padding:6px 12px;gap:8px}
+.admin-bar .admin-title{display:none}
+}
+@media(max-width:480px){
+.grid-3,.grid-4{grid-template-columns:1fr}
+.btn{padding:10px 14px;font-size:14px}
+.hero-actions .btn{width:100%}
+}
 </style>
 </head>
 <body>
 
-<!-- АДМИН ПАНЕЛЬ -->
-<div class="admin-bar" id="adminTopBar">
-    <div class="flex items-center gap-4">
-        <span style="color:#FCD34D;font-weight:bold;">👑 Режим Админа</span>
-        <div class="toggle-switch" id="liveEditToggle" onclick="toggleLiveEdit()">
-            <div class="toggle-track"></div><span>✏️ Живое редактирование</span>
-        </div>
-    </div>
-    <div class="admin-tools">
-        <button class="btn" onclick="openAdminDrawer()">💻 Скрипты</button>
-        <button class="btn" onclick="openAdminApps()">📋 Заявки</button>
-        <button class="btn" onclick="openAdminTelegram()">📲 Telegram</button>
-        <button class="btn" onclick="exitAdminMode()" style="background:#7F1D1D;">Выйти</button>
-    </div>
+<div class='toasts' id='toasts'></div>
+
+<div class='admin-bar' id='adminBar' hidden>
+  <span class='admin-title'>👑 РЕЖИМ АДМИНИСТРАТОРА</span>
+  <button class='btn' id='btnLiveEdit' data-action='admin-live'>✏️ Живое редактирование по клику</button>
+  <button class='btn' data-action='admin-requests'>📋 Заявки и Идеи</button>
+  <button class='btn' data-action='admin-scripts'>💻 Библиотека скриптов</button>
+  <button class='btn' data-action='admin-exit'>🚪 Выйти</button>
 </div>
 
-<!-- ШАПКА -->
-<header class="site-header">
-    <div class="header-inner">
-        <div class="logo-area" onclick="switchPage('home')">
-            <div class="logo-icon">37</div>
-            <div class="logo-text"><span class="logo-title">МБОУ «Лицей №37»</span><span class="logo-sub">г. Нижнекамск</span></div>
-        </div>
-        <nav class="nav-menu" id="mainNav">
-            <button class="nav-item active" data-page="home" onclick="switchPage('home')">🏠 Главная</button>
-            <button class="nav-item" data-page="social" onclick="switchPage('social')">💬 Соцсеть</button>
-            <button class="nav-item" data-page="market" onclick="switchPage('market')">🛍️ Барахолка</button>
-            <button class="nav-item" data-page="games" onclick="switchPage('games')">🎮 Игры</button>
-            <button class="nav-item" data-page="profile" onclick="switchPage('profile')">👤 Профиль</button>
-        </nav>
-        <div class="auth-area" id="headerAuth">
-            <button class="btn btn-outline" onclick="openAuthModal('login')">Войти</button>
-            <button class="btn btn-primary" onclick="openAuthModal('register')">Регистрация</button>
-        </div>
-    </div>
+<header class='site-header'>
+  <div class='header-inner'>
+    <button class='brand' data-nav='home'>
+      <span class='brand-logo'>37</span>
+      <span class='brand-text'><strong>Лицей №37</strong><small>г. Нижнекамск</small></span>
+    </button>
+    <nav class='main-nav' id='mainNav'>
+      <button class='nav-tab' data-nav='home'>🏠 Главная</button>
+      <button class='nav-tab' data-nav='bazaar'>🛍️ Барахолка</button>
+      <button class='nav-tab' data-nav='social'>💬 Соцсеть Лицея</button>
+      <button class='nav-tab' data-nav='games'>🎮 Игры</button>
+      <button class='nav-tab' data-nav='profile'>👤 Мой профиль</button>
+    </nav>
+    <div class='auth-area' id='authArea'></div>
+    <button class='burger' id='burger' aria-label='Меню'>☰</button>
+  </div>
 </header>
 
-<!-- МОДАЛКИ -->
-<div class="modal" id="authModal">
-    <div class="modal-box">
-        <div class="modal-head"><div class="modal-title" id="authTitle">Вход</div><button class="modal-close" onclick="closeModal('authModal')">✕</button></div>
-        <div class="modal-body">
-            <div id="formLogin">
-                <div class="form-group"><label class="form-label">Email</label><input type="text" class="form-control" id="loginEmail"></div>
-                <div class="form-group"><label class="form-label">Пароль</label><input type="password" class="form-control" id="loginPassword"></div>
-                <button class="btn btn-primary btn-block mt-4" onclick="doLogin()">Войти</button>
-                <button class="btn btn-gold btn-block mt-4" onclick="openAdminLogin()">👑 Войти как Админ</button>
-                <p class="text-sm text-center mt-4">Нет аккаунта? <a href="#" onclick="switchAuthMode('register');return false;" class="fw-bold">Регистрация</a></p>
-            </div>
-            <div id="formRegister" class="hidden">
-                <div class="form-group"><label class="form-label">Имя и Фамилия</label><input type="text" class="form-control" id="regFullName"></div>
-                <div class="form-row">
-                    <div class="form-group"><label class="form-label">Класс</label><select class="form-control" id="regGradeNum"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option></select></div>
-                    <div class="form-group"><label class="form-label">Буква</label><select class="form-control" id="regGradeLetter"><option value="А">А</option><option value="Б">Б</option><option value="В">В</option><option value="Г">Г</option><option value="Д">Д</option><option value="Е">Е</option></select></div>
-                </div>
-                <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-control" id="regEmail"></div>
-                <div class="form-group"><label class="form-label">Пароль</label><input type="password" class="form-control" id="regPassword"></div>
-                <button class="btn btn-success btn-block mt-4" onclick="doRegister()">Создать аккаунт</button>
-                <button class="btn btn-gold btn-block mt-4" onclick="openAdminLogin()">👑 Войти как Админ</button>
-                <p class="text-sm text-center mt-4">Уже есть аккаунт? <a href="#" onclick="switchAuthMode('login');return false;" class="fw-bold">Войти</a></p>
-            </div>
-        </div>
-    </div>
-</div>
+<main class='app' id='app'></main>
 
-<div class="modal" id="adminLoginModal">
-    <div class="modal-box" style="max-width:400px;">
-        <div class="modal-head"><div class="modal-title">👑 Админ</div><button class="modal-close" onclick="closeModal('adminLoginModal')">✕</button></div>
-        <div class="modal-body">
-            <p class="text-sm text-muted mb-4">Введите пароль администратора.</p>
-            <input type="password" class="form-control" id="adminPasswordInput" placeholder="••••••••" style="margin-bottom:16px;">
-            <button class="btn btn-gold btn-block" onclick="checkAdminPassword()">Войти</button>
-        </div>
-    </div>
-</div>
-<!-- ОСНОВНОЙ КОНТЕЙНЕР -->
-<main class="container" id="mainContent">
-
-    <!-- ГЛАВНАЯ -->
-    <div class="page-content active" id="page-home">
-        <div class="card card-pad mb-4" style="background:linear-gradient(135deg,#1E1B4B,#4F46E5);color:#fff;border:none;padding:40px;">
-            <h1 style="font-size:32px;font-weight:800;margin-bottom:12px;" data-editable="hero-title">Добро пожаловать в Лицей №37!</h1>
-            <p style="font-size:16px;opacity:0.9;" data-editable="hero-subtitle">Современная экосистема для учёбы и общения.</p>
-            <div class="flex gap-4 mt-4">
-                <div><div style="font-size:28px;font-weight:800;" id="statStudents">0</div><div style="font-size:12px;opacity:0.8;">Учеников</div></div>
-                <div><div style="font-size:28px;font-weight:800;" id="statPosts">0</div><div style="font-size:12px;opacity:0.8;">Постов</div></div>
-                <div><div style="font-size:28px;font-weight:800;" id="statMarket">0</div><div style="font-size:12px;opacity:0.8;">Товаров</div></div>
-            </div>
-        </div>
-
-        <!-- ЛУЧШИЙ УЧЕНИК -->
-        <div class="card card-pad mb-4" style="background:#FFFBEB;border-color:#FDE68A;">
-            <div class="flex items-center gap-4">
-                <div style="width:80px;height:80px;border-radius:20px;background:linear-gradient(135deg,#F59E0B,#FCD34D);display:flex;align-items:center;justify-content:center;font-size:40px;" id="bestAvatar" data-editable="best-avatar">🏅</div>
-                <div>
-                    <div class="text-xs fw-bold" style="color:#B45309;text-transform:uppercase;">🏆 Лучший ученик месяца</div>
-                    <div style="font-size:22px;font-weight:800;color:#78350F;" id="bestName" data-editable="best-name">Петрова Анна</div>
-                    <div class="fw-bold" style="color:#B45309;" id="bestGrade" data-editable="best-grade">Класс: 10А</div>
-                </div>
-            </div>
-            <div class="mt-4" style="background:rgba(255,255,255,0.6);padding:16px;border-radius:12px;font-size:14px;color:#78350F;" id="bestAch" data-editable="best-ach">Победитель олимпиады по информатике.</div>
-        </div>
-
-        <!-- МЕРОПРИЯТИЯ -->
-        <div class="mb-4">
-            <h2 style="font-size:24px;font-weight:800;margin-bottom:16px;">📅 Мероприятия и Олимпиады</h2>
-            <div class="grid-cards" id="homeEventsGrid"></div>
-        </div>
-
-        <!-- КРУЖКИ И РАСПИСАНИЕ -->
-        <div class="grid-cards mb-4" style="grid-template-columns:1fr 1fr;">
-            <div class="card card-pad">
-                <h2 style="font-size:20px;font-weight:700;margin-bottom:16px;">🔔 Расписание звонков</h2>
-                <div id="homeScheduleGrid"></div>
-            </div>
-            <div class="card card-pad">
-                <h2 style="font-size:20px;font-weight:700;margin-bottom:16px;">📰 Новости</h2>
-                <div id="newsList"></div>
-            </div>
-        </div>
-
-        <!-- ЯЩИК ИДЕЙ -->
-        <div class="card card-pad mb-4" style="background:#EEF2FF;border-color:#C7D2FE;">
-            <h2 style="font-size:22px;font-weight:800;color:#312E81;margin-bottom:12px;">📮 Ящик идей и предложений</h2>
-            <p class="text-sm mb-4" style="color:#4338CA;">Напиши, как сделать Лицей лучше! Можно анонимно.</p>
-            <textarea class="form-control" id="ideaText" rows="3" style="margin-bottom:12px;" placeholder="Ваша идея..."></textarea>
-            <div class="flex justify-between items-center">
-                <label class="text-sm flex items-center gap-2" style="cursor:pointer;"><input type="checkbox" id="ideaAnonymous" style="width:16px;height:16px;"> Анонимно</label>
-                <button class="btn btn-primary" onclick="submitIdea()">Отправить</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- СОЦСЕТЬ -->
-    <div class="page-content" id="page-social">
-        <h1 style="font-size:28px;font-weight:800;margin-bottom:24px;">💬 Соцсеть Лицея</h1>
-        
-        <div class="card card-pad mb-4">
-            <div class="flex gap-4">
-                <div class="user-avatar" id="composeAva" style="width:40px;height:40px;">?</div>
-                <div style="flex:1;">
-                    <textarea class="form-control" id="postContent" rows="2" placeholder="Что нового?"></textarea>
-                    <div class="flex justify-between items-center mt-4">
-                        <button class="btn btn-outline btn-sm" onclick="toggleImageInput()">🖼️ Фото</button>
-                        <button class="btn btn-primary btn-sm" onclick="createPost()">Опубликовать</button>
-                    </div>
-                    <div id="imageInputWrap" class="hidden mt-4">
-                        <input type="text" class="form-control" id="postImageUrl" placeholder="URL картинки...">
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div id="feedList" style="display:flex;flex-direction:column;gap:16px;"></div>
-
-        <!-- БАНК ВЗАИМОПОМОЩИ -->
-        <div class="mt-4">
-            <div class="flex justify-between items-center mb-4">
-                <h2 style="font-size:22px;font-weight:800;">🤝 Банк взаимопомощи</h2>
-                <button class="btn btn-outline btn-sm" onclick="openHelpToggle()">Я хочу помогать</button>
-            </div>
-            <div class="grid-cards" id="helpersGrid"></div>
-        </div>
-    </div>
-
-    <!-- БАРАХОЛКА -->
-    <div class="page-content" id="page-market">
-        <div class="flex justify-between items-center mb-4">
-            <h1 style="font-size:28px;font-weight:800;">🛍️ Барахолка</h1>
-            <button class="btn btn-primary" onclick="openMarketForm()">+ Разместить</button>
-        </div>
-        <div class="grid-cards" id="marketGrid"></div>
-    </div>
-
-    <!-- ИГРЫ -->
-    <div class="page-content" id="page-games">
-        <h1 style="font-size:28px;font-weight:800;margin-bottom:24px;">🎮 Игры Движения Первых</h1>
-        <div class="grid-cards">
-            <div class="card card-pad"><h3 style="font-weight:700;">🏛️ Знатоки Татарстана</h3><p class="text-sm text-muted mt-2 mb-4">Викторина на знание истории края.</p><button class="btn btn-primary btn-sm w-full">Начать</button></div>
-            <div class="card card-pad"><h3 style="font-weight:700;">🚩 Городской квест</h3><p class="text-sm text-muted mt-2 mb-4">Командное прохождение станций.</p><button class="btn btn-primary btn-sm w-full">Участвовать</button></div>
-        </div>
-    </div>
-
-    <!-- ПРОФИЛЬ -->
-    <div class="page-content" id="page-profile">
-        <div id="profileContent"></div>
-    </div>
-
-</main>
-
-<!-- ПОДВАЛ -->
-<footer style="background:#0F172A;color:#94A3B8;padding:40px 20px;text-align:center;margin-top:auto;">
-    <div style="font-weight:700;color:#fff;margin-bottom:8px;">МБОУ «Лицей №37»</div>
-    <p class="text-sm">📍 г. Нижнекамск, ул. Школьная, 37</p>
-    <p class="text-sm">📞 +7 (8555) 00-00-00</p>
-    <button class="text-xs mt-4" onclick="openAdminLogin()" style="color:#475569;">🔒 Панель администрации</button>
+<footer class='site-footer'>
+  <p><strong>МБОУ «Лицей №37»</strong> г. Нижнекамск, Республика Татарстан</p>
+  <p class='small'>Официальный портал ученического сообщества · 2026 · Данные синхронизируются с Supabase и localStorage</p>
 </footer>
 
-<!-- МОДАЛКИ ДОПОЛНИТЕЛЬНЫЕ -->
-<div class="modal" id="marketFormModal">
-    <div class="modal-box">
-        <div class="modal-head"><div class="modal-title">🛍️ Новый товар</div><button class="modal-close" onclick="closeModal('marketFormModal')">✕</button></div>
-        <div class="modal-body">
-            <div class="form-group"><label class="form-label">Название</label><input type="text" class="form-control" id="mTitle"></div>
-            <div class="form-row">
-                <div class="form-group"><label class="form-label">Категория</label><select class="form-control" id="mCategory"><option>Учебники</option><option>Электроника</option><option>Одежда</option></select></div>
-                <div class="form-group"><label class="form-label">Цена (0 = Бесплатно)</label><input type="number" class="form-control" id="mPrice" value="0"></div>
-            </div>
-            <div class="form-group"><label class="form-label">Описание</label><textarea class="form-control" id="mDesc" rows="2"></textarea></div>
-            <div class="form-group">
-                <label class="form-label">Фото (до 4)</label>
-                <div style="display:flex;gap:8px;flex-wrap:wrap;" id="photoUploadArea"><div class="photo-slot" onclick="document.getElementById('marketFileInput').click()">+</div></div>
-                <input type="file" id="marketFileInput" accept="image/*" multiple style="display:none;" onchange="handleMarketPhotos(event)">
-            </div>
-            <button class="btn btn-primary btn-block mt-4" onclick="submitMarketItem()">Опубликовать</button>
+<div class='modal-root' id='modalRoot' hidden></div>
+
+<aside class='drawer' id='scriptDrawer' hidden>
+  <div class='drawer-backdrop' data-drawer-close='1'></div>
+  <div class='drawer-panel'>
+    <header class='drawer-head'>
+      <h3>💻 Библиотека скриптов</h3>
+      <button class='icon-btn' data-drawer-close='1'>✕</button>
+    </header>
+    <div class='drawer-body'>
+      <form data-form='script' class='script-form'>
+        <input type='hidden' name='id'>
+        <label class='field'><span>Название (заполняется автоматически)</span><input class='input' name='name' placeholder='Скрипт 1'></label>
+        <label class='field'><span>Тип кода</span><select class='input' name='type'><option value='js'>JavaScript</option><option value='css'>CSS</option></select></label>
+        <label class='field'><span>Код</span><textarea class='input' name='code' rows='8' placeholder='// вставьте свой JS или CSS'></textarea></label>
+        <div class='row'>
+          <button class='btn btn-primary' type='submit'>💾 Сохранить</button>
+          <button class='btn btn-ghost' type='button' data-action='script-reset'>Очистить форму</button>
         </div>
+      </form>
+      <h4 style='margin-top:22px'>Мои скрипты</h4>
+      <div class='script-list' id='scriptList'></div>
     </div>
-</div>
+  </div>
+</aside>
 
-<div class="modal" id="marketChatModal">
-    <div class="modal-box" style="max-width:500px;height:80vh;">
-        <div class="modal-head"><div class="modal-title">💬 Чат</div><button class="modal-close" onclick="closeModal('marketChatModal')">✕</button></div>
-        <div class="modal-body" style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
-            <div class="flex gap-4 mb-4" style="background:var(--bg);padding:12px;border-radius:12px;">
-                <img id="chatProductImg" src="" style="width:60px;height:60px;border-radius:8px;object-fit:cover;">
-                <div><div class="fw-bold text-sm" id="chatProductTitle">Товар</div><div class="fw-bold" style="color:var(--indigo);font-size:18px;" id="chatProductPrice">0 ₽</div></div>
-            </div>
-            <div id="marketChatMessages" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:12px;"></div>
-            <div class="flex gap-2"><input type="text" class="form-control" id="marketChatInput" placeholder="Сообщение..." onkeydown="if(event.key==='Enter') sendMarketMsg()"><button class="btn btn-primary" onclick="sendMarketMsg()">➤</button></div>
-            <div id="sellerActions" class="mt-4 hidden"><button class="btn btn-danger btn-block" onclick="markAsSold()">✅ Продано</button></div>
-        </div>
-    </div>
-</div>
+<button class='ai-fab' id='aiFab' title='ИИ-наставник 37'>🤖</button>
+<section class='ai-panel' id='aiPanel' hidden>
+  <header class='ai-head'>
+    <div class='ai-title'><span class='ai-dot'></span> 🤖 ИИ-наставник 37</div>
+    <button class='icon-btn' id='aiClose'>✕</button>
+  </header>
+  <div class='ai-messages' id='aiMessages'></div>
+  <form class='ai-form' id='aiForm'>
+    <input class='input' id='aiInput' placeholder='Спросите что угодно...' autocomplete='off'>
+    <button class='btn btn-primary' type='submit'>➤</button>
+  </form>
+  <div class='ai-status' id='aiStatus'>Загрузка базы знаний…</div>
+</section>
 
-<div class="modal" id="applicationModal">
-    <div class="modal-box">
-        <div class="modal-head"><div class="modal-title">✍️ Заявка</div><button class="modal-close" onclick="closeModal('applicationModal')">✕</button></div>
-        <div class="modal-body">
-            <div class="fw-bold mb-4" style="color:var(--indigo);" id="appEventName"></div>
-            <div class="form-group"><label class="form-label">ФИО</label><input type="text" class="form-control" id="appFullName"></div>
-            <div class="form-row">
-                <div class="form-group"><label class="form-label">Класс</label><select class="form-control" id="appGradeNum"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option></select></div>
-                <div class="form-group"><label class="form-label">Буква</label><select class="form-control" id="appGradeLetter"><option value="А">А</option><option value="Б">Б</option><option value="В">В</option><option value="Г">Г</option><option value="Д">Д</option><option value="Е">Е</option></select></div>
-            </div>
-            <button class="btn btn-primary btn-block mt-4" onclick="submitApplication()">Отправить</button>
-        </div>
-    </div>
-</div>
-
-<div class="modal" id="helpToggleModal">
-    <div class="modal-box">
-        <div class="modal-head"><div class="modal-title">🤝 Стать помощником</div><button class="modal-close" onclick="closeModal('helpToggleModal')">✕</button></div>
-        <div class="modal-body">
-            <div class="form-group"><label class="form-label">Предмет</label><select class="form-control" id="helpSubject"><option>Математика</option><option>Русский язык</option><option>Физика</option><option>Химия</option><option>Информатика</option><option>Английский</option></select></div>
-            <button class="btn btn-primary btn-block" onclick="saveHelperStatus()">Готов помогать!</button>
-        </div>
-    </div>
-</div>
-
-<!-- ИИ ЧАТ -->
-<button class="btn btn-primary" onclick="toggleAiPanel()" style="position:fixed;bottom:24px;right:24px;border-radius:50px;padding:14px 24px;z-index:900;">🤖 ИИ-Наставник</button>
-<div class="card" id="aiPanel" style="position:fixed;bottom:90px;right:24px;width:350px;height:500px;z-index:950;display:flex;flex-direction:column;transform:translateY(20px);opacity:0;pointer-events:none;transition:var(--tr);">
-    <div style="padding:16px;background:var(--indigo);color:#fff;border-radius:var(--r) var(--r) 0 0;display:flex;justify-content:space-between;">
-        <div class="fw-bold">🤖 ИИ-Наставник</div><button onclick="toggleAiPanel()" style="color:#fff;">✕</button>
-    </div>
-    <div id="aiMessages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--bg);"></div>
-    <div style="padding:12px;border-top:1px solid var(--border);display:flex;gap:8px;background:#fff;">
-        <input type="text" id="aiInput" class="form-control" placeholder="Вопрос..." onkeydown="if(event.key==='Enter') sendAiMessage()">
-        <button class="btn btn-primary" onclick="sendAiMessage()">➤</button>
-    </div>
-</div>
-
-<div id="toastContainer" style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;"></div>
 <script>
 /* ============================================================
-   1. ИНИЦИАЛИЗАЦИЯ И БАЗОВЫЕ НАСТРОЙКИ
+   МБОУ «Лицей №37» г. Нижнекамск — официальный портал
    ============================================================ */
-const SUPABASE_URL = "https://ektyxbnzkreekdjrdnnk.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_q60_3k3m7l3G8w8y7t30FA_2_jD4H1M";
-let supabaseClient = null;
 
-try {
-    if (window.supabase && window.supabase.createClient) {
-        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log("✅ Supabase успешно подключен");
-    }
-} catch (e) { 
-    console.warn("⚠️ Ошибка инициализации Supabase:", e); 
-}
+/* ---------- КОНФИГ ---------- */
+var SUPABASE_URL = 'https://ektyxbnzkreekdjrdnnk.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_q60_3k3m7l3G8w8y7t30FA_2_jD4H1M';
+var SUPABASE_TABLE = 'lyceum37_store';
+var LS = 'lyceum37:';
+var ADMIN_PASSWORD = 'лицей37';
 
-// Настройки Telegram-бота по умолчанию
-let TG_BOT_TOKEN = "9079823520:AAFcp7OlfCQndEVYrQCK96-kttzA9cgkYbU";
-let TG_CHAT_ID = "9077553326";
-
-// Функция отправки уведомлений в Telegram
-async function sendTelegramNotify(text) {
-    if (!TG_BOT_TOKEN || !TG_CHAT_ID) return;
-    try {
-        const msg = `🏫 *Лицей №37*\n\n${text}`;
-        await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: TG_CHAT_ID,
-                text: msg,
-                parse_mode: 'Markdown'
-            })
+/* ---------- ХРАНИЛИЩЕ (Supabase + localStorage) ---------- */
+var Store = {
+  mem: {},
+  online: false,
+  init: function(){
+    var self = this;
+    try{
+      for(var i=0;i<localStorage.length;i++){
+        var k = localStorage.key(i);
+        if(k && k.indexOf(LS) === 0){
+          try{ self.mem[k.slice(LS.length)] = JSON.parse(localStorage.getItem(k)); }catch(e){}
+        }
+      }
+    }catch(e){}
+    return fetch(SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE + '?select=key,value', {
+      headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY }
+    }).then(function(r){
+      if(!r.ok) throw new Error('offline');
+      return r.json();
+    }).then(function(rows){
+      if(Array.isArray(rows)){
+        rows.forEach(function(row){
+          if(row && row.key){
+            self.mem[row.key] = row.value;
+            try{ localStorage.setItem(LS + row.key, JSON.stringify(row.value)); }catch(e){}
+          }
         });
-        console.log("📨 Уведомление в Telegram отправлено");
-    } catch (e) {
-        console.warn("⚠️ Ошибка отправки в Telegram:", e);
-    }
-}
-
-/* ============================================================
-   2. КЛЮЧИ LOCALSTORAGE И ГЛОБАЛЬНОЕ СОСТОЯНИЕ
-   ============================================================ */
-const LS = {
-    user: 'l37_user', profiles: 'l37_profiles', posts: 'l37_posts', 
-    market: 'l37_market', mChats: 'l37_mchats', apps: 'l37_apps',
-    ideas: 'l37_ideas', helpers: 'l37_helpers', scripts: 'l37_scripts', 
-    site: 'l37_site', theme: 'l37_theme', purchased: 'l37_purchased',
-    aiHist: 'l37_ai_hist', aiNick: 'l37_ai_nick', aiRem: 'l37_ai_rem', aiCtx: 'l37_ai_ctx'
+      }
+      self.online = true;
+    }).catch(function(){ self.online = false; });
+  },
+  get: function(key, def){
+    return Object.prototype.hasOwnProperty.call(this.mem, key) ? this.mem[key] : def;
+  },
+  set: function(key, value){
+    this.mem[key] = value;
+    try{ localStorage.setItem(LS + key, JSON.stringify(value)); }catch(e){}
+    this.push(key, value);
+    return value;
+  },
+  push: function(key, value){
+    var self = this;
+    try{
+      fetch(SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE, {
+        method: 'POST',
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          Prefer: 'resolution=merge-duplicates,return=minimal'
+        },
+        body: JSON.stringify([{ key: key, value: value }])
+      }).then(function(r){ self.online = r.ok; }).catch(function(){ self.online = false; });
+    }catch(e){ self.online = false; }
+  }
 };
 
-// Хелперы для безопасной работы с localStorage
-function lsGet(key, fallback) { 
-    try { 
-        const val = localStorage.getItem(key); 
-        return val ? JSON.parse(val) : fallback; 
-    } catch (e) { return fallback; } 
+function db(key, def){ return Store.get(key, def); }
+function save(key, val){ return Store.set(key, val); }
+
+/* ---------- УТИЛИТЫ ---------- */
+function $(s, r){ return (r || document).querySelector(s); }
+function $$(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+function esc(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+  });
 }
-function lsSet(key, val) { 
-    try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { console.warn("LS Error"); } 
+function fmtDate(ts){
+  try{ return new Date(ts).toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }); }
+  catch(e){ return ''; }
 }
-
-// Генератор уникальных ID
-function uid() { 
-    return 'id_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); 
+function toast(msg, type){
+  var box = $('#toasts');
+  var el = document.createElement('div');
+  el.className = 'toast ' + (type || '');
+  el.textContent = msg;
+  box.appendChild(el);
+  setTimeout(function(){ el.style.opacity = '0'; el.style.transition = 'opacity .3s'; }, 2400);
+  setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 2800);
 }
-
-// Защита от XSS (экранирование HTML)
-function esc(str) { 
-    if (!str) return ''; 
-    return String(str).replace(/[&<>"']/g, c => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[c])); 
+function fileToDataURL(file){
+  return new Promise(function(resolve, reject){
+    var fr = new FileReader();
+    fr.onload = function(){ resolve(fr.result); };
+    fr.onerror = reject;
+    fr.readAsDataURL(file);
+  });
 }
-
-// Всплывающие уведомления (Toast)
-function toast(msg, type = 'info') {
-    const container = document.getElementById('toastContainer');
-    if (!container) return;
-    const el = document.createElement('div');
-    const bgColor = type === 'error' ? 'var(--danger)' : 'var(--indigo)';
-    el.style.cssText = `background:${bgColor};color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,0.2);animation:fade 0.3s;pointer-events:none;text-align:center;margin-top:8px;`;
-    el.textContent = msg;
-    container.appendChild(el);
-    
-    setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity 0.4s'; }, 2500);
-    setTimeout(() => el.remove(), 3000);
-}
-
-/* ============================================================
-   3. ЗАГРУЗКА ДАННЫХ ИЗ ПАМЯТИ
-   ============================================================ */
-let currentUser = lsGet(LS.user, null);
-let allProfiles = lsGet(LS.profiles, []);
-let allPosts = lsGet(LS.posts, []);
-let allMarket = lsGet(LS.market, []);
-let allChats = lsGet(LS.mChats, []);
-let allApps = lsGet(LS.apps, []);
-let allIdeas = lsGet(LS.ideas, []);
-let allHelpers = lsGet(LS.helpers, []);
-let allScripts = lsGet(LS.scripts, []);
-
-// Применяем сохраненную тему при загрузке
-const savedTheme = lsGet(LS.theme, '');
-if (savedTheme) document.body.classList.add(savedTheme);
-
-/* ============================================================
-   4. НАВИГАЦИЯ ПО СТРАНИЦАМ
-   ============================================================ */
-function switchPage(pageId) {
-    // Скрываем все страницы
-    document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-    // Показываем нужную
-    const targetPage = document.getElementById('page-' + pageId);
-    if (targetPage) targetPage.classList.add('active');
-    
-    // Обновляем активную кнопку в меню
-    document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
-    
-    // Скролл вверх
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    
-    // Рендерим контент для конкретных страниц
-    if (pageId === 'home') renderHome();
-    if (pageId === 'social') { renderFeed(); renderHelpers(); }
-    if (pageId === 'market') renderMarket();
-    if (pageId === 'profile') renderProfile();
+function initials(name){
+  var s = String(name || '?').trim();
+  return s ? s.charAt(0).toUpperCase() : '?';
 }
 
-/* ============================================================
-   5. МОДАЛЬНЫЕ ОКНА И АВТОРИЗАЦИЯ
-   ============================================================ */
-function openAuthModal(mode) {
-    document.getElementById('authModal').classList.add('open');
-    switchAuthMode(mode);
+/* ---------- КЛАССЫ (1–11 и А–Е) ---------- */
+var CLASS_NUMS = ['1','2','3','4','5','6','7','8','9','10','11'];
+var CLASS_LETTERS = ['А','Б','В','Г','Д','Е'];
+function parseClass(value){
+  var m = /^(\d{1,2})\s*([АБВГДЕ])?$/i.exec(String(value || '').trim());
+  var num = (m && CLASS_NUMS.indexOf(m[1]) >= 0) ? m[1] : '5';
+  var letter = (m && m[2] && CLASS_LETTERS.indexOf(m[2].toUpperCase()) >= 0) ? m[2].toUpperCase() : 'А';
+  return [num, letter];
+}
+function classPicker(id, value){
+  var p = parseClass(value);
+  var nums = CLASS_NUMS.map(function(n){ return '<option value="' + n + '"' + (n === p[0] ? ' selected' : '') + '>' + n + ' класс</option>'; }).join('');
+  var letters = CLASS_LETTERS.map(function(l){ return '<option value="' + l + '"' + (l === p[1] ? ' selected' : '') + '>' + l + '</option>'; }).join('');
+  return '<div class="row" style="gap:8px">' +
+    '<select class="input" id="' + id + '-num" style="flex:2">' + nums + '</select>' +
+    '<select class="input" id="' + id + '-letter" style="flex:1">' + letters + '</select>' +
+  '</div>';
+}
+function readClass(id){
+  var n = document.getElementById(id + '-num');
+  var l = document.getElementById(id + '-letter');
+  if(!n || !l) return '';
+  return n.value + l.value;
 }
 
-function switchAuthMode(mode) {
-    document.getElementById('formLogin').style.display = mode === 'login' ? 'block' : 'none';
-    document.getElementById('formRegister').style.display = mode === 'register' ? 'block' : 'none';
-    document.getElementById('authTitle').textContent = mode === 'login' ? 'Вход в систему' : 'Регистрация';
-}
-
-function closeModal(id) { 
-    const modal = document.getElementById(id); 
-    if (modal) modal.classList.remove('open'); 
-}
-
-// Обновление шапки (аватарка, имя)
-function updateAuthUI() {
-    const area = document.getElementById('headerAuth');
-    if (!area) return;
-    
-    if (currentUser) {
-        const frameClass = currentUser.activeFrame ? `frame-${currentUser.activeFrame}` : '';
-        const statusHTML = currentUser.activeStatus ? `<span style="font-size:11px;color:var(--indigo);font-weight:bold;">${esc(currentUser.activeStatus)}</span><br>` : '';
-        
-        area.innerHTML = `
-            <div class="user-badge" onclick="switchPage('profile')">
-                <div class="user-avatar ${frameClass}">${currentUser.avatar ? `<img src="${currentUser.avatar}">` : esc(currentUser.name[0])}</div>
-                <div class="user-info">
-                    <div class="user-name">${statusHTML}${esc(currentUser.name)}</div>
-                    <div class="user-class">${currentUser.gradeNum}${currentUser.gradeLetter} класс</div>
-                </div>
-            </div>
-            <button class="btn btn-outline" onclick="logout()">Выйти</button>
-        `;
-    } else {
-        area.innerHTML = `
-            <button class="btn btn-outline" onclick="openAuthModal('login')">Войти</button>
-            <button class="btn btn-primary" onclick="openAuthModal('register')">Регистрация</button>
-        `;
-    }
-    
-    // Обновляем аватарку в поле создания поста
-    const composeAva = document.getElementById('composeAva');
-    if (composeAva) {
-        composeAva.innerHTML = currentUser ? (currentUser.avatar ? `<img src="${currentUser.avatar}">` : esc(currentUser.name[0])) : '?';
-    }
-}
-
-function logout() { 
-    currentUser = null; 
-    lsSet(LS.user, null); 
-    updateAuthUI(); 
-    switchPage('home'); 
-    toast('Вы вышли из аккаунта'); 
-}
-
-// Логин
-function doLogin() {
-    const email = document.getElementById('loginEmail').value.trim();
-    const pass = document.getElementById('loginPassword').value;
-    
-    if (!email || !pass) return toast('Заполните все поля', 'error');
-    
-    const user = allProfiles.find(p => p.email === email && p.password === pass);
-    if (!user) return toast('Неверный email или пароль', 'error');
-    
-    currentUser = user; 
-    lsSet(LS.user, currentUser);
-    closeModal('authModal'); 
-    updateAuthUI(); 
-    toast('Добро пожаловать, ' + user.name + '!');
-}
-
-// Регистрация
-function doRegister() {
-    const name = document.getElementById('regFullName').value.trim();
-    const gn = document.getElementById('regGradeNum').value;
-    const gl = document.getElementById('regGradeLetter').value;
-    const email = document.getElementById('regEmail').value.trim();
-    const pass = document.getElementById('regPassword').value;
-    
-    if (!name || !gn || !gl || !email || !pass) return toast('Заполните все поля', 'error');
-    if (pass.length < 6) return toast('Пароль минимум 6 символов', 'error');
-    if (allProfiles.some(p => p.email === email)) return toast('Email уже занят', 'error');
-    
-    const newUser = { 
-        id: uid(), name, gradeNum: gn, gradeLetter: gl, 
-        email, password: pass, role: 'student', points: 0, 
-        avatar: '', nick: '', bio: '', activeFrame: '', activeStatus: ''
-    };
-    
-    allProfiles.push(newUser); 
-    lsSet(LS.profiles, allProfiles);
-    currentUser = newUser; 
-    lsSet(LS.user, currentUser);
-    
-    // Отправляем в Supabase
-    if (supabaseClient) {
-        supabaseClient.from('profiles').insert([newUser]).then(({error}) => {
-            if (error) console.warn('Ошибка сохранения профиля:', error);
-        });
-    }
-    
-    closeModal('authModal'); 
-    updateAuthUI(); 
-    toast('Регистрация успешна!');
-}
-
-/* ============================================================
-   6. РЕНДЕР ГЛАВНОЙ СТРАНИЦЫ
-   ============================================================ */
-const HOME_EVENTS = [
-    { id: 'e1', title: 'Олимпиада по информатике', desc: 'Республиканский этап для 8–11 классов', icon: '💻', date: '15 июня', tag: 'Олимпиада' },
-    { id: 'e2', title: 'Движение Первых: квест', desc: 'Городской командный квест для 5–8 классов', icon: '🚩', date: '25 июня', tag: 'Квест' }
+/* ---------- КОНСТАНТЫ ПОРТАЛА ---------- */
+var DEFAULT_BEST = {
+  name: 'Алина Иванова',
+  cls: '11А',
+  points: 1240,
+  text: 'Победитель республиканской олимпиады по информатике и капитан сборной Лицея по робототехнике.'
+};
+var DEFAULT_EVENTS = [
+  { id:'ev1', title:'Школьный этап ВсОШ по математике', date:'2026-02-14', place:'Актовый зал, 3 этаж', desc:'Приглашаются ученики 5–11 классов. С собой — тетрадь и ручка.' },
+  { id:'ev2', title:'Олимпиада по информатике «Код 37»', date:'2026-02-21', place:'Кабинет информатики №214', desc:'Индивидуальный зачёт, 3 задачи, языки: Python, C++, Pascal.' },
+  { id:'ev3', title:'Республиканский конкурс «Юный химик»', date:'2026-03-05', place:'Лаборатория №118', desc:'Практический тур: качественный анализ веществ.' },
+  { id:'ev4', title:'Фестиваль проектов «Лицей 2026»', date:'2026-03-19', place:'Конференц-зал', desc:'Защита исследовательских и инженерных проектов учеников 1–11 классов.' },
+  { id:'ev5', title:'Спартакиада по волейболу', date:'2026-04-02', place:'Большой спортзал', desc:'Сборные команды классов 8–11. Заявки от капитанов.' }
 ];
+var BELLS = [
+  { n:1, start:'08:00', end:'08:45' },
+  { n:2, start:'08:55', end:'09:40' },
+  { n:3, start:'09:55', end:'10:40' },
+  { n:4, start:'10:55', end:'11:40' },
+  { n:5, start:'11:55', end:'12:40' },
+  { n:6, start:'12:50', end:'13:35' },
+  { n:7, start:'13:45', end:'14:30' }
+];
+var CATEGORIES = ['Учебники','Канцелярия','Одежда и обувь','Электроника','Спорт','Игры и хобби','Творчество','Другое'];
+var SUBJECTS = ['Математика','Русский язык','Физика','Химия','Биология','История','Информатика','Английский язык','География','Литература','Другое'];
+var REWARDS = [
+  { id:'frame-gold', type:'frame', title:'Золотая рамка', price:300, value:'gold', icon:'🥇' },
+  { id:'frame-neon', type:'frame', title:'Неоновая рамка', price:500, value:'neon', icon:'💠' },
+  { id:'frame-fire', type:'frame', title:'Огненная рамка', price:700, value:'fire', icon:'🔥' },
+  { id:'status-excellent', type:'status', title:'Статус «Отличник»', price:200, value:'Отличник', icon:'📘' },
+  { id:'status-active', type:'status', title:'Статус «Активист»', price:250, value:'Активист', icon:'🎯' },
+  { id:'status-legend', type:'status', title:'Статус «Легенда Лицея»', price:900, value:'Легенда Лицея', icon:'🏆' },
+  { id:'theme-dark', type:'theme', title:'Тёмная тема', price:400, value:'dark', icon:'🌙' },
+  { id:'theme-neon', type:'theme', title:'Неоновая тема', price:800, value:'neon', icon:'🌈' }
+];
+var DEFAULT_AVATAR = 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 200 200%27%3E%3Crect width=%27200%27 height=%27200%27 fill=%27%232f6bff%27/%3E%3Ctext x=%27100%27 y=%27130%27 font-size=%2790%27 text-anchor=%27middle%27 fill=%27white%27 font-family=%27Arial%27%3E37%3C/text%3E%3C/svg%3E';
 
-function renderHome() {
-    document.getElementById('statStudents').textContent = allProfiles.length || 0;
-    document.getElementById('statPosts').textContent = allPosts.length || 0;
-    document.getElementById('statMarket').textContent = allMarket.length || 0;
+/* ---------- СОСТОЯНИЕ ---------- */
+var App = { page:'home', admin:false, liveEdit:false, user:null };
 
-    // Рендер мероприятий
-    document.getElementById('homeEventsGrid').innerHTML = HOME_EVENTS.map(e => `
-        <div class="card card-pad">
-            <span class="text-xs fw-bold" style="color:var(--indigo);background:#EEF2FF;padding:4px 8px;border-radius:4px;">${esc(e.tag)}</span>
-            <h3 class="mt-4 mb-2" style="font-size:18px;font-weight:700;">${esc(e.icon)} ${esc(e.title)}</h3>
-            <p class="text-sm text-muted mb-4">${esc(e.desc)}</p>
-            <button class="btn btn-primary btn-sm" onclick="openApplicationForm('${esc(e.title)}')">✍️ Подать заявку</button>
-        </div>
-    `).join('');
-
-    // Рендер расписания
-    document.getElementById('homeScheduleGrid').innerHTML = `
-        <div class="flex justify-between" style="padding:8px 0;border-bottom:1px solid var(--border);"><span>1 урок</span><b>08:00 – 08:45</b></div>
-        <div class="flex justify-between" style="padding:8px 0;border-bottom:1px solid var(--border);"><span>2 урок</span><b>08:55 – 09:40</b></div>
-        <div class="flex justify-between" style="padding:8px 0;"><span>3 урок</span><b>09:55 – 10:40</b></div>
-    `;
-
-    // Рендер новостей
-    document.getElementById('newsList').innerHTML = `
-        <div style="padding:8px 0;border-bottom:1px solid var(--border);"><b>15 мая</b> — День открытых дверей</div>
-        <div style="padding:8px 0;"><b>12 мая</b> — Победа в олимпиаде</div>
-    `;
+/* ---------- ПОЛЬЗОВАТЕЛИ ---------- */
+function users(){ return db('users', []); }
+function saveUsers(u){ save('users', u); }
+function currentUser(){
+  var id = null;
+  try{ id = localStorage.getItem(LS + 'session'); }catch(e){}
+  if(!id) return null;
+  var list = users();
+  for(var i=0;i<list.length;i++){ if(list[i].id === id) return list[i]; }
+  return null;
+}
+function setSession(id){
+  try{ if(id) localStorage.setItem(LS + 'session', id); else localStorage.removeItem(LS + 'session'); }catch(e){}
+}
+function refreshUser(){
+  App.user = currentUser();
+  applyTheme();
+  updateAuthArea();
+}
+function addPoints(n){
+  if(!App.user) return;
+  var list = users();
+  for(var i=0;i<list.length;i++){
+    if(list[i].id === App.user.id){ list[i].points = (list[i].points || 0) + n; App.user = list[i]; break; }
+  }
+  saveUsers(list);
 }
 
-// Отправка идеи в Ящик
-async function submitIdea() {
-    const text = document.getElementById('ideaText').value.trim();
-    const isAnon = document.getElementById('ideaAnonymous').checked;
-    if (!text) return toast('Напишите идею', 'error');
-
-    const idea = {
-        id: uid(), text, isAnon,
-        author: isAnon ? 'Анонимно' : (currentUser ? currentUser.name : 'Гость'),
-        grade: isAnon ? '' : (currentUser ? currentUser.gradeNum + currentUser.gradeLetter : ''),
-        date: new Date().toISOString()
-    };
-
-    allIdeas.push(idea);
-    lsSet(LS.ideas, allIdeas);
-    
-    if (supabaseClient) supabaseClient.from('ideas').insert([idea]).then();
-    
-    const tgText = `💡 *Новая идея*\n\n*От:* ${idea.author} ${idea.grade ? '('+idea.grade+')' : ''}\n*Текст:* ${idea.text}`;
-    sendTelegramNotify(tgText);
-
-    document.getElementById('ideaText').value = '';
-    document.getElementById('ideaAnonymous').checked = false;
-    toast('Идея отправлена! Спасибо!');
+/* ---------- ТЕМА ---------- */
+function applyTheme(){
+  var t = 'light';
+  if(App.user && App.user.theme) t = App.user.theme;
+  document.documentElement.setAttribute('data-theme', t);
 }
 
-// Подача заявки на мероприятие
-function openApplicationForm(eventName) {
-    if (!currentUser) {
-        toast('Войдите, чтобы подать заявку', 'error');
-        openAuthModal('login');
-        return;
-    }
-    document.getElementById('appEventName').textContent = eventName;
-    document.getElementById('appFullName').value = currentUser.name;
-    document.getElementById('applicationModal').classList.add('open');
+/* ---------- МОДАЛКИ ---------- */
+function openModal(title, bodyHTML, opts){
+  opts = opts || {};
+  var root = $('#modalRoot');
+  root.innerHTML = '<div class="modal-backdrop" data-close="1"></div>' +
+    '<div class="modal' + (opts.wide ? ' modal-wide' : '') + '" role="dialog" aria-modal="true">' +
+      '<div class="modal-head"><h3>' + esc(title) + '</h3><button class="icon-btn" data-close="1">✕</button></div>' +
+      '<div class="modal-body">' + bodyHTML + '</div>' +
+    '</div>';
+  root.hidden = false;
+  document.body.classList.add('no-scroll');
+  $$('[data-close]', root).forEach(function(el){ el.addEventListener('click', closeModal); });
+  if(opts.onOpen) opts.onOpen(root);
+}
+function closeModal(){
+  var r = $('#modalRoot');
+  r.hidden = true;
+  r.innerHTML = '';
+  document.body.classList.remove('no-scroll');
 }
 
-function submitApplication() {
-    const name = document.getElementById('appFullName').value.trim();
-    const gn = document.getElementById('appGradeNum').value;
-    const gl = document.getElementById('appGradeLetter').value;
-    if (!name) return toast('Введите ФИО', 'error');
-
-    const app = {
-        id: uid(), event: document.getElementById('appEventName').textContent,
-        name: name, grade: gn + gl, date: new Date().toISOString()
-    };
-    
-    allApps.push(app); 
-    lsSet(LS.apps, allApps);
-    
-    if (supabaseClient) supabaseClient.from('applications').insert([app]).then();
-    
-    const tgText = `📝 *Новая заявка на мероприятие*\n\n*Событие:* ${app.event}\n*Ученик:* ${app.name} (${app.grade})`;
-    sendTelegramNotify(tgText);
-
-    closeModal('applicationModal'); 
-    toast('Заявка отправлена!');
+/* ---------- НАВИГАЦИЯ ---------- */
+function go(page){
+  App.page = page;
+  var nav = $('#mainNav');
+  if(nav) nav.classList.remove('open');
+  render();
+  window.scrollTo({ top:0, behavior:'smooth' });
 }
-
-/* ============================================================
-   7. СОЦСЕТЬ (Посты и Лайки)
-   ============================================================ */
-function toggleImageInput() {
-    const w = document.getElementById('imageInputWrap');
-    w.classList.toggle('hidden');
+function updateNav(){
+  $$('.nav-tab').forEach(function(b){
+    b.classList.toggle('active', b.getAttribute('data-nav') === App.page);
+  });
 }
-
-function createPost() {
-    if (!currentUser) return toast('Войдите, чтобы публиковать', 'error');
-    const text = document.getElementById('postContent').value.trim();
-    const img = document.getElementById('postImageUrl').value.trim();
-    if (!text) return toast('Напишите текст', 'error');
-
-    const post = { 
-        id: uid(), author_id: currentUser.id, author_name: currentUser.name, 
-        author_frame: currentUser.activeFrame || '',
-        content: text, image_url: img, likes: 0, created_at: new Date().toISOString() 
-    };
-    
-    allPosts.unshift(post); 
-    lsSet(LS.posts, allPosts);
-    
-    if (supabaseClient) supabaseClient.from('posts').insert([post]).then();
-    
-    document.getElementById('postContent').value = ''; 
-    document.getElementById('postImageUrl').value = '';
-    document.getElementById('imageInputWrap').classList.add('hidden');
-    
-    renderFeed(); 
-    toast('Пост опубликован!');
-}
-
-function renderFeed() {
-    const feed = document.getElementById('feedList');
-    if (!feed) return;
-    if (!allPosts.length) {
-        feed.innerHTML = '<div class="card card-pad text-center text-muted">Пока нет постов. Будьте первым!</div>';
-        return;
-    }
-    feed.innerHTML = allPosts.map(p => `
-        <div class="card" style="padding:20px;">
-            <div class="flex gap-2 mb-4">
-                <div class="user-avatar ${p.author_frame ? 'frame-' + p.author_frame : ''}" style="width:40px;height:40px;">${esc((p.author_name || 'У')[0])}</div>
-                <div>
-                    <div class="fw-bold">${esc(p.author_name)}</div>
-                    <div class="text-xs text-muted">${new Date(p.created_at).toLocaleString('ru-RU')}</div>
-                </div>
-            </div>
-            <p style="margin-bottom:16px;">${esc(p.content)}</p>
-            ${p.image_url ? `<img src="${esc(p.image_url)}" style="border-radius:12px;margin-bottom:16px;max-height:400px;object-fit:cover;">` : ''}
-            <div class="flex gap-2" style="border-top:1px solid var(--border);padding-top:12px;">
-                <button class="btn btn-outline btn-sm" onclick="likePost('${p.id}')">❤️ ${p.likes || 0}</button>
-            </div>
-        </div>
-    `).join('');
-}
-
-function likePost(id) {
-    const p = allPosts.find(x => x.id === id);
-    if (p) { 
-        p.likes = (p.likes || 0) + 1; 
-        lsSet(LS.posts, allPosts); 
-        renderFeed(); 
-    }
+function updateAuthArea(){
+  var area = $('#authArea');
+  if(!area) return;
+  if(App.user){
+    var frame = App.user.frame ? ' frame-' + App.user.frame : '';
+    area.innerHTML = '<div class="user-chip" data-nav="profile">' +
+      '<img class="ava' + frame + '" src="' + esc(App.user.avatar || DEFAULT_AVATAR) + '" alt="аватар">' +
+      '<span class="small"><b>' + esc(App.user.nickname || App.user.login) + '</b><br><span class="muted">' + esc(App.user.cls || '') + ' · ' + (App.user.points || 0) + ' б.</span></span>' +
+    '</div>' +
+    '<button class="btn btn-ghost btn-sm" data-action="logout">Выйти</button>';
+  } else {
+    area.innerHTML = '<button class="btn btn-ghost btn-sm" data-action="open-login">Войти</button>' +
+      '<button class="btn btn-primary btn-sm" data-action="open-register">Регистрация</button>';
+  }
 }
 
 /* ============================================================
-   8. БАНК ВЗАИМОПОМОЩИ
+   СТРАНИЦЫ
    ============================================================ */
-function openHelpToggle() {
-    if (!currentUser) return toast('Войдите, чтобы стать помощником', 'error');
-    document.getElementById('helpToggleModal').classList.add('open');
+function render(){
+  var app = $('#app');
+  var html = '';
+  if(App.page === 'home') html = pageHome();
+  else if(App.page === 'bazaar') html = pageBazaar();
+  else if(App.page === 'social') html = pageSocial();
+  else if(App.page === 'games') html = pageGames();
+  else if(App.page === 'profile') html = pageProfile();
+  else html = pageHome();
+  app.innerHTML = html;
+  applyEdits();
+  updateNav();
+  updateAuthArea();
+  afterRender();
 }
 
-function saveHelperStatus() {
-    const subject = document.getElementById('helpSubject').value;
-    const existing = allHelpers.find(h => h.userId === currentUser.id);
-    
-    if (existing) {
-        existing.subject = subject;
-    } else {
-        allHelpers.push({ 
-            userId: currentUser.id, name: currentUser.name, 
-            subject: subject, grade: currentUser.gradeNum + currentUser.gradeLetter 
+/* ---------- ГЛАВНАЯ ---------- */
+function pageHome(){
+  var best = db('best', DEFAULT_BEST);
+  var events = db('events', DEFAULT_EVENTS);
+  var ideas = db('ideas', []);
+  var usersCount = users().length;
+  var listingsCount = db('listings', []).length;
+  var postsCount = db('posts', []).length;
+
+  var eventsHTML = events.map(function(ev){
+    return '<div class="card event-card">' +
+      '<span class="event-date">📅 ' + esc(ev.date) + '</span>' +
+      '<h3>' + esc(ev.title) + '</h3>' +
+      '<p class="small muted">📍 ' + esc(ev.place) + '</p>' +
+      '<p class="small">' + esc(ev.desc) + '</p>' +
+      '<button class="btn btn-primary btn-sm" data-action="apply-event" data-event-id="' + esc(ev.id) + '">📝 Подать заявку</button>' +
+    '</div>';
+  }).join('');
+
+  var bellsHTML = BELLS.map(function(b){
+    return '<tr><td><b>' + b.n + ' урок</b></td><td>' + b.start + ' — ' + b.end + '</td><td class="muted">' + (b.n < 7 ? 'перемена' : 'конец занятий') + '</td></tr>';
+  }).join('');
+
+  var ideasHTML = ideas.slice(-4).reverse().map(function(it){
+    return '<div class="card" style="padding:14px">' +
+      '<div class="row" style="justify-content:space-between"><b>' + (it.anon ? '🕶️ Анонимно' : '👤 ' + esc(it.author)) + '</b><span class="small muted">' + fmtDate(it.ts) + '</span></div>' +
+      '<p class="small" style="margin:8px 0 0">' + esc(it.text) + '</p>' +
+    '</div>';
+  }).join('') || '<p class="muted small">Пока идей нет — станьте первым!</p>';
+
+  return '' +
+  '<section class="hero">' +
+    '<img class="hero-photo" data-editable="hero-photo" src="' + DEFAULT_AVATAR + '" alt="Лицей №37">' +
+    '<div class="hero-inner">' +
+      '<span class="chip">🏫 Официальный портал Лицея</span>' +
+      '<h1 data-editable="hero-title">МБОУ «Лицей №37» г. Нижнекамск</h1>' +
+      '<p data-editable="hero-sub">Пространство, где учёба встречается с технологиями: барахолка, соцсеть Лицея, олимпиады, игры и ИИ-наставник — всё в одном месте.</p>' +
+      '<div class="hero-actions">' +
+        '<button class="btn btn-primary" data-nav="bazaar">🛍️ На барахолку</button>' +
+        '<button class="btn btn-ghost" data-nav="social">💬 В соцсеть Лицея</button>' +
+      '</div>' +
+      '<div class="hero-stats">' +
+        '<div class="hero-stat"><b>' + usersCount + '</b><span>учеников в системе</span></div>' +
+        '<div class="hero-stat"><b>' + listingsCount + '</b><span>объявлений</span></div>' +
+        '<div class="hero-stat"><b>' + postsCount + '</b><span>постов в ленте</span></div>' +
+      '</div>' +
+    '</div>' +
+  '</section>' +
+
+  '<section class="section">' +
+    '<div class="section-head"><h2>🏆 Лучший ученик месяца</h2><span class="chip">Обновляется ежемесячно</span></div>' +
+    '<div class="card" style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">' +
+      '<div class="ava lg frame-gold">' + initials(best.name) + '</div>' +
+      '<div style="flex:1;min-width:220px">' +
+        '<h3 data-editable="best-name">' + esc(best.name) + '</h3>' +
+        '<p class="small muted">Класс: <b data-editable="best-cls">' + esc(best.cls) + '</b> · Баллы: <b>' + esc(best.points) + '</b></p>' +
+        '<p data-editable="best-text">' + esc(best.text) + '</p>' +
+      '</div>' +
+      '<span class="badge">⭐ Гордость Лицея</span>' +
+    '</div>' +
+  '</section>' +
+
+  '<section class="section">' +
+    '<div class="section-head"><h2>⏰ Расписание звонков</h2><span class="chip">Понедельник — пятница</span></div>' +
+    '<div class="card" style="padding:8px 12px">' +
+      '<table class="bell-table"><thead><tr><th>Урок</th><th>Время</th><th>Примечание</th></tr></thead><tbody>' + bellsHTML + '</tbody></table>' +
+    '</div>' +
+  '</section>' +
+
+  '<section class="section">' +
+    '<div class="section-head"><h2>📅 Мероприятия и Олимпиады</h2><span class="chip">' + events.length + ' событий</span></div>' +
+    '<div class="grid grid-3">' + eventsHTML + '</div>' +
+  '</section>' +
+
+  '<section class="section">' +
+    '<div class="section-head"><h2>📮 Ящик идей и предложений Лицея №37</h2></div>' +
+    '<div class="grid grid-2">' +
+      '<div class="card">' +
+        '<h3>Предложить идею</h3>' +
+        '<p class="small muted">Расскажите, что можно улучшить в Лицее. Выберите режим отправки.</p>' +
+        '<form data-form="idea">' +
+          '<label class="field"><span>Ваша идея</span><textarea class="input" name="text" required placeholder="Например: открыть клуб робототехники по субботам..."></textarea></label>' +
+          '<div class="row" style="margin-bottom:12px">' +
+            '<label class="row small" style="gap:6px"><input type="radio" name="mode" value="open" checked> Открыто</label>' +
+            '<label class="row small" style="gap:6px"><input type="radio" name="mode" value="anon"> Анонимно</label>' +
+          '</div>' +
+          '<button class="btn btn-primary btn-block" type="submit">📨 Отправить идею</button>' +
+        '</form>' +
+      '</div>' +
+      '<div class="card">' +
+        '<h3>Последние предложения</h3>' +
+        '<div class="grid" style="gap:10px">' + ideasHTML + '</div>' +
+      '</div>' +
+    '</div>' +
+  '</section>';
+}
+
+/* ---------- БАРАХОЛКА ---------- */
+function pageBazaar(){
+  var listings = db('listings', []);
+  var q = (App.bazaarQuery || '').toLowerCase();
+  var cat = App.bazaarCat || 'all';
+  var filtered = listings.filter(function(l){
+    var okCat = (cat === 'all') || (l.category === cat);
+    var okQ = !q || (String(l.title).toLowerCase().indexOf(q) >= 0) || (String(l.desc).toLowerCase().indexOf(q) >= 0);
+    return okCat && okQ;
+  });
+
+  var catOptions = '<option value="all">Все категории</option>' + CATEGORIES.map(function(c){
+    return '<option value="' + esc(c) + '"' + (c === cat ? ' selected' : '') + '>' + esc(c) + '</option>';
+  }).join('');
+
+  var cards = filtered.map(function(l){
+    var photos = (l.photos && l.photos.length) ? l.photos : [DEFAULT_AVATAR];
+    var priceHTML = '';
+    if(l.priceType === 'free') priceHTML = '<span class="price free">Бесплатно</span>';
+    else if(l.priceType === 'exchange') priceHTML = '<span class="price exchange">Обмен</span>';
+    else priceHTML = '<span class="price">' + esc(l.price) + ' ₽</span>';
+    var nav = photos.length > 1 ?
+      '<button class="photo-nav prev" data-action="listing-prev">‹</button>' +
+      '<button class="photo-nav next" data-action="listing-next">›</button>' +
+      '<span class="photo-counter">1 / ' + photos.length + '</span>' : '';
+    var del = (App.admin || (App.user && App.user.id === l.sellerId)) ?
+      '<button class="btn btn-ghost btn-sm" data-action="delete-listing" data-id="' + esc(l.id) + '">🗑️</button>' : '';
+    return '<article class="card listing-card" data-photos=\'' + esc(JSON.stringify(photos)) + '\' data-idx="0">' +
+      '<div class="listing-photo"><img src="' + esc(photos[0]) + '" alt="' + esc(l.title) + '">' + nav + '</div>' +
+      '<div class="listing-body">' +
+        '<div class="row" style="justify-content:space-between">' + priceHTML + '<span class="chip">' + esc(l.category) + '</span></div>' +
+        '<h3 style="margin:0">' + esc(l.title) + '</h3>' +
+        '<p class="small muted" style="flex:1">' + esc(l.desc) + '</p>' +
+        '<p class="small muted">👤 ' + esc(l.sellerName) + ' · ' + fmtDate(l.ts) + '</p>' +
+        '<div class="row">' +
+          '<button class="btn btn-primary btn-sm" data-action="write-seller" data-seller-id="' + esc(l.sellerId) + '">💬 Написать продавцу</button>' + del +
+        '</div>' +
+      '</div>' +
+    '</article>';
+  }).join('') || '<div class="card"><p class="muted">Объявлений пока нет. Станьте первым продавцом Лицея!</p></div>';
+
+  return '' +
+  '<section class="section">' +
+    '<div class="section-head">' +
+      '<h2>🛍️ Барахолка Лицея №37</h2>' +
+      '<button class="btn btn-primary" data-action="new-listing">➕ Разместить объявление</button>' +
+    '</div>' +
+    '<div class="card" style="margin-bottom:18px">' +
+      '<div class="row">' +
+        '<input class="input" id="bazaarSearch" placeholder="🔍 Поиск по объявлениям..." value="' + esc(App.bazaarQuery || '') + '" style="flex:2;min-width:200px">' +
+        '<select class="input" id="bazaarCat" style="flex:1;min-width:160px">' + catOptions + '</select>' +
+      '</div>' +
+    '</div>' +
+    '<div class="grid grid-3">' + cards + '</div>' +
+  '</section>';
+}
+
+/* ---------- СОЦСЕТЬ ---------- */
+function pageSocial(){
+  var posts = db('posts', []).slice().sort(function(a,b){ return b.ts - a.ts; });
+  var me = App.user;
+
+  var feed = posts.map(function(p){
+    var liked = me && p.likes && p.likes.indexOf(me.id) >= 0;
+    var comments = (p.comments || []).map(function(c){
+      return '<div class="comment"><div class="ava sm">' + initials(c.authorName) + '</div>' +
+        '<div class="comment-body"><b class="small">' + esc(c.authorName) + '</b><div>' + esc(c.text) + '</div>' +
+        '<span class="small muted">' + fmtDate(c.ts) + '</span></div></div>';
+    }).join('');
+    var del = (App.admin || (me && me.id === p.authorId)) ?
+      '<button class="act-btn" data-action="delete-post" data-id="' + esc(p.id) + '">🗑️ Удалить</button>' : '';
+    return '<article class="card post">' +
+      '<div class="post-head">' +
+        '<div class="ava">' + initials(p.authorName) + '</div>' +
+        '<div><b>' + esc(p.authorName) + '</b><div class="small muted">' + esc(p.authorCls || '') + ' · ' + fmtDate(p.ts) + '</div></div>' +
+      '</div>' +
+      '<p style="margin:0">' + esc(p.text) + '</p>' +
+      (p.image ? '<img class="post-image" src="' + esc(p.image) + '" alt="изображение поста">' : '') +
+      '<div class="post-actions">' +
+        '<button class="act-btn' + (liked ? ' liked' : '') + '" data-action="like-post" data-post-id="' + esc(p.id) + '">' + (liked ? '❤️' : '🤍') + ' ' + ((p.likes || []).length) + '</button>' +
+        '<button class="act-btn" data-action="comment-post" data-post-id="' + esc(p.id) + '">💬 Комментарии (' + ((p.comments || []).length) + ')</button>' + del +
+      '</div>' +
+      '<div class="comments" id="comments-' + esc(p.id) + '" hidden>' + comments +
+        '<form class="chat-form" data-form="comment" data-post-id="' + esc(p.id) + '">' +
+          '<input class="input" name="text" placeholder="Написать комментарий..." autocomplete="off">' +
+          '<button class="btn btn-primary btn-sm" type="submit">➤</button>' +
+        '</form>' +
+      '</div>' +
+    '</article>';
+  }).join('') || '<div class="card"><p class="muted">Лента пуста. Опубликуйте первый пост!</p></div>';
+
+  var help = db('help', []).slice().sort(function(a,b){ return b.ts - a.ts; });
+  var helpHTML = help.map(function(h){
+    return '<div class="card">' +
+      '<div class="row" style="justify-content:space-between"><b>' + esc(h.subject) + '</b><span class="chip">' + esc(h.cls) + '</span></div>' +
+      '<p class="small" style="margin:8px 0">' + esc(h.text) + '</p>' +
+      '<p class="small muted">👤 ' + esc(h.authorName) + ' · ' + fmtDate(h.ts) + '</p>' +
+      '<button class="btn btn-accent btn-sm" data-action="help-reply" data-user-id="' + esc(h.authorId) + '">🤝 Откликнуться</button>' +
+    '</div>';
+  }).join('') || '<p class="muted small">Заявок пока нет.</p>';
+
+  return '' +
+  '<section class="section">' +
+    '<div class="section-head">' +
+      '<h2>💬 Соцсеть Лицея</h2>' +
+      '<button class="btn btn-primary" data-action="new-post">✍️ Новый пост</button>' +
+    '</div>' +
+    '<div class="grid grid-2">' +
+      '<div class="grid" style="gap:16px">' + feed + '</div>' +
+      '<div class="grid" style="gap:16px;align-content:start">' +
+        '<div class="card">' +
+          '<h3>🔎 Поиск одноклассников</h3>' +
+          '<p class="small muted">Выберите класс (1–11 и А–Е) и найдите своих.</p>' +
+          classPicker('searchClass', App.searchClass || '5А') +
+          '<button class="btn btn-primary btn-block" style="margin-top:12px" data-action="search-class">Найти одноклассников</button>' +
+          '<div id="classResults" style="margin-top:14px"></div>' +
+        '</div>' +
+        '<div class="card">' +
+          '<div class="row" style="justify-content:space-between"><h3 style="margin:0">🤝 Банк взаимопомощи</h3>' +
+          '<button class="btn btn-ghost btn-sm" data-action="help-new">➕ Заявка</button></div>' +
+          '<p class="small muted">Помощь с предметами: подтяни одноклассника или попроси помощь сам.</p>' +
+          '<div class="grid" style="gap:10px;margin-top:12px">' + helpHTML + '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</section>';
+}
+
+/* ---------- ИГРЫ ---------- */
+function pageGames(){
+  return '' +
+  '<section class="section">' +
+    '<div class="section-head"><h2>🎮 Игры Лицея №37</h2><span class="chip">Играй и зарабатывай баллы</span></div>' +
+    '<div class="grid grid-2">' +
+      '<div class="card">' +
+        '<h3>❌⭕ Крестики-нолики</h3>' +
+        '<p class="small muted">Вы играете за X против ИИ-наставника. Победа — +30 баллов.</p>' +
+        '<div class="ttt" id="tttBoard"></div>' +
+        '<p class="small" id="tttStatus" style="text-align:center;margin-top:12px">Ваш ход (X)</p>' +
+        '<button class="btn btn-ghost btn-block" data-action="ttt-reset">🔄 Новая игра</button>' +
+      '</div>' +
+      '<div class="card">' +
+        '<h3>⚡ Быстрый счёт</h3>' +
+        '<p class="small muted">30 секунд, примеры на сложение, вычитание и умножение. Каждый верный ответ — +5 баллов.</p>' +
+        '<div id="mathBox">' +
+          '<p class="small">Нажмите «Старт», чтобы начать.</p>' +
+          '<button class="btn btn-primary btn-block" data-action="math-start">▶️ Старт</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</section>';
+}
+
+/* ---------- ПРОФИЛЬ ---------- */
+function pageProfile(){
+  if(!App.user){
+    return '<section class="section"><div class="card" style="text-align:center;padding:44px 22px">' +
+      '<h2>👤 Мой профиль</h2>' +
+      '<p class="muted">Войдите или зарегистрируйтесь, чтобы открыть профиль, магазин наград и чаты.</p>' +
+      '<div class="row" style="justify-content:center">' +
+        '<button class="btn btn-primary" data-action="open-login">Войти</button>' +
+        '<button class="btn btn-ghost" data-action="open-register">Регистрация</button>' +
+      '</div>' +
+    '</div></section>';
+  }
+  var u = App.user;
+  var frame = u.frame ? ' frame-' + u.frame : '';
+  var owned = u.owned || [];
+
+  var rewardsHTML = REWARDS.map(function(r){
+    var has = owned.indexOf(r.id) >= 0;
+    var active = (r.type === 'frame' && u.frame === r.value) || (r.type === 'status' && u.status === r.value) || (r.type === 'theme' && u.theme === r.value);
+    return '<div class="card reward-card">' +
+      '<div class="reward-icon">' + r.icon + '</div>' +
+      '<b>' + esc(r.title) + '</b>' +
+      '<span class="chip">' + r.price + ' баллов</span>' +
+      (has
+        ? '<button class="btn ' + (active ? 'btn-accent' : 'btn-ghost') + ' btn-sm btn-block" data-action="buy-reward" data-reward-id="' + r.id + '">' + (active ? '✅ Активно' : 'Применить') + '</button>'
+        : '<button class="btn btn-primary btn-sm btn-block" data-action="buy-reward" data-reward-id="' + r.id + '">Купить</button>') +
+    '</div>';
+  }).join('');
+
+  var myListings = db('listings', []).filter(function(l){ return l.sellerId === u.id; }).length;
+  var myPosts = db('posts', []).filter(function(p){ return p.authorId === u.id; }).length;
+
+  return '' +
+  '<section class="section">' +
+    '<div class="card">' +
+      '<div class="profile-head">' +
+        '<img class="ava lg' + frame + '" id="avatarPreview" src="' + esc(u.avatar || DEFAULT_AVATAR) + '" alt="аватар">' +
+        '<div style="flex:1;min-width:220px">' +
+          '<h2 style="margin-bottom:4px">' + esc(u.nickname || u.login) + '</h2>' +
+          '<p class="small muted">Класс: <b>' + esc(u.cls || '—') + '</b> · Логин: ' + esc(u.login) + '</p>' +
+          (u.status ? '<span class="badge">' + esc(u.status) + '</span>' : '') +
+          '<div class="row" style="margin-top:12px">' +
+            '<span class="chip">⭐ ' + (u.points || 0) + ' баллов</span>' +
+            '<span class="chip">🛍️ ' + myListings + ' объявлений</span>' +
+            '<span class="chip">💬 ' + myPosts + ' постов</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</section>' +
+
+  '<section class="section">' +
+    '<div class="section-head"><h2>✏️ Редактирование профиля</h2></div>' +
+    '<div class="card">' +
+      '<div class="grid grid-2">' +
+        '<div>' +
+          '<label class="field"><span>Никнейм</span><input class="input" id="pfNick" value="' + esc(u.nickname || '') + '" placeholder="Ваш никнейм"></label>' +
+          '<label class="field"><span>Класс (1–11 и А–Е)</span></label>' +
+          classPicker('pfClass', u.cls || '5А') +
+          '<label class="field" style="margin-top:12px"><span>О себе</span><textarea class="input" id="pfAbout" placeholder="Расскажите о себе...">' + esc(u.about || '') + '</textarea></label>' +
+        '</div>' +
+        '<div>' +
+          '<label class="field"><span>Аватарка (файл)</span><input class="input" type="file" id="pfAvatarFile" accept="image/*"></label>' +
+          '<label class="field"><span>или ссылка на изображение</span><input class="input" id="pfAvatarUrl" placeholder="https://..." value="' + (String(u.avatar || '').indexOf('data:') === 0 ? '' : esc(u.avatar || '')) + '"></label>' +
+          '<button class="btn btn-primary btn-block" data-action="save-profile">💾 Сохранить профиль</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</section>' +
+
+  '<section class="section">' +
+    '<div class="section-head"><h2>🎨 Магазин наград</h2><span class="chip">Ваш баланс: ' + (u.points || 0) + ' б.</span></div>' +
+    '<div class="grid grid-4">' + rewardsHTML + '</div>' +
+  '</section>';
+}
+
+/* ---------- ПОСТ-РЕНДЕР ---------- */
+function afterRender(){
+  if(App.page === 'bazaar'){
+    var s = $('#bazaarSearch');
+    if(s){
+      s.addEventListener('input', function(){
+        App.bazaarQuery = s.value;
+        var pos = s.selectionStart;
+        render();
+        var ns = $('#bazaarSearch');
+        if(ns){ ns.focus(); try{ ns.setSelectionRange(pos, pos); }catch(e){} }
+      });
+    }
+    var c = $('#bazaarCat');
+    if(c){
+      c.addEventListener('change', function(){ App.bazaarCat = c.value; render(); });
+    }
+  }
+  if(App.page === 'games'){
+    tttRender();
+    if(MATH.active) mathRender();
+  }
+  if(App.page === 'profile'){
+    var f = $('#pfAvatarFile');
+    if(f){
+      f.addEventListener('change', function(){
+        var file = f.files && f.files[0];
+        if(!file) return;
+        if(file.size > 3 * 1024 * 1024){ toast('Файл слишком большой (макс. 3 МБ)', 'err'); return; }
+        fileToDataURL(file).then(function(data){
+          var prev = $('#avatarPreview');
+          if(prev) prev.src = data;
+          App.pendingAvatar = data;
+          toast('Аватарка загружена, не забудьте сохранить', 'ok');
         });
+      });
     }
-    lsSet(LS.helpers, allHelpers);
-    
-    if (supabaseClient) supabaseClient.from('helpers').upsert([{ userId: currentUser.id, name: currentUser.name, subject, grade: currentUser.gradeNum + currentUser.gradeLetter }]).then();
-    
-    closeModal('helpToggleModal');
-    renderHelpers();
-    toast('Вы добавлены в список помощников!');
+  }
 }
 
-function renderHelpers() {
-    const grid = document.getElementById('helpersGrid');
-    if (!grid) return;
-    if (!allHelpers.length) {
-        grid.innerHTML = '<div class="card card-pad text-center text-muted" style="grid-column:1/-1;">Пока никто не готов помогать. Станьте первым!</div>';
-        return;
-    }
-    grid.innerHTML = allHelpers.map(h => `
-        <div class="card card-pad">
-            <div class="flex items-center gap-2 mb-4">
-                <div class="user-avatar" style="width:40px;height:40px;">${esc(h.name[0])}</div>
-                <div>
-                    <div class="fw-bold">${esc(h.name)}</div>
-                    <div class="text-xs text-muted">${esc(h.grade)} класс</div>
-                </div>
-            </div>
-            <div class="text-sm mb-4"><b>Предмет:</b> ${esc(h.subject)}</div>
-            <button class="btn btn-primary btn-sm btn-block" onclick="contactHelper('${h.userId}')">💬 Попросить помощи</button>
-        </div>
-    `).join('');
-}
-
-function contactHelper(userId) {
-    if (!currentUser) return toast('Войдите, чтобы написать', 'error');
-    if (currentUser.id === userId) return toast('Это вы!');
-    toast('Чат с помощником открыт (в разработке)');
+/* ---------- ЖИВОЕ РЕДАКТИРОВАНИЕ ---------- */
+function applyEdits(){
+  var edits = db('edits', {});
+  $$('[data-editable]').forEach(function(el){
+    var k = el.getAttribute('data-editable');
+    if(!Object.prototype.hasOwnProperty.call(edits, k)) return;
+    if(el.tagName === 'IMG') el.setAttribute('src', edits[k]);
+    else el.textContent = edits[k];
+  });
 }
 
 /* ============================================================
-   9. БАРАХОЛКА (Логика с 4 фото)
+   ДЕЙСТВИЯ
    ============================================================ */
-let uploadedPhotos = [];
-
-function openMarketForm() {
-    if (!currentUser) return toast('Войдите, чтобы разместить товар', 'error');
-    document.getElementById('marketFormModal').classList.add('open');
+function handleAction(action, el){
+  switch(action){
+    case 'open-login': openLogin(); break;
+    case 'open-register': openRegister(); break;
+    case 'admin-login': askAdminPassword(); break;
+    case 'logout': logout(); break;
+    case 'apply-event': openEventApply(el.getAttribute('data-event-id')); break;
+    case 'new-listing': openNewListing(); break;
+    case 'listing-prev': shiftPhoto(el, -1); break;
+    case 'listing-next': shiftPhoto(el, 1); break;
+    case 'write-seller': openChat(el.getAttribute('data-seller-id')); break;
+    case 'like-post': toggleLike(el.getAttribute('data-post-id')); break;
+    case 'comment-post': toggleComments(el.getAttribute('data-post-id')); break;
+    case 'new-post': openNewPost(); break;
+    case 'delete-post': deletePost(el.getAttribute('data-id')); break;
+    case 'delete-listing': deleteListing(el.getAttribute('data-id')); break;
+    case 'help-new': openNewHelp(); break;
+    case 'help-reply': openChat(el.getAttribute('data-user-id')); break;
+    case 'search-class': doSearchClass(); break;
+    case 'save-profile': saveProfile(); break;
+    case 'buy-reward': buyReward(el.getAttribute('data-reward-id')); break;
+    case 'admin-live': toggleLiveEdit(); break;
+    case 'admin-requests': openAdminRequests(); break;
+    case 'admin-scripts': openScripts(); break;
+    case 'admin-exit': exitAdmin(); break;
+    case 'script-reset': resetScriptForm(); break;
+    case 'script-toggle': scriptToggle(el.getAttribute('data-script-id')); break;
+    case 'script-edit': scriptEdit(el.getAttribute('data-script-id')); break;
+    case 'script-delete': scriptDelete(el.getAttribute('data-script-id')); break;
+    case 'ttt': tttPlay(Number(el.getAttribute('data-cell'))); break;
+    case 'ttt-reset': tttReset(); break;
+    case 'math-start': mathStart(); break;
+    case 'delete-idea': deleteIdea(el.getAttribute('data-id')); break;
+    case 'delete-app': deleteApp(el.getAttribute('data-id')); break;
+    case 'close-modal': closeModal(); break;
+  }
 }
 
-function handleMarketPhotos(e) {
-    const files = Array.from(e.target.files).slice(0, 4 - uploadedPhotos.length);
-    files.forEach(f => {
-        if (f.size > 2 * 1024 * 1024) return toast('Файл слишком большой (макс 2МБ)', 'error');
-        const r = new FileReader();
-        r.onload = ev => { 
-            uploadedPhotos.push(ev.target.result); 
-            renderPhotoUploads(); 
-        };
-        r.readAsDataURL(f);
+/* ---------- АВТОРИЗАЦИЯ ---------- */
+function openLogin(){
+  openModal('Вход в портал',
+    '<form data-form="login">' +
+      '<label class="field"><span>Логин</span><input class="input" name="login" required autocomplete="username"></label>' +
+      '<label class="field"><span>Пароль</span><input class="input" type="password" name="password" required autocomplete="current-password"></label>' +
+      '<button class="btn btn-primary btn-block" type="submit">Войти</button>' +
+      '<button class="btn btn-ghost btn-block" type="button" style="margin-top:10px" data-action="admin-login">👑 Админ</button>' +
+      '<p class="small muted" style="margin-top:12px;text-align:center">Нет аккаунта? <a href="#" data-action="open-register">Зарегистрируйтесь</a></p>' +
+    '</form>');
+}
+function openRegister(){
+  openModal('Регистрация ученика',
+    '<form data-form="register">' +
+      '<label class="field"><span>Логин</span><input class="input" name="login" required autocomplete="username"></label>' +
+      '<label class="field"><span>Пароль</span><input class="input" type="password" name="password" required autocomplete="new-password"></label>' +
+      '<label class="field"><span>Никнейм</span><input class="input" name="nickname" required placeholder="Как вас называть"></label>' +
+      '<label class="field"><span>Класс (1–11 и А–Е)</span></label>' +
+      classPicker('regClass', '5А') +
+      '<button class="btn btn-primary btn-block" type="submit" style="margin-top:14px">Создать аккаунт</button>' +
+      '<button class="btn btn-ghost btn-block" type="button" style="margin-top:10px" data-action="admin-login">👑 Админ</button>' +
+    '</form>');
+}
+function doLogin(form){
+  var login = form.login.value.trim();
+  var pass = form.password.value;
+  var list = users();
+  var found = null;
+  for(var i=0;i<list.length;i++){
+    if(list[i].login.toLowerCase() === login.toLowerCase() && list[i].password === pass){ found = list[i]; break; }
+  }
+  if(!found){ toast('Неверный логин или пароль', 'err'); return; }
+  setSession(found.id);
+  refreshUser();
+  closeModal();
+  render();
+  toast('Добро пожаловать, ' + (found.nickname || found.login) + '!', 'ok');
+}
+function doRegister(form){
+  var login = form.login.value.trim();
+  var pass = form.password.value;
+  var nick = form.nickname.value.trim();
+  var cls = readClass('regClass');
+  if(login.length < 3){ toast('Логин минимум 3 символа', 'err'); return; }
+  if(pass.length < 4){ toast('Пароль минимум 4 символа', 'err'); return; }
+  var list = users();
+  for(var i=0;i<list.length;i++){
+    if(list[i].login.toLowerCase() === login.toLowerCase()){ toast('Такой логин уже занят', 'err'); return; }
+  }
+  var u = {
+    id: uid(), login: login, password: pass, nickname: nick, cls: cls,
+    avatar: DEFAULT_AVATAR, about: '', points: 500, role: 'user',
+    frame: '', status: '', theme: '', owned: [], ts: Date.now()
+  };
+  list.push(u);
+  saveUsers(list);
+  setSession(u.id);
+  refreshUser();
+  closeModal();
+  render();
+  toast('Аккаунт создан! Начислено 500 стартовых баллов 🎉', 'ok');
+}
+function logout(){
+  setSession(null);
+  App.user = null;
+  App.admin = false;
+  document.body.classList.remove('admin-on');
+  $('#adminBar').hidden = true;
+  applyTheme();
+  render();
+  toast('Вы вышли из аккаунта');
+}
+
+/* ---------- АДМИН ---------- */
+function askAdminPassword(){
+  openModal('Вход администратора',
+    '<form data-form="admin-pass">' +
+      '<label class="field"><span>Пароль администратора</span><input class="input" type="password" name="password" required autocomplete="off"></label>' +
+      '<button class="btn btn-primary btn-block" type="submit">Войти</button>' +
+    '</form>');
+}
+function checkAdminPass(form){
+  if(form.password.value === ADMIN_PASSWORD){
+    App.admin = true;
+    document.body.classList.add('admin-on');
+    $('#adminBar').hidden = false;
+    closeModal();
+    render();
+    toast('Режим администратора включён 👑', 'ok');
+  } else {
+    toast('Неверный пароль', 'err');
+    form.password.value = '';
+  }
+}
+function exitAdmin(){
+  App.admin = false;
+  App.liveEdit = false;
+  document.body.classList.remove('admin-on');
+  document.body.classList.remove('live-edit');
+  $('#adminBar').hidden = true;
+  var b = $('#btnLiveEdit');
+  if(b) b.classList.remove('on');
+  render();
+  toast('Режим администратора выключен');
+}
+function toggleLiveEdit(){
+  App.liveEdit = !App.liveEdit;
+  document.body.classList.toggle('live-edit', App.liveEdit);
+  var b = $('#btnLiveEdit');
+  if(b) b.classList.toggle('on', App.liveEdit);
+  toast(App.liveEdit ? 'Живое редактирование включено: кликайте по текстам и фото' : 'Живое редактирование выключено');
+}
+function openAdminRequests(){
+  var apps = db('applications', []);
+  var ideas = db('ideas', []);
+  var appsHTML = apps.slice().reverse().map(function(a){
+    return '<div class="card" style="padding:12px;margin-bottom:10px">' +
+      '<div class="row" style="justify-content:space-between"><b>' + esc(a.fio) + '</b><span class="chip">' + esc(a.cls) + '</span></div>' +
+      '<p class="small" style="margin:6px 0">📅 ' + esc(a.eventTitle) + '</p>' +
+      (a.comment ? '<p class="small muted">' + esc(a.comment) + '</p>' : '') +
+      '<div class="row" style="justify-content:space-between"><span class="small muted">' + fmtDate(a.ts) + '</span>' +
+      '<button class="btn btn-danger btn-sm" data-action="delete-app" data-id="' + esc(a.id) + '">Удалить</button></div>' +
+    '</div>';
+  }).join('') || '<p class="muted small">Заявок нет.</p>';
+  var ideasHTML = ideas.slice().reverse().map(function(it){
+    return '<div class="card" style="padding:12px;margin-bottom:10px">' +
+      '<div class="row" style="justify-content:space-between"><b>' + (it.anon ? '🕶️ Анонимно' : '👤 ' + esc(it.author)) + '</b><span class="small muted">' + fmtDate(it.ts) + '</span></div>' +
+      '<p class="small" style="margin:6px 0">' + esc(it.text) + '</p>' +
+      '<button class="btn btn-danger btn-sm" data-action="delete-idea" data-id="' + esc(it.id) + '">Удалить</button>' +
+    '</div>';
+  }).join('') || '<p class="muted small">Идей нет.</p>';
+  openModal('📋 Заявки и Идеи',
+    '<h3>📅 Заявки на мероприятия (' + apps.length + ')</h3>' + appsHTML +
+    '<h3 style="margin-top:20px">📮 Идеи и предложения (' + ideas.length + ')</h3>' + ideasHTML,
+    { wide: true });
+}
+function deleteIdea(id){
+  var list = db('ideas', []).filter(function(i){ return i.id !== id; });
+  save('ideas', list);
+  openAdminRequests();
+  render();
+  toast('Идея удалена');
+}
+function deleteApp(id){
+  var list = db('applications', []).filter(function(i){ return i.id !== id; });
+  save('applications', list);
+  openAdminRequests();
+  toast('Заявка удалена');
+}
+
+/* ---------- БИБЛИОТЕКА СКРИПТОВ ---------- */
+function openScripts(){
+  $('#scriptDrawer').hidden = false;
+  renderScripts();
+}
+function closeScripts(){ $('#scriptDrawer').hidden = true; }
+function renderScripts(){
+  var list = db('scripts', []);
+  var box = $('#scriptList');
+  if(!box) return;
+  box.innerHTML = list.map(function(s){
+    return '<div class="script-item' + (s.enabled ? ' on' : '') + '">' +
+      '<div class="row" style="justify-content:space-between"><b>' + esc(s.name) + '</b><span class="chip">' + (s.type === 'css' ? 'CSS' : 'JS') + '</span></div>' +
+      '<pre class="small muted" style="max-height:80px;overflow:auto;margin:8px 0;white-space:pre-wrap">' + esc(String(s.code).slice(0, 220)) + '</pre>' +
+      '<div class="row">' +
+        '<button class="btn btn-sm ' + (s.enabled ? 'btn-danger' : 'btn-accent') + '" data-action="script-toggle" data-script-id="' + esc(s.id) + '">' + (s.enabled ? '⏹ Остановить' : '▶️ Включить') + '</button>' +
+        '<button class="btn btn-ghost btn-sm" data-action="script-edit" data-script-id="' + esc(s.id) + '">✏️ Редактировать</button>' +
+        '<button class="btn btn-ghost btn-sm" data-action="script-delete" data-script-id="' + esc(s.id) + '">🗑️ Удалить</button>' +
+      '</div>' +
+    '</div>';
+  }).join('') || '<p class="muted small">Скриптов пока нет.</p>';
+}
+function resetScriptForm(){
+  var f = $('[data-form="script"]');
+  if(!f) return;
+  f.id.value = '';
+  f.name.value = '';
+  f.type.value = 'js';
+  f.code.value = '';
+}
+function saveScript(form){
+  var list = db('scripts', []);
+  var id = form.id.value;
+  var type = form.type.value;
+  var code = form.code.value;
+  if(!code.trim()){ toast('Введите код', 'err'); return; }
+  if(id){
+    for(var i=0;i<list.length;i++){
+      if(list[i].id === id){
+        list[i].type = type;
+        list[i].code = code;
+        if(form.name.value.trim()) list[i].name = form.name.value.trim();
+        if(list[i].enabled){ scriptStop(id); scriptRun(list[i]); }
+        break;
+      }
+    }
+    toast('Скрипт обновлён', 'ok');
+  } else {
+    var count = list.length + 1;
+    var autoName = (type === 'css' ? 'Стиль ' : 'Скрипт ') + count;
+    var s = { id: uid(), name: form.name.value.trim() || autoName, type: type, code: code, enabled: false, ts: Date.now() };
+    list.push(s);
+    toast('Скрипт «' + s.name + '» сохранён', 'ok');
+  }
+  save('scripts', list);
+  resetScriptForm();
+  renderScripts();
+}
+function scriptRun(s){
+  scriptStop(s.id);
+  if(s.type === 'css'){
+    var st = document.createElement('style');
+    st.id = 'usr-css-' + s.id;
+    st.textContent = s.code;
+    document.head.appendChild(st);
+  } else {
+    var sc = document.createElement('script');
+    sc.id = 'usr-js-' + s.id;
+    sc.textContent = s.code;
+    document.body.appendChild(sc);
+  }
+}
+function scriptStop(id){
+  var a = document.getElementById('usr-css-' + id);
+  if(a && a.parentNode) a.parentNode.removeChild(a);
+  var b = document.getElementById('usr-js-' + id);
+  if(b && b.parentNode) b.parentNode.removeChild(b);
+}
+function scriptToggle(id){
+  var list = db('scripts', []);
+  for(var i=0;i<list.length;i++){
+    if(list[i].id === id){
+      list[i].enabled = !list[i].enabled;
+      if(list[i].enabled) scriptRun(list[i]); else scriptStop(id);
+      toast(list[i].enabled ? 'Скрипт включён' : 'Скрипт остановлен');
+      break;
+    }
+  }
+  save('scripts', list);
+  renderScripts();
+}
+function scriptEdit(id){
+  var list = db('scripts', []);
+  var f = $('[data-form="script"]');
+  for(var i=0;i<list.length;i++){
+    if(list[i].id === id){
+      f.id.value = list[i].id;
+      f.name.value = list[i].name;
+      f.type.value = list[i].type;
+      f.code.value = list[i].code;
+      toast('Скрипт загружен в редактор');
+      break;
+    }
+  }
+}
+function scriptDelete(id){
+  scriptStop(id);
+  var list = db('scripts', []).filter(function(s){ return s.id !== id; });
+  save('scripts', list);
+  renderScripts();
+  toast('Скрипт удалён');
+}
+function restoreScripts(){
+  var list = db('scripts', []);
+  list.forEach(function(s){ if(s.enabled) scriptRun(s); });
+}
+
+/* ---------- МЕРОПРИЯТИЯ ---------- */
+function openEventApply(eventId){
+  var events = db('events', DEFAULT_EVENTS);
+  var ev = null;
+  for(var i=0;i<events.length;i++){ if(events[i].id === eventId) ev = events[i]; }
+  if(!ev){ toast('Мероприятие не найдено', 'err'); return; }
+  openModal('Заявка на мероприятие',
+    '<p class="small muted">📅 <b>' + esc(ev.title) + '</b><br>' + esc(ev.date) + ' · ' + esc(ev.place) + '</p>' +
+    '<form data-form="event-apply" data-event-id="' + esc(ev.id) + '">' +
+      '<label class="field"><span>ФИО</span><input class="input" name="fio" required value="' + esc(App.user ? (App.user.nickname || '') : '') + '"></label>' +
+      '<label class="field"><span>Класс (1–11 и А–Е)</span></label>' +
+      classPicker('appClass', App.user ? App.user.cls : '5А') +
+      '<label class="field" style="margin-top:12px"><span>Комментарий</span><textarea class="input" name="comment" placeholder="Дополнительная информация"></textarea></label>' +
+      '<button class="btn btn-primary btn-block" type="submit">📨 Отправить заявку</button>' +
+    '</form>');
+}
+function submitEventApply(form){
+  var events = db('events', DEFAULT_EVENTS);
+  var id = form.getAttribute('data-event-id');
+  var title = '';
+  for(var i=0;i<events.length;i++){ if(events[i].id === id) title = events[i].title; }
+  var list = db('applications', []);
+  list.push({
+    id: uid(), eventId: id, eventTitle: title,
+    fio: form.fio.value.trim(), cls: readClass('appClass'),
+    comment: form.comment.value.trim(), ts: Date.now()
+  });
+  save('applications', list);
+  addPoints(10);
+  closeModal();
+  render();
+  toast('Заявка отправлена! +10 баллов', 'ok');
+}
+
+/* ---------- ИДЕИ ---------- */
+function submitIdea(form){
+  var text = form.text.value.trim();
+  if(!text){ toast('Напишите идею', 'err'); return; }
+  var anon = form.mode.value === 'anon';
+  var list = db('ideas', []);
+  list.push({
+    id: uid(), text: text, anon: anon,
+    author: anon ? 'Аноним' : (App.user ? (App.user.nickname || App.user.login) : 'Гость'),
+    ts: Date.now()
+  });
+  save('ideas', list);
+  addPoints(5);
+  render();
+  toast('Спасибо! Идея отправлена в ящик Лицея №37', 'ok');
+}
+
+/* ---------- БАРАХОЛКА: ЛОГИКА ---------- */
+function shiftPhoto(el, dir){
+  var card = el.closest('.listing-card');
+  if(!card) return;
+  var photos = [];
+  try{ photos = JSON.parse(card.getAttribute('data-photos') || '[]'); }catch(e){ photos = []; }
+  if(photos.length < 2) return;
+  var i = Number(card.getAttribute('data-idx') || 0);
+  i = (i + dir + photos.length) % photos.length;
+  card.setAttribute('data-idx', String(i));
+  var img = card.querySelector('.listing-photo img');
+  if(img) img.src = photos[i];
+  var counter = card.querySelector('.photo-counter');
+  if(counter) counter.textContent = (i + 1) + ' / ' + photos.length;
+}
+function openNewListing(){
+  if(!App.user){ toast('Войдите, чтобы разместить объявление', 'err'); openLogin(); return; }
+  var catOptions = CATEGORIES.map(function(c){ return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('');
+  openModal('Новое объявление',
+    '<form data-form="new-listing">' +
+      '<label class="field"><span>Название</span><input class="input" name="title" required placeholder="Например: Учебник алгебры 9 класс"></label>' +
+      '<label class="field"><span>Категория</span><select class="input" name="category">' + catOptions + '</select></label>' +
+      '<label class="field"><span>Тип цены</span><select class="input" name="priceType">' +
+        '<option value="price">Указать цену</option>' +
+        '<option value="exchange">Обмен</option>' +
+        '<option value="free">Бесплатно</option>' +
+      '</select></label>' +
+      '<label class="field"><span>Цена, ₽ (если выбран тип «Указать цену»)</span><input class="input" name="price" type="number" min="0" placeholder="500"></label>' +
+      '<label class="field"><span>Описание</span><textarea class="input" name="desc" required placeholder="Состояние, детали, договорённости..."></textarea></label>' +
+      '<label class="field"><span>Фото (до 4 штук)</span><input class="input" type="file" id="listingPhotos" accept="image/*" multiple></label>' +
+      '<label class="field"><span>или ссылки на фото (по одной в строке)</span><textarea class="input" name="photoUrls" rows="2" placeholder="https://..."></textarea></label>' +
+      '<button class="btn btn-primary btn-block" type="submit">📤 Опубликовать</button>' +
+    '</form>');
+}
+function submitListing(form){
+  var title = form.title.value.trim();
+  var desc = form.desc.value.trim();
+  if(!title || !desc){ toast('Заполните название и описание', 'err'); return; }
+  var priceType = form.priceType.value;
+  var price = form.price.value ? Number(form.price.value) : 0;
+  if(priceType === 'price' && !price){ toast('Укажите цену или выберите «Обмен»/«Бесплатно»', 'err'); return; }
+  var urls = String(form.photoUrls.value || '').split('\n').map(function(s){ return s.trim(); }).filter(Boolean);
+  var files = $('#listingPhotos') && $('#listingPhotos').files ? Array.prototype.slice.call($('#listingPhotos').files) : [];
+  files = files.slice(0, 4);
+  var jobs = files.map(function(f){ return fileToDataURL(f); });
+  Promise.all(jobs).then(function(dataUrls){
+    var photos = dataUrls.concat(urls).slice(0, 4);
+    var list = db('listings', []);
+    list.push({
+      id: uid(), title: title, desc: desc, category: form.category.value,
+      priceType: priceType, price: price, photos: photos,
+      sellerId: App.user.id, sellerName: App.user.nickname || App.user.login,
+      ts: Date.now()
     });
-    e.target.value = '';
+    save('listings', list);
+    addPoints(15);
+    closeModal();
+    render();
+    toast('Объявление опубликовано! +15 баллов', 'ok');
+  }).catch(function(){
+    toast('Не удалось обработать фото', 'err');
+  });
+}
+function deleteListing(id){
+  var list = db('listings', []).filter(function(l){ return l.id !== id; });
+  save('listings', list);
+  render();
+  toast('Объявление удалено');
 }
 
-function renderPhotoUploads() {
-    const c = document.getElementById('photoUploadArea');
-    if (!c) return;
-    c.innerHTML = uploadedPhotos.map((src, i) => `
-        <div class="photo-slot"><img src="${src}"><div class="remove" onclick="removePhoto(${i})">✕</div></div>
-    `).join('') + (uploadedPhotos.length < 4 ? `<div class="photo-slot" onclick="document.getElementById('marketFileInput').click()">+</div>` : '');
+/* ---------- ЧАТ ---------- */
+function chatKey(a, b){ return [a, b].sort().join('__'); }
+function getChats(){ return db('chats', {}); }
+function openChat(otherId){
+  if(!App.user){ toast('Войдите, чтобы писать сообщения', 'err'); openLogin(); return; }
+  if(otherId === App.user.id){ toast('Это ваш собственный профиль 🙂'); return; }
+  var list = users();
+  var other = null;
+  for(var i=0;i<list.length;i++){ if(list[i].id === otherId) other = list[i]; }
+  if(!other){ toast('Пользователь не найден', 'err'); return; }
+  var key = chatKey(App.user.id, other.id);
+  openModal('💬 Чат с ' + (other.nickname || other.login),
+    '<div class="chat" id="chatMessages"></div>' +
+    '<form class="chat-form" data-form="chat" data-chat="' + esc(key) + '">' +
+      '<input class="input" name="text" placeholder="Написать сообщение..." autocomplete="off" required>' +
+      '<button class="btn btn-primary" type="submit">➤</button>' +
+    '</form>',
+    { onOpen: function(){ renderChat(key); } });
+}
+function renderChat(key){
+  var box = $('#chatMessages');
+  if(!box) return;
+  var chats = getChats();
+  var msgs = chats[key] || [];
+  box.innerHTML = msgs.map(function(m){
+    var mine = App.user && m.from === App.user.id;
+    return '<div class="msg ' + (mine ? 'me' : 'other') + '">' + esc(m.text) + '<span class="t">' + fmtDate(m.ts) + '</span></div>';
+  }).join('') || '<p class="muted small">Сообщений пока нет. Начните диалог!</p>';
+  box.scrollTop = box.scrollHeight;
+}
+function sendChat(form){
+  var key = form.getAttribute('data-chat');
+  var text = form.text.value.trim();
+  if(!text) return;
+  var chats = getChats();
+  if(!chats[key]) chats[key] = [];
+  chats[key].push({ from: App.user.id, text: text, ts: Date.now() });
+  save('chats', chats);
+  form.text.value = '';
+  renderChat(key);
 }
 
-function removePhoto(i) { 
-    uploadedPhotos.splice(i, 1); 
-    renderPhotoUploads(); 
+/* ---------- СОЦСЕТЬ: ЛОГИКА ---------- */
+function openNewPost(){
+  if(!App.user){ toast('Войдите, чтобы публиковать посты', 'err'); openLogin(); return; }
+  openModal('Новый пост',
+    '<form data-form="new-post">' +
+      '<label class="field"><span>Текст поста</span><textarea class="input" name="text" required placeholder="Чем поделитесь с Лицеем?"></textarea></label>' +
+      '<label class="field"><span>Картинка (необязательно)</span><input class="input" type="file" id="postImage" accept="image/*"></label>' +
+      '<label class="field"><span>или ссылка на картинку</span><input class="input" name="imageUrl" placeholder="https://..."></label>' +
+      '<button class="btn btn-primary btn-block" type="submit">📤 Опубликовать</button>' +
+    '</form>');
 }
-
-function submitMarketItem() {
-    if (!currentUser) return;
-    const title = document.getElementById('mTitle').value.trim();
-    const cat = document.getElementById('mCategory').value;
-    const price = document.getElementById('mPrice').value || '0';
-    const desc = document.getElementById('mDesc').value.trim();
-    if (!title) return toast('Введите название', 'error');
-
-    const item = {
-        id: uid(), seller_id: currentUser.id, seller_name: currentUser.name,
-        seller_grade: currentUser.gradeNum + currentUser.gradeLetter,
-        title, cat, price, desc, images: uploadedPhotos.slice(), 
-        status: 'active', created_at: new Date().toISOString()
-    };
-    
-    allMarket.unshift(item); 
-    lsSet(LS.market, allMarket);
-    
-    if (supabaseClient) supabaseClient.from('market').insert([item]).then();
-    
-    const tgText = `🛍 *Новое объявление на Барахолке*\n\n*Товар:* ${item.title}\n*Цена:* ${item.price} ₽\n*Продавец:* ${item.seller_name} (${item.seller_grade})`;
-    sendTelegramNotify(tgText);
-
-    closeModal('marketFormModal'); 
-    uploadedPhotos = []; 
-    renderPhotoUploads(); 
-    renderMarket();
-    toast('Объявление опубликовано!');
-}
-
-function renderMarket() {
-    const el = document.getElementById('marketGrid');
-    if (!el) return;
-    if (!allMarket.length) { 
-        el.innerHTML = '<div class="card card-pad text-center text-muted" style="grid-column:1/-1;">Объявлений пока нет.</div>'; 
-        return; 
-    }
-    
-    el.innerHTML = allMarket.map(m => {
-        const imgSrc = m.images && m.images.length ? m.images[0] : 'https://via.placeholder.com/300x200?text=No+Photo';
-        const priceStr = m.price == '0' ? 'Бесплатно' : m.price + ' ₽';
-        const isOwner = currentUser && currentUser.id === m.seller_id;
-
-        return `
-            <div class="market-card">
-                <div class="market-gallery">
-                    ${m.status === 'sold' ? '<div class="sold-badge">ПРОДАНО</div>' : ''}
-                    <img src="${imgSrc}" class="market-img active" id="img_${m.id}_0">
-                    ${m.images && m.images.length > 1 ? `<div class="gallery-nav prev" onclick="switchImg('${m.id}', -1)">❮</div><div class="gallery-nav next" onclick="switchImg('${m.id}', 1)">❯</div>` : ''}
-                </div>
-                <div class="market-body">
-                    <div class="market-price">${priceStr}</div>
-                    <div class="market-title">${esc(m.title)}</div>
-                    <div class="text-xs text-muted mt-2">Продавец: ${esc(m.seller_name)} (${esc(m.seller_grade)})</div>
-                    <div class="flex gap-2 mt-4" style="margin-top:auto;">
-                        ${isOwner ? `<button class="btn btn-outline btn-sm w-full" onclick="deleteMarketItem('${m.id}')">Удалить</button>` : `<button class="btn btn-primary btn-sm w-full" onclick="openMarketChat('${m.id}')">💬 Написать</button>`}
-                    </div>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-const imgIndices = {};
-function switchImg(id, dir) {
-    const item = allMarket.find(x => x.id === id); 
-    if (!item || !item.images) return;
-    if (imgIndices[id] === undefined) imgIndices[id] = 0;
-    imgIndices[id] = (imgIndices[id] + dir + item.images.length) % item.images.length;
-    document.getElementById(`img_${id}_0`).src = item.images[imgIndices[id]];
-}
-
-function deleteMarketItem(id) {
-    if (!confirm('Удалить объявление?')) return;
-    allMarket = allMarket.filter(x => x.id !== id); 
-    lsSet(LS.market, allMarket); 
-    renderMarket();
-}
-
-/* ============================================================
-   10. ЧАТ БАРАХОЛКИ
-   ============================================================ */
-let currentChatItem = null;
-
-function openMarketChat(itemId) {
-    if (!currentUser) return toast('Войдите в аккаунт', 'error');
-    currentChatItem = allMarket.find(x => x.id === itemId);
-    
-    document.getElementById('chatProductTitle').textContent = currentChatItem.title;
-    document.getElementById('chatProductPrice').textContent = currentChatItem.price == '0' ? 'Бесплатно' : currentChatItem.price + ' ₽';
-    document.getElementById('chatProductImg').src = currentChatItem.images && currentChatItem.images.length ? currentChatItem.images[0] : 'https://via.placeholder.com/60';
-    
-    const isSeller = currentUser.id === currentChatItem.seller_id;
-    document.getElementById('sellerActions').classList.toggle('hidden', !isSeller);
-
-    document.getElementById('marketChatModal').classList.add('open');
-    renderMarketChat();
-}
-
-function renderMarketChat() {
-    const box = document.getElementById('marketChatMessages');
-    if (!box) return;
-    const msgs = allChats.filter(m => m.item_id === currentChatItem.id);
-    
-    if (!msgs.length) {
-        box.innerHTML = '<div class="text-center text-muted text-sm" style="margin-top:20px;">Напишите первое сообщение продавцу</div>';
-        return;
-    }
-    
-    box.innerHTML = msgs.map(m => {
-        const isOwn = m.sender_id === currentUser.id;
-        return `
-            <div style="align-self: ${isOwn ? 'flex-end' : 'flex-start'}; max-width: 80%;">
-                <div style="font-size:11px; color:var(--muted); margin-bottom:4px; text-align:${isOwn ? 'right' : 'left'};">${esc(m.sender_name)}</div>
-                <div style="background:${isOwn ? 'var(--indigo)' : '#fff'}; color:${isOwn ? '#fff' : '#000'}; padding:10px 14px; border-radius:12px; border:1px solid ${isOwn ? 'transparent' : 'var(--border)'}; font-size:14px;">
-                    ${esc(m.text)}
-                </div>
-            </div>
-        `;
-    }).join('');
-    box.scrollTop = box.scrollHeight;
-}
-
-function sendMarketMsg() {
-    const inp = document.getElementById('marketChatInput');
-    const txt = inp.value.trim(); 
-    if (!txt) return;
-    
-    const msg = { 
-        id: uid(), item_id: currentChatItem.id, sender_id: currentUser.id, 
-        sender_name: currentUser.name, text: txt, created_at: new Date().toISOString() 
-    };
-    
-    allChats.push(msg); 
-    lsSet(LS.mChats, allChats);
-    
-    if (supabaseClient) supabaseClient.from('market_chats').insert([msg]).then();
-    
-    inp.value = ''; 
-    renderMarketChat();
-}
-
-function markAsSold() {
-    currentChatItem.status = 'sold'; 
-    lsSet(LS.market, allMarket);
-    if (supabaseClient) supabaseClient.from('market').update({ status: 'sold' }).eq('id', currentChatItem.id).then();
-    toast('Товар снят с публикации'); 
-    closeModal('marketChatModal'); 
-    renderMarket();
-}
-
-/* ============================================================
-   11. ПРОФИЛЬ И МАГАЗИН НАГРАД
-   ============================================================ */
-function renderProfile() {
-    const el = document.getElementById('profileContent');
-    if (!el) return;
-    if (!currentUser) { 
-        el.innerHTML = '<div class="card card-pad text-center">Войдите в аккаунт, чтобы увидеть профиль</div>'; 
-        return; 
-    }
-
-    const frameClass = currentUser.activeFrame ? `frame-${currentUser.activeFrame}` : '';
-    const statusHTML = currentUser.activeStatus ? `<div class="fw-bold mt-2" style="color:var(--indigo);">${esc(currentUser.activeStatus)}</div>` : '';
-    
-    el.innerHTML = `
-        <div class="card card-pad mb-4" style="display:flex;gap:20px;align-items:center;">
-            <div class="user-avatar ${frameClass}" style="width:80px;height:80px;font-size:32px;">${currentUser.avatar ? `<img src="${currentUser.avatar}">` : esc(currentUser.name[0])}</div>
-            <div>
-                <h2 style="font-size:24px;font-weight:800;">${esc(currentUser.name)}</h2>
-                ${statusHTML}
-                <div class="text-muted mt-2">Класс: ${currentUser.gradeNum}${currentUser.gradeLetter}</div>
-                <div class="fw-bold mt-2" style="color:var(--indigo);">⭐ ${currentUser.points || 0} баллов</div>
-            </div>
-        </div>
-        
-        <div class="grid-cards mb-4">
-            <div class="card card-pad">
-                <h3 class="fw-bold mb-4">✏️ Редактировать</h3>
-                <div class="form-group"><label class="form-label">Никнейм</label><input class="form-control" id="pNick" value="${esc(currentUser.nick || '')}"></div>
-                <div class="form-group"><label class="form-label">О себе</label><textarea class="form-control" id="pBio" rows="3">${esc(currentUser.bio || '')}</textarea></div>
-                <button class="btn btn-primary" onclick="saveProfileExtended()">Сохранить</button>
-            </div>
-
-            <div class="card card-pad">
-                <h3 class="fw-bold mb-4">🎨 Магазин наград</h3>
-                <p class="text-sm text-muted mb-4">Трать баллы на уникальные рамки, статусы и темы.</p>
-                <button class="btn btn-gold w-full mb-2" onclick="openShopModal()">Открыть магазин</button>
-                <button class="btn btn-outline w-full" onclick="changeAvatar()">Сменить аватарку</button>
-            </div>
-        </div>
-    `;
-}
-
-function saveProfileExtended() {
-    if (!currentUser) return;
-    currentUser.nick = document.getElementById('pNick').value.trim();
-    currentUser.bio = document.getElementById('pBio').value.trim();
-    
-    const i = allProfiles.findIndex(p => p.id === currentUser.id);
-    if (i >= 0) allProfiles[i] = currentUser;
-    lsSet(LS.user, currentUser); 
-    lsSet(LS.profiles, allProfiles);
-    
-    if (supabaseClient) supabaseClient.from('profiles').update({ nick: currentUser.nick, bio: currentUser.bio }).eq('id', currentUser.id).then();
-    toast('Профиль сохранён');
-}
-
-function changeAvatar() {
-    const url = prompt('Введите ссылку на аватарку (или Base64):');
-    if (url) {
-        currentUser.avatar = url;
-        lsSet(LS.user, currentUser);
-        const i = allProfiles.findIndex(p => p.id === currentUser.id);
-        if (i >= 0) { allProfiles[i] = currentUser; lsSet(LS.profiles, allProfiles); }
-        renderProfile(); updateAuthUI();
-        if (supabaseClient) supabaseClient.from('profiles').update({ avatar: url }).eq('id', currentUser.id).then();
-        toast('Аватар обновлён!');
-    }
-}
-
-function openShopModal() {
-    const shopHTML = `
-        <div style="position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;" id="shopModal">
-            <div class="card card-pad" style="width:90%;max-width:500px;background:#fff;max-height:80vh;overflow-y:auto;">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="fw-bold" style="font-size:20px;">🎨 Магазин наград</h3>
-                    <button onclick="document.getElementById('shopModal').remove()" class="modal-close">✕</button>
-                </div>
-                <p class="text-sm text-muted mb-4">У вас <b>${currentUser.points || 0}</b> баллов.</p>
-                
-                <div class="mb-4">
-                    <h4 class="fw-bold mb-2">Рамки (50 баллов)</h4>
-                    <div class="flex gap-2">
-                        <button class="btn btn-outline btn-sm" onclick="buyItem('frame', 'gold', 50)">Золотая</button>
-                        <button class="btn btn-outline btn-sm" onclick="buyItem('frame', 'neon', 50)">Неон</button>
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <h4 class="fw-bold mb-2">Статусы (100 баллов)</h4>
-                    <div class="flex gap-2">
-                        <button class="btn btn-outline btn-sm" onclick="buyItem('status', '⚡ Гений Python', 100)">Python</button>
-                        <button class="btn btn-outline btn-sm" onclick="buyItem('status', '🏆 Гордость Лицея', 100)">Гордость</button>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <h4 class="fw-bold mb-2">Темы сайта (200 баллов)</h4>
-                    <div class="flex gap-2">
-                        <button class="btn btn-outline btn-sm" onclick="buyItem('theme', 'theme-dark', 200)">Тёмная</button>
-                        <button class="btn btn-outline btn-sm" onclick="buyItem('theme', 'theme-emerald', 200)">Изумруд</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    document.body.insertAdjacentHTML('beforeend', shopHTML);
-}
-
-function buyItem(type, value, price) {
-    if ((currentUser.points || 0) < price) {
-        return toast('Недостаточно баллов!', 'error');
-    }
-    if (!confirm(`Купить за ${price} баллов?`)) return;
-    
-    currentUser.points -= price;
-    
-    if (type === 'frame') currentUser.activeFrame = value;
-    if (type === 'status') currentUser.activeStatus = value;
-    if (type === 'theme') {
-        document.body.className = value; 
-        lsSet(LS.theme, value);
-    }
-    
-    const i = allProfiles.findIndex(p => p.id === currentUser.id);
-    if (i >= 0) { allProfiles[i] = currentUser; lsSet(LS.profiles, allProfiles); }
-    lsSet(LS.user, currentUser);
-    
-    if (supabaseClient) supabaseClient.from('profiles').update({ points: currentUser.points, activeFrame: currentUser.activeFrame, activeStatus: currentUser.activeStatus }).eq('id', currentUser.id).then();
-    
-    document.getElementById('shopModal').remove();
-    renderProfile(); updateAuthUI();
-    toast('Покупка успешна!');
-}
-
-/* ============================================================
-   12. АДМИН-ПАНЕЛЬ
-   ============================================================ */
-function openAdminLogin() {
-    closeModal('authModal');
-    document.getElementById('adminLoginModal').classList.add('open');
-    document.getElementById('adminPasswordInput').value = '';
-}
-
-async function checkAdminPassword() {
-    const input = document.getElementById('adminPasswordInput').value;
-    const localPwd = lsGet(LS.site, {}).admin_password || 'лицей37';
-    let isValid = (input === localPwd || input === 'лицей37');
-
-    if (supabaseClient) {
-        try {
-            const { data } = await supabaseClient.from('site_content').select('*').eq('key', 'admin_password').limit(1);
-            if (data && data.length > 0) {
-                if (input === data[0].value) isValid = true;
-            }
-        } catch (e) {}
-    }
-
-    if (isValid) {
-        closeModal('adminLoginModal');
-        const bar = document.getElementById('adminTopBar');
-        bar.style.display = 'flex';
-        bar.classList.add('active');
-        document.body.style.paddingTop = '50px';
-        toast('Режим Администратора активирован 👑');
-    } else {
-        toast('Неверный пароль!', 'error');
-    }
-}
-
-function exitAdminMode() {
-    const bar = document.getElementById('adminTopBar');
-    bar.classList.remove('active');
-    bar.style.display = 'none';
-    document.body.style.paddingTop = '0';
-    document.getElementById('liveEditToggle').classList.remove('on');
-    document.querySelectorAll('[data-editable]').forEach(el => {
-        el.contentEditable = 'false';
-        el.style.outline = 'none';
+function submitPost(form){
+  var text = form.text.value.trim();
+  if(!text){ toast('Напишите текст поста', 'err'); return; }
+  var url = form.imageUrl.value.trim();
+  var fileInput = $('#postImage');
+  var file = fileInput && fileInput.files ? fileInput.files[0] : null;
+  var done = function(image){
+    var list = db('posts', []);
+    list.push({
+      id: uid(), authorId: App.user.id,
+      authorName: App.user.nickname || App.user.login,
+      authorCls: App.user.cls || '', text: text, image: image || '',
+      likes: [], comments: [], ts: Date.now()
     });
-    toast('Режим администратора выключен');
+    save('posts', list);
+    addPoints(10);
+    closeModal();
+    render();
+    toast('Пост опубликован! +10 баллов', 'ok');
+  };
+  if(file){
+    if(file.size > 3 * 1024 * 1024){ toast('Картинка больше 3 МБ', 'err'); return; }
+    fileToDataURL(file).then(done).catch(function(){ done(url); });
+  } else {
+    done(url);
+  }
 }
-
-function toggleLiveEdit() {
-    const t = document.getElementById('liveEditToggle');
-    t.classList.toggle('on');
-    const isOn = t.classList.contains('on');
-    document.querySelectorAll('[data-editable]').forEach(el => {
-        el.contentEditable = isOn ? 'true' : 'false';
-        el.style.outline = isOn ? '2px dashed var(--gold)' : 'none';
-        if (isOn) el.title = "Кликните, чтобы изменить";
-    });
-    if (isOn) toast('Живое редактирование ВКЛЮЧЕНО');
-}
-
-function openAdminApps() {
-    let html = '<h3 class="fw-bold mb-4">📋 Заявки на мероприятия</h3>';
-    if (!allApps.length) html += '<p class="text-muted text-sm mb-4">Нет заявок</p>';
-    else {
-        html += '<div style="max-height:200px;overflow-y:auto;margin-bottom:20px;font-size:13px;">';
-        allApps.forEach(a => { html += `<div style="border-bottom:1px solid var(--border);padding:8px 0;"><b>${esc(a.name)}</b> (${esc(a.grade)})<br>${esc(a.event)}</div>`; });
-        html += '</div>';
+function toggleLike(postId){
+  if(!App.user){ toast('Войдите, чтобы ставить лайки', 'err'); openLogin(); return; }
+  var list = db('posts', []);
+  for(var i=0;i<list.length;i++){
+    if(list[i].id === postId){
+      if(!list[i].likes) list[i].likes = [];
+      var idx = list[i].likes.indexOf(App.user.id);
+      if(idx >= 0) list[i].likes.splice(idx, 1);
+      else list[i].likes.push(App.user.id);
+      break;
     }
-    html += '<h3 class="fw-bold mb-4">💡 Идеи из Ящика</h3>';
-    if (!allIdeas.length) html += '<p class="text-muted text-sm">Нет идей</p>';
-    else {
-        html += '<div style="max-height:200px;overflow-y:auto;font-size:13px;">';
-        allIdeas.slice().reverse().forEach(i => { html += `<div style="border-bottom:1px solid var(--border);padding:8px 0;"><b>${esc(i.author)}</b>: ${esc(i.text)}</div>`; });
-        html += '</div>';
+  }
+  save('posts', list);
+  render();
+}
+function toggleComments(postId){
+  var el = document.getElementById('comments-' + postId);
+  if(el) el.hidden = !el.hidden;
+}
+function sendComment(form){
+  if(!App.user){ toast('Войдите, чтобы комментировать', 'err'); openLogin(); return; }
+  var postId = form.getAttribute('data-post-id');
+  var text = form.text.value.trim();
+  if(!text) return;
+  var list = db('posts', []);
+  for(var i=0;i<list.length;i++){
+    if(list[i].id === postId){
+      if(!list[i].comments) list[i].comments = [];
+      list[i].comments.push({
+        id: uid(), authorId: App.user.id,
+        authorName: App.user.nickname || App.user.login,
+        text: text, ts: Date.now()
+      });
+      break;
     }
-    
-    const box = document.createElement('div');
-    box.className = 'modal open';
-    box.innerHTML = `<div class="modal-box" style="max-width:500px;"><div class="modal-head"><div class="modal-title">📋 Заявки и Идеи</div><button class="modal-close" onclick="this.closest('.modal').remove()">✕</button></div><div class="modal-body">${html}</div></div>`;
-    document.body.appendChild(box);
+  }
+  save('posts', list);
+  addPoints(2);
+  render();
+  var el = document.getElementById('comments-' + postId);
+  if(el) el.hidden = false;
+}
+function deletePost(id){
+  var list = db('posts', []).filter(function(p){ return p.id !== id; });
+  save('posts', list);
+  render();
+  toast('Пост удалён');
+}
+function doSearchClass(){
+  var cls = readClass('searchClass');
+  App.searchClass = cls;
+  var list = users().filter(function(u){ return u.cls === cls; });
+  var box = $('#classResults');
+  if(!box) return;
+  if(!list.length){
+    box.innerHTML = '<p class="muted small">В классе ' + esc(cls) + ' пока никого нет.</p>';
+    return;
+  }
+  box.innerHTML = list.map(function(u){
+    var frame = u.frame ? ' frame-' + u.frame : '';
+    return '<div class="row" style="justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">' +
+      '<div class="row" style="gap:10px">' +
+        '<img class="ava sm' + frame + '" src="' + esc(u.avatar || DEFAULT_AVATAR) + '" alt="аватар">' +
+        '<div><b class="small">' + esc(u.nickname || u.login) + '</b>' + (u.status ? '<div class="small muted">' + esc(u.status) + '</div>' : '') + '</div>' +
+      '</div>' +
+      '<button class="btn btn-ghost btn-sm" data-action="write-seller" data-seller-id="' + esc(u.id) + '">💬</button>' +
+    '</div>';
+  }).join('');
 }
 
-function openAdminTelegram() {
-    document.getElementById('adminTelegramModal').classList.add('open');
-    document.getElementById('tgTokenInput').value = TG_BOT_TOKEN;
-    document.getElementById('tgChatIdInput').value = TG_CHAT_ID;
-    
-    let ideasHtml = '';
-    allIdeas.slice(-5).reverse().forEach(i => {
-        ideasHtml += `<div style="margin-bottom:8px; border-bottom:1px solid var(--border); padding-bottom:4px;"><b>${esc(i.author)}</b>: ${esc(i.text)}</div>`;
-    });
-    document.getElementById('adminIdeasList').innerHTML = ideasHtml || '<span class="text-muted">Пока нет идей</span>';
+/* ---------- БАНК ВЗАИМОПОМОЩИ ---------- */
+function openNewHelp(){
+  if(!App.user){ toast('Войдите, чтобы оставить заявку', 'err'); openLogin(); return; }
+  var subj = SUBJECTS.map(function(s){ return '<option value="' + esc(s) + '">' + esc(s) + '</option>'; }).join('');
+  openModal('🤝 Заявка в банк взаимопомощи',
+    '<form data-form="new-help">' +
+      '<label class="field"><span>Предмет</span><select class="input" name="subject">' + subj + '</select></label>' +
+      '<label class="field"><span>Что нужно / чем поможете</span><textarea class="input" name="text" required placeholder="Например: помогу с алгеброй, 8 класс, задачи на проценты"></textarea></label>' +
+      '<label class="field"><span>Класс (1–11 и А–Е)</span></label>' +
+      classPicker('helpClass', App.user.cls || '5А') +
+      '<button class="btn btn-primary btn-block" type="submit" style="margin-top:14px">📨 Отправить</button>' +
+    '</form>');
+}
+function submitHelp(form){
+  var text = form.text.value.trim();
+  if(!text){ toast('Опишите заявку', 'err'); return; }
+  var list = db('help', []);
+  list.push({
+    id: uid(), subject: form.subject.value, text: text,
+    cls: readClass('helpClass'), authorId: App.user.id,
+    authorName: App.user.nickname || App.user.login, ts: Date.now()
+  });
+  save('help', list);
+  addPoints(8);
+  closeModal();
+  render();
+  toast('Заявка добавлена в банк взаимопомощи! +8 баллов', 'ok');
 }
 
-function saveTelegramSettings() {
-    TG_BOT_TOKEN = document.getElementById('tgTokenInput').value.trim();
-    TG_CHAT_ID = document.getElementById('tgChatIdInput').value.trim();
-    lsSet('l37_tg_token', TG_BOT_TOKEN);
-    lsSet('l37_tg_chat', TG_CHAT_ID);
-    toast('Настройки Telegram сохранены');
+/* ---------- ПРОФИЛЬ ---------- */
+function saveProfile(){
+  if(!App.user) return;
+  var nick = $('#pfNick').value.trim();
+  var about = $('#pfAbout').value.trim();
+  var cls = readClass('pfClass');
+  var url = $('#pfAvatarUrl').value.trim();
+  var avatar = App.pendingAvatar || (url ? url : App.user.avatar);
+  var list = users();
+  for(var i=0;i<list.length;i++){
+    if(list[i].id === App.user.id){
+      list[i].nickname = nick || list[i].nickname;
+      list[i].about = about;
+      list[i].cls = cls;
+      list[i].avatar = avatar || DEFAULT_AVATAR;
+      App.user = list[i];
+      break;
+    }
+  }
+  saveUsers(list);
+  App.pendingAvatar = null;
+  render();
+  toast('Профиль сохранён', 'ok');
+}
+function buyReward(rewardId){
+  if(!App.user){ toast('Войдите в аккаунт', 'err'); openLogin(); return; }
+  var r = null;
+  for(var i=0;i<REWARDS.length;i++){ if(REWARDS[i].id === rewardId) r = REWARDS[i]; }
+  if(!r) return;
+  var list = users();
+  for(var j=0;j<list.length;j++){
+    if(list[j].id !== App.user.id) continue;
+    var u = list[j];
+    if(!u.owned) u.owned = [];
+    var has = u.owned.indexOf(r.id) >= 0;
+    if(!has){
+      if((u.points || 0) < r.price){ toast('Недостаточно баллов: нужно ' + r.price, 'err'); return; }
+      u.points = (u.points || 0) - r.price;
+      u.owned.push(r.id);
+      toast('Покупка совершена: ' + r.title, 'ok');
+    }
+    if(r.type === 'frame') u.frame = (u.frame === r.value ? '' : r.value);
+    if(r.type === 'status') u.status = (u.status === r.value ? '' : r.value);
+    if(r.type === 'theme') u.theme = (u.theme === r.value ? '' : r.value);
+    App.user = u;
+    break;
+  }
+  saveUsers(list);
+  applyTheme();
+  render();
 }
 
-function openAdminPassword() {
-    const newPwd = prompt('Введите новый пароль администратора (минимум 4 символа):');
-    if (!newPwd || newPwd.length < 4) return toast('Пароль слишком короткий', 'error');
-    
-    let siteData = lsGet(LS.site, {});
-    siteData.admin_password = newPwd;
-    lsSet(LS.site, siteData);
-    
-    if (supabaseClient) supabaseClient.from('site_content').upsert({ key: 'admin_password', value: newPwd }).then();
-    toast('Пароль успешно изменен!');
+/* ---------- ИГРА: КРЕСТИКИ-НОЛИКИ ---------- */
+var TTT = { b: ['','','','','','','','',''], over: false, msg: '' };
+var TTT_WINS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+function tttWinner(b){
+  for(var i=0;i<TTT_WINS.length;i++){
+    var w = TTT_WINS[i];
+    if(b[w[0]] && b[w[0]] === b[w[1]] && b[w[1]] === b[w[2]]) return b[w[0]];
+  }
+  return b.indexOf('') < 0 ? 'draw' : null;
+}
+function tttRender(){
+  var el = $('#tttBoard');
+  if(!el) return;
+  el.innerHTML = TTT.b.map(function(v, i){
+    var cls = v === 'X' ? ' x' : (v === 'O' ? ' o' : '');
+    return '<button class="ttt-cell' + cls + '" data-action="ttt" data-cell="' + i + '">' + v + '</button>';
+  }).join('');
+  var st = $('#tttStatus');
+  if(st){
+    if(TTT.over) st.textContent = TTT.msg;
+    else st.textContent = 'Ваш ход (X)';
+  }
+}
+function tttReset(){ TTT = { b: ['','','','','','','','',''], over: false, msg: '' }; tttRender(); }
+function tttPlay(i){
+  if(TTT.over || TTT.b[i]) return;
+  TTT.b[i] = 'X';
+  var w = tttWinner(TTT.b);
+  if(w){ tttFinish(w); return; }
+  tttAI();
+  w = tttWinner(TTT.b);
+  if(w){ tttFinish(w); return; }
+  tttRender();
+}
+function tttFinish(w){
+  TTT.over = true;
+  if(w === 'X'){ TTT.msg = '🎉 Вы победили! +30 баллов'; addPoints(30); }
+  else if(w === 'O'){ TTT.msg = '🤖 Победил ИИ-наставник. Попробуйте ещё!'; }
+  else { TTT.msg = '🤝 Ничья!'; addPoints(5); }
+  tttRender();
+}
+function tttAI(){
+  var b = TTT.b;
+  var tryLine = function(sym){
+    for(var i=0;i<TTT_WINS.length;i++){
+      var w = TTT_WINS[i];
+      var vals = [b[w[0]], b[w[1]], b[w[2]]];
+      var cnt = vals.filter(function(v){ return v === sym; }).length;
+      var empty = vals.indexOf('');
+      if(cnt === 2 && empty >= 0) return w[empty];
+    }
+    return -1;
+  };
+  var move = tryLine('O');
+  if(move < 0) move = tryLine('X');
+  if(move < 0 && b[4] === '') move = 4;
+  if(move < 0){
+    var free = [];
+    for(var i=0;i<9;i++) if(b[i] === '') free.push(i);
+    if(free.length) move = free[Math.floor(Math.random() * free.length)];
+  }
+  if(move >= 0) b[move] = 'O';
+}
+
+/* ---------- ИГРА: БЫСТРЫЙ СЧЁТ ---------- */
+var MATH = { active: false, score: 0, time: 30, q: null, answer: 0, timer: null };
+function mathStart(){
+  MATH.active = true;
+  MATH.score = 0;
+  MATH.time = 30;
+  mathNext();
+  if(MATH.timer) clearInterval(MATH.timer);
+  MATH.timer = setInterval(function(){
+    MATH.time--;
+    if(MATH.time <= 0){
+      clearInterval(MATH.timer);
+      MATH.timer = null;
+      MATH.active = false;
+      var box = $('#mathBox');
+      if(box) box.innerHTML = '<h3>⏱️ Время вышло!</h3><p>Ваш результат: <b>' + MATH.score + '</b> верных ответов.</p>' +
+        '<button class="btn btn-primary btn-block" data-action="math-start">▶️ Играть снова</button>';
+      if(MATH.score > 0) addPoints(MATH.score * 5);
+      toast('Игра окончена! +' + (MATH.score * 5) + ' баллов', 'ok');
+      return;
+    }
+    mathRender();
+  }, 1000);
+  mathRender();
+}
+function mathNext(){
+  var ops = ['+', '-', '×'];
+  var op = ops[Math.floor(Math.random() * ops.length)];
+  var a, b;
+  if(op === '+'){ a = 5 + Math.floor(Math.random() * 95); b = 5 + Math.floor(Math.random() * 95); MATH.answer = a + b; }
+  else if(op === '-'){ a = 20 + Math.floor(Math.random() * 80); b = 1 + Math.floor(Math.random() * 19); MATH.answer = a - b; }
+  else { a = 2 + Math.floor(Math.random() * 11); b = 2 + Math.floor(Math.random() * 9); MATH.answer = a * b; }
+  MATH.q = a + ' ' + op + ' ' + b;
+}
+function mathRender(){
+  var box = $('#mathBox');
+  if(!box) return;
+  box.innerHTML = '<div class="row" style="justify-content:space-between"><span class="chip">⏱️ ' + MATH.time + ' сек</span><span class="chip">✅ ' + MATH.score + '</span></div>' +
+    '<h2 style="text-align:center;margin:18px 0">' + MATH.q + ' = ?</h2>' +
+    '<form data-form="math" class="row">' +
+      '<input class="input" name="answer" type="number" placeholder="Ответ" autocomplete="off" style="flex:1" required>' +
+      '<button class="btn btn-primary" type="submit">➤</button>' +
+    '</form>';
+  var inp = box.querySelector('input');
+  if(inp) inp.focus();
+}
+function mathAnswer(form){
+  if(!MATH.active) return;
+  var val = Number(form.answer.value);
+  if(val === MATH.answer){ MATH.score++; toast('Верно!', 'ok'); }
+  else { toast('Неверно, правильный ответ: ' + MATH.answer, 'err'); }
+  mathNext();
+  mathRender();
 }
 
 /* ============================================================
-   13. БИБЛИОТЕКА СКРИПТОВ
+   ИИ-НАСТАВНИК 37
    ============================================================ */
-function openAdminDrawer() { document.getElementById('adminDrawer').classList.add('open'); document.getElementById('drawerOverlay').classList.add('open'); }
-function closeAdminDrawer() { document.getElementById('adminDrawer').classList.remove('open'); document.getElementById('drawerOverlay').classList.remove('open'); }
-
-function autoNameScript(code) {
-    const l = code.toLowerCase();
-    if (/snow|flake|снег/.test(l)) return '❄️ Снегопад на сайте';
-    if (/firework|салют|confetti/.test(l)) return '🎆 Праздничный салют';
-    if (/timer|countdown/.test(l)) return '⏱ Таймер обратного отсчёта';
-    if (/audio|music/.test(l)) return '🎵 Фоновая музыка';
-    if (/banner|alert/.test(l)) return '📢 Баннер-объявление';
-    return '⚡ Пользовательский скрипт #' + (allScripts.length + 1);
-}
-
-function saveNewScript() {
-    const code = document.getElementById('scriptCodeInput').value.trim();
-    if (!code) return toast('Введите код', 'error');
-    
-    const customName = document.getElementById('scriptNameInput').value.trim();
-    const name = customName || autoNameScript(code);
-    const script = { id: uid(), name, code, enabled: true };
-    
-    allScripts.push(script); 
-    lsSet(LS.scripts, allScripts);
-    if (supabaseClient) supabaseClient.from('custom_code').upsert([{ id: 'main', scripts: allScripts }]).then();
-
-    runCustomScript(script.code, script.id);
-    document.getElementById('scriptCodeInput').value = '';
-    document.getElementById('scriptNameInput').value = '';
-    renderScriptsList();
-    toast('Скрипт сохранён и запущен');
-}
-
-function runCustomScript(code, id) {
-    stopCustomScript(id);
-    const container = document.createElement('div');
-    container.id = 'script_box_' + id;
-    container.innerHTML = code;
-    container.querySelectorAll('script').forEach(old => {
-        const ns = document.createElement('script');
-        Array.from(old.attributes).forEach(a => ns.setAttribute(a.name, a.value));
-        ns.textContent = old.textContent;
-        old.replaceWith(ns);
+var AI = {
+  files: [],
+  loaded: false,
+  load: function(){
+    var self = this;
+    var names = ['omni_brain', 'omni_brain.txt', 'dataset.txt'];
+    for(var i=1;i<=40;i++) names.push('b' + i + '.txt');
+    var jobs = names.map(function(n){
+      return fetch(n, { cache: 'no-store' }).then(function(r){
+        if(!r.ok) return null;
+        return r.text().then(function(t){
+          if(!t || !t.trim()) return null;
+          return { name: n, text: t };
+        });
+      }).catch(function(){ return null; });
     });
-    document.body.appendChild(container);
-}
-
-function stopCustomScript(id) { const el = document.getElementById('script_box_' + id); if (el) el.remove(); }
-
-function toggleScriptStatus(id) {
-    const s = allScripts.find(x => x.id === id);
-    if (!s) return;
-    s.enabled = !s.enabled;
-    lsSet(LS.scripts, allScripts);
-    if (supabaseClient) supabaseClient.from('custom_code').upsert([{ id: 'main', scripts: allScripts }]).then();
-    
-    if (s.enabled) { runCustomScript(s.code, s.id); toast('Скрипт запущен'); }
-    else { stopCustomScript(s.id); toast('Скрипт остановлен'); }
-    renderScriptsList();
-}
-
-function deleteScript(id) {
-    if (!confirm('Удалить скрипт?')) return;
-    stopCustomScript(id);
-    allScripts = allScripts.filter(x => x.id !== id);
-    lsSet(LS.scripts, allScripts);
-    if (supabaseClient) supabaseClient.from('custom_code').upsert([{ id: 'main', scripts: allScripts }]).then();
-    renderScriptsList();
-    toast('Удалено');
-}
-
-function renderScriptsList() {
-    const el = document.getElementById('scriptsList');
-    if (!el) return;
-    if (!allScripts.length) { el.innerHTML = '<p class="text-sm text-muted text-center">Нет скриптов.</p>'; return; }
-    el.innerHTML = allScripts.map(s => `
-        <div class="script-card">
-            <div class="script-icon">${s.enabled ? '🟢' : '🔴'}</div>
-            <div class="script-info">
-                <div class="script-name">${esc(s.name)}</div>
-                <div class="script-desc">${s.enabled ? 'Работает' : 'Остановлен'}</div>
-            </div>
-            <div class="script-actions">
-                <button class="icon-btn" onclick="toggleScriptStatus('${s.id}')">${s.enabled ? '⏸️' : '▶️'}</button>
-                <button class="icon-btn" onclick="deleteScript('${s.id}')">🗑️</button>
-            </div>
-        </div>
-    `).join('');
-}
-
-/* ============================================================
-   14. ИИ-НАСТАВНИК (МОЗГ)
-   ============================================================ */
-let aiKnowledge = { cards: [], index: {}, loaded: false, loading: false };
-let aiNickname = lsGet(LS.aiNick, '');
-let aiReminders = lsGet(LS.aiRem, []);
-let aiMessageCounter = 0;
-
-const AI_FILES = ['omni_brain','dataset.txt',...Array.from({length:40},(_,i)=>'b'+(i+1)+'.txt')];
-
-function stem(word) {
-    if (!word) return '';
-    let w = word.toLowerCase().replace(/[^а-яёa-z0-9]/gi, '');
-    if (w.length <= 3) return w;
-    const suffixes = ['иями','ями','ами','ов','ев','ий','ый','ой','ая','ое','ые','ых','им','ем','ом','ах','ях','ам','ям','ую','юю','ешь','ишь','ете','ите','ут','ют','ат','ят','ла','ло','ли','ть','ся','сь','е','у','ю','а','я','ы','и','о'];
-    for (const s of suffixes) {
-        if (w.length - s.length >= 3 && w.endsWith(s)) { w = w.slice(0, -s.length); break; }
+    return Promise.all(jobs).then(function(res){
+      self.files = res.filter(Boolean);
+      self.loaded = true;
+      var st = $('#aiStatus');
+      if(st) st.textContent = self.files.length
+        ? 'База знаний загружена: ' + self.files.length + ' файл(ов)'
+        : 'База знаний не найдена — отвечаю через Википедию';
+    });
+  },
+  search: function(q){
+    if(!this.files.length) return null;
+    var words = q.toLowerCase().split(/[^а-яёa-z0-9]+/).filter(function(w){ return w.length > 2; });
+    if(!words.length) return null;
+    var best = null, bestScore = 0;
+    for(var i=0;i<this.files.length;i++){
+      var chunks = this.files[i].text.split(/\n\s*\n/);
+      for(var j=0;j<chunks.length;j++){
+        var ch = chunks[j];
+        if(ch.trim().length < 20) continue;
+        var t = ch.toLowerCase();
+        var sc = 0;
+        for(var k=0;k<words.length;k++){ if(t.indexOf(words[k]) >= 0) sc++; }
+        if(sc > bestScore){ bestScore = sc; best = ch.trim(); }
+      }
     }
-    return w;
-}
-
-function tokenize(text) {
-    if (!text) return [];
-    return String(text).toLowerCase().replace(/[^а-яёa-z0-9\s]/gi, ' ').split(/\s+/).filter(w => w.length > 1).map(stem);
-}
-
-async function loadKB() {
-    if (aiKnowledge.loading || aiKnowledge.loaded) return;
-    aiKnowledge.loading = true;
-    let failStreak = 0;
-    
-    for (const file of AI_FILES) {
-        try {
-            const r = await fetch(file, { cache: 'force-cache' });
-            if (!r.ok) { failStreak++; if(failStreak>=3) break; continue; }
-            const txt = await r.text();
-            if (!txt || txt.trim().length < 10) continue;
-            failStreak = 0;
-            
-            // Простой парсинг
-            if (txt.includes('"id"')) {
-                const lines = txt.replace(/\}\s*\{/g, '}\n{').split('\n');
-                for (let l of lines) {
-                    if (l.startsWith('{')) {
-                        try {
-                            let obj = JSON.parse(l);
-                            obj._full = Object.values(obj).join(' ');
-                            aiKnowledge.cards.push(obj);
-                        } catch(e){}
-                    }
-                }
-            } else {
-                aiKnowledge.cards.push({ top: file, sum: txt.slice(0, 500), _full: txt });
-            }
-        } catch (e) { failStreak++; if(failStreak>=3) break; }
-    }
-    aiKnowledge.loaded = true;
-    aiKnowledge.loading = false;
-}
-
-async function fetchWeb(url) {
-    try { const r = await fetch('https://r.jina.ai/' + url); if (!r.ok) return null; return (await r.text()).slice(0, 5000); } catch (e) { return null; }
-}
-
-async function wikiSearch(q) {
-    try {
-        const r = await fetch(`https://ru.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srsearch=${encodeURIComponent(q)}&srlimit=1`);
-        const d = await r.json();
-        if (!d.query || !d.query.search || !d.query.search.length) return null;
-        const title = d.query.search[0].title;
-        const r2 = await fetch(`https://ru.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1&explaintext=1&format=json&origin=*&titles=${encodeURIComponent(title)}`);
-        const d2 = await r2.json();
-        const pages = d2.query.pages;
-        const k = Object.keys(pages)[0];
-        if (pages[k].extract) return { title, extract: pages[k].extract };
-        return null;
-    } catch (e) { return null; }
-}
-
-function detectNick(t) {
-    const m = t.match(/(?:называй меня|зови меня|обращайся ко мне)\s+([А-ЯЁA-Zа-яёa-z]+)/i);
-    if (m && m[1]) return m[1];
+    var need = Math.max(1, Math.ceil(words.length / 2));
+    if(best && bestScore >= need) return best.slice(0, 1200);
     return null;
-}
+  }
+};
 
-function detectRem(t) {
-    const m = t.match(/напомни\s+через\s+(\d+)\s+сообщени[йяе]\s*(?:что|о том,?\s*что)?\s*(.+)/i);
-    if (m && m[1] && m[2]) return { count: parseInt(m[1]), text: m[2].trim(), active: true, triggered: false };
-    return null;
-}
-
-function checkRems() {
-    aiMessageCounter++;
-    let msg = null;
-    aiReminders.forEach(r => { if (r.active && !r.triggered && aiMessageCounter >= r.count) { msg = `⏰ Напоминание (прошло ${aiMessageCounter} сообщений): ${r.text}`; r.triggered = true; r.active = false; } });
-    lsSet(LS.aiRem, aiReminders);
-    return msg;
-}
-
-function toggleAiPanel() {
-    const p = document.getElementById('aiPanel');
-    p.style.opacity = p.style.opacity === '1' ? '0' : '1';
-    p.style.pointerEvents = p.style.opacity === '1' ? 'auto' : 'none';
-    p.style.transform = p.style.opacity === '1' ? 'translateY(0)' : 'translateY(20px)';
-    if (p.style.opacity === '1' && !aiKnowledge.loaded) loadKB();
-}
-
-async function sendAiMessage() {
-    const inp = document.getElementById('aiInput'); 
-    const q = inp.value.trim(); 
-    if (!q) return;
-    inp.value = '';
-    
-    const msgs = document.getElementById('aiMessages');
-    msgs.innerHTML += `<div class="ai-msg user" style="align-self:flex-end;background:var(--indigo);color:#fff;padding:10px 14px;border-radius:16px 16px 4px 16px;max-width:85%;font-size:14px;">${esc(q)}</div>`;
-    msgs.scrollTop = msgs.scrollHeight;
-
-    const nick = detectNick(q);
-    if (nick) {
-        aiNickname = nick; lsSet(LS.aiNick, aiNickname);
-        msgs.innerHTML += `<div class="ai-msg bot" style="align-self:flex-start;background:#fff;padding:12px 16px;border-radius:16px 16px 16px 4px;border:1px solid var(--border);font-size:14px;">Принято, <b>${aiNickname}</b>! Буду обращаться к тебе именно так. 😊</div>`;
-        msgs.scrollTop = msgs.scrollHeight;
-        return;
-    }
-
-    const rem = detectRem(q);
-    if (rem) {
-        aiReminders.push(rem); lsSet(LS.aiRem, aiReminders);
-        msgs.innerHTML += `<div class="ai-msg bot" style="align-self:flex-start;background:#fff;padding:12px 16px;border-radius:16px 16px 16px 4px;border:1px solid var(--border);font-size:14px;">Хорошо! Напомню через <b>${rem.count}</b> сообщений: «${esc(rem.text)}».</div>`;
-        msgs.scrollTop = msgs.scrollHeight;
-        return;
-    }
-
-    const remMsg = checkRems();
-    const botMsg = document.createElement('div');
-    botMsg.className = 'ai-msg bot';
-    botMsg.style.cssText = 'align-self:flex-start;background:#fff;padding:12px 16px;border-radius:16px 16px 16px 4px;border:1px solid var(--border);font-size:14px;line-height:1.5;max-width:85%;';
-    botMsg.innerHTML = 'Ищу ответ... 🤔';
-    msgs.appendChild(botMsg);
-    msgs.scrollTop = msgs.scrollHeight;
-
-    try {
-        const urlMatch = q.match(/https?:\/\/[^\s]+/);
-        if (urlMatch) {
-            const page = await fetchWeb(urlMatch[0]);
-            botMsg.innerHTML = page ? `<span style="background:#DBEAFE;color:#1E40AF;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:bold;">🌐 Ссылка</span><br><br>${esc(page.slice(0, 800))}...` : 'Не удалось загрузить страницу.';
-        } else {
-            const qTokens = tokenize(q);
-            let bestMatch = null;
-            let maxScore = 0;
-            aiKnowledge.cards.forEach(c => {
-                let score = 0;
-                qTokens.forEach(t => { if(c._full && c._full.toLowerCase().includes(t)) score++; });
-                if (score > maxScore) { maxScore = score; bestMatch = c; }
+function wikiAnswer(q){
+  var base = 'https://ru.wikipedia.org/w/api.php?action=query&format=json&origin=*';
+  return fetch(base + '&prop=extracts&exintro=1&explaintext=1&redirects=1&titles=' + encodeURIComponent(q))
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      var pages = j.query && j.query.pages ? Object.keys(j.query.pages).map(function(k){ return j.query.pages[k]; }) : [];
+      var p = null;
+      for(var i=0;i<pages.length;i++){ if(pages[i].extract) p = pages[i]; }
+      if(p) return p.extract;
+      return fetch(base + '&list=search&srlimit=1&srsearch=' + encodeURIComponent(q))
+        .then(function(r){ return r.json(); })
+        .then(function(j2){
+          var hit = j2.query && j2.query.search && j2.query.search[0];
+          if(!hit) return null;
+          return fetch(base + '&prop=extracts&exintro=1&explaintext=1&redirects=1&titles=' + encodeURIComponent(hit.title))
+            .then(function(r){ return r.json(); })
+            .then(function(j3){
+              var ps = j3.query && j3.query.pages ? Object.keys(j3.query.pages).map(function(k){ return j3.query.pages[k]; }) : [];
+              for(var i2=0;i2<ps.length;i2++){ if(ps[i2].extract) return ps[i2].extract; }
+              return null;
             });
+        });
+    })
+    .catch(function(){ return null; });
+}
 
-            if (bestMatch && maxScore > 1) {
-                const greet = aiNickname ? `Смотри, ${aiNickname}, ` : '';
-                botMsg.innerHTML = `${greet}вот что я нашел:<br><br><b>${esc(bestMatch.top || 'Информация')}</b><br>${esc(bestMatch.sum || bestMatch._full.slice(0, 400))}...`;
-            } else {
-                const wiki = await wikiSearch(q);
-                if (wiki) {
-                    const greet = aiNickname ? `Смотри, ${aiNickname}, ` : '';
-                    botMsg.innerHTML = `<span style="background:#DBEAFE;color:#1E40AF;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:bold;">🌐 Найдено в интернете</span><br><br>${greet}по запросу «${esc(q)}»:<br><br><b>${esc(wiki.title)}</b><br>${esc(wiki.extract.slice(0, 400))}...`;
-                } else {
-                    botMsg.textContent = aiNickname ? `Извини, ${aiNickname}, я не нашел ответа.` : 'К сожалению, я не нашел ответа.';
-                }
-            }
-        }
-    } catch (e) {
-        botMsg.textContent = 'Ошибка при поиске.';
-    }
-    
-    if (remMsg) botMsg.innerHTML = `<div style="background:#FEF3C7;color:#92400E;padding:8px;border-radius:6px;margin-bottom:8px;font-weight:bold;font-size:12px;">${esc(remMsg)}</div>` + botMsg.innerHTML;
-    msgs.scrollTop = msgs.scrollHeight;
+function aiPush(role, text){
+  var box = $('#aiMessages');
+  if(!box) return;
+  var div = document.createElement('div');
+  div.className = 'ai-msg ' + role;
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function aiAnswer(q){
+  var mem = db('aiMemory', { name: 'Босс' });
+  var low = q.toLowerCase().trim();
+
+  var m = low.match(/называй меня\s+([а-яёa-z0-9\-]+)/i);
+  if(m){
+    mem.name = m[1].charAt(0).toUpperCase() + m[1].slice(1);
+    save('aiMemory', mem);
+    return Promise.resolve('Договорились! Теперь я буду называть вас ' + mem.name + '. 🤝');
+  }
+  if(/как меня зовут|как меня называть|моё имя|мое имя/.test(low)){
+    return Promise.resolve('Я называю вас ' + mem.name + '. Так и продолжать?');
+  }
+  if(/^(привет|здравствуй|хай|добрый день|добрый вечер|доброе утро|салют)/.test(low)){
+    return Promise.resolve('Привет, ' + mem.name + '! Я ИИ-наставник Лицея №37. Спросите про учёбу, олимпиады, расписание или барахолку.');
+  }
+  if(/спасибо|благодар/.test(low)){
+    return Promise.resolve('Всегда рад помочь, ' + mem.name + '! 😊');
+  }
+  if(/кто ты|что ты умеешь|твои возможности/.test(low)){
+    return Promise.resolve('Я ИИ-наставник 37. Ищу ответы в базе знаний Лицея (omni_brain, dataset.txt, b1–b40.txt), помню ваше имя и обращаюсь к русской Википедии, если в базе ничего нет.');
+  }
+  if(/расписание звонков|звонки/.test(low)){
+    return Promise.resolve('Расписание звонков Лицея №37: 1 урок 08:00–08:45, 2 — 08:55–09:40, 3 — 09:55–10:40, 4 — 10:55–11:40, 5 — 11:55–12:40, 6 — 12:50–13:35, 7 — 13:45–14:30.');
+  }
+
+  var hit = AI.search(q);
+  if(hit) return Promise.resolve(hit);
+
+  return wikiAnswer(q).then(function(res){
+    if(res) return '📚 Из Википедии: ' + res.slice(0, 900);
+    return 'Пока не нашёл точного ответа, ' + mem.name + '. Попробуйте переформулировать вопрос или уточнить тему.';
+  });
 }
 
 /* ============================================================
-   15. ИНИЦИАЛИЗАЦИЯ И ЭКСПОРТ
+   ГЛОБАЛЬНЫЕ ОБРАБОТЧИКИ
    ============================================================ */
-async function initApp() {
-    updateAuthUI();
-    renderHome();
-    renderFeed();
-    renderMarket();
-    renderProfile();
-    renderHelpers();
-    renderScriptsList();
-    
-    // Запускаем сохраненные скрипты
-    allScripts.forEach(s => { if (s.enabled) runCustomScript(s.code, s.id); });
-    
-    // Загружаем настройки Telegram
-    const tgT = lsGet('l37_tg_token', null);
-    const tgC = lsGet('l37_tg_chat', null);
-    if (tgT) TG_BOT_TOKEN = tgT;
-    if (tgC) TG_CHAT_ID = tgC;
+function bindGlobal(){
+  document.addEventListener('click', function(e){
+    var nav = e.target.closest('[data-nav]');
+    if(nav){ e.preventDefault(); go(nav.getAttribute('data-nav')); return; }
+    var act = e.target.closest('[data-action]');
+    if(act){ e.preventDefault(); handleAction(act.getAttribute('data-action'), act); return; }
+    var dc = e.target.closest('[data-drawer-close]');
+    if(dc){ closeScripts(); return; }
+  });
 
-    const aiInp = document.getElementById('aiInput');
-    if (aiInp) aiInp.addEventListener('keydown', e => { if (e.key === 'Enter') sendAiMessage(); });
+  document.addEventListener('click', function(e){
+    if(!App.liveEdit) return;
+    var el = e.target.closest('[data-editable]');
+    if(!el) return;
+    e.preventDefault();
+    e.stopPropagation();
+    var key = el.getAttribute('data-editable');
+    var isImg = el.tagName === 'IMG';
+    var cur = isImg ? el.getAttribute('src') : el.textContent;
+    var val = window.prompt(isImg ? 'Новая ссылка на изображение:' : 'Новый текст:', cur);
+    if(val === null) return;
+    var edits = db('edits', {});
+    edits[key] = val;
+    save('edits', edits);
+    if(isImg) el.setAttribute('src', val);
+    else el.textContent = val;
+    toast('Изменение сохранено', 'ok');
+  }, true);
+
+  document.addEventListener('submit', function(e){
+    var f = e.target;
+    var kind = f.getAttribute('data-form');
+    if(kind === 'login'){ e.preventDefault(); doLogin(f); }
+    else if(kind === 'register'){ e.preventDefault(); doRegister(f); }
+    else if(kind === 'admin-pass'){ e.preventDefault(); checkAdminPass(f); }
+    else if(kind === 'idea'){ e.preventDefault(); submitIdea(f); }
+    else if(kind === 'event-apply'){ e.preventDefault(); submitEventApply(f); }
+    else if(kind === 'new-listing'){ e.preventDefault(); submitListing(f); }
+    else if(kind === 'new-post'){ e.preventDefault(); submitPost(f); }
+    else if(kind === 'new-help'){ e.preventDefault(); submitHelp(f); }
+    else if(kind === 'comment'){ e.preventDefault(); sendComment(f); }
+    else if(kind === 'chat'){ e.preventDefault(); sendChat(f); }
+    else if(kind === 'script'){ e.preventDefault(); saveScript(f); }
+    else if(kind === 'math'){ e.preventDefault(); mathAnswer(f); }
+  });
+
+  var burger = $('#burger');
+  if(burger){
+    burger.addEventListener('click', function(){
+      var nav = $('#mainNav');
+      if(nav) nav.classList.toggle('open');
+    });
+  }
+
+  var aiFab = $('#aiFab');
+  if(aiFab){
+    aiFab.addEventListener('click', function(){
+      var p = $('#aiPanel');
+      p.hidden = !p.hidden;
+      if(!p.hidden){
+        var box = $('#aiMessages');
+        if(box && !box.childNodes.length){
+          var mem = db('aiMemory', { name: 'Босс' });
+          aiPush('bot', 'Здравствуйте! Я ИИ-наставник Лицея №37. Спросите меня о чём угодно. Если скажете «Называй меня Боссом» — запомню.');
+        }
+        var inp = $('#aiInput');
+        if(inp) inp.focus();
+      }
+    });
+  }
+  var aiClose = $('#aiClose');
+  if(aiClose){
+    aiClose.addEventListener('click', function(){ $('#aiPanel').hidden = true; });
+  }
+  var aiForm = $('#aiForm');
+  if(aiForm){
+    aiForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var inp = $('#aiInput');
+      var q = inp.value.trim();
+      if(!q) return;
+      aiPush('user', q);
+      inp.value = '';
+      var st = $('#aiStatus');
+      if(st) st.textContent = 'Думаю…';
+      aiAnswer(q).then(function(ans){
+        aiPush('bot', ans);
+        if(st) st.textContent = AI.files.length ? 'База знаний: ' + AI.files.length + ' файл(ов)' : 'Отвечаю через Википедию';
+      });
+    });
+  }
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+      if(!$('#modalRoot').hidden) closeModal();
+      if(!$('#scriptDrawer').hidden) closeScripts();
+    }
+  });
 }
 
-// Экспорт функций (чтобы работали onclick)
-Object.assign(window, {
-    switchPage, openAuthModal, switchAuthMode, closeModal, doLogin, doRegister, logout,
-    openAdminLogin, checkAdminPassword, exitAdminMode, toggleLiveEdit, openAdminDrawer, closeAdminDrawer,
-    openAdminApps, openAdminTelegram, saveTelegramSettings, openAdminPassword,
-    createPost, likePost, toggleImageInput, submitIdea, openApplicationForm, submitApplication,
-    openHelpToggle, saveHelperStatus, contactHelper,
-    openMarketForm, handleMarketPhotos, removePhoto, submitMarketItem, switchImg, deleteMarketItem,
-    openMarketChat, sendMarketMsg, markAsSold,
-    saveProfileExtended, changeAvatar, openShopModal, buyItem,
-    toggleAiPanel, sendAiMessage,
-    saveNewScript, toggleScriptStatus, deleteScript
-});
-
-document.addEventListener('DOMContentLoaded', initApp);
+/* ============================================================
+   ЗАПУСК
+   ============================================================ */
+(function init(){
+  Store.init().then(function(){
+    App.user = currentUser();
+    applyTheme();
+    bindGlobal();
+    render();
+    restoreScripts();
+    AI.load();
+    if(!db('events', null)) save('events', DEFAULT_EVENTS);
+    if(!db('best', null)) save('best', DEFAULT_BEST);
+  });
+})();
 </script>
 </body>
 </html>
