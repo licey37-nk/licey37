@@ -5,25 +5,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>МБОУ «Лицей №37» г. Нижнекамск</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg: #f4f7fb;
+      --bg: #f1f5f9;
       --text: #1e293b;
       --primary: #1d4ed8;
       --accent: #059669;
-      --radius: 16px;
+      --radius: 18px;
       --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-      --shadow: 0 4px 6px rgba(0,0,0,0.1);
+      --shadow: 0 10px 25px rgba(15,23,42,0.06);
     }
-    
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       background-color: var(--bg);
@@ -31,210 +31,280 @@
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
     }
-    
+
     a {
       color: var(--primary);
       text-decoration: none;
     }
-    
+
     button {
       font-family: inherit;
       cursor: pointer;
     }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav {
+      display: flex;
+      gap: 1rem;
+    }
+
+    nav a {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      transition: background-color 0.2s;
+    }
+
+    nav a:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .auth-buttons button {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--primary);
+      background-color: transparent;
+      color: var(--primary);
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    .auth-buttons button:hover {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    main {
+      padding: 2rem;
+    }
+
+    section {
+      margin-bottom: 2rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+    }
+
+    .hero-banner {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      padding: 4rem 2rem;
+      border-radius: var(--radius);
+      text-align: center;
+    }
+
+    .hero-banner h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero-banner p {
+      font-size: 1.25rem;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 2rem;
+      border-radius: var(--radius);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .admin-panel {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #0b1120;
+      color: white;
+      padding: 1rem;
+      z-index: 1000;
+    }
+
+    .admin-toolbar {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    .admin-toolbar button {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius);
+      border: 1px solid white;
+      background-color: transparent;
+      color: white;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    .admin-toolbar button:hover {
+      background-color: white;
+      color: #0b1120;
+    }
   </style>
 </head>
 <body>
-  <!-- HEADER -->
   <header class="sticky-header">
     <div class="logo">МБОУ «Лицей №37» г. Нижнекамск</div>
     <nav>
-      <a href="#">🏠 Главная</a>
-      <a href="#">🏫 Мой класс</a>
-      <a href="#">🛍️ Барахолка</a>
-      <a href="#">💬 Соцсеть</a>
-      <a href="#">🎮 Игры</a>
-      <a href="#">👤 Профиль</a>
+      <a href="#" data-tab="home">🏠 Главная</a>
+      <a href="#" data-tab="class">🏫 Мой класс</a>
+      <a href="#" data-tab="marketplace">🛍️ Барахолка</a>
+      <a href="#" data-tab="social">💬 Соцсеть</a>
+      <a href="#" data-tab="games">🎮 Игры</a>
+      <a href="#" data-tab="profile">👤 Профиль</a>
     </nav>
     <div class="auth-buttons">
       <button class="login-btn">Войти</button>
       <button class="register-btn">Регистрация</button>
     </div>
   </header>
-  
-  <!-- MAIN_PAGES -->
+
   <main>
-    <section class="hero-banner" data-editable="hero">
-      <h1>Лицей №37</h1>
+    <section id="home" class="tab-content">
+      <div class="hero-banner" data-editable="hero">
+        <h1>Лицей №37</h1>
+        <p>Город Нижнекамск, Республика Татарстан</p>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <h2>⏰ Расписание звонков</h2>
+          <p>1 и 2 смена</p>
+        </div>
+        <div class="card">
+          <h2>🏆 Лучший ученик месяца</h2>
+          <button class="congratulate-btn">Поздравить</button>
+        </div>
+        <div class="card">
+          <h2>📮 Ящик идей и предложений</h2>
+          <button class="submit-idea-btn">Отправить идею</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>📅 Мероприятия и Олимпиады</h2>
+        <button class="apply-btn">✍️ Подать заявку</button>
+      </div>
     </section>
-    
-    <section class="my-class-section">
-      <h2>🏫 Мой класс</h2>
-      <div id="class-selector">
-        <select id="class-input">
-          <option value="">Выберите класс</option>
-          <option value="1А">1А</option>
-          <option value="1Б">1Б</option>
-          <!-- Все классы до 11Д -->
+
+    <section id="class" class="tab-content" style="display: none;">
+      <div class="card">
+        <h2>🐾 Снежный барс Ак Барс</h2>
+        <p>Уровень: <span id="pet-level">1</span></p>
+        <div class="xp-bar">
+          <div id="xp-progress"></div>
+        </div>
+        <p>XP: <span id="xp-value">0</span>/100</p>
+        <button id="feed-pet-btn">🍖 Покормить барса</button>
+      </div>
+
+      <div class="card">
+        <h2>📌 Доска дедлайнов и домашки</h2>
+        <div id="homework-list"></div>
+      </div>
+
+      <div class="card">
+        <h2>💬 Закрытый чат класса</h2>
+        <div id="chat-messages"></div>
+        <form id="message-form">
+          <textarea id="message-input" placeholder="Ваше сообщение"></textarea>
+          <button type="submit">Отправить</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="marketplace" class="tab-content" style="display: none;">
+      <div class="card">
+        <h2>🛍️ Барахолка</h2>
+        <input type="text" id="marketplace-search" placeholder="Поиск...">
+        <select id="marketplace-category">
+          <option value="all">Все</option>
+          <option value="books">Учебники и пособия</option>
+          <option value="stationery">Канцелярия</option>
+          <option value="electronics">Электроника</option>
+          <option value="clothing">Одежда и спорт</option>
+          <option value="lost">🆘 Бюро находок</option>
         </select>
-        <button id="view-class-btn">Просмотреть</button>
+        <button id="add-listing-btn">➕ Подать объявление</button>
       </div>
-      <div id="class-content" style="display: none;">
-        <div class="class-tabs">
-          <button class="tab-btn active" data-tab="deadlines">📌 Доска дедлайнов</button>
-          <button class="tab-btn" data-tab="chat">💬 Чат класса</button>
-          <button class="tab-btn" data-tab="pet">🐾 Питомец класса</button>
-        </div>
-        
-        <div id="deadlines-tab" class="tab-content">
-          <form id="homework-form">
-            <select id="subject-input" required>
-              <option value="">Предмет</option>
-              <option value="Алгебра">Алгебра</option>
-              <option value="Физика">Физика</option>
-              <!-- Другие предметы -->
-            </select>
-            <textarea id="task-input" placeholder="Описание задания" required></textarea>
-            <input type="date" id="deadline-input" required>
-            <button type="submit">Добавить</button>
-          </form>
-          <div id="homework-list"></div>
-        </div>
-        
-        <div id="chat-tab" class="tab-content" style="display: none;">
-          <div id="chat-messages"></div>
-          <form id="message-form">
-            <textarea id="message-input" placeholder="Ваше сообщение"></textarea>
-            <button type="submit">Отправить</button>
-          </form>
-        </div>
-        
-        <div id="pet-tab" class="tab-content" style="display: none;">
-          <div class="pet-card">
-            <img src="snow-leopard.png" alt="Ак Барс" class="pet-avatar">
-            <div class="pet-info">
-              <h3>Ак Барс</h3>
-              <p>Ранг: <span id="pet-rank">Котёнок Барсик</span></p>
-              <div class="xp-bar">
-                <div id="xp-progress"></div>
-              </div>
-              <p>XP: <span id="xp-value">0</span>/100</p>
-              <button id="feed-pet-btn" class="disabled">🍖 Покормить (завтра)</button>
-            </div>
-          </div>
-        </div>
+
+      <div class="grid" id="marketplace-listings"></div>
+    </section>
+
+    <section id="social" class="tab-content" style="display: none;">
+      <div class="card">
+        <h2>💬 Соцсеть</h2>
+        <button id="create-post-btn">➕ Создать пост</button>
+        <div id="social-feed"></div>
       </div>
     </section>
-    
-    <section class="schedule-section">
-      <h2>⏰ Расписание звонков</h2>
-      <!-- 1 и 2 смена -->
+
+    <section id="games" class="tab-content" style="display: none;">
+      <div class="card">
+        <h2>🎮 Игры Первых</h2>
+        <button id="start-quiz-btn">Начать викторину</button>
+      </div>
     </section>
-    
-    <section class="top-student">
-      <h2>🏆 Лучший ученик месяца</h2>
-      <button class="congratulate-btn">Поздравить</button>
+
+    <section id="profile" class="tab-content" style="display: none;">
+      <div class="card">
+        <h2>👤 Профиль</h2>
+        <button id="edit-profile-btn">Редактировать профиль</button>
+        <button id="delete-account-btn">🗑️ Удалить мой аккаунт</button>
+      </div>
     </section>
-    
-    <section class="events-section">
-      <h2>📅 Мероприятия и Олимпиады Лицея №37</h2>
-      <button class="apply-btn">✍️ Подать заявку</button>
-    </section>
-    
-    <section class="social-network-section">
-  <h2>💬 Соцсеть Лицея №37</h2>
-  <div class="social-controls">
-    <button id="create-post-btn">➕ Создать пост</button>
-    <input type="text" id="social-search" placeholder="Поиск по имени/классу...">
-  </div>
-  <div id="social-feed"></div>
-</section>
-
-<section class="channels-section">
-  <h2>📢 Каналы и Сообщества Лицея №37</h2>
-  <button id="create-channel-btn">➕ Создать канал / сообщество</button>
-  <div id="channels-list"></div>
-</section>
-
-<section class="help-section">
-  <h2>🤝 Банк взаимопомощи учеников</h2>
-  <select id="help-subject">
-    <option value="all">Все предметы</option>
-    <option value="math">Математика</option>
-    <option value="physics">Физика</option>
-    <option value="python">Python/Информатика</option>
-    <option value="russian">Русский язык</option>
-    <option value="english">Английский</option>
-    <option value="chemistry">Химия</option>
-  </select>
-  <div id="volunteers-list"></div>
-</section>
-
-<section class="ideas-section">
-  <h2>📮 Ящик идей и предложений Лицея №37</h2>
-</section>
-
-<section class="marketplace-section">
-  <h2>🛍️ Барахолка Лицея №37</h2>
-  <div class="marketplace-controls">
-    <input type="text" id="marketplace-search" placeholder="Поиск по названию...">
-    <select id="marketplace-category">
-      <option value="all">Все</option>
-      <option value="books">Учебники и пособия</option>
-      <option value="stationery">Канцелярия</option>
-      <option value="electronics">Электроника</option>
-      <option value="clothing">Одежда и спорт</option>
-      <option value="lost">🆘 Бюро находок</option>
-    </select>
-    <button id="add-listing-btn">➕ Подать объявление</button>
-  </div>
-  <div id="marketplace-listings"></div>
-</section>
-
-<div class="modal" id="listing-modal">
-  <form id="listing-form">
-    <input type="text" id="listing-title" placeholder="Название" required>
-    <select id="listing-category" required>
-      <option value="">Категория</option>
-      <option value="books">Учебники и пособия</option>
-      <option value="stationery">Канцелярия</option>
-      <option value="electronics">Электроника</option>
-      <option value="clothing">Одежда и спорт</option>
-      <option value="lost">🆘 Бюро находок</option>
-    </select>
-    <div class="price-controls">
-      <input type="number" id="listing-price" placeholder="Цена в рублях">
-      <label><input type="radio" name="price-type" value="free"> Бесплатно</label>
-      <label><input type="radio" name="price-type" value="exchange"> Обмен</label>
-    </div>
-    <textarea id="listing-description" placeholder="Описание" required></textarea>
-    <input type="file" id="listing-images" multiple accept="image/*">
-    <div id="image-preview"></div>
-    <button type="submit">Опубликовать</button>
-  </form>
-</div>
-
-<div class="modal" id="chat-modal">
-  <div class="chat-header">
-    <div id="chat-listing-preview"></div>
-  </div>
-  <div id="chat-messages"></div>
-  <form id="chat-form">
-    <textarea id="chat-input" placeholder="Ваше сообщение"></textarea>
-    <button type="submit">Отправить</button>
-  </form>
-</div>
   </main>
-  
-  <!-- MODALS -->
+
   <div class="modal" id="login-modal">
-    <button class="admin-btn">👑 Админ</button>
+    <div class="modal-content">
+      <button class="admin-btn">👑 Админ</button>
+    </div>
   </div>
+
   <div class="modal" id="register-modal">
-    <button class="admin-btn">👑 Админ</button>
+    <div class="modal-content">
+      <button class="admin-btn">👑 Админ</button>
+    </div>
   </div>
-  
-  <!-- AI_WIDGET -->
-  <div class="admin-panel" style="display: none;">
+
+  <div class="admin-panel">
     <div class="admin-toolbar">
       <button class="edit-mode-btn">✏️ Режим правки текста и фото (ВКЛ/ВЫКЛ)</button>
       <button class="applications-btn">📋 Заявки и Идеи</button>
@@ -243,524 +313,42 @@
       <button class="change-password-btn">🔑 Сменить пароль админа</button>
       <button class="logout-btn">🚪 Выйти</button>
     </div>
-    <div class="admin-content">
-      <div class="rights-management-section" style="display: none;">
-        <input type="text" id="user-search" placeholder="Поиск по имени/классу...">
-        <div id="users-list"></div>
-      </div>
-      <div class="scripts-library-section" style="display: none;">
-        <textarea id="script-input" placeholder="Вставьте ваш JS или CSS код"></textarea>
-        <button id="add-script-btn">➕ Добавить скрипт</button>
-        <div id="scripts-list"></div>
-      </div>
-    </div>
   </div>
-  
+
   <script>
     const SUPABASE_URL = "https://ektyxbnzkreekdjrdnnk.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_q60_3k3m7l3G8w8y7t30FA_2_jD4H1M";
-
-// Tables
-const MARKETPLACE_LISTINGS = 'marketplace_listings';
-const MARKETPLACE_CHATS = 'marketplace_chats';
-const SOCIAL_POSTS = 'social_posts';
-const SOCIAL_COMMENTS = 'social_comments';
-const SOCIAL_LIKES = 'social_likes';
-const SOCIAL_CHANNELS = 'social_channels';
-const SOCIAL_SUBSCRIPTIONS = 'social_subscriptions';
-const HELP_VOLUNTEERS = 'help_volunteers';
-const SITE_CONTENT = 'site_content';
-const ADMIN_USERS = 'admin_users';
-const SCRIPTS_LIBRARY = 'scripts_library';
-const APPLICATIONS_TABLE = 'applications';
-const IDEAS_TABLE = 'ideas';
-    
+    const SUPABASE_ANON_KEY = "sb_publishable_q60_3k3m7l3G8w8y7t30FA_2_jD4H1M";
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    
-    // JS_MODULES
-document.addEventListener('DOMContentLoaded', function() {
-  // Marketplace logic
-  const marketplaceSearch = document.getElementById('marketplace-search');
-  const marketplaceCategory = document.getElementById('marketplace-category');
-  const marketplaceListings = document.getElementById('marketplace-listings');
-  const addListingBtn = document.getElementById('add-listing-btn');
-  const listingModal = document.getElementById('listing-modal');
-  const listingForm = document.getElementById('listing-form');
-  const listingImages = document.getElementById('listing-images');
-  const imagePreview = document.getElementById('image-preview');
-  const chatModal = document.getElementById('chat-modal');
-  const chatMessages = document.getElementById('chat-messages');
-  const chatForm = document.getElementById('chat-form');
-  const chatInput = document.getElementById('chat-input');
-  const chatListingPreview = document.getElementById('chat-listing-preview');
 
-  let currentListingId = null;
-  let currentChatId = null;
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabs = document.querySelectorAll('[data-tab]');
+      const tabContents = document.querySelectorAll('.tab-content');
 
-  // Load marketplace listings
-  async function loadMarketplace() {
-    const { data: listings, error } = await supabase
-      .from(MARKETPLACE_LISTINGS)
-      .select('*')
-      .order('created_at', { ascending: false });
-    
-    if (error) {
-      console.error('Error loading listings:', error);
-      return;
-    }
-
-    renderMarketplace(listings);
-  }
-
-  function renderMarketplace(listings) {
-    marketplaceListings.innerHTML = listings.map(listing => `
-      <div class="listing-card" data-id="${listing.id}">
-        <div class="listing-images">
-          ${listing.images.map((img, i) => `
-            <img src="${img}" alt="Listing image ${i + 1}" ${i > 0 ? 'style="display:none"' : ''}>
-          `).join('')}
-        </div>
-        <div class="listing-info">
-          <h3>${listing.title}</h3>
-          <p class="listing-price">${getPriceDisplay(listing.price)}</p>
-          <p class="listing-description">${listing.description}</p>
-          <p class="listing-class">Класс продавца: ${listing.class}</p>
-          <button class="chat-btn" data-id="${listing.id}">💬 Написать продавцу</button>
-          ${listing.user_id === supabase.auth.user()?.id ? `
-            <button class="delete-listing-btn" data-id="${listing.id}">🗑️ Удалить</button>
-          ` : ''}
-        </div>
-      </div>
-    `).join('');
-  }
-
-  function getPriceDisplay(price) {
-    if (price === 'free') return 'Бесплатно';
-    if (price === 'exchange') return 'Обмен';
-    return `${price} ₽`;
-  }
-
-  // Handle listing submission
-  listingForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const images = await Promise.all(
-      Array.from(listingImages.files).map(compressImage)
-    );
-
-    const { data: listing, error } = await supabase
-      .from(MARKETPLACE_LISTINGS)
-      .insert([{
-        title: listingForm.title.value,
-        category: listingForm.category.value,
-        price: listingForm.querySelector('input[name="price-type"]:checked')?.value || listingForm.price.value,
-        description: listingForm.description.value,
-        images,
-        class: localStorage.getItem('selectedClass'),
-        user_id: supabase.auth.user()?.id
-      }]);
-
-    if (error) {
-      console.error('Error creating listing:', error);
-      return;
-    }
-
-    listingModal.style.display = 'none';
-    loadMarketplace();
-  });
-
-  // Handle chat initiation
-  marketplaceListings.addEventListener('click', async (e) => {
-    if (e.target.classList.contains('chat-btn')) {
-      currentListingId = e.target.dataset.id;
-      const { data: listing } = await supabase
-        .from(MARKETPLACE_LISTINGS)
-        .select('*')
-        .eq('id', currentListingId)
-        .single();
-
-      chatListingPreview.innerHTML = `
-        <img src="${listing.images[0]}" alt="${listing.title}">
-        <h3>${listing.title}</h3>
-        <p>${getPriceDisplay(listing.price)}</p>
-      `;
-
-      // Check if chat exists or create new
-      const { data: existingChat } = await supabase
-        .from(MARKETPLACE_CHATS)
-        .select('*')
-        .eq('listing_id', currentListingId)
-        .contains('participants', [supabase.auth.user()?.id, listing.user_id]);
-
-      if (existingChat) {
-        currentChatId = existingChat.id;
-      } else {
-        const { data: newChat } = await supabase
-          .from(MARKETPLACE_CHATS)
-          .insert([{
-            listing_id: currentListingId,
-            participants: [supabase.auth.user()?.id, listing.user_id],
-            messages: []
-          }]);
-        currentChatId = newChat.id;
-      }
-
-      loadChatMessages();
-      chatModal.style.display = 'block';
-    }
-  });
-
-  // Handle chat messages
-  chatForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const { data: chat } = await supabase
-      .from(MARKETPLACE_CHATS)
-      .select('*')
-      .eq('id', currentChatId)
-      .single();
-
-    const updatedMessages = [
-      ...chat.messages,
-      {
-        user_id: supabase.auth.user()?.id,
-        text: chatInput.value,
-        timestamp: new Date().toISOString()
-      }
-    ];
-
-    await supabase
-      .from(MARKETPLACE_CHATS)
-      .update({ messages: updatedMessages })
-      .eq('id', currentChatId);
-
-    chatInput.value = '';
-    loadChatMessages();
-  });
-
-  async function loadChatMessages() {
-    const { data: chat } = await supabase
-      .from(MARKETPLACE_CHATS)
-      .select('*')
-      .eq('id', currentChatId)
-      .single();
-
-    chatMessages.innerHTML = chat.messages.map(msg => `
-      <div class="chat-message ${msg.user_id === supabase.auth.user()?.id ? 'own' : 'other'}">
-        <p>${msg.text}</p>
-        <span class="timestamp">${new Date(msg.timestamp).toLocaleTimeString()}</span>
-      </div>
-    `).join('');
-  }
-
-  // Image compression
-  function compressImage(file) {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.src = e.target.result;
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          const MAX_WIDTH = 800;
-          const MAX_HEIGHT = 800;
-          let width = img.width;
-          let height = img.height;
-
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height;
-              height = MAX_HEIGHT;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL('image/jpeg', 0.7));
-        };
-      };
-      reader.readAsDataURL(file);
-    });
-  }
-
-  // Initial load
-  loadMarketplace();
-  loadSocialFeed();
-  loadChannels();
-  loadVolunteers();
-  
-  // Admin panel logic
-  const adminBtns = document.querySelectorAll('.admin-btn');
-  const adminPanel = document.querySelector('.admin-panel');
-  const rightsManagementSection = document.querySelector('.rights-management-section');
-  const scriptsLibrarySection = document.querySelector('.scripts-library-section');
-  
-  // Check if current user is admin
-  async function checkAdminStatus() {
-    const { data: user } = await supabase
-      .from(ADMIN_USERS)
-      .select('*')
-      .eq('user_id', supabase.auth.user()?.id)
-      .single();
-    
-    if (user) {
-      adminPanel.style.display = 'block';
-    }
-  }
-  
-  // Admin login
-  adminBtns.forEach(btn => {
-    btn.addEventListener('click', async function() {
-      const password = prompt('Для продолжения введите пароль администратора');
-      if (password === 'лицей37') {
-        await supabase
-          .from(ADMIN_USERS)
-          .upsert([{
-            user_id: supabase.auth.user()?.id,
-            is_admin: true
-          }]);
-        adminPanel.style.display = 'block';
-      }
-    });
-  });
-  
-  // Rights management
-  document.querySelector('.rights-management-btn').addEventListener('click', async () => {
-    rightsManagementSection.style.display = 'block';
-    const { data: users } = await supabase
-      .from('profiles')
-      .select('*');
-    
-    document.getElementById('users-list').innerHTML = users.map(user => `
-      <div class="user-card">
-        <span>${user.full_name} (${user.class})</span>
-        <label class="switch">
-          <input type="checkbox" class="admin-toggle" data-user-id="${user.id}" ${user.is_admin ? 'checked' : ''}>
-          <span class="slider"></span>
-        </label>
-      </div>
-    `).join('');
-  });
-  
-  // Scripts library
-  document.querySelector('.scripts-btn').addEventListener('click', async () => {
-    scriptsLibrarySection.style.display = 'block';
-    const { data: scripts } = await supabase
-      .from(SCRIPTS_LIBRARY)
-      .select('*');
-    
-    document.getElementById('scripts-list').innerHTML = scripts.map(script => `
-      <div class="script-card">
-        <h3>${script.name}</h3>
-        <button class="run-script-btn" data-id="${script.id}">▶️ Включить</button>
-        <button class="stop-script-btn" data-id="${script.id}">⏹ Остановить</button>
-        <button class="edit-script-btn" data-id="${script.id}">✏️ Редактировать</button>
-        <button class="delete-script-btn" data-id="${script.id}">🗑️ Удалить</button>
-      </div>
-    `).join('');
-  });
-  
-  // Change admin password
-  document.querySelector('.change-password-btn').addEventListener('click', async () => {
-    const newPassword = prompt('Введите новый пароль администратора');
-    if (newPassword) {
-      await supabase
-        .from('admin_settings')
-        .upsert([{
-          key: 'admin_password',
-          value: newPassword
-        }]);
-      alert('Пароль успешно изменён!');
-    }
-  });
-      
-      // Class validation
-      function validateClass(classStr) {
-        const regex = /^([1-9]|1[01])([А-Д])$/;
-        return regex.test(classStr);
-      }
-      
-      // Class page logic
-      const classContent = document.getElementById('class-content');
-      const viewClassBtn = document.getElementById('view-class-btn');
-      const classInput = document.getElementById('class-input');
-      
-      viewClassBtn.addEventListener('click', () => {
-        if (validateClass(classInput.value)) {
-          localStorage.setItem('selectedClass', classInput.value);
-          classContent.style.display = 'block';
-          loadClassData(classInput.value);
-        }
-      });
-      
-      async function loadClassData(className) {
-        // Load homework
-        const { data: homework, error } = await supabase
-          .from('class_homework')
-          .select('*')
-          .eq('class', className)
-          .order('deadline', { ascending: true });
-        
-        // Load chat messages
-        const { data: messages } = await supabase
-          .from('class_chat')
-          .select('*')
-          .eq('class', className)
-          .order('created_at', { ascending: false });
-          
-        // Load pet data
-        const { data: pet } = await supabase
-          .from('class_pets')
-          .select('*')
-          .eq('class', className)
-          .single();
-          
-        renderClassData(homework, messages, pet);
-      }
-      
-      function renderClassData(homework, messages, pet) {
-        // Render homework list
-        // Render chat messages
-        // Update pet stats
-      }
-      
-      // Tab switching
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.tab-content').forEach(content => {
-            content.style.display = 'none';
+      tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          const target = this.dataset.tab;
+          tabContents.forEach(content => {
+            content.style.display = content.id === target ? 'block' : 'none';
           });
-          document.querySelector(`#${btn.dataset.tab}-tab`).style.display = 'block';
         });
       });
-      
-      // Social network logic
-      const socialFeed = document.getElementById('social-feed');
-      const createPostBtn = document.getElementById('create-post-btn');
-      const socialSearch = document.getElementById('social-search');
-      
-      async function loadSocialFeed() {
-        const { data: posts, error } = await supabase
-          .from(SOCIAL_POSTS)
-          .select('*')
-          .order('created_at', { ascending: false });
-        
-        if (error) {
-          console.error('Error loading posts:', error);
-          return;
-        }
-        
-        renderSocialFeed(posts);
-      }
-      
-      function renderSocialFeed(posts) {
-        socialFeed.innerHTML = posts.map(post => `
-          <div class="post-card" data-id="${post.id}">
-            <div class="post-header">
-              <img src="${post.author_avatar}" alt="Avatar" class="post-avatar">
-              <div class="post-info">
-                <h3>${post.author_name}</h3>
-                <p class="post-class">${post.class}</p>
-              </div>
-              ${post.user_id === supabase.auth.user()?.id ? `
-                <div class="post-controls">
-                  <button class="edit-post-btn" data-id="${post.id}">✏️ Изменить</button>
-                  <button class="delete-post-btn" data-id="${post.id}">🗑️ Удалить</button>
-                </div>
-              ` : ''}
-            </div>
-            <div class="post-content">
-              ${post.text}
-              ${post.images.map(img => `<img src="${img}" alt="Post image" class="post-image">`).join('')}
-            </div>
-            <div class="post-footer">
-              <button class="like-btn" data-id="${post.id}">❤️ ${post.likes_count}</button>
-              <button class="comment-btn" data-id="${post.id}">💬 Комментарии</button>
-            </div>
-            <div class="comments-section" style="display: none;">
-              <div class="comments-list"></div>
-              <form class="comment-form">
-                <textarea placeholder="Ваш комментарий"></textarea>
-                <button type="submit">Отправить</button>
-              </form>
-            </div>
-          </div>
-        `).join('');
-      }
-      
-      // Channels logic
-      const channelsList = document.getElementById('channels-list');
-      const createChannelBtn = document.getElementById('create-channel-btn');
-      
-      async function loadChannels() {
-        const { data: channels, error } = await supabase
-          .from(SOCIAL_CHANNELS)
-          .select('*')
-          .order('created_at', { ascending: false });
-        
-        if (error) {
-          console.error('Error loading channels:', error);
-          return;
-        }
-        
-        renderChannels(channels);
-      }
-      
-      function renderChannels(channels) {
-        channelsList.innerHTML = channels.map(channel => `
-          <div class="channel-card" data-id="${channel.id}">
-            <img src="${channel.avatar}" alt="Channel avatar" class="channel-avatar">
-            <div class="channel-info">
-              <h3>${channel.name}</h3>
-              <p>${channel.description}</p>
-              <p>Подписчики: ${channel.subscribers_count}</p>
-              <button class="subscribe-btn" data-id="${channel.id}">${channel.is_subscribed ? 'Отписаться' : 'Подписаться'}</button>
-            </div>
-          </div>
-        `).join('');
-      }
-      
-      // Volunteers logic
-      const volunteersList = document.getElementById('volunteers-list');
-      const helpSubject = document.getElementById('help-subject');
-      
-      async function loadVolunteers() {
-        const { data: volunteers, error } = await supabase
-          .from(HELP_VOLUNTEERS)
-          .select('*')
-          .order('created_at', { ascending: false });
-        
-        if (error) {
-          console.error('Error loading volunteers:', error);
-          return;
-        }
-        
-        renderVolunteers(volunteers);
-      }
-      
-      function renderVolunteers(volunteers) {
-        volunteersList.innerHTML = volunteers.map(volunteer => `
-          <div class="volunteer-card" data-id="${volunteer.id}">
-            <img src="${volunteer.avatar}" alt="Volunteer avatar" class="volunteer-avatar">
-            <div class="volunteer-info">
-              <h3>${volunteer.name}</h3>
-              <p>Класс: ${volunteer.class}</p>
-              <p>Предметы: ${volunteer.subjects.join(', ')}</p>
-              <button class="help-btn" data-id="${volunteer.id}">💬 Попросить помощи</button>
-            </div>
-          </div>
-        `).join('');
-      }
-      
-      // Event listeners for modals
-      // ...
+
+      const adminBtns = document.querySelectorAll('.admin-btn');
+      const adminPanel = document.querySelector('.admin-panel');
+
+      adminBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const password = prompt('Для продолжения введите пароль администратора');
+          if (password === 'лицей37') {
+            adminPanel.style.display = 'block';
+          }
+        });
+      });
+
+      const logoutBtn = document.querySelector('.logout-btn');
+      logoutBtn.addEventListener('click', function() {
+        adminPanel.style.display = 'none';
+      });
     });
   </script>
 </body>
