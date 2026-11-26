@@ -67,6 +67,64 @@
       <h1>Лицей №37</h1>
     </section>
     
+    <section class="my-class-section">
+      <h2>🏫 Мой класс</h2>
+      <div id="class-selector">
+        <select id="class-input">
+          <option value="">Выберите класс</option>
+          <option value="1А">1А</option>
+          <option value="1Б">1Б</option>
+          <!-- Все классы до 11Д -->
+        </select>
+        <button id="view-class-btn">Просмотреть</button>
+      </div>
+      <div id="class-content" style="display: none;">
+        <div class="class-tabs">
+          <button class="tab-btn active" data-tab="deadlines">📌 Доска дедлайнов</button>
+          <button class="tab-btn" data-tab="chat">💬 Чат класса</button>
+          <button class="tab-btn" data-tab="pet">🐾 Питомец класса</button>
+        </div>
+        
+        <div id="deadlines-tab" class="tab-content">
+          <form id="homework-form">
+            <select id="subject-input" required>
+              <option value="">Предмет</option>
+              <option value="Алгебра">Алгебра</option>
+              <option value="Физика">Физика</option>
+              <!-- Другие предметы -->
+            </select>
+            <textarea id="task-input" placeholder="Описание задания" required></textarea>
+            <input type="date" id="deadline-input" required>
+            <button type="submit">Добавить</button>
+          </form>
+          <div id="homework-list"></div>
+        </div>
+        
+        <div id="chat-tab" class="tab-content" style="display: none;">
+          <div id="chat-messages"></div>
+          <form id="message-form">
+            <textarea id="message-input" placeholder="Ваше сообщение"></textarea>
+            <button type="submit">Отправить</button>
+          </form>
+        </div>
+        
+        <div id="pet-tab" class="tab-content" style="display: none;">
+          <div class="pet-card">
+            <img src="snow-leopard.png" alt="Ак Барс" class="pet-avatar">
+            <div class="pet-info">
+              <h3>Ак Барс</h3>
+              <p>Ранг: <span id="pet-rank">Котёнок Барсик</span></p>
+              <div class="xp-bar">
+                <div id="xp-progress"></div>
+              </div>
+              <p>XP: <span id="xp-value">0</span>/100</p>
+              <button id="feed-pet-btn" class="disabled">🍖 Покормить (завтра)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
     <section class="schedule-section">
       <h2>⏰ Расписание звонков</h2>
       <!-- 1 и 2 смена -->
@@ -131,6 +189,60 @@
         const regex = /^([1-9]|1[01])([А-Д])$/;
         return regex.test(classStr);
       }
+      
+      // Class page logic
+      const classContent = document.getElementById('class-content');
+      const viewClassBtn = document.getElementById('view-class-btn');
+      const classInput = document.getElementById('class-input');
+      
+      viewClassBtn.addEventListener('click', () => {
+        if (validateClass(classInput.value)) {
+          localStorage.setItem('selectedClass', classInput.value);
+          classContent.style.display = 'block';
+          loadClassData(classInput.value);
+        }
+      });
+      
+      async function loadClassData(className) {
+        // Load homework
+        const { data: homework, error } = await supabase
+          .from('class_homework')
+          .select('*')
+          .eq('class', className)
+          .order('deadline', { ascending: true });
+        
+        // Load chat messages
+        const { data: messages } = await supabase
+          .from('class_chat')
+          .select('*')
+          .eq('class', className)
+          .order('created_at', { ascending: false });
+          
+        // Load pet data
+        const { data: pet } = await supabase
+          .from('class_pets')
+          .select('*')
+          .eq('class', className)
+          .single();
+          
+        renderClassData(homework, messages, pet);
+      }
+      
+      function renderClassData(homework, messages, pet) {
+        // Render homework list
+        // Render chat messages
+        // Update pet stats
+      }
+      
+      // Tab switching
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-content').forEach(content => {
+            content.style.display = 'none';
+          });
+          document.querySelector(`#${btn.dataset.tab}-tab`).style.display = 'block';
+        });
+      });
       
       // Event listeners for modals
       // ...
