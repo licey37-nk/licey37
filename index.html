@@ -207,10 +207,23 @@
   <!-- AI_WIDGET -->
   <div class="admin-panel" style="display: none;">
     <div class="admin-toolbar">
-      <button class="edit-mode-btn">✏️ Живое редактирование</button>
+      <button class="edit-mode-btn">✏️ Режим правки текста и фото (ВКЛ/ВЫКЛ)</button>
       <button class="applications-btn">📋 Заявки и Идеи</button>
+      <button class="rights-management-btn">👥 Управление правами (Выдать админку)</button>
       <button class="scripts-btn">💻 Библиотека скриптов</button>
+      <button class="change-password-btn">🔑 Сменить пароль админа</button>
       <button class="logout-btn">🚪 Выйти</button>
+    </div>
+    <div class="admin-content">
+      <div class="rights-management-section" style="display: none;">
+        <input type="text" id="user-search" placeholder="Поиск по имени/классу...">
+        <div id="users-list"></div>
+      </div>
+      <div class="scripts-library-section" style="display: none;">
+        <textarea id="script-input" placeholder="Вставьте ваш JS или CSS код"></textarea>
+        <button id="add-script-btn">➕ Добавить скрипт</button>
+        <div id="scripts-list"></div>
+      </div>
     </div>
   </div>
   
@@ -218,9 +231,14 @@
     const SUPABASE_URL = "https://ektyxbnzkreekdjrdnnk.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_q60_3k3m7l3G8w8y7t30FA_2_jD4H1M";
 
-// Marketplace tables
+// Tables
 const MARKETPLACE_LISTINGS = 'marketplace_listings';
 const MARKETPLACE_CHATS = 'marketplace_chats';
+const SITE_CONTENT = 'site_content';
+const ADMIN_USERS = 'admin_users';
+const SCRIPTS_LIBRARY = 'scripts_library';
+const APPLICATIONS_TABLE = 'applications';
+const IDEAS_TABLE = 'ideas';
     
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
@@ -439,18 +457,91 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Initial load
   loadMarketplace();
-      // Admin panel logic
-      const adminBtns = document.querySelectorAll('.admin-btn');
-      const adminPanel = document.querySelector('.admin-panel');
-      
-      adminBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-          const password = prompt('Для продолжения введите пароль администратора');
-          if (password === 'лицей37') {
-            adminPanel.style.display = 'block';
-          }
-        });
-      });
+  
+  // Admin panel logic
+  const adminBtns = document.querySelectorAll('.admin-btn');
+  const adminPanel = document.querySelector('.admin-panel');
+  const rightsManagementSection = document.querySelector('.rights-management-section');
+  const scriptsLibrarySection = document.querySelector('.scripts-library-section');
+  
+  // Check if current user is admin
+  async function checkAdminStatus() {
+    const { data: user } = await supabase
+      .from(ADMIN_USERS)
+      .select('*')
+      .eq('user_id', supabase.auth.user()?.id)
+      .single();
+    
+    if (user) {
+      adminPanel.style.display = 'block';
+    }
+  }
+  
+  // Admin login
+  adminBtns.forEach(btn => {
+    btn.addEventListener('click', async function() {
+      const password = prompt('Для продолжения введите пароль администратора');
+      if (password === 'лицей37') {
+        await supabase
+          .from(ADMIN_USERS)
+          .upsert([{
+            user_id: supabase.auth.user()?.id,
+            is_admin: true
+          }]);
+        adminPanel.style.display = 'block';
+      }
+    });
+  });
+  
+  // Rights management
+  document.querySelector('.rights-management-btn').addEventListener('click', async () => {
+    rightsManagementSection.style.display = 'block';
+    const { data: users } = await supabase
+      .from('profiles')
+      .select('*');
+    
+    document.getElementById('users-list').innerHTML = users.map(user => `
+      <div class="user-card">
+        <span>${user.full_name} (${user.class})</span>
+        <label class="switch">
+          <input type="checkbox" class="admin-toggle" data-user-id="${user.id}" ${user.is_admin ? 'checked' : ''}>
+          <span class="slider"></span>
+        </label>
+      </div>
+    `).join('');
+  });
+  
+  // Scripts library
+  document.querySelector('.scripts-btn').addEventListener('click', async () => {
+    scriptsLibrarySection.style.display = 'block';
+    const { data: scripts } = await supabase
+      .from(SCRIPTS_LIBRARY)
+      .select('*');
+    
+    document.getElementById('scripts-list').innerHTML = scripts.map(script => `
+      <div class="script-card">
+        <h3>${script.name}</h3>
+        <button class="run-script-btn" data-id="${script.id}">▶️ Включить</button>
+        <button class="stop-script-btn" data-id="${script.id}">⏹ Остановить</button>
+        <button class="edit-script-btn" data-id="${script.id}">✏️ Редактировать</button>
+        <button class="delete-script-btn" data-id="${script.id}">🗑️ Удалить</button>
+      </div>
+    `).join('');
+  });
+  
+  // Change admin password
+  document.querySelector('.change-password-btn').addEventListener('click', async () => {
+    const newPassword = prompt('Введите новый пароль администратора');
+    if (newPassword) {
+      await supabase
+        .from('admin_settings')
+        .upsert([{
+          key: 'admin_password',
+          value: newPassword
+        }]);
+      alert('Пароль успешно изменён!');
+    }
+  });
       
       // Class validation
       function validateClass(classStr) {
