@@ -3,9 +3,1982 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Портал МБОУ «Лицей №37» г. Нижнекамска: класс, барахолка, соцсеть, игры Первых и профиль ученика.">
   <title>МБОУ «Лицей №37» г. Нижнекамск</title>
-</head>
-<body>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* ============ 1. ПЕРЕМЕННЫЕ И ТЕМЫ ============ */
+    :root {
+      --bg: #f1f5f9;
+      --bg-soft: #e7edf5;
+      --surface: #ffffff;
+      --surface-soft: #f8fafc;
+      --text: #1e293b;
+      --text-strong: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #1d4ed8;
+      --primary-soft: rgba(29, 78, 216, 0.10);
+      --accent: #059669;
+      --accent-soft: rgba(5, 150, 105, 0.12);
+      --danger: #dc2626;
+      --danger-soft: rgba(220, 38, 38, 0.10);
+      --grad: linear-gradient(135deg, #1d4ed8, #059669);
+      --grad-soft: linear-gradient(135deg, rgba(29, 78, 216, 0.12), rgba(5, 150, 105, 0.12));
+      --header-bg: rgba(255, 255, 255, 0.78);
+      --input-bg: #f8fafc;
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
+      --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.16);
+      --glow: none;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --header-height: 72px;
+    }
 
+    /* Тема «Ночной неон» — переключается из Магазина наград */
+    body.theme-neon {
+      --bg: #0b1120;
+      --bg-soft: #0e1628;
+      --surface: #111a2e;
+      --surface-soft: #16203a;
+      --text: #dbe6f5;
+      --text-strong: #f1f5fb;
+      --muted: #7d8fb0;
+      --border: #24314f;
+      --primary: #38bdf8;
+      --primary-soft: rgba(56, 189, 248, 0.14);
+      --accent: #10b981;
+      --accent-soft: rgba(16, 185, 129, 0.16);
+      --grad: linear-gradient(135deg, #38bdf8, #10b981);
+      --grad-soft: linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(16, 185, 129, 0.16));
+      --header-bg: rgba(11, 17, 32, 0.82);
+      --input-bg: #0e1628;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.6);
+      --glow: 0 0 0 1px rgba(56, 189, 248, 0.35), 0 0 18px rgba(56, 189, 248, 0.18);
+    }
+
+    /* Тема «Изумрудный Татарстан» — переключается из Магазина наград */
+    body.theme-tatar {
+      --bg: #ecfdf5;
+      --bg-soft: #d9f5e8;
+      --surface: #ffffff;
+      --surface-soft: #f4fdf9;
+      --text: #064e3b;
+      --text-strong: #022c22;
+      --muted: #4e7d6c;
+      --border: #c9ecdc;
+      --primary: #047857;
+      --primary-soft: rgba(4, 120, 87, 0.12);
+      --accent: #059669;
+      --accent-soft: rgba(5, 150, 105, 0.14);
+      --grad: linear-gradient(135deg, #047857, #34d399);
+      --grad-soft: linear-gradient(135deg, rgba(4, 120, 87, 0.14), rgba(52, 211, 153, 0.16));
+      --header-bg: rgba(236, 253, 245, 0.82);
+      --input-bg: #f4fdf9;
+      --shadow: 0 10px 30px rgba(4, 120, 87, 0.10);
+      --shadow-lg: 0 24px 60px rgba(4, 120, 87, 0.18);
+    }
+
+    /* ============ 2. БАЗА ============ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(1000px 500px at 85% -10%, var(--primary-soft), transparent 60%),
+        radial-gradient(800px 400px at -10% 30%, var(--accent-soft), transparent 60%);
+      background-attachment: fixed;
+      color: var(--text);
+      line-height: 1.55;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.35s ease, color 0.35s ease;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+      color: var(--text-strong);
+      line-height: 1.25;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    ::selection {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    /* ============ 3. ШАПКА И НАВИГАЦИЯ ============ */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background-color: var(--header-bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .brand-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: var(--grad);
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-sm);
+      letter-spacing: -0.5px;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .brand-text strong {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 1.02rem;
+      color: var(--text-strong);
+      white-space: nowrap;
+    }
+
+    .brand-text span {
+      font-size: 0.78rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    nav {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 4px;
+      background: var(--bg-soft);
+      border-radius: 16px;
+    }
+
+    nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    nav button {
+      padding: 9px 16px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+      transition: color 0.2s, background-color 0.2s, box-shadow 0.2s, transform 0.15s;
+    }
+
+    nav button:hover {
+      color: var(--text-strong);
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+      transform: translateY(-1px);
+    }
+
+    nav button.active {
+      background: var(--grad);
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(29, 78, 216, 0.35);
+    }
+
+    .header-auth {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    /* ============ 4. КНОПКИ ============ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.92rem;
+      font-weight: 600;
+      transition: transform 0.15s, box-shadow 0.2s, background-color 0.2s, color 0.2s, border-color 0.2s;
+      user-select: none;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: var(--grad);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(29, 78, 216, 0.32);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(29, 78, 216, 0.42);
+    }
+
+    .btn-outline {
+      border: 1.5px solid var(--primary);
+      color: var(--primary);
+      background: transparent;
+    }
+
+    .btn-outline:hover {
+      background: var(--primary);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(29, 78, 216, 0.3);
+    }
+
+    .btn-ghost {
+      color: var(--muted);
+      background: transparent;
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      color: var(--text-strong);
+      border-color: var(--muted);
+      background: var(--surface);
+    }
+
+    .btn-danger {
+      color: var(--danger);
+      border: 1.5px solid var(--danger);
+      background: transparent;
+    }
+
+    .btn-danger:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .btn-sm {
+      padding: 7px 14px;
+      font-size: 0.82rem;
+      border-radius: 10px;
+    }
+
+    .btn-block {
+      width: 100%;
+    }
+
+    /* ============ 5. БЕЙДЖ ПОЛЬЗОВАТЕЛЯ ============ */
+    .user-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 10px 6px 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .user-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--grad);
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      color: #fff;
+      box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--primary);
+      flex-shrink: 0;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+      min-width: 0;
+    }
+
+    .user-name {
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--text-strong);
+      max-width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .user-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .user-class {
+      background: var(--grad);
+      color: #fff;
+      font-weight: 700;
+      padding: 1px 8px;
+      border-radius: 8px;
+      font-size: 0.72rem;
+    }
+
+    .user-points {
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 6px 12px;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+
+    /* ============ 6. ВКЛАДКИ И КАРТОЧКИ ============ */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 60px;
+    }
+
+    .tab-panel {
+      display: none;
+      animation: fadeIn 0.35s ease;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .section-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: var(--grad-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+
+    .section-title h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    .section-title p {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .card {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow), var(--glow);
+      padding: 24px;
+      transition: transform 0.2s, box-shadow 0.25s;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg), var(--glow);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    /* ============ 7. ГЛАВНАЯ ============ */
+    .hero-banner {
+      background: var(--grad);
+      color: white;
+      padding: 64px 40px;
+      border-radius: 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 24px;
+    }
+
+    .hero-banner::before,
+    .hero-banner::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .hero-banner::before {
+      width: 340px;
+      height: 340px;
+      top: -140px;
+      right: -100px;
+    }
+
+    .hero-banner::after {
+      width: 220px;
+      height: 220px;
+      bottom: -110px;
+      left: -60px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      backdrop-filter: blur(6px);
+      padding: 7px 16px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-banner h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: #fff;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-banner > p {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      opacity: 0.94;
+      max-width: 640px;
+      margin: 0 auto 26px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-actions .btn-white {
+      background: #fff;
+      color: var(--primary);
+    }
+
+    .hero-actions .btn-white:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+    }
+
+    .hero-actions .btn-transparent {
+      border: 1.5px solid rgba(255, 255, 255, 0.55);
+      color: #fff;
+    }
+
+    .hero-actions .btn-transparent:hover {
+      background: rgba(255, 255, 255, 0.14);
+      transform: translateY(-2px);
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px 22px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .stat-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: var(--grad-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      flex-shrink: 0;
+    }
+
+    .stat-value {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 1.45rem;
+      color: var(--text-strong);
+      line-height: 1.15;
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .feature-card {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      height: 100%;
+    }
+
+    .feature-card .feature-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      background: var(--grad-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.7rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.12rem;
+      font-weight: 700;
+    }
+
+    .feature-card p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      flex-grow: 1;
+    }
+
+    .feature-card .btn {
+      align-self: flex-start;
+      margin-top: 4px;
+    }
+
+    /* ============ 8. КОНТЕЙНЕРЫ-ЗАГОТОВКИ ВКЛАДОК 2–6 ============ */
+    .stub-card {
+      text-align: center;
+      padding: 64px 28px;
+    }
+
+    .stub-card .stub-icon {
+      width: 84px;
+      height: 84px;
+      margin: 0 auto 20px;
+      border-radius: 24px;
+      background: var(--grad-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stub-card h3 {
+      font-size: 1.35rem;
+      margin-bottom: 10px;
+    }
+
+    .stub-card p {
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto 22px;
+      font-size: 0.95rem;
+    }
+
+    .coming-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.82rem;
+      padding: 8px 18px;
+      border-radius: 999px;
+    }
+
+    .coming-badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 1.6s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.75); }
+    }
+
+    /* ============ 9. ФОРМЫ ============ */
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-strong);
+      margin-bottom: 6px;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--primary-soft);
+      background: var(--surface);
+    }
+
+    .field input::placeholder,
+    .field textarea::placeholder {
+      color: var(--muted);
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field-hint {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    .form-error {
+      display: none;
+      background: var(--danger-soft);
+      color: var(--danger);
+      border: 1px solid rgba(220, 38, 38, 0.25);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 0.86rem;
+      font-weight: 500;
+      margin-bottom: 14px;
+    }
+
+    .form-error.visible {
+      display: block;
+      animation: slideUp 0.25s ease;
+    }
+
+    /* ============ 10. ВЫБОР АВАТАРА ============ */
+    .avatar-picker {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .avatar-option {
+      aspect-ratio: 1;
+      border-radius: 14px;
+      border: 2px solid var(--border);
+      background: var(--input-bg);
+      font-size: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .avatar-option:hover {
+      transform: translateY(-3px);
+      border-color: var(--primary);
+    }
+
+    .avatar-option.selected {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+      box-shadow: 0 0 0 3px var(--primary-soft), var(--glow);
+      transform: scale(1.06);
+    }
+
+    .avatar-upload {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.86rem;
+      cursor: pointer;
+      transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 58px;
+    }
+
+    .avatar-upload:hover {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    .avatar-upload.has-image {
+      border-style: solid;
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .avatar-upload input[type="file"] {
+      display: none;
+    }
+
+    /* ============ 11. МОДАЛЬНЫЕ ОКНА ============ */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .modal.open {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal-content {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow-lg), var(--glow);
+      width: 100%;
+      max-width: 440px;
+      padding: 28px;
+      position: relative;
+      animation: slideUp 0.3s ease;
+      margin: auto;
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--bg-soft);
+      color: var(--muted);
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s, color 0.2s, transform 0.15s;
+      z-index: 2;
+    }
+
+    .modal-close:hover {
+      background: var(--danger-soft);
+      color: var(--danger);
+      transform: rotate(90deg);
+    }
+
+    .modal-head {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .modal-head .modal-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 12px;
+      border-radius: 18px;
+      background: var(--grad);
+      color: #fff;
+      font-size: 1.7rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px rgba(29, 78, 216, 0.35);
+    }
+
+    .modal-head h3 {
+      font-size: 1.3rem;
+      margin-bottom: 4px;
+    }
+
+    .modal-head p {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .modal-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 18px 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .modal-divider::before,
+    .modal-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .modal-footer-link {
+      text-align: center;
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-top: 16px;
+    }
+
+    .modal-footer-link a {
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .admin-row {
+      text-align: center;
+    }
+
+    .btn-admin {
+      background: linear-gradient(135deg, #b8860b, #f59e0b);
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35);
+    }
+
+    .btn-admin:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(245, 158, 11, 0.45);
+    }
+
+    /* ============ 12. ТОСТЫ ============ */
+    #toast-container {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+      width: min(480px, calc(100vw - 32px));
+      pointer-events: none;
+    }
+
+    .toast {
+      width: 100%;
+      background: var(--text-strong);
+      color: #fff;
+      padding: 13px 20px;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: slideUp 0.3s ease;
+    }
+
+    .toast.success { background: linear-gradient(135deg, #059669, #10b981); }
+    .toast.error { background: linear-gradient(135deg, #dc2626, #ef4444); }
+    .toast.info { background: linear-gradient(135deg, #1d4ed8, #3b82f6); }
+
+    /* ============ 13. ПОДВАЛ ============ */
+    footer {
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    footer .footer-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      color: var(--text-strong);
+      font-weight: 700;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    footer .footer-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--grad);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ============ 14. АДАПТИВНОСТЬ ============ */
+    @media (max-width: 960px) {
+      .header-inner {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 12px 16px;
+        row-gap: 10px;
+      }
+
+      nav {
+        order: 3;
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .hero-banner {
+        padding: 44px 22px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      main {
+        padding: 18px 14px 48px;
+      }
+
+      .brand-text span {
+        display: none;
+      }
+
+      .user-badge .user-info {
+        display: none;
+      }
+
+      .user-badge {
+        padding: 4px;
+        gap: 6px;
+      }
+
+      .user-points {
+        padding: 5px 8px;
+        font-size: 0.78rem;
+      }
+
+      .avatar-picker {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .field-row {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-content {
+        padding: 22px 18px;
+      }
+
+      .stats-row {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="theme-light">
+
+  <header>
+    <div class="header-inner">
+      <div class="brand" data-tab="home" id="brand-logo">
+        <div class="brand-logo">37</div>
+        <div class="brand-text">
+          <strong>Лицей №37</strong>
+          <span>г. Нижнекамск · РТ</span>
+        </div>
+      </div>
+
+      <nav id="main-nav" aria-label="Основная навигация">
+        <button data-tab="home" class="active">🏠 Главная</button>
+        <button data-tab="class">🏫 Мой класс</button>
+        <button data-tab="market">🛍️ Барахолка</button>
+        <button data-tab="social">💬 Соцсеть</button>
+        <button data-tab="games">🎮 Игры Первых</button>
+        <button data-tab="profile">👤 Профиль</button>
+      </nav>
+
+      <div class="header-auth" id="header-auth"></div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ВКЛАДКА 1: ГЛАВНАЯ -->
+    <section id="tab-home" class="tab-panel active">
+      <div class="hero-banner">
+        <div class="hero-badge">🎓 Официальный портал учеников</div>
+        <h1>Лицей №37</h1>
+        <p>Цифровая среда для учеников МБОУ «Лицей №37» города Нижнекамска: класс, барахолка, соцсеть, игры Первых и многое другое.</p>
+        <div class="hero-actions">
+          <button class="btn btn-white" id="hero-join-btn">🚀 Присоединиться</button>
+          <button class="btn btn-transparent" data-tab="class">Узнать больше</button>
+        </div>
+      </div>
+
+      <div class="stats-row" id="home-stats"></div>
+
+      <div class="section-title">
+        <div class="section-icon">🧭</div>
+        <div>
+          <h2>Разделы портала</h2>
+          <p>Всё для школьной жизни — в одном месте</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card card-hover feature-card">
+          <div class="feature-icon">🏫</div>
+          <h3>Мой класс</h3>
+          <p>Классный уголок онлайн: одноклассники, домашние задания и важные новости класса.</p>
+          <button class="btn btn-outline btn-sm" data-tab="class">Перейти →</button>
+        </div>
+        <div class="card card-hover feature-card">
+          <div class="feature-icon">🛍️</div>
+          <h3>Барахолка</h3>
+          <p>Учебники, канцелярия, электроника и спортинвентарь — обмен и продажа между учениками.</p>
+          <button class="btn btn-outline btn-sm" data-tab="market">Перейти →</button>
+        </div>
+        <div class="card card-hover feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>Соцсеть</h3>
+          <p>Лента лицея: делись достижениями, фотографиями и событиями школьной жизни.</p>
+          <button class="btn btn-outline btn-sm" data-tab="social">Перейти →</button>
+        </div>
+        <div class="card card-hover feature-card">
+          <div class="feature-icon">🎮</div>
+          <h3>Игры Первых</h3>
+          <p>Викторины, интеллектуальные игры и челленджи «Движения Первых» с баллами.</p>
+          <button class="btn btn-outline btn-sm" data-tab="games">Перейти →</button>
+        </div>
+        <div class="card card-hover feature-card">
+          <div class="feature-icon">👤</div>
+          <h3>Профиль</h3>
+          <p>Твой аватар, класс, статус и накопленные баллы за активности портала.</p>
+          <button class="btn btn-outline btn-sm" data-tab="profile">Перейти →</button>
+        </div>
+        <div class="card card-hover feature-card">
+          <div class="feature-icon">💎</div>
+          <h3>Баллы и награды</h3>
+          <p>Зарабатывай баллы за участие в жизни лицея и обменивай их на награды и темы оформления.</p>
+          <button class="btn btn-outline btn-sm" data-tab="profile">Мой счёт →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ВКЛАДКА 2: МОЙ КЛАСС -->
+    <section id="tab-class" class="tab-panel">
+      <div class="section-title">
+        <div class="section-icon">🏫</div>
+        <div>
+          <h2>Мой класс</h2>
+          <p>Домашние задания, чат класса и питомец Ак Барс</p>
+        </div>
+      </div>
+      <div class="card stub-card">
+        <div class="stub-icon">🏫</div>
+        <h3>Раздел «Мой класс»</h3>
+        <p>Здесь появятся доска домашних заданий, закрытый чат класса и виртуальный питомец — снежный барс Ак Барс.</p>
+        <span class="coming-badge"><span class="dot"></span>Наполняется на Шаге 2</span>
+      </div>
+    </section>
+
+    <!-- ВКЛАДКА 3: БАРАХОЛКА -->
+    <section id="tab-market" class="tab-panel">
+      <div class="section-title">
+        <div class="section-icon">🛍️</div>
+        <div>
+          <h2>Барахолка</h2>
+          <p>Объявления учеников: учебники, канцелярия, электроника и находки</p>
+        </div>
+      </div>
+      <div class="card stub-card">
+        <div class="stub-icon">🛍️</div>
+        <h3>Школьная барахолка</h3>
+        <p>Скоро здесь можно будет подавать объявления, искать нужные вещи и писать продавцам напрямую.</p>
+        <span class="coming-badge"><span class="dot"></span>Наполняется на Шаге 3</span>
+      </div>
+    </section>
+
+    <!-- ВКЛАДКА 4: СОЦСЕТЬ -->
+    <section id="tab-social" class="tab-panel">
+      <div class="section-title">
+        <div class="section-icon">💬</div>
+        <div>
+          <h2>Соцсеть</h2>
+          <p>Лента лицея: посты, достижения и события</p>
+        </div>
+      </div>
+      <div class="card stub-card">
+        <div class="stub-icon">💬</div>
+        <h3>Лента Лицея №37</h3>
+        <p>Скоро здесь появится общая лента: создавай посты, делись победами и комментируй новости лицея.</p>
+        <span class="coming-badge"><span class="dot"></span>Наполняется на Шаге 3</span>
+      </div>
+    </section>
+
+    <!-- ВКЛАДКА 5: ИГРЫ ПЕРВЫХ -->
+    <section id="tab-games" class="tab-panel">
+      <div class="section-title">
+        <div class="section-icon">🎮</div>
+        <div>
+          <h2>Игры Первых</h2>
+          <p>Викторины и интеллектуальные челленджи с баллами</p>
+        </div>
+      </div>
+      <div class="card stub-card">
+        <div class="stub-icon">🎮</div>
+        <h3>Игры Первых</h3>
+        <p>Готовятся образовательные викторины по школьным предметам и игры «Движения Первых» с начислением баллов.</p>
+        <span class="coming-badge"><span class="dot"></span>Наполняется на Шаге 4</span>
+      </div>
+    </section>
+
+    <!-- ВКЛАДКА 6: ПРОФИЛЬ -->
+    <section id="tab-profile" class="tab-panel">
+      <div class="section-title">
+        <div class="section-icon">👤</div>
+        <div>
+          <h2>Профиль</h2>
+          <p>Твой аватар, класс, статус и баллы</p>
+        </div>
+      </div>
+      <div class="card stub-card" id="profile-stub">
+        <div class="stub-icon">👤</div>
+        <h3>Личный профиль</h3>
+        <p>Войди или зарегистрируйся, чтобы увидеть свой профиль, аватар и накопленные баллы.</p>
+        <span class="coming-badge"><span class="dot"></span>Наполняется на Шаге 4</span>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-brand">
+      <div class="footer-logo">37</div>
+      МБОУ «Лицей №37» г. Нижнекамск
+    </div>
+    <div>Республика Татарстан · Портал учеников · 2025</div>
+  </footer>
+
+  <!-- МОДАЛКА: ВХОД -->
+  <div class="modal" id="modal-login" aria-modal="true" role="dialog">
+    <div class="modal-content">
+      <button class="modal-close" data-close-modal="modal-login">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">🔑</div>
+        <h3>Вход в аккаунт</h3>
+        <p>Рады видеть тебя снова!</p>
+      </div>
+      <div class="form-error" id="login-error"></div>
+      <form id="login-form">
+        <div class="field">
+          <label for="login-name">Имя и фамилия или никнейм</label>
+          <input type="text" id="login-name" placeholder="Например: Иван Петров" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="login-password">Пароль</label>
+          <input type="password" id="login-password" placeholder="Твой пароль" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Войти</button>
+      </form>
+      <div class="modal-footer-link">
+        Нет аккаунта? <a id="go-to-register">Зарегистрируйся</a>
+      </div>
+      <div class="modal-divider">или</div>
+      <div class="admin-row">
+        <button class="btn btn-admin btn-block" id="admin-login-btn">👑 Админ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- МОДАЛКА: РЕГИСТРАЦИЯ -->
+  <div class="modal" id="modal-register" aria-modal="true" role="dialog">
+    <div class="modal-content">
+      <button class="modal-close" data-close-modal="modal-register">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">🎓</div>
+        <h3>Регистрация</h3>
+        <p>Присоединяйся к порталу и получи <strong>💎 +50 баллов</strong> на старт!</p>
+      </div>
+      <div class="form-error" id="register-error"></div>
+      <form id="register-form">
+        <div class="field">
+          <label for="reg-name">Имя и фамилия / никнейм</label>
+          <input type="text" id="reg-name" placeholder="Например: Айгуль Салихова" maxlength="32" required>
+          <div class="field-hint">Должно быть уникальным — по нему ты будешь входить.</div>
+        </div>
+        <div class="field">
+          <label>Класс</label>
+          <div class="field-row">
+            <select id="reg-grade" required>
+              <option value="" disabled selected>Цифра</option>
+            </select>
+            <select id="reg-letter" required>
+              <option value="" disabled selected>Буква</option>
+            </select>
+          </div>
+          <div class="field-hint">Цифра 1–11, буква строго А, Б, В, Г или Д.</div>
+        </div>
+        <div class="field">
+          <label for="reg-password">Пароль</label>
+          <input type="password" id="reg-password" placeholder="Минимум 4 символа" autocomplete="new-password" required>
+        </div>
+        <div class="field">
+          <label for="reg-password2">Повтори пароль</label>
+          <input type="password" id="reg-password2" placeholder="Ещё раз пароль" autocomplete="new-password" required>
+        </div>
+        <div class="field">
+          <label>Аватар</label>
+          <div class="avatar-picker" id="avatar-picker"></div>
+          <label class="avatar-upload" id="avatar-upload-zone">
+            <input type="file" id="avatar-file-input" accept="image/*">
+            <span id="avatar-upload-text">📷 Загрузить своё фото (сожмём до 150×150)</span>
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться · 💎 +50</button>
+      </form>
+      <div class="modal-footer-link">
+        Уже есть аккаунт? <a id="go-to-login">Войти</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script>
+    'use strict';
+
+    /* ============ КОНСТАНТЫ ============ */
+    const SUPABASE_URL = 'https://ektyxbnzkreekdjrdnnk.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_q60_3k3m7l3G8w8y7t30FA_2_jD4H1M';
+
+    const LS_PREFIX = 'lp37_';
+    const TABLE = 'site_content';
+    const START_POINTS = 50;
+
+    const CLASS_GRADES = Array.from({ length: 11 }, function (_, i) { return i + 1; });
+    const CLASS_LETTERS = ['А', 'Б', 'В', 'Г', 'Д'];
+
+    const AVATAR_EMOJIS = ['🦊', '🐼', '🐨', '🦉', '🐯', '🚀'];
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    /* ============ ПРОСЛОЙКА БД: Supabase + localStorage ============ */
+    function dbLoad(key, fallback) {
+      try {
+        const raw = localStorage.getItem(LS_PREFIX + key);
+        if (raw !== null) return JSON.parse(raw);
+      } catch (e) {
+        console.warn('dbLoad: повреждённые локальные данные по ключу', key, e);
+      }
+      return fallback;
+    }
+
+    function dbSave(key, data) {
+      try {
+        localStorage.setItem(LS_PREFIX + key, JSON.stringify(data));
+      } catch (e) {
+        console.warn('dbSave: не удалось сохранить локально по ключу', key, e);
+      }
+      syncKey(key, data);
+    }
+
+    async function syncKey(key, data) {
+      try {
+        const answer = await supabase
+          .from(TABLE)
+          .upsert({ key: key, value: data }, { onConflict: 'key' });
+        if (answer.error) throw answer.error;
+      } catch (e) {
+        console.warn('syncKey: облако недоступно, работаем локально —', key, e && e.message);
+      }
+    }
+
+    async function pullKey(key) {
+      try {
+        const answer = await supabase
+          .from(TABLE)
+          .select('value')
+          .eq('key', key)
+          .maybeSingle();
+        if (answer.error) throw answer.error;
+        if (answer.data && answer.data.value !== undefined && answer.data.value !== null) {
+          try {
+            localStorage.setItem(LS_PREFIX + key, JSON.stringify(answer.data.value));
+          } catch (e) { /* ignore */ }
+          return answer.data.value;
+        }
+      } catch (e) {
+        console.warn('pullKey: облако недоступно, читаем локально —', key, e && e.message);
+      }
+      return dbLoad(key, null);
+    }
+
+    async function pullAll() {
+      try {
+        const answer = await supabase.from(TABLE).select('key,value');
+        if (answer.error) throw answer.error;
+        (answer.data || []).forEach(function (row) {
+          if (row && row.key !== undefined && row.value !== undefined) {
+            try {
+              localStorage.setItem(LS_PREFIX + row.key, JSON.stringify(row.value));
+            } catch (e) { /* ignore */ }
+          }
+        });
+      } catch (e) {
+        console.warn('pullAll: облако недоступно, работаем на localStorage —', e && e.message);
+      }
+    }
+
+    /* ============ ПОЛЬЗОВАТЕЛИ И СЕССИЯ ============ */
+    function getUsers() { return dbLoad('users', []); }
+    function saveUsers(users) { dbSave('users', users); }
+
+    function getSessionUserId() { return dbLoad('session', null); }
+    function setSessionUserId(id) { dbSave('session', id); }
+
+    function getCurrentUser() {
+      const id = getSessionUserId();
+      if (!id) return null;
+      return getUsers().find(function (u) { return u.id === id; }) || null;
+    }
+
+    async function hashPassword(password) {
+      const salted = 'lp37::' + password;
+      if (window.crypto && window.crypto.subtle) {
+        try {
+          const buf = await window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(salted));
+          return Array.from(new Uint8Array(buf)).map(function (b) {
+            return b.toString(16).padStart(2, '0');
+          }).join('');
+        } catch (e) { /* падаем на простой вариант */ }
+      }
+      let h = 5381;
+      for (let i = 0; i < salted.length; i++) {
+        h = ((h << 5) + h + salted.charCodeAt(i)) | 0;
+      }
+      return 'fallback_' + Math.abs(h).toString(16);
+    }
+
+    function statusFor(points) {
+      if (points >= 1000) return { title: 'Легенда лицея', icon: '👑' };
+      if (points >= 500) return { title: 'Отличник', icon: '🏆' };
+      if (points >= 200) return { title: 'Активист', icon: '⚡' };
+      if (points >= 100) return { title: 'Знаток', icon: '🌟' };
+      return { title: 'Новичок', icon: '🌱' };
+    }
+
+    function classLabel(user) {
+      return String(user.grade) + user.letter;
+    }
+
+    function isValidClass(grade, letter) {
+      return CLASS_GRADES.includes(Number(grade)) && CLASS_LETTERS.includes(letter);
+    }
+
+    /* ============ УТИЛИТЫ UI ============ */
+    function esc(text) {
+      const div = document.createElement('div');
+      div.textContent = String(text === undefined || text === null ? '' : text);
+      return div.innerHTML;
+    }
+
+    function toast(message, type) {
+      const container = document.getElementById('toast-container');
+      const el = document.createElement('div');
+      el.className = 'toast ' + (type || 'info');
+      const icons = { success: '✅', error: '⚠️', info: '💡' };
+      el.innerHTML = '<span>' + (icons[type] || icons.info) + '</span><span>' + esc(message) + '</span>';
+      container.appendChild(el);
+      setTimeout(function () {
+        el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(10px)';
+        setTimeout(function () { el.remove(); }, 320);
+      }, 3600);
+    }
+
+    function showFormError(id, message) {
+      const box = document.getElementById(id);
+      if (!message) {
+        box.classList.remove('visible');
+        box.textContent = '';
+        return;
+      }
+      box.textContent = message;
+      box.classList.add('visible');
+    }
+
+    /* ============ SPA-НАВИГАЦИЯ: видна ровно одна вкладка ============ */
+    const panels = {
+      home: document.getElementById('tab-home'),
+      class: document.getElementById('tab-class'),
+      market: document.getElementById('tab-market'),
+      social: document.getElementById('tab-social'),
+      games: document.getElementById('tab-games'),
+      profile: document.getElementById('tab-profile')
+    };
+
+    function setTab(name) {
+      if (!panels[name]) return;
+      Object.keys(panels).forEach(function (key) {
+        panels[key].classList.toggle('active', key === name);
+      });
+      document.querySelectorAll('#main-nav button').forEach(function (btn) {
+        btn.classList.toggle('active', btn.dataset.tab === name);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (name === 'profile') renderProfileTab();
+    }
+
+    document.getElementById('main-nav').addEventListener('click', function (e) {
+      const btn = e.target.closest('button[data-tab]');
+      if (btn) setTab(btn.dataset.tab);
+    });
+
+    document.addEventListener('click', function (e) {
+      const navEl = e.target.closest('[data-tab]');
+      if (navEl && !navEl.matches('#main-nav button')) {
+        e.preventDefault();
+        setTab(navEl.dataset.tab);
+      }
+    });
+
+    /* ============ МОДАЛЬНЫЕ ОКНА ============ */
+    function openModal(id) {
+      document.getElementById(id).classList.add('open');
+      const firstInput = document.getElementById(id).querySelector('input, select');
+      if (firstInput) setTimeout(function () { firstInput.focus(); }, 120);
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    function closeAllModals() {
+      document.querySelectorAll('.modal.open').forEach(function (m) { m.classList.remove('open'); });
+    }
+
+    document.querySelectorAll('[data-close-modal]').forEach(function (btn) {
+      btn.addEventListener('click', function () { closeModal(btn.dataset.closeModal); });
+    });
+
+    document.querySelectorAll('.modal').forEach(function (modal) {
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) closeModal(modal.id);
+      });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeAllModals();
+    });
+
+    document.getElementById('go-to-register').addEventListener('click', function () {
+      closeModal('modal-login');
+      openModal('modal-register');
+    });
+
+    document.getElementById('go-to-login').addEventListener('click', function () {
+      closeModal('modal-register');
+      openModal('modal-login');
+    });
+
+    document.getElementById('hero-join-btn').addEventListener('click', function () {
+      if (getCurrentUser()) { setTab('class'); } else { openModal('modal-register'); }
+    });
+
+    /* ============ ВЫБОР КЛАССА (1–11 и строго А, Б, В, Г, Д) ============ */
+    function fillClassSelects() {
+      const gradeSel = document.getElementById('reg-grade');
+      const letterSel = document.getElementById('reg-letter');
+      CLASS_GRADES.forEach(function (g) {
+        const opt = document.createElement('option');
+        opt.value = String(g);
+        opt.textContent = g + ' класс';
+        gradeSel.appendChild(opt);
+      });
+      CLASS_LETTERS.forEach(function (l) {
+        const opt = document.createElement('option');
+        opt.value = l;
+        opt.textContent = '«' + l + '»';
+        letterSel.appendChild(opt);
+      });
+    }
+
+    /* ============ ВЫБОР АВАТАРА ============ */
+    let pendingAvatar = null;
+
+    function renderAvatarPicker() {
+      const picker = document.getElementById('avatar-picker');
+      AVATAR_EMOJIS.forEach(function (emoji) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'avatar-option';
+        btn.textContent = emoji;
+        btn.addEventListener('click', function () {
+          pendingAvatar = { type: 'emoji', value: emoji };
+          picker.querySelectorAll('.avatar-option').forEach(function (b) { b.classList.remove('selected'); });
+          btn.classList.add('selected');
+          const zone = document.getElementById('avatar-upload-zone');
+          zone.classList.remove('has-image');
+          document.getElementById('avatar-upload-text').textContent = '📷 Загрузить своё фото (сожмём до 150×150)';
+        });
+        picker.appendChild(btn);
+      });
+    }
+
+    function compressImageToAvatar(file) {
+      return new Promise(function (resolve, reject) {
+        if (!file || !file.type || file.type.indexOf('image') !== 0) {
+          reject(new Error('Это не изображение'));
+          return;
+        }
+        const reader = new FileReader();
+        reader.onerror = function () { reject(new Error('Не удалось прочитать файл')); };
+        reader.onload = function () {
+          const img = new Image();
+          img.onerror = function () { reject(new Error('Не удалось открыть изображение')); };
+          img.onload = function () {
+            const canvas = document.createElement('canvas');
+            canvas.width = 150;
+            canvas.height = 150;
+            const ctx = canvas.getContext('2d');
+            const side = Math.min(img.width, img.height);
+            const sx = (img.width - side) / 2;
+            const sy = (img.height - side) / 2;
+            ctx.drawImage(img, sx, sy, side, side, 0, 0, 150, 150);
+            resolve(canvas.toDataURL('image/jpeg', 0.85));
+          };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    document.getElementById('avatar-file-input').addEventListener('change', async function (e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      try {
+        const dataUrl = await compressImageToAvatar(file);
+        pendingAvatar = { type: 'image', value: dataUrl };
+        const zone = document.getElementById('avatar-upload-zone');
+        zone.classList.add('has-image');
+        document.getElementById('avatar-upload-text').textContent = '✅ Фото готово — нажми на эмодзи, чтобы выбрать вместо него';
+        document.querySelectorAll('.avatar-option').forEach(function (b) { b.classList.remove('selected'); });
+      } catch (err) {
+        toast('Не удалось обработать фото: ' + err.message, 'error');
+      } finally {
+        e.target.value = '';
+      }
+    });
+
+    function resetRegisterForm() {
+      document.getElementById('register-form').reset();
+      showFormError('register-error', null);
+      pendingAvatar = null;
+      document.querySelectorAll('.avatar-option').forEach(function (b) { b.classList.remove('selected'); });
+      const zone = document.getElementById('avatar-upload-zone');
+      zone.classList.remove('has-image');
+      document.getElementById('avatar-upload-text').textContent = '📷 Загрузить своё фото (сожмём до 150×150)';
+    }
+
+    /* ============ РЕГИСТРАЦИЯ ============ */
+    async function refreshUsersFromCloud() {
+      const cloudUsers = await pullKey('users');
+      if (Array.isArray(cloudUsers) && cloudUsers.length) {
+        return cloudUsers;
+      }
+      return getUsers();
+    }
+
+    document.getElementById('register-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      showFormError('register-error', null);
+
+      const name = document.getElementById('reg-name').value.trim().replace(/\s+/g, ' ');
+      const grade = document.getElementById('reg-grade').value;
+      const letter = document.getElementById('reg-letter').value;
+      const password = document.getElementById('reg-password').value;
+      const password2 = document.getElementById('reg-password2').value;
+
+      if (name.length < 2 || name.length > 32) {
+        showFormError('register-error', 'Имя должно быть от 2 до 32 символов.');
+        return;
+      }
+      if (!/^[А-Яа-яЁёA-Za-z][А-Яа-яЁёA-Za-z\s-]+$/.test(name)) {
+        showFormError('register-error', 'Имя может содержать только русские/латинские буквы, пробелы и дефис.');
+        return;
+      }
+      if (!isValidClass(grade, letter)) {
+        showFormError('register-error', 'Выбери класс: цифра 1–11 и буква строго А, Б, В, Г или Д.');
+        return;
+      }
+      if (password.length < 4) {
+        showFormError('register-error', 'Пароль должен быть не короче 4 символов.');
+        return;
+      }
+      if (password !== password2) {
+        showFormError('register-error', 'Пароли не совпадают.');
+        return;
+      }
+      if (!pendingAvatar) {
+        showFormError('register-error', 'Выбери эмодзи-аватар или загрузи своё фото.');
+        return;
+      }
+
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+
+      try {
+        const users = await refreshUsersFromCloud();
+        const taken = users.some(function (u) {
+          return String(u.name || '').trim().toLowerCase() === name.toLowerCase();
+        });
+        if (taken) {
+          showFormError('register-error', 'Это имя уже занято — придумай другой никнейм.');
+          return;
+        }
+
+        const user = {
+          id: 'u_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+          name: name,
+          grade: Number(grade),
+          letter: letter,
+          passwordHash: await hashPassword(password),
+          avatar: pendingAvatar,
+          points: START_POINTS,
+          status: 'Новичок',
+          isAdmin: false,
+          createdAt: new Date().toISOString()
+        };
+
+        users.push(user);
+        saveUsers(users);
+        setSessionUserId(user.id);
+        closeModal('modal-register');
+        resetRegisterForm();
+        updateAuthUI();
+        updateStats();
+        renderProfileTab();
+        toast('Добро пожаловать в Лицей №37, ' + user.name + '! Начислено 💎 ' + START_POINTS + ' баллов.', 'success');
+      } catch (err) {
+        console.warn('Регистрация: ошибка', err);
+        showFormError('register-error', 'Что-то пошло не так. Попробуй ещё раз — данные сохранятся локально даже без сети.');
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    /* ============ ВХОД ============ */
+    document.getElementById('login-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      showFormError('login-error', null);
+
+      const name = document.getElementById('login-name').value.trim().replace(/\s+/g, ' ');
+      const password = document.getElementById('login-password').value;
+
+      if (!name || !password) {
+        showFormError('login-error', 'Введи имя и пароль.');
+        return;
+      }
+
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+
+      try {
+        const users = await refreshUsersFromCloud();
+        const user = users.find(function (u) {
+          return String(u.name || '').trim().toLowerCase() === name.toLowerCase();
+        });
+
+        if (!user) {
+          showFormError('login-error', 'Ученик с таким именем не найден. Проверь написание или зарегистрируйся.');
+          return;
+        }
+
+        const hash = await hashPassword(password);
+        if (user.passwordHash !== hash) {
+          showFormError('login-error', 'Неверный пароль. Попробуй ещё раз.');
+          return;
+        }
+
+        setSessionUserId(user.id);
+        closeModal('modal-login');
+        document.getElementById('login-form').reset();
+        updateAuthUI();
+        updateStats();
+        renderProfileTab();
+        toast('С возвращением, ' + user.name + '! 👋', 'success');
+      } catch (err) {
+        console.warn('Вход: ошибка', err);
+        showFormError('login-error', 'Что-то пошло не так. Попробуй ещё раз.');
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    /* ============ ЗАЛОГ АДМИНКИ (реализация на Шаге 5) ============ */
+    function openAdminLogin() {
+      toast('👑 Вход для администратора будет полностью реализован на Шаге 5.', 'info');
+    }
+
+    document.getElementById('admin-login-btn').addEventListener('click', openAdminLogin);
+
+    /* ============ ШАПКА: кнопки входа или бейдж ученика ============ */
+    function avatarHtml(avatar, extraClass) {
+      if (avatar && avatar.type === 'image' && avatar.value) {
+        return '<div class="user-avatar ' + (extraClass || '') + '" style="background-image:url(\'' + avatar.value + '\')"></div>';
+      }
+      const emoji = avatar && avatar.value ? avatar.value : '🎓';
+      return '<div class="user-avatar ' + (extraClass || '') + '">' + esc(emoji) + '</div>';
+    }
+
+    function updateAuthUI() {
+      const area = document.getElementById('header-auth');
+      const user = getCurrentUser();
+
+      if (!user) {
+        area.innerHTML =
+          '<button class="btn btn-ghost btn-sm" id="header-login-btn">Войти</button>' +
+          '<button class="btn btn-primary btn-sm" id="header-register-btn">Регистрация</button>';
+        document.getElementById('header-login-btn').addEventListener('click', function () { openModal('modal-login'); });
+        document.getElementById('header-register-btn').addEventListener('click', function () { openModal('modal-register'); });
+        return;
+      }
+
+      const status = statusFor(user.points || 0);
+      area.innerHTML =
+        '<div class="user-badge">' +
+          avatarHtml(user.avatar) +
+          '<div class="user-info">' +
+            '<div class="user-name">' + esc(user.name) + '</div>' +
+            '<div class="user-meta"><span class="user-class">' + esc(classLabel(user)) + '</span>' +
+            '<span>' + status.icon + ' ' + esc(status.title) + '</span></div>' +
+          '</div>' +
+          '<div class="user-points">💎 ' + Number(user.points || 0) + ' б.</div>' +
+          '<button class="btn btn-ghost btn-sm" id="logout-btn" title="Выйти">Выйти</button>' +
+        '</div>';
+
+      document.getElementById('logout-btn').addEventListener('click', function () {
+        setSessionUserId(null);
+        updateAuthUI();
+        updateStats();
+        renderProfileTab();
+        toast('Ты вышел из аккаунта. До встречи!', 'info');
+      });
+    }
+
+    /* ============ ГЛАВНАЯ: СТАТИСТИКА ============ */
+    function updateStats() {
+      const users = getUsers();
+      const totalPoints = users.reduce(function (sum, u) { return sum + Number(u.points || 0); }, 0);
+      const stats = [
+        { icon: '🧑‍🎓', value: String(users.length), label: 'Учеников на портале' },
+        { icon: '🏫', value: '55', label: 'Классов: 1–11, буквы А–Д' },
+        { icon: '💎', value: String(totalPoints), label: 'Баллов заработано' },
+        { icon: '🧩', value: '6', label: 'Разделов портала' }
+      ];
+      document.getElementById('home-stats').innerHTML = stats.map(function (s) {
+        return '<div class="stat-card"><div class="stat-icon">' + s.icon + '</div>' +
+          '<div><div class="stat-value">' + esc(s.value) + '</div>' +
+          '<div class="stat-label">' + esc(s.label) + '</div></div></div>';
+      }).join('');
+    }
+
+    /* ============ ВКЛАДКА ПРОФИЛЯ ============ */
+    function renderProfileTab() {
+      const stub = document.getElementById('profile-stub');
+      const user = getCurrentUser();
+
+      if (!user) {
+        stub.innerHTML =
+          '<div class="stub-icon">👤</div>' +
+          '<h3>Личный профиль</h3>' +
+          '<p>Войди или зарегистрируйся, чтобы увидеть свой профиль, аватар и накопленные баллы.</p>' +
+          '<div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">' +
+            '<button class="btn btn-primary" id="profile-login-btn">Войти</button>' +
+            '<button class="btn btn-outline" id="profile-register-btn">Регистрация</button>' +
+          '</div>';
+        document.getElementById('profile-login-btn').addEventListener('click', function () { openModal('modal-login'); });
+        document.getElementById('profile-register-btn').addEventListener('click', function () { openModal('modal-register'); });
+        return;
+      }
+
+      const status = statusFor(user.points || 0);
+      const created = new Date(user.createdAt);
+      const createdStr = isNaN(created.getTime()) ? '' : created.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+
+      stub.innerHTML =
+        '<div style="display:flex; flex-direction:column; align-items:center; gap:8px;">' +
+          avatarHtml(user.avatar) +
+          '<h3 style="margin-top:6px;">' + esc(user.name) + '</h3>' +
+          '<div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:center;">' +
+            '<span class="user-class" style="font-size:0.9rem; padding:4px 12px;">' + esc(classLabel(user)) + ' класс</span>' +
+            '<span class="coming-badge" style="background:var(--accent-soft); color:var(--accent);">' + status.icon + ' ' + esc(status.title) + '</span>' +
+          '</div>' +
+          '<div class="user-points" style="font-size:1.05rem; margin-top:8px;">💎 ' + Number(user.points || 0) + ' баллов</div>' +
+          (createdStr ? '<div class="field-hint">На портале с ' + esc(createdStr) + '</div>' : '') +
+          '<p style="margin-top:14px;">Редактирование профиля, история баллов и Магазин наград появятся на Шаге 4.</p>' +
+        '</div>';
+    }
+
+    /* ============ ЗАПУСК ============ */
+    async function boot() {
+      fillClassSelects();
+      renderAvatarPicker();
+      updateAuthUI();
+      updateStats();
+      renderProfileTab();
+
+      await pullAll();
+
+      const users = getUsers();
+      const sessionUserId = getSessionUserId();
+      if (sessionUserId && !users.some(function (u) { return u.id === sessionUserId; })) {
+        setSessionUserId(null);
+      }
+
+      updateAuthUI();
+      updateStats();
+      renderProfileTab();
+    }
+
+    boot();
+  </script>
 </body>
 </html>
