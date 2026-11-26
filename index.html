@@ -3041,6 +3041,10 @@
       outline: 3px solid rgba(59, 130, 246, 0.4);
       outline-offset: 2px;
     }
+    .dm-controls { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:-6px 0 12px; }
+    .dm-controls .btn:disabled { opacity:0.5; cursor:not-allowed; }
+    .ch-form-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+    .ch-post-form .thumb-row { margin-top:8px; }
   </style>
 </head>
 <body class="theme-light">
@@ -3711,6 +3715,11 @@
         <h3>Личные сообщения</h3>
         <p id="dm-with"></p>
       </div>
+      <div class="dm-controls" id="dm-controls">
+        <button type="button" class="btn btn-ghost btn-sm" id="dm-block-btn">🚫 Заблокировать</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="dm-delete-btn">🗑️ Удалить чат</button>
+      </div>
+      <div class="form-error" id="dm-blocked-note" style="display:none;">Вы заблокировали этого пользователя — нажмите «✅ Разблокировать», чтобы продолжить общение.</div>
       <div class="chat-list modal-chat-list" id="dm-list-modal"></div>
       <div class="chat-form">
         <textarea id="dm-input" rows="1" placeholder="Сообщение... (Enter — отправить)"></textarea>
@@ -4119,6 +4128,10 @@
       try {
         if (panels.class.classList.contains('active')) renderClassTab();
         if (panels.social.classList.contains('active')) renderSocial();
+        const dmModal = document.getElementById('modal-dm');
+        if (dmModal && dmModal.classList.contains('open') && currentDmPartner) { renderDmMessages(); updateDmControls(); }
+        const pchatModal = document.getElementById('modal-pchat');
+        if (pchatModal && pchatModal.classList.contains('open') && openListingId) renderProductChat();
       } catch (e) {}
     }
 
@@ -6398,8 +6411,58 @@
       if (!pu) { toast('Пользователь не найден.', 'error'); return; }
       currentDmPartner = partnerId;
       document.getElementById('dm-with').innerHTML = esc(pu.name) + ' <span class="user-class">' + esc(classIdOf(pu.grade, pu.letter)) + '</span>';
+      updateDmControls();
       renderDmMessages();
       openModal('modal-dm');
+    }
+
+    function getBlockedIds() {
+      const me = getCurrentUser();
+      return me && Array.isArray(me.blockedUsers) ? me.blockedUsers : [];
+    }
+
+    function isUserBlocked(uid) {
+      return getBlockedIds().indexOf(uid) !== -1;
+    }
+
+    function updateDmControls() {
+      const btn = document.getElementById('dm-block-btn');
+      const note = document.getElementById('dm-blocked-note');
+      const input = document.getElementById('dm-input');
+      const send = document.getElementById('dm-send');
+      const blocked = !!currentDmPartner && isUserBlocked(currentDmPartner);
+      if (btn) btn.textContent = blocked ? '✅ Разблокировать' : '🚫 Заблокировать';
+      if (note) note.style.display = blocked ? 'block' : 'none';
+      if (input) input.disabled = blocked;
+      if (send) send.disabled = blocked;
+    }
+
+    function toggleBlockUser(partnerId) {
+      const me = getCurrentUser();
+      if (!me || !partnerId) return;
+      const users = getUsers();
+      const mine = users.find(function (u) { return u.id === me.id; });
+      if (!mine) return;
+      mine.blockedUsers = Array.isArray(mine.blockedUsers) ? mine.blockedUsers : [];
+      const idx = mine.blockedUsers.indexOf(partnerId);
+      if (idx !== -1) { mine.blockedUsers.splice(idx, 1); toast('✅ Пользователь разблокирован.', 'success'); }
+      else { mine.blockedUsers.push(partnerId); toast('🚫 Пользователь заблокирован.', 'success'); }
+      saveUsers(users);
+      updateDmControls();
+      renderDms();
+    }
+
+    function deleteDmChat(partnerId) {
+      const user = getCurrentUser();
+      if (!user || !partnerId) return;
+      if (!confirm('Удалить этот чат вместе со всей историей сообщений? Действие необратимо.')) return;
+      const key = dmKey(user.id, partnerId);
+      dbSave('dms', getList('dms').filter(function (m) { return m.key !== key; }));
+      setArchived(user.id, getArchived(user.id).filter(function (p) { return p !== partnerId; }));
+      currentDmPartner = null;
+      closeModal('modal-dm');
+      renderDms();
+      toast('🗑️ Чат удалён.', 'success');
     }
 
     function renderDmMessages() {
@@ -6430,6 +6493,7 @@
     function sendDm() {
       const user = getCurrentUser();
       if (!user || !currentDmPartner) return;
+      if (isUserBlocked(currentDmPartner)) { toast('🚫 Пользователь заблокирован — отправка недоступна.', 'error'); return; }
       const input = document.getElementById('dm-input');
       const text = input.value.trim();
       if (!text) return;
@@ -6447,6 +6511,16 @@
     try {
   document.getElementById('dm-input').addEventListener('keydown', function (e) {
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendDm(); }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('dm-block-btn').addEventListener('click', function () {
+        if (currentDmPartner) toggleBlockUser(currentDmPartner);
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('dm-delete-btn').addEventListener('click', function () {
+        if (currentDmPartner) deleteDmChat(currentDmPartner);
       });
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
@@ -6503,7 +6577,7 @@
         const partner = ids2[0] === user.id ? ids2[1] : ids2[0];
         if (!dialogs[partner] || (dialogs[partner].ts || 0) < (m.ts || 0)) dialogs[partner] = m;
       });
-      const partners = Object.keys(dialogs);
+      const partners = Object.keys(dialogs).filter(function (p) { return !isUserBlocked(p); });
       const active = partners.filter(function (p) { return archived.indexOf(p) === -1; })
         .sort(function (a, b) { return (dialogs[b].ts || 0) - (dialogs[a].ts || 0); });
       const inArchive = partners.filter(function (p) { return archived.indexOf(p) !== -1; })
@@ -6584,6 +6658,9 @@
     let postPhoto = null;
     let peopleQuery = '';
     let channelQuery = '';
+    const channelPhotos = {};
+    const chDrafts = {};
+    const chCmtOpen = {};
     let channelDraftEmoji = '📢';
     let volFilter = 'all';
 
@@ -6912,17 +6989,43 @@
       const posts = (ch.posts || []).slice().sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
       panel.innerHTML =
         (canPost
-          ? '<div class="ch-post-form"><textarea class="textarea-field" rows="2" maxlength="800" placeholder="Новая публикация в канал..." data-ch-input="' + esc(chId) + '"></textarea><button type="button" class="btn btn-primary btn-sm" data-ch-post="' + esc(chId) + '">🚀 Опубликовать</button></div>'
+          ? '<div class="ch-post-form"><textarea class="textarea-field" rows="2" maxlength="800" placeholder="Новая публикация в канале..." data-ch-input="' + esc(chId) + '">' + esc(chDrafts[chId] || '') + '</textarea>' +
+            (channelPhotos[chId] ? '<div class="thumb-row"><div class="thumb"><img src="' + channelPhotos[chId] + '" alt=""><button type="button" class="thumb-del" data-ch-photo-del="' + esc(chId) + '">✕</button></div></div>' : '') +
+            '<div class="ch-form-row"><button type="button" class="btn btn-primary btn-sm" data-ch-post="' + esc(chId) + '">🚀 Опубликовать</button><button type="button" class="btn btn-outline btn-sm" data-ch-photo="' + esc(chId) + '">📷 Прикрепить фото</button><input type="file" accept="image/*" hidden data-ch-file="' + esc(chId) + '"></div></div>'
           : (!user ? '<p class="empty-line">Войди, чтобы публиковать записи.</p>' : '')) +
         (posts.length
           ? posts.map(function (p) {
               const canManage = user && (p.userId === user.id || user.isAdmin || ch.ownerId === user.id);
+              const chpLiked = user && (p.likes || []).indexOf(user.id) !== -1;
+              const chpComments = Array.isArray(p.comments) ? p.comments : [];
+              const chpOpen = !!chCmtOpen[p.id];
               return '<div class="comment">' +
                 avatarHtml(p.avatar) +
                 '<div class="comment-body">' +
                   '<div class="mini-head"><span class="mini-author">' + esc(p.name) + '</span><span>' + fmtDateTime(p.ts) + (p.edited ? ' · изменено' : '') + '</span></div>' +
                   '<div>' + esc(p.text) + '</div>' +
-                  (canManage ? '<div class="mini-actions"><button type="button" data-chp-edit="' + esc(chId) + '|' + esc(p.id) + '">✏️</button><button type="button" data-chp-del="' + esc(chId) + '|' + esc(p.id) + '">🗑️</button></div>' : '') +
+                  (p.photo ? '<img class="post-photo" src="' + p.photo + '" alt="">' : '') +
+                  '<div class="post-foot">' +
+                    '<button type="button" class="btn btn-ghost btn-sm" data-chp-like="' + esc(chId) + '|' + esc(p.id) + '">' + (chpLiked ? '❤️' : '🤍') + ' ' + (p.likes || []).length + '</button>' +
+                    '<button type="button" class="btn btn-ghost btn-sm" data-chp-cmts="' + esc(chId) + '|' + esc(p.id) + '">💬 ' + chpComments.length + '</button>' +
+                    (canManage ? '<button type="button" class="btn btn-ghost btn-sm" data-chp-edit="' + esc(chId) + '|' + esc(p.id) + '">✏️ Изменить</button><button type="button" class="btn btn-ghost btn-sm" data-chp-del="' + esc(chId) + '|' + esc(p.id) + '">🗑️ Удалить</button>' : '') +
+                  '</div>' +
+                  '<div class="comment-block' + (chpOpen ? ' open' : '') + '">' +
+                    (chpComments.length
+                      ? chpComments.map(function (c) {
+                          const mineC = user && c.userId === user.id;
+                          return '<div class="comment">' +
+                            avatarHtml(c.avatar) +
+                            '<div class="comment-body">' +
+                              '<div class="mini-head"><span class="mini-author">' + esc(c.name) + '</span><span>' + fmtDateTime(c.ts) + '</span></div>' +
+                              '<div>' + esc(c.text) + '</div>' +
+                              (mineC ? '<div class="mini-actions"><button type="button" data-chpc-del="' + esc(chId) + '|' + esc(p.id) + '|' + esc(c.id) + '">🗑️ Удалить</button></div>' : '') +
+                            '</div>' +
+                          '</div>';
+                        }).join('')
+                      : '<p class="empty-line">Комментариев пока нет.</p>') +
+                    (user ? '<div class="comment-form"><input type="text" data-chp-cmt-input="' + esc(chId) + '|' + esc(p.id) + '" placeholder="Комментарий... (Enter — отправить)" maxlength="300"></div>' : '') +
+                  '</div>' +
                 '</div>' +
               '</div>';
             }).join('')
@@ -6976,10 +7079,68 @@ try {
           const text = input ? input.value.trim() : '';
           if (text.length < 3) { toast('Напиши текст публикации (минимум 3 символа).', 'error'); return; }
           ch.posts = ch.posts || [];
-          ch.posts.push({ id: makeId('chp'), userId: user.id, name: user.name, avatar: user.avatar, text: text, ts: Date.now(), edited: false });
+          ch.posts.push({ id: makeId('chp'), userId: user.id, name: user.name, avatar: user.avatar, text: text, photo: channelPhotos[chId] || null, ts: Date.now(), edited: false, likes: [], comments: [] });
+          delete channelPhotos[chId];
+          delete chDrafts[chId];
           dbSave('channels', list);
           renderChannelFeed(chId);
           toast('🚀 Публикация отправлена в канал!', 'success');
+          return;
+        }
+        const chpLikeBtn = e.target.closest('[data-chp-like]');
+        if (chpLikeBtn) {
+          if (!user) { openModal('modal-login'); return; }
+          const sep = chpLikeBtn.dataset.chpLike.lastIndexOf('|');
+          const chId = chpLikeBtn.dataset.chpLike.slice(0, sep);
+          const postId = chpLikeBtn.dataset.chpLike.slice(sep + 1);
+          const list = getList('channels');
+          const ch = list.find(function (x) { return x.id === chId; });
+          const p = ch && (ch.posts || []).find(function (x) { return x.id === postId; });
+          if (!p) return;
+          p.likes = p.likes || [];
+          const idx = p.likes.indexOf(user.id);
+          if (idx !== -1) p.likes.splice(idx, 1); else p.likes.push(user.id);
+          dbSave('channels', list);
+          renderChannelFeed(chId);
+          return;
+        }
+        const chpCmtsBtn = e.target.closest('[data-chp-cmts]');
+        if (chpCmtsBtn) {
+          const sep = chpCmtsBtn.dataset.chpCmts.lastIndexOf('|');
+          const postId = chpCmtsBtn.dataset.chpCmts.slice(sep + 1);
+          chCmtOpen[postId] = !chCmtOpen[postId];
+          renderChannelFeed(chpCmtsBtn.dataset.chpCmts.slice(0, sep));
+          return;
+        }
+        const chPhotoBtn = e.target.closest('[data-ch-photo]');
+        if (chPhotoBtn) {
+          const fileInput = document.querySelector('[data-ch-file="' + chPhotoBtn.dataset.chPhoto + '"]');
+          if (fileInput) fileInput.click();
+          return;
+        }
+        const chPhotoDel = e.target.closest('[data-ch-photo-del]');
+        if (chPhotoDel) {
+          delete channelPhotos[chPhotoDel.dataset.chPhotoDel];
+          renderChannelFeed(chPhotoDel.dataset.chPhotoDel);
+          return;
+        }
+        const chpcDelBtn = e.target.closest('[data-chpc-del]');
+        if (chpcDelBtn) {
+          if (!user) return;
+          const parts = chpcDelBtn.dataset.chpcDel.split('|');
+          const chId = parts[0];
+          const postId = parts[1];
+          const cmtId = parts[2];
+          const list = getList('channels');
+          const ch = list.find(function (x) { return x.id === chId; });
+          const p = ch && (ch.posts || []).find(function (x) { return x.id === postId; });
+          if (!p || !Array.isArray(p.comments)) return;
+          const c = p.comments.find(function (x) { return x.id === cmtId && x.userId === user.id; });
+          if (!c) return;
+          p.comments.splice(p.comments.indexOf(c), 1);
+          chCmtOpen[postId] = true;
+          dbSave('channels', list);
+          renderChannelFeed(chId);
           return;
         }
         const chpEdit = e.target.closest('[data-chp-edit]');
@@ -7019,6 +7180,51 @@ try {
         }
       });
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('channels-grid').addEventListener('input', function (e) {
+        const ta = e.target.closest('[data-ch-input]');
+        if (ta) chDrafts[ta.dataset.chInput] = ta.value;
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('channels-grid').addEventListener('change', async function (e) {
+        const fi = e.target.closest('[data-ch-file]');
+        if (!fi || !fi.files || !fi.files[0]) return;
+        const chId = fi.dataset.chFile;
+        try { channelPhotos[chId] = await compressImage(fi.files[0], 1000, 0.72); }
+        catch (errPhoto37) { toast('Не удалось обработать фото.', 'error'); }
+        fi.value = '';
+        renderChannelFeed(chId);
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('channels-grid').addEventListener('keydown', function (e) {
+        const inp = e.target.closest('[data-chp-cmt-input]');
+        if (inp && e.key === 'Enter') { e.preventDefault(); sendChannelComment(inp.dataset.chpCmtInput); }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    function sendChannelComment(data) {
+      const user = getCurrentUser();
+      if (!user || !data) return;
+      const sep = data.lastIndexOf('|');
+      const chId = data.slice(0, sep);
+      const postId = data.slice(sep + 1);
+      const list = getList('channels');
+      const ch = list.find(function (x) { return x.id === chId; });
+      const p = ch && (ch.posts || []).find(function (x) { return x.id === postId; });
+      if (!p) return;
+      const input = document.querySelector('[data-chp-cmt-input="' + chId + '|' + postId + '"]');
+      const text = input ? input.value.trim() : '';
+      if (!text) return;
+      if (!antispamCheck('chcmt', text)) return;
+      p.comments = Array.isArray(p.comments) ? p.comments : [];
+      p.comments.push({ id: makeId('chc'), userId: user.id, name: user.name, avatar: user.avatar, text: text, ts: Date.now() });
+      chCmtOpen[postId] = true;
+      dbSave('channels', list);
+      renderChannelFeed(chId);
+    }
 
     function renderChannelEmoji() {
       const wrap = document.getElementById('ch-emoji-grid');
