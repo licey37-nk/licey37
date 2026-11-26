@@ -2808,6 +2808,82 @@
       #ai-window { right: 12px; bottom: 88px; }
       #ai-fab { bottom: 14px; right: 14px; width: 56px; height: 56px; }
     }
+    /* ======== 23. ШАГ 6: АНИМАЦИИ, ПЕРЕЛИВЫ И САЛЮТ ======== */
+    .tab-panel.active { animation: pageIn 0.45s cubic-bezier(0.22, 0.9, 0.34, 1); }
+    @keyframes pageIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+    @keyframes cardIn { from { opacity: 0; transform: translateY(22px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .tab-panel.anim-cascade .grid > .card { animation: cardIn 0.5s cubic-bezier(0.22, 0.9, 0.34, 1) backwards; }
+    .tab-panel.anim-cascade .grid > .card:nth-child(1) { animation-delay: 0.05s; }
+    .tab-panel.anim-cascade .grid > .card:nth-child(2) { animation-delay: 0.13s; }
+    .tab-panel.anim-cascade .grid > .card:nth-child(3) { animation-delay: 0.21s; }
+    .tab-panel.anim-cascade .grid > .card:nth-child(4) { animation-delay: 0.29s; }
+    .tab-panel.anim-cascade .grid > .card:nth-child(5) { animation-delay: 0.37s; }
+    .tab-panel.anim-cascade .grid > .card:nth-child(6) { animation-delay: 0.45s; }
+    .tab-panel.anim-cascade .grid > .card:nth-child(7) { animation-delay: 0.53s; }
+    .tab-panel.anim-cascade .grid > .card:nth-child(n+8) { animation-delay: 0.6s; }
+
+    .hero-banner { background-size: 170% 170%; animation: heroBreath 9s ease-in-out infinite; }
+    @keyframes heroBreath { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+    .hero-banner h1 {
+      background: linear-gradient(90deg, #ffffff 0%, #a5f3fc 25%, #ffffff 50%, #fde68a 75%, #ffffff 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: heroShimmer 7s linear infinite;
+    }
+    @keyframes heroShimmer { 0% { background-position: 200% center; } 100% { background-position: -200% center; } }
+
+    .card:hover { transform: translateY(-4px) scale(1.01); box-shadow: var(--shadow-lg), var(--glow); }
+    .btn:active { transform: scale(0.97); }
+
+    .pet-avatar { position: relative; animation: petSway 3.6s ease-in-out infinite; }
+    .pet-avatar.sleeping { animation: petZzz 4.5s ease-in-out infinite; }
+    .pet-avatar.jump { animation: petJump 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .pet-avatar.wobble { animation: petWobble 0.7s ease-in-out; }
+    @keyframes petSway { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg) translateY(-3px); } }
+    @keyframes petJump { 0% { transform: translateY(0); } 35% { transform: translateY(-24px) rotate(-7deg); } 62% { transform: translateY(0); } 80% { transform: translateY(-9px); } 100% { transform: translateY(0); } }
+    @keyframes petWobble { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-10deg) scale(1.06); } 70% { transform: rotate(10deg) scale(1.06); } }
+    @keyframes petZzz { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(0.96); filter: brightness(0.82); } }
+
+    .pet-scale { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; color: var(--muted); margin: 5px 0; font-weight: 600; }
+    .pet-scale .xp-bar { flex: 1; height: 10px; margin: 0; }
+    .pet-scale b { min-width: 54px; text-align: right; font-size: 0.74rem; color: var(--text); white-space: nowrap; }
+    .scale-hunger .xp-progress { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+    .scale-fun .xp-progress { background: linear-gradient(90deg, #38bdf8, #8b5cf6); }
+    .pet-sleep-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(99, 102, 241, 0.14); color: #4f46e5; font-weight: 700; font-size: 0.78rem; padding: 5px 12px; border-radius: 999px; margin-top: 8px; }
+
+    .float-heart { position: absolute; bottom: 8px; pointer-events: none; animation: heartRise 1.5s ease-out forwards; z-index: 5; }
+    @keyframes heartRise { 0% { opacity: 0; transform: translateY(0) scale(0.5); } 15% { opacity: 1; } 100% { opacity: 0; transform: translateY(-95px) scale(1.3); } }
+
+    .confetti-layer { position: fixed; inset: 0; pointer-events: none; z-index: 3000; overflow: hidden; }
+    .confetti-piece { position: absolute; top: -24px; animation: confettiFall linear forwards; will-change: transform; }
+    @keyframes confettiFall { 0% { transform: translate(0, -4vh) rotate(0deg); opacity: 1; } 100% { transform: translate(var(--drift, 0px), 108vh) rotate(var(--spin, 540deg)); opacity: 0.85; } }
+
+    .modal-content { animation: modalIn 0.28s cubic-bezier(0.34, 1.3, 0.64, 1); }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+    #ai-window { animation: aiSlideIn 0.4s cubic-bezier(0.22, 0.9, 0.34, 1); }
+    @keyframes aiSlideIn { from { opacity: 0; transform: translateY(48px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+    .pet-top-card { margin-bottom: 20px; }
+    .pet-top-table { overflow-x: auto; }
+    .pet-top-table table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+    .pet-top-table th, .pet-top-table td { padding: 9px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+    .pet-top-table th { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); }
+    .pet-top-table tr:last-child td { border-bottom: none; }
+    .pet-top-kind { color: var(--muted); font-size: 0.76rem; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tab-panel.active, .tab-panel.anim-cascade .grid > .card, .hero-banner, .hero-banner h1,
+      .pet-avatar, .pet-avatar.sleeping, .pet-avatar.jump, .pet-avatar.wobble,
+      .float-heart, .confetti-piece, .modal-content, #ai-window {
+        animation: none !important;
+      }
+    }
+
   </style>
 </head>
 <body class="theme-light">
@@ -3064,6 +3140,8 @@
         </div>
 
         <div class="card" id="pet-card" style="margin-bottom:20px;"></div>
+
+        <div id="pet-top" style="margin-bottom:20px;"></div>
 
         <div class="card" style="margin-bottom:20px;">
           <h3 class="info-title" data-editable="hw-title">📌 Доска дедлайнов и домашки</h3>
@@ -3533,6 +3611,7 @@
     <button data-adm="rights">👥 Права</button>
     <button data-adm="scripts">💻 Скрипты</button>
     <button data-adm="rewards">🎁 Призы</button>
+    <button data-adm="pets">🐾 Талисманы</button>
     <button data-adm="pass">🔑 Пароль</button>
     <button id="adm-exit-btn">🚪 Выйти</button>
   </div>
@@ -3805,6 +3884,9 @@
       document.querySelectorAll('#main-nav button').forEach(function (btn) {
         btn.classList.toggle('active', btn.dataset.tab === name);
       });
+      const cascadePanel = panels[name];
+      cascadePanel.classList.add('anim-cascade');
+      setTimeout(function () { cascadePanel.classList.remove('anim-cascade'); }, 1800);
       window.scrollTo({ top: 0, behavior: 'smooth' });
       if (name === 'games') { fillComplimentTargets(); renderCompliments(); renderReactionRecords(); }
       if (name === 'profile') renderProfileTab();
@@ -4358,6 +4440,7 @@
       saveUsers(users);
       useShopItem(id, true);
       toast('🎉 Покупка совершена: ' + item.name + '!', 'success');
+      launchConfetti();
     }
 
     function useShopItem(id, justBought) {
@@ -4490,17 +4573,30 @@
 
     const BEASTS = [
       { emoji: '🐯', name: 'Амурский тигр' },
+      { emoji: '🐅', name: 'Бенгальский тигр' },
       { emoji: '🐘', name: 'Индийский слон' },
       { emoji: '🐺', name: 'Полярный волк' },
       { emoji: '🦁', name: 'Золотой лев' },
       { emoji: '🦅', name: 'Горный орёл' },
       { emoji: '🦊', name: 'Огненный лис' },
       { emoji: '🐻', name: 'Бурый медведь' },
+      { emoji: '🐻‍❄️', name: 'Белый медведь' },
       { emoji: '🐼', name: 'Большая панда' },
       { emoji: '🐆', name: 'Снежный барс' },
+      { emoji: '🐆', name: 'Гепард' },
       { emoji: '🦉', name: 'Мудрый филин' },
       { emoji: '🐉', name: 'Нефритовый дракон' },
-      { emoji: '🐬', name: 'Дельфин' }
+      { emoji: '🐬', name: 'Атлантический дельфин' },
+      { emoji: '🦈', name: 'Белая акула' },
+      { emoji: '🦅', name: 'Сапсан' },
+      { emoji: '🦝', name: 'Енот-полоскун' },
+      { emoji: '🦘', name: 'Рыжий кенгуру' },
+      { emoji: '🦓', name: 'Саванная зебра' },
+      { emoji: '🦒', name: 'Жираф' },
+      { emoji: '🐨', name: 'Коала' },
+      { emoji: '🦦', name: 'Речная выдра' },
+      { emoji: '🐧', name: 'Императорский пингвин' },
+      { emoji: '🦄', name: 'Звёздный пегас' }
     ];
 
     const SUBJECTS = ['Алгебра', 'Геометрия', 'Физика', 'Химия', 'Русский язык', 'Литература', 'Английский язык', 'История', 'Обществознание', 'Биология', 'География', 'Информатика', 'Татарский язык', 'ОБЖ'];
@@ -4788,6 +4884,7 @@
       space.style.display = 'block';
       document.getElementById('class-chip').textContent = currentClass + ' класс';
       renderPet();
+      renderPetTop();
       renderHomework();
       renderChat();
     }
@@ -4813,8 +4910,14 @@
       return data && typeof data === 'object' && !Array.isArray(data) ? data : {};
     }
 
+    function getPetRaw(classId) {
+      const map = getPetsMap();
+      return map[classId] || null;
+    }
+
     function getPet(classId) {
-      return getPetsMap()[classId] || null;
+      const raw = getPetRaw(classId);
+      return raw ? normalizePet(raw) : null;
     }
 
     function savePet(classId, pet) {
@@ -4823,7 +4926,148 @@
       dbSave('pets', map);
     }
 
-    function petLevel(xp) { return Math.floor((xp || 0) / 100) + 1; }
+    /* ===== Шаг 6: движок талисманов (голод/веселье/XP, МСК-сон, топ-5, салют) ===== */
+
+    const PET_XP_PER_LEVEL = 300;
+    const PET_ACTION_CD = 10 * 60 * 1000;
+
+    function launchConfetti() {
+      if (document.querySelector('.confetti-layer')) return;
+      const layer = document.createElement('div');
+      layer.className = 'confetti-layer';
+      const colors = ['#f43f5e', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#facc15', '#38bdf8'];
+      for (let i = 0; i < 90; i++) {
+        const p = document.createElement('div');
+        p.className = 'confetti-piece';
+        p.style.left = (Math.random() * 100) + 'vw';
+        p.style.background = colors[Math.floor(Math.random() * colors.length)];
+        p.style.animationDelay = (Math.random() * 1.2) + 's';
+        p.style.animationDuration = (2.6 + Math.random() * 2.4) + 's';
+        const size = 6 + Math.random() * 8;
+        p.style.width = size + 'px';
+        p.style.height = (size * (Math.random() > 0.5 ? 1 : 1.8)) + 'px';
+        if (Math.random() > 0.5) p.style.borderRadius = '50%';
+        p.style.setProperty('--drift', (Math.random() * 160 - 80) + 'px');
+        p.style.setProperty('--spin', (Math.random() * 1080 - 540) + 'deg');
+        layer.appendChild(p);
+      }
+      document.body.appendChild(layer);
+      setTimeout(function () { if (layer.parentNode) layer.parentNode.removeChild(layer); }, 6000);
+    }
+
+    function spawnHearts(container) {
+      if (!container) return;
+      const emojis = ['❤️', '💖', '💛', '🧡', '💗'];
+      for (let i = 0; i < 6; i++) {
+        const h = document.createElement('div');
+        h.className = 'float-heart';
+        h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        h.style.left = (10 + Math.random() * 80) + '%';
+        h.style.animationDelay = (i * 0.12) + 's';
+        h.style.fontSize = (14 + Math.random() * 12) + 'px';
+        container.appendChild(h);
+        setTimeout(function () { if (h.parentNode) h.parentNode.removeChild(h); }, 1900 + i * 120);
+      }
+    }
+
+    function normalizePet(pet) {
+      if (!pet || typeof pet !== 'object') return null;
+      const now = Date.now();
+      const p = Object.assign({}, pet);
+      if (typeof p.level !== 'number' || p.level < 1) {
+        const legacy = typeof p.xp === 'number' && p.xp > 0 ? p.xp : 0;
+        p.level = Math.max(Math.floor(legacy / PET_XP_PER_LEVEL) + 1, Math.floor(legacy / 100) + 1);
+        p.xp = legacy % PET_XP_PER_LEVEL;
+      }
+      if (typeof p.xp !== 'number' || p.xp < 0) p.xp = 0;
+      if (p.xp >= PET_XP_PER_LEVEL) { p.level += Math.floor(p.xp / PET_XP_PER_LEVEL); p.xp = p.xp % PET_XP_PER_LEVEL; }
+      if (typeof p.hunger !== 'number') p.hunger = 100;
+      if (typeof p.fun !== 'number') p.fun = 100;
+      p.hunger = Math.max(0, Math.min(100, Math.round(p.hunger)));
+      p.fun = Math.max(0, Math.min(100, Math.round(p.fun)));
+      if (typeof p.lastUpdate !== 'number') p.lastUpdate = now;
+      return p;
+    }
+
+    function mskDayStart(ts) {
+      const d = new Date(ts + 3 * 3600000);
+      d.setUTCHours(0, 0, 0, 0);
+      return d.getTime() - 3 * 3600000;
+    }
+
+    function mskHour(ts) { return new Date(ts + 3 * 3600000).getUTCHours(); }
+
+    function isPetSleeping(ts) {
+      const h = mskHour(ts || Date.now());
+      return h >= 22 || h < 8;
+    }
+
+    function daytimeMinutes(fromTs, toTs) {
+      if (!toTs || toTs <= fromTs) return 0;
+      let from = fromTs;
+      if (toTs - from > 400 * 86400000) from = toTs - 400 * 86400000;
+      let total = 0;
+      let day = mskDayStart(from);
+      let guard = 0;
+      while (day <= toTs && guard < 450) {
+        const lo = Math.max(from, day + 8 * 3600000);
+        const hi = Math.min(toTs, day + 22 * 3600000);
+        if (hi > lo) total += (hi - lo) / 60000;
+        day += 86400000;
+        guard++;
+      }
+      return Math.floor(total);
+    }
+
+    function petLoseXp(pet, amount) {
+      pet.xp = (typeof pet.xp === 'number' ? pet.xp : 0) - amount;
+      while (pet.xp < 0) {
+        if (pet.level > 1) { pet.level--; pet.xp += PET_XP_PER_LEVEL; }
+        else { pet.xp = 0; break; }
+      }
+    }
+
+    function applyPetDecay(pet) {
+      if (!pet) return false;
+      const now = Date.now();
+      const last = typeof pet.lastUpdate === 'number' ? pet.lastUpdate : now;
+      pet.lastUpdate = now;
+      if (now <= last) return false;
+      const dm = daytimeMinutes(last, now);
+      if (dm <= 0) return false;
+      let xpLost = 0;
+      const hungerLost = Math.floor(dm / 4);
+      const funLost = Math.floor(dm / 4);
+      if (hungerLost > 0) {
+        if (dm >= pet.hunger * 4) xpLost += Math.floor((dm - pet.hunger * 4) / 5);
+        pet.hunger = Math.max(0, pet.hunger - hungerLost);
+      }
+      if (funLost > 0) {
+        if (dm >= pet.fun * 4) xpLost += Math.floor((dm - pet.fun * 4) / 10);
+        pet.fun = Math.max(0, pet.fun - funLost);
+      }
+      if (xpLost > 0) petLoseXp(pet, xpLost);
+      return true;
+    }
+
+    function petTotalXp(pet) { return ((pet.level || 1) - 1) * PET_XP_PER_LEVEL + (pet.xp || 0); }
+
+    function addPetXp(classId, amount) {
+      const pet = getPet(classId);
+      if (!pet || !(amount > 0)) return null;
+      applyPetDecay(pet);
+      pet.xp += amount;
+      let leveled = false;
+      while (pet.xp >= PET_XP_PER_LEVEL) { pet.xp -= PET_XP_PER_LEVEL; pet.level++; leveled = true; }
+      savePet(classId, pet);
+      if (leveled) {
+        launchConfetti();
+        toast('🎉 ' + pet.nick + ' вырастает до ' + pet.level + '-го уровня! Салют классу ' + classId + '!', 'success');
+      }
+      if (currentClass === classId) renderPet();
+      renderPetTop();
+      return pet;
+    }
 
     function petRank(level) {
       if (level >= 8) return 'Легенда школы';
@@ -4832,12 +5076,13 @@
       return 'Малыш-талисман';
     }
 
-    function petMood(pet) {
-      if (pet.lastFed === todayStr()) return '😺 Сыт и доволен';
-      const y = new Date(Date.now() - 86400000);
-      const yStr = y.getFullYear() + '-' + String(y.getMonth() + 1).padStart(2, '0') + '-' + String(y.getDate()).padStart(2, '0');
-      if (pet.lastFed === yStr) return '🤔 Немного проголодался';
-      return '🍖 Голоден... покорми питомца!';
+    function petStatus(pet) {
+      if (isPetSleeping(Date.now())) return '💤 Питомец сладко спит';
+      if (pet.hunger <= 15 && pet.fun <= 15) return '😢 Совсем грустит: голоден и скучает...';
+      if (pet.hunger <= 15) return '🍖 Проголодался — покорми!';
+      if (pet.fun <= 15) return '🎾 Скучает — поиграй!';
+      if (pet.hunger >= 80 && pet.fun >= 80) return '😺 Сыт, весел и полон сил!';
+      return '🙂 Чувствует себя хорошо.';
     }
 
     let pendingBeast = null;
@@ -4845,18 +5090,24 @@
     function renderPet() {
       const card = document.getElementById('pet-card');
       if (!card || !currentClass) return;
-      const pet = getPet(currentClass);
+      const raw = getPetRaw(currentClass);
+      const pet = raw ? normalizePet(raw) : null;
+      if (pet) {
+        const migrated = typeof raw.hunger !== 'number' || typeof raw.fun !== 'number' || typeof raw.level !== 'number' || typeof raw.lastUpdate !== 'number';
+        const decayed = applyPetDecay(pet);
+        if (migrated || decayed) savePet(currentClass, pet);
+      }
       if (!pet) {
         pendingBeast = null;
         const options = BEASTS.map(function (b, i) {
-          return '<button type="button" class="beast-option" data-beast="' + i + '">' +
+          return '<button type="button" class="beast-option" data-beast="' + i + '" title="' + esc(b.name) + '">' +
             '<span class="beast-emoji">' + b.emoji + '</span>' +
             '<span class="beast-name">' + esc(b.name) + '</span>' +
           '</button>';
         }).join('');
         card.innerHTML =
           '<h3 class="info-title">🐾 Талисман класса ' + esc(currentClass) + '</h3>' +
-          '<p class="info-desc">Класс ещё не выбрал питомца. Выбери благородного зверя и придумай ему кличку!</p>' +
+          '<p class="info-desc">Класс ещё не выбрал питомца из коллекции 25 благородных зверей. Выбери зверя и придумай ему кличку!</p>' +
           '<div class="beast-picker">' + options + '</div>' +
           '<div class="beast-nick-row">' +
             '<input type="text" id="beast-nick" placeholder="Кличка питомца" maxlength="24">' +
@@ -4872,48 +5123,171 @@
           });
         });
         document.getElementById('beast-save-btn').addEventListener('click', function () {
+          const u = getCurrentUser();
+          if (!u) { openModal('modal-login'); toast('Войди, чтобы выбрать талисмана класса.', 'info'); return; }
           if (!pendingBeast) { toast('Сначала выбери зверя из коллекции.', 'error'); return; }
           const nick = document.getElementById('beast-nick').value.trim() || pendingBeast.name;
-          savePet(currentClass, { beast: pendingBeast.emoji, beastName: pendingBeast.name, nick: nick, xp: 0, lastFed: null });
+          savePet(currentClass, normalizePet({ beast: pendingBeast.emoji, beastName: pendingBeast.name, nick: nick }));
           renderPet();
+          renderPetTop();
           toast('🐾 Встречайте талисмана класса ' + currentClass + ' — ' + nick + '!', 'success');
         });
         return;
       }
-      const level = petLevel(pet.xp);
-      const xpInLevel = (pet.xp || 0) % 100;
-      const fedToday = pet.lastFed === todayStr();
+      const nowTs = Date.now();
+      const sleeping = isPetSleeping(nowTs);
+      const feedReady = !pet.lastFeed || nowTs - pet.lastFeed >= PET_ACTION_CD;
+      const playReady = !pet.lastPlay || nowTs - pet.lastPlay >= PET_ACTION_CD;
+      const feedLeft = feedReady ? 0 : Math.ceil((PET_ACTION_CD - (nowTs - pet.lastFeed)) / 60000);
+      const playLeft = playReady ? 0 : Math.ceil((PET_ACTION_CD - (nowTs - pet.lastPlay)) / 60000);
       card.innerHTML =
-        '<div class="pet-layout">' +
-          '<div class="pet-avatar">' + pet.beast + '</div>' +
+        '<div class="pet-card-top">' +
+          '<div class="pet-avatar' + (sleeping ? ' sleeping' : '') + '" id="pet-avatar">' + pet.beast + '</div>' +
           '<div style="min-width:0; flex:1;">' +
-            '<h3 class="info-title" style="margin-bottom:4px;">' + esc(pet.nick) + '</h3>' +
-            '<div class="pet-rank">' + petRank(level) + ' · ' + esc(pet.beastName) + ' · талисман класса ' + esc(currentClass) + '</div>' +
-            '<div class="xp-bar"><div class="xp-progress" style="width:' + xpInLevel + '%;"></div></div>' +
-            '<div class="pet-meta">Уровень ' + level + ' · XP: ' + (pet.xp || 0) + '/100 до следующего уровня</div>' +
-            '<div class="pet-mood">' + petMood(pet) + '</div>' +
+            '<h3 class="pet-nick" style="margin-bottom:2px;">' + esc(pet.nick) + '</h3>' +
+            '<div class="pet-rank">' + petRank(pet.level) + ' · ' + esc(pet.beastName) + ' · талисман класса ' + esc(currentClass) + '</div>' +
+            '<div class="pet-scale"><span>🍖 Голод</span><div class="xp-bar scale-hunger"><div class="xp-progress" style="width:' + pet.hunger + '%;"></div></div><b>' + pet.hunger + '/100</b></div>' +
+            '<div class="pet-scale"><span>🎾 Веселье</span><div class="xp-bar scale-fun"><div class="xp-progress" style="width:' + pet.fun + '%;"></div></div><b>' + pet.fun + '/100</b></div>' +
+            '<div class="pet-scale"><span>⭐ Опыт</span><div class="xp-bar"><div class="xp-progress" style="width:' + Math.round(pet.xp / PET_XP_PER_LEVEL * 100) + '%;"></div></div><b>' + pet.xp + '/' + PET_XP_PER_LEVEL + '</b></div>' +
+            '<div class="pet-meta">Уровень ' + pet.level + ' · XP: ' + pet.xp + '/' + PET_XP_PER_LEVEL + ' до следующего уровня</div>' +
+            '<div class="pet-mood">' + petStatus(pet) + '</div>' +
+            (sleeping ? '<div class="pet-sleep-badge">💤 Питомец сладко спит (до 08:00 МСК)</div>' : '') +
             '<div class="pet-actions">' +
-              '<button class="btn btn-primary btn-sm" id="feed-btn"' + (fedToday ? ' disabled' : '') + '>🍖 Покормить (+10 XP, раз в день)</button>' +
-              '<button class="btn btn-ghost btn-sm" id="pet-rechoose-btn">🔄 Выбрать заново</button>' +
+              '<button class="btn btn-primary btn-sm" id="pet-feed-btn"' + (!feedReady || sleeping ? ' disabled' : '') + '>🍖 Покормить (+12 XP)' + (feedReady ? '' : ' · через ' + feedLeft + ' мин') + '</button>' +
+              '<button class="btn btn-ghost btn-sm" id="pet-play-btn"' + (!playReady || sleeping ? ' disabled' : '') + '>🎾 Поиграть (+10 XP)' + (playReady ? '' : ' · через ' + playLeft + ' мин') + '</button>' +
             '</div>' +
           '</div>' +
         '</div>';
-      document.getElementById('feed-btn').addEventListener('click', function () {
+      document.getElementById('pet-feed-btn').addEventListener('click', function () {
         const u = getCurrentUser();
-        if (!u) { openModal('modal-login'); toast('Войди, чтобы покормить питомца класса.', 'info'); return; }
+        if (!u) { openModal('modal-login'); toast('Войди, чтобы заботиться о питомце класса.', 'info'); return; }
         const fresh = getPet(currentClass);
-        if (!fresh || fresh.lastFed === todayStr()) { renderPet(); return; }
-        fresh.xp = (fresh.xp || 0) + 10;
-        fresh.lastFed = todayStr();
+        if (!fresh) { renderPet(); return; }
+        if (isPetSleeping(Date.now())) { toast('💤 ' + fresh.nick + ' сладко спит до 08:00 МСК. Ночью голод и веселье не тратятся!', 'info'); return; }
+        if (Date.now() - (fresh.lastFeed || 0) < PET_ACTION_CD) { toast('🍖 ' + fresh.nick + ' недавно ел. Загляни чуть позже!', 'info'); return; }
+        fresh.hunger = 100;
+        fresh.lastFeed = Date.now();
         savePet(currentClass, fresh);
-        renderPet();
-        toast('🍖 ' + fresh.nick + ' сыт! +10 XP классу.', 'success');
+        addPetXp(currentClass, 12);
+        petCelebrate('jump');
+        toast('🍖 ' + fresh.nick + ' сыт и доволен! +12 XP классу.', 'success');
       });
-      document.getElementById('pet-rechoose-btn').addEventListener('click', function () {
-        savePet(currentClass, null);
-        renderPet();
+      document.getElementById('pet-play-btn').addEventListener('click', function () {
+        const u = getCurrentUser();
+        if (!u) { openModal('modal-login'); toast('Войди, чтобы играть с питомцем класса.', 'info'); return; }
+        const fresh = getPet(currentClass);
+        if (!fresh) { renderPet(); return; }
+        if (isPetSleeping(Date.now())) { toast('💤 ' + fresh.nick + ' видит сладкие сны. Поиграешь утром!', 'info'); return; }
+        if (Date.now() - (fresh.lastPlay || 0) < PET_ACTION_CD) { toast('🎾 ' + fresh.nick + ' только что играл. Дай ему отдохнуть!', 'info'); return; }
+        fresh.fun = 100;
+        fresh.lastPlay = Date.now();
+        savePet(currentClass, fresh);
+        addPetXp(currentClass, 10);
+        petCelebrate('wobble');
+        toast('🎾 ' + fresh.nick + ' вдоволь наигрался! +10 XP классу.', 'success');
       });
     }
+
+    function petCelebrate(kind) {
+      const av = document.getElementById('pet-avatar');
+      if (av) {
+        av.classList.add(kind === 'jump' ? 'jump' : 'wobble');
+        setTimeout(function () { av.classList.remove('jump', 'wobble'); }, 900);
+      }
+      spawnHearts(av);
+    }
+
+    function renderPetTop() {
+      const wrap = document.getElementById('pet-top');
+      if (!wrap) return;
+      const map = getPetsMap();
+      const rows = Object.keys(map).map(function (cid) {
+        const p = normalizePet(map[cid]);
+        return p && p.beast ? { classId: cid, pet: p, total: petTotalXp(p) } : null;
+      }).filter(function (r) { return r !== null; });
+      rows.sort(function (a, b) { return b.total - a.total || a.classId.localeCompare(b.classId, 'ru'); });
+      const top = rows.slice(0, 5);
+      if (!top.length) { wrap.innerHTML = ''; return; }
+      const medals = ['🥇', '🥈', '🥉', '4.', '5.'];
+      wrap.innerHTML =
+        '<div class="card pet-top-card">' +
+          '<h3 class="info-title">🏆 Топ-5 талисманов Лицея №37</h3>' +
+          '<div class="pet-top-table"><table><thead><tr>' +
+            '<th>Место</th><th>Класс</th><th>Питомец и кличка</th><th>Уровень и XP</th>' +
+          '</tr></thead><tbody>' +
+          top.map(function (r, i) {
+            return '<tr>' +
+              '<td>' + medals[i] + '</td>' +
+              '<td><b>' + esc(r.classId) + '</b></td>' +
+              '<td>' + r.pet.beast + ' <b>' + esc(r.pet.nick || '') + '</b> <span class="pet-top-kind">· ' + esc(r.pet.beastName || '') + '</span></td>' +
+              '<td>Ур. ' + r.pet.level + ' · ' + r.pet.xp + '/' + PET_XP_PER_LEVEL + ' XP</td>' +
+            '</tr>';
+          }).join('') +
+          '</tbody></table></div>' +
+        '</div>';
+    }
+
+    /* ---- Админ: редактирование талисманов классов ---- */
+
+    function admPetSelectedClass() {
+      const gEl = document.getElementById('adm-pet-grade');
+      const lEl = document.getElementById('adm-pet-letter');
+      if (!gEl || !lEl) return null;
+      return isValidClass(gEl.value, lEl.value) ? classIdOf(gEl.value, lEl.value) : null;
+    }
+
+    function renderAdminPets() {
+      const body = document.getElementById('admin-tools-body');
+      if (!body) return;
+      const grades = CLASS_GRADES.map(function (g) { return '<option value="' + g + '">' + g + '</option>'; }).join('');
+      const letters = CLASS_LETTERS.map(function (l) { return '<option value="' + l + '">' + l + '</option>'; }).join('');
+      body.innerHTML =
+        '<div class="field"><label>Класс</label><div class="field-row">' +
+          '<select id="adm-pet-grade">' + grades + '</select>' +
+          '<select id="adm-pet-letter">' + letters + '</select>' +
+          '<button class="btn btn-ghost btn-sm" id="adm-pet-load">🔍 Загрузить</button>' +
+        '</div></div>' +
+        '<div id="adm-pet-editor"></div>';
+      document.getElementById('adm-pet-load').addEventListener('click', renderAdminPetEditor);
+      renderAdminPetEditor();
+    }
+
+    function renderAdminPetEditor() {
+      const ed = document.getElementById('adm-pet-editor');
+      if (!ed) return;
+      const cid = admPetSelectedClass();
+      if (!cid) { ed.innerHTML = '<p class="info-desc">Выбери класс.</p>'; return; }
+      const pet = getPet(cid);
+      const selIdx = pet ? BEASTS.findIndex(function (b) { return b.name === pet.beastName; }) : 0;
+      const beasts = BEASTS.map(function (b, i) {
+        return '<option value="' + i + '"' + (i === selIdx ? ' selected' : '') + '>' + b.emoji + ' ' + esc(b.name) + '</option>';
+      }).join('');
+      ed.innerHTML =
+        '<p class="info-desc">Текущий талисман класса ' + esc(cid) + ': ' + (pet ? pet.beast + ' «' + esc(pet.nick) + '» · ' + esc(pet.beastName) + ' · ур. ' + pet.level : 'ещё не выбран') + '</p>' +
+        '<div class="field"><label>Вид питомца</label><select id="adm-pet-beast">' + beasts + '</select></div>' +
+        '<div class="field"><label>Кличка</label><input type="text" id="adm-pet-nick" maxlength="24" value="' + esc(pet ? (pet.nick || '') : '') + '" placeholder="Кличка питомца"></div>' +
+        '<button class="btn btn-primary btn-block" id="adm-pet-save" style="margin-top:8px;">💾 Сохранить талисмана класса</button>';
+      document.getElementById('adm-pet-save').addEventListener('click', function () {
+        const classId = admPetSelectedClass();
+        if (!classId) { toast('Выбери класс.', 'error'); return; }
+        const b = BEASTS[Number(document.getElementById('adm-pet-beast').value)] || BEASTS[0];
+        const nick = document.getElementById('adm-pet-nick').value.trim() || b.name;
+        const before = getPetRaw(classId);
+        const cur = getPet(classId);
+        const updated = cur ? Object.assign({}, cur, { beast: b.emoji, beastName: b.name, nick: nick }) : normalizePet({ beast: b.emoji, beastName: b.name, nick: nick });
+        savePet(classId, updated);
+        adminLogAction('pet', 'Талисман класса ' + classId + ': «' + nick + '» (' + b.name + ')', { kind: 'pet', classId: classId, before: before });
+        if (currentClass === classId) renderPet();
+        renderPetTop();
+        renderAdminPetEditor();
+        toast('🐾 Талисман класса ' + classId + ' сохранён.', 'success');
+      });
+    }
+
+    setInterval(function () {
+      const panel = document.getElementById('tab-class');
+      if (panel && panel.classList.contains('active') && currentClass) renderPet();
+    }, 60000);
 
     /* ---- Доска дедлайнов ---- */
 
@@ -4972,12 +5346,7 @@
       if (item.doneBy.indexOf(user.id) !== -1) return;
       item.doneBy.push(user.id);
       dbSave('homework', list);
-      const pet = getPet(currentClass);
-      if (pet) {
-        pet.xp = (pet.xp || 0) + 5;
-        savePet(currentClass, pet);
-        renderPet();
-      }
+      if (getPet(currentClass)) addPetXp(currentClass, 5);
       addPointsToUser(user.id, 5);
       renderHomework();
       toast('✅ Готово! +5 баллов в профиль и +5 XP питомцу.', 'success');
@@ -6304,6 +6673,7 @@
           '<p class="info-desc">' + (user ? 'Начислено 💎 +' + (quizScore * 10) + ' баллов в твой профиль!' : 'Войди в аккаунт, чтобы получать баллы за ответы!') + '</p>' +
           '<button class="btn btn-primary" id="quiz-again-btn">🔄 Ещё раунд</button>' +
         '</div>';
+      if (quizScore >= 8) launchConfetti();
       document.getElementById('quiz-again-btn').addEventListener('click', function () {
         startQuiz(generateQuizRound());
       });
@@ -6707,6 +7077,10 @@
         dbSave('users', u.before);
         updateAuthUI();
         renderProfileTab();
+      } else if (u.kind === 'pet') {
+        savePet(u.classId, u.before || null);
+        if (currentClass === u.classId) renderPet();
+        renderPetTop();
       }
       log.splice(log.indexOf(entry), 1);
       dbSave('adminLog', log);
@@ -6852,13 +7226,14 @@
     /* ---- Инструменты админки (Журнал / Права / Призы / Пароль) ---- */
     function openAdminTool(mode) {
       adminToolsMode = mode;
-      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pass: '🔑 Смена пароля админа' };
+      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pets: '🐾 Талисманы классов', pass: '🔑 Смена пароля админа' };
       document.getElementById('admin-tools-title').textContent = titles[mode] || 'Администрирование';
       openModal('modal-admin-tools');
       if (mode === 'log') renderAdminLog();
       if (mode === 'rights') renderAdminRights('');
       if (mode === 'rewards') renderAdminRewards();
       if (mode === 'pass') renderAdminPass();
+      if (mode === 'pets') renderAdminPets();
     }
 
     function renderAdminLog() {
@@ -7126,6 +7501,7 @@
       if (t === 'rights') openAdminTool('rights');
       if (t === 'scripts') toggleAdminDrawer(true);
       if (t === 'rewards') openAdminTool('rewards');
+      if (t === 'pets') openAdminTool('pets');
       if (t === 'pass') openAdminTool('pass');
     });
 
