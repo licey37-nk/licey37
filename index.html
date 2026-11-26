@@ -45,12 +45,65 @@
 </head>
 <body>
   <!-- HEADER -->
+  <header class="sticky-header">
+    <div class="logo">МБОУ «Лицей №37» г. Нижнекамск</div>
+    <nav>
+      <a href="#">🏠 Главная</a>
+      <a href="#">🏫 Мой класс</a>
+      <a href="#">🛍️ Барахолка</a>
+      <a href="#">💬 Соцсеть</a>
+      <a href="#">🎮 Игры</a>
+      <a href="#">👤 Профиль</a>
+    </nav>
+    <div class="auth-buttons">
+      <button class="login-btn">Войти</button>
+      <button class="register-btn">Регистрация</button>
+    </div>
+  </header>
   
   <!-- MAIN_PAGES -->
+  <main>
+    <section class="hero-banner" data-editable="hero">
+      <h1>Лицей №37</h1>
+    </section>
+    
+    <section class="schedule-section">
+      <h2>⏰ Расписание звонков</h2>
+      <!-- 1 и 2 смена -->
+    </section>
+    
+    <section class="top-student">
+      <h2>🏆 Лучший ученик месяца</h2>
+      <button class="congratulate-btn">Поздравить</button>
+    </section>
+    
+    <section class="events-section">
+      <h2>📅 Мероприятия и Олимпиады Лицея №37</h2>
+      <button class="apply-btn">✍️ Подать заявку</button>
+    </section>
+    
+    <section class="ideas-section">
+      <h2>📮 Ящик идей и предложений Лицея №37</h2>
+    </section>
+  </main>
   
   <!-- MODALS -->
+  <div class="modal" id="login-modal">
+    <button class="admin-btn">👑 Админ</button>
+  </div>
+  <div class="modal" id="register-modal">
+    <button class="admin-btn">👑 Админ</button>
+  </div>
   
   <!-- AI_WIDGET -->
+  <div class="admin-panel" style="display: none;">
+    <div class="admin-toolbar">
+      <button class="edit-mode-btn">✏️ Живое редактирование</button>
+      <button class="applications-btn">📋 Заявки и Идеи</button>
+      <button class="scripts-btn">💻 Библиотека скриптов</button>
+      <button class="logout-btn">🚪 Выйти</button>
+    </div>
+  </div>
   
   <script>
     const SUPABASE_URL = "https://ektyxbnzkreekdjrdnnk.supabase.co";
@@ -59,6 +112,29 @@
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
     // JS_MODULES
+    document.addEventListener('DOMContentLoaded', function() {
+      // Admin panel logic
+      const adminBtns = document.querySelectorAll('.admin-btn');
+      const adminPanel = document.querySelector('.admin-panel');
+      
+      adminBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const password = prompt('Для продолжения введите пароль администратора');
+          if (password === 'лицей37') {
+            adminPanel.style.display = 'block';
+          }
+        });
+      });
+      
+      // Class validation
+      function validateClass(classStr) {
+        const regex = /^([1-9]|1[01])([А-Д])$/;
+        return regex.test(classStr);
+      }
+      
+      // Event listeners for modals
+      // ...
+    });
   </script>
 </body>
 </html>
