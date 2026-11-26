@@ -8,7 +8,7 @@ import sys
 API_KEY = os.environ.get("AI_API_KEY", "")
 ISSUE_BODY = os.environ.get("ISSUE_BODY", "")
 BASE_URLS = ["https://zveno.ai", "https://zveno.ai"]
-FALLBACK_MODELS = ["deepseek/deepseek-chat", "deepseek-chat", "openai/gpt-4o", "gpt-4o", "openai/gpt-4o-mini"]
+MODEL = "deepseek/deepseek-chat"
 HEADERS = {
     "Authorization": f"Bearer {API_KEY}",
     "User-Agent": "Mozilla/5.0",
@@ -21,12 +21,12 @@ def log(msg):
     print(msg)
     log_lines.append(msg)
 
-def make_request(url, method="GET", data=None, headers=None):
-    req = urllib.request.Request(url, method=method, headers=headers or HEADERS)
+def make_request(url, method="GET", data=None):
+    req = urllib.request.Request(url, method=method, headers=HEADERS)
     if data is not None:
         req.data = json.dumps(data).encode("utf-8")
     try:
-        with urllib.request.urlopen(req, timeout=90) as resp:
+        with urllib.request.urlopen(req, timeout=120) as resp:
             return resp.status, resp.read().decode("utf-8", errors="replace")
     except urllib.error.HTTPError as e:
         return e.code, e.read().decode("utf-8", errors="replace")
@@ -50,45 +50,9 @@ def extract_json(text):
                 continue
     return None
 
-def get_available_models(base_url):
-    url = f"{base_url}/models"
-    status, body = make_request(url, "GET")
-    if status != 200:
-        return None
-    try:
-        data = json.loads(body)
-        if isinstance(data, dict) and "data" in data:
-            return [m.get("id") for m in data["data"] if m.get("id")]
-        elif isinstance(data, list):
-            return [m.get("id") for m in data if isinstance(m, dict) and m.get("id")]
-    except:
-        pass
-    return None
-
-def choose_model(available_ids):
-    if available_ids:
-        for mid in available_ids:
-            if "deepseek" in mid.lower():
-                return mid
-        for mid in available_ids:
-            if "gpt-4o" in mid.lower():
-                return mid
-    return FALLBACK_MODELS[0]
-
-def get_current_html():
-    if os.path.exists("index.html"):
-        with open("index.html", "r", encoding="utf-8") as f:
-            txt = f.read()
-            if len(txt) > 50000:
-                return txt[:25000] + "\n\n... [СЕРЕДИНА СКРЫТА] ...\n\n" + txt[-25000:]
-            return txt
-    return "(Файл index.html пока не создан)"
-
 def smart_replace(content, old_block, new_block):
-    # 1. Точное совпадение
     if old_block in content:
         return content.replace(old_block, new_block, 1), True
-    # 2. Совпадение без учёта лишних пробелов и переносов строк
     pattern = r'\s+'.join(re.escape(part) for part in old_block.split())
     if pattern:
         new_content, count = re.subn(pattern, lambda m: new_block, content, count=1)
@@ -96,104 +60,78 @@ def smart_replace(content, old_block, new_block):
             return new_content, True
     return content, False
 
-def call_chat(base_url, model):
-    url = f"{base_url}/chat/completions"
-    current_html = get_current_html()
-    prompt = (
-        "Ты — Senior-разработчик репозитория. У тебя есть два инструмента:\n"
-        "1. `files`: создание нового файла или полная перезапись.\n"
-        "2. `edits`: точечное редактирование существующего файла (замена `old` на `new` без удаления остального кода). ВАЖНО: бери в `old` 3–6 уникальных строк строго из переданного ниже кода `index.html`!\n\n"
-        "Верни СТРОГО JSON без лишнего текста:\n"
-        "{\n"
-        "  \"reply\": \"подробный отчёт на русском\",\n"
-        "  \"files\": [{\"path\": \"путь/новый_файл.txt\", \"content\": \"содержимое\"}],\n"
-        "  \"edits\": [{\"path\": \"index.html\", \"old\": \"точный старый фрагмент\", \"new\": \"новый фрагмент\"}]\n"
-        "}\n\n"
-        f"Текущий код index.html:\n```html\n{current_html}\n```\n\n"
-        f"Запрос пользователя: {ISSUE_BODY}\n"
-        "Верни только валидный JSON."
-    )
-    payload = {
-        "model": model,
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.2,
-        "max_tokens": 16000
-    }
-    status, body = make_request(url, "POST", data=payload)
-    if status != 200:
-        log(f"Ошибка {status}: {body[:300]}")
-        return None
-    try:
-        data = json.loads(body)
-        return data["choices"][0]["message"]["content"]
-    except Exception as e:
-        log(f"Ошибка парсинга ответа: {e}")
-        return None
-
-def process_result(content):
-    obj = extract_json(content)
-    if not obj:
-        return "❌ Не удалось извлечь JSON из ответа.\n\n" + content[:800]
-    reply = obj.get("reply", "Готово.")
-    created, edited, failed = [], [], []
-
-    for f in obj.get("files", []):
-        path = f.get("path", "").strip()
-        c_file = f.get("content", "")
-        if not path or path.startswith("/") or ".." in path.split("/"):
-            continue
-        dir_name = os.path.dirname(path)
-        if dir_name:
-            os.makedirs(dir_name, exist_ok=True)
-        with open(path, "w", encoding="utf-8") as fh:
-            fh.write(c_file)
-        created.append(path)
-
-    for ed in obj.get("edits", []):
-        path = ed.get("path", "").strip()
-        old_txt = ed.get("old", "")
-        new_txt = ed.get("new", "")
-        if path and os.path.exists(path) and old_txt:
-            with open(path, "r", encoding="utf-8") as fh:
-                file_data = fh.read()
-            updated_data, ok = smart_replace(file_data, old_txt, new_txt)
-            if ok:
-                with open(path, "w", encoding="utf-8") as fh:
-                    fh.write(updated_data)
-                edited.append(path)
-            else:
-                failed.append(f"Не найден кусок: `{old_txt[:60]}...`")
-
-    report = "🤖 " + reply + "\n\n"
-    if created:
-        report += "**Созданы/перезаписаны:**\n" + "\n".join(f"- `{p}`" for p in created) + "\n"
-    if edited:
-        report += "**Точечно обновлены:**\n" + "\n".join(f"- `{p}`" for p in edited) + "\n"
-    if failed:
-        report += "**⚠️ Не удалось применить часть правок:**\n" + "\n".join(f"- {x}" for x in failed) + "\n"
-    if not created and not edited and not failed:
-        report += "Файлы не изменялись."
-    return report
-
 def main():
     if not API_KEY:
         with open("r.txt", "w", encoding="utf-8") as f:
             f.write("❌ Ошибка: AI_API_KEY не задан.")
         sys.exit(0)
 
+    current_html = ""
+    if os.path.exists("index.html"):
+        with open("index.html", "r", encoding="utf-8") as f:
+            current_html = f.read()
+
+    prompt = (
+        "Ты — Senior Fullstack-разработчик портала МБОУ «Лицей №37» г. Нижнекамск.\n"
+        "Внимательно изучи текущий код `index.html` и ДОПОЛНИ его всеми запрошенными функциями через инструмент `edits` (НИЧЕГО не удаляй из уже работающего кода!).\n"
+        "Для вставки нового HTML-блока бери в `old` последние 3–5 строк перед `</body>`, а для добавления нового JS-кода бери в `old` последние 3–5 строк перед `</script>`.\n\n"
+        "Верни СТРОГО валидный JSON без лишнего текста:\n"
+        "{\n"
+        "  \"reply\": \"подробный отчёт на русском, какие функции добавлены\",\n"
+        "  \"files\": [],\n"
+        "  \"edits\": [{\"path\": \"index.html\", \"old\": \"точный фрагмент из конца index.html\", \"new\": \"обновлённый фрагмент с новым кодом\"}]\n"
+        "}\n\n"
+        f"Текущий index.html:\n```html\n{current_html}\n```\n\n"
+        f"Задача:\n{ISSUE_BODY}\n"
+        "Верни только JSON."
+    )
+
+    payload = {
+        "model": MODEL,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.2,
+        "max_tokens": 16000
+    }
+
     for base in BASE_URLS:
-        available = get_available_models(base)
-        model = choose_model(available)
-        content = call_chat(base, model)
-        if content:
-            final_report = process_result(content)
-            with open("r.txt", "w", encoding="utf-8") as f:
-                f.write(final_report)
-            return
+        status, body = make_request(f"{base}/chat/completions", "POST", data=payload)
+        log(f"[POST] {base} -> {status}")
+        if status == 200:
+            try:
+                content = json.loads(body)["choices"]["message"]["content"]
+                obj = extract_json(content)
+                if obj:
+                    reply = obj.get("reply", "Готово.")
+                    edited, failed = [], []
+                    for ed in obj.get("edits", []):
+                        path = ed.get("path", "").strip()
+                        old_txt = ed.get("old", "")
+                        new_txt = ed.get("new", "")
+                        if path and os.path.exists(path) and old_txt:
+                            with open(path, "r", encoding="utf-8") as fh:
+                                file_data = fh.read()
+                            updated, ok = smart_replace(file_data, old_txt, new_txt)
+                            if ok:
+                                with open(path, "w", encoding="utf-8") as fh:
+                                    fh.write(updated)
+                                edited.append(path)
+                            else:
+                                failed.append(old_txt[:60])
+                    rep = f"🤖 **{reply}**\n\n"
+                    if edited:
+                        rep += "✅ **Успешно обновлены файлы:** " + ", ".join(f"`{x}`" for x in edited)
+                    if failed:
+                        rep += "\n⚠️ **Не найдены фрагменты:** " + ", ".join(f"`{x}...`" for x in failed)
+                    with open("r.txt", "w", encoding="utf-8") as f:
+                        f.write(rep)
+                    return
+            except Exception as e:
+                log(f"Ошибка разбора ответа: {e}")
+        else:
+            log(f"Ответ сервера: {body[:300]}")
 
     with open("r.txt", "w", encoding="utf-8") as f:
-        f.write("❌ Все попытки не удались:\n" + "\n".join(log_lines))
+        f.write("❌ Не удалось выполнить запрос:\n" + "\n".join(log_lines))
 
 if __name__ == "__main__":
     main()
-
