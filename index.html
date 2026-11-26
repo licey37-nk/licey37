@@ -4047,10 +4047,12 @@
       } catch (e) {}
     }
 
-    async function pullAll() {
+    async function pullKeys(keys) {
       if (!sb37) return;
       try {
-        const answer = await sb37.from(TABLE).select('key,value');
+        let query = sb37.from(TABLE).select('key,value');
+        if (keys && keys.length) query = query.in('key', keys);
+        const answer = await query;
         if (answer.error) throw answer.error;
         (answer.data || []).forEach(function (row) {
           if (row && row.key !== undefined && row.value !== undefined && DEVICE_LOCAL_KEYS.indexOf(row.key) === -1) {
@@ -4062,8 +4064,39 @@
       }
     }
 
+    function pullAll() { return pullKeys(null); }
+
     let liveSyncTimer = null;
     let liveSyncBusy = false;
+    let chatSyncTimer = null;
+    let offlineSyncTimer = null;
+    let chatSyncBusy = false;
+
+    const CHAT_SYNC_KEYS = ['chat', 'pchat', 'dms', 'dmArchive', 'channels', 'posts'];
+
+    function chatSyncSnapshot() {
+      let s = '';
+      CHAT_SYNC_KEYS.forEach(function (k) { s += (localStorage.getItem(LS_PREFIX + k) || '') + '|'; });
+      return s;
+    }
+
+    function refreshChatViews() {
+      try {
+        if (panels.class.classList.contains('active')) renderClassTab();
+        if (panels.social.classList.contains('active')) renderSocial();
+      } catch (e) {}
+    }
+
+    async function chatSyncTick() {
+      if (chatSyncBusy) return;
+      chatSyncBusy = true;
+      try {
+        const before = chatSyncSnapshot();
+        await pullKeys(CHAT_SYNC_KEYS);
+        if (chatSyncSnapshot() !== before) refreshChatViews();
+      } catch (e) { /* тихо */ }
+      chatSyncBusy = false;
+    }
 
     function liveSyncSnapshot() {
       const keys = ['users', 'posts', 'channels', 'volunteers', 'chat', 'pchat', 'dms', 'homework', 'ideas', 'listings', 'compliments', 'capsule', 'pets', 'reaction', 'customScripts', 'shopCustomRewards', 'applications', 'adminLog', 'topTicker', 'bestLikes'];
@@ -4102,8 +4135,16 @@
         if (document.visibilityState === 'visible') liveSyncTick();
       }, 2000);
       try {
+        chatSyncTimer = setInterval(function () {
+          if (document.visibilityState === 'visible') chatSyncTick();
+        }, 300);
+        offlineSyncTimer = setInterval(function () {
+          if (document.visibilityState !== 'visible') liveSyncTick();
+        }, 3000);
+      } catch (e) {}
+      try {
         document.addEventListener('visibilitychange', function () {
-          if (document.visibilityState === 'visible') liveSyncTick();
+          if (document.visibilityState === 'visible') { chatSyncTick(); liveSyncTick(); }
         });
       } catch (e) {}
       liveSyncTick();
