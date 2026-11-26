@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>МБОУ «Лицей №37» • Нижнекамск</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--indigo:#4F46E5;--emerald:#10B981;--gold:#F59E0B;--danger:#EF4444;--bg:#F8FAFC;--surface:#FFF;--text:#0F172A;--muted:#64748B;--border:#E2E8F0;--r:16px;--sh:0 4px 16px rgba(15,23,42,.06);--tr:.25s ease}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:var(--bg);color:var(--text);line-height:1.6;display:flex;flex-direction:column;min-height:100vh}
+a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer;border:none;background:none}
+img{max-width:100%;display:block}input,textarea,select{font-family:inherit;outline:none}
+.container{max-width:1200px;margin:0 auto;padding:32px 20px;width:100%;flex:1}
+.page-content{display:none}.page-content.active{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.grid-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.card-pad{padding:24px}
+.flex{display:flex}.flex-col{display:flex;flex-direction:column}.items-center{align-items:center}.justify-between{justify-content:space-between}
+.gap-2{gap:8px}.gap-4{gap:16px}.mt-4{margin-top:16px}.mb-4{margin-bottom:16px}.w-full{width:100%}
+.hidden{display:none!important}.text-muted{color:var(--muted)}.text-sm{font-size:13px}.fw-bold{font-weight:700}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border-radius:10px;font-size:14px;font-weight:600;transition:var(--tr)}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--indigo);color:#fff}.btn-primary:hover{background:#4338CA}
+.btn-outline{border:1.5px solid var(--border);background:#fff;color:var(--text)}.btn-outline:hover{border-color:var(--indigo);color:var(--indigo)}
+.btn-gold{background:linear-gradient(135deg,#F59E0B,#FCD34D);color:#78350F;font-weight:700}
+.btn-success{background:var(--emerald);color:#fff}.btn-danger{background:var(--danger);color:#fff}
+.btn-sm{padding:6px 12px;font-size:12px}.btn-block{width:100%}
+.form-group{margin-bottom:16px}.form-label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase}
+.form-control{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;background:#fff;font-size:14px;transition:var(--tr)}
+.form-control:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(79,70,229,.15)}
+textarea.form-control{resize:vertical;min-height:80px}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* Шапка */
+.site-header{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.header-inner{max-width:1200px;margin:0 auto;padding:0 20px;height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo-area{display:flex;align-items:center;gap:12px;cursor:pointer}
+.logo-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--indigo),var(--emerald));color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800}
+.logo-text span{display:block}.logo-title{font-size:16px;font-weight:800}.logo-sub{font-size:11px;color:var(--muted)}
+.nav-menu{display:flex;gap:4px;flex:1;justify-content:center}
+.nav-item{padding:8px 16px;border-radius:100px;font-size:14px;font-weight:600;color:var(--muted);transition:var(--tr);cursor:pointer}
+.nav-item:hover{background:#EEF2FF;color:var(--indigo)}.nav-item.active{background:var(--indigo);color:#fff}
+.auth-area{display:flex;gap:8px}
+.user-badge{display:flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border-radius:100px;background:#fff;border:1px solid var(--border);cursor:pointer}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:#EEF2FF;color:var(--indigo);display:flex;align-items:center;justify-content:center;font-weight:700;overflow:hidden}
+.user-avatar img{width:100%;height:100%;object-fit:cover}
+.user-info{display:flex;flex-direction:column;line-height:1.2}.user-name{font-size:13px;font-weight:700}.user-class{font-size:11px;color:var(--muted)}
+
+/* Модалки */
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:var(--tr)}
+.modal.open{opacity:1;pointer-events:auto}
+.modal-box{background:#fff;width:100%;max-width:440px;border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,.2);transform:translateY(20px);transition:var(--tr);max-height:90vh;display:flex;flex-direction:column}
+.modal.open .modal-box{transform:translateY(0)}
+.modal-head{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-title{font-size:20px;font-weight:800}.modal-close{width:32px;height:32px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:16px}
+.modal-body{padding:24px;overflow-y:auto}
+
+/* Админ-панель */
+.admin-bar{display:none;background:#0F172A;color:#fff;padding:10px 20px;font-size:13px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+.admin-bar.active{display:flex}
+.admin-tools{display:flex;gap:8px}
+.admin-tools .btn{padding:6px 12px;font-size:12px;background:#1E293B;color:#CBD5E1}
+.toggle-switch{display:flex;align-items:center;gap:8px;cursor:pointer;background:#1E293B;padding:4px 12px;border-radius:6px}
+.toggle-track{width:32px;height:18px;background:#475569;border-radius:10px;position:relative;transition:var(--tr)}
+.toggle-track::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:#fff;border-radius:50%;transition:var(--tr)}
+.toggle-switch.on .toggle-track{background:var(--emerald)}.toggle-switch.on .toggle-track::after{transform:translateX(14px)}
+
+/* Барахолка */
+.market-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column}
+.market-gallery{position:relative;height:200px;background:#F1F5F9}
+.market-img{width:100%;height:100%;object-fit:cover;display:none}.market-img.active{display:block}
+.gallery-nav{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--sh)}
+.gallery-nav.prev{left:8px}.gallery-nav.next{right:8px}
+.market-body{padding:16px;flex:1;display:flex;flex-direction:column}
+.market-price{font-size:20px;font-weight:800;margin-bottom:4px}.market-title{font-size:15px;font-weight:700}
+.sold-badge{position:absolute;top:10px;left:10px;background:var(--danger);color:#fff;padding:4px 12px;border-radius:100px;font-size:12px;font-weight:700}
+.photo-slot{width:70px;height:70px;border:2px dashed var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden}
+.photo-slot img{width:100%;height:100%;object-fit:cover}
+.photo-slot .remove{position:absolute;top:2px;right:2px;width:18px;height:18px;background:var(--danger);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px}
+
+@media(max-width:768px){.nav-menu{display:none}.header-inner{height:auto;padding:12px;flex-wrap:wrap}.auth-area{width:100%;justify-content:flex-end}.form-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- АДМИН ПАНЕЛЬ -->
+<div class="admin-bar" id="adminTopBar">
+    <div class="flex items-center gap-4">
+        <span style="color:#FCD34D;font-weight:bold;">👑 Режим Админа</span>
+        <div class="toggle-switch" id="liveEditToggle" onclick="toggleLiveEdit()">
+            <div class="toggle-track"></div><span>✏️ Живое редактирование</span>
+        </div>
+    </div>
+    <div class="admin-tools">
+        <button class="btn" onclick="openAdminDrawer()">💻 Скрипты</button>
+        <button class="btn" onclick="openAdminApps()">📋 Заявки</button>
+        <button class="btn" onclick="openAdminTelegram()">📲 Telegram</button>
+        <button class="btn" onclick="exitAdminMode()" style="background:#7F1D1D;">Выйти</button>
+    </div>
+</div>
+
+<!-- ШАПКА -->
+<header class="site-header">
+    <div class="header-inner">
+        <div class="logo-area" onclick="switchPage('home')">
+            <div class="logo-icon">37</div>
+            <div class="logo-text"><span class="logo-title">МБОУ «Лицей №37»</span><span class="logo-sub">г. Нижнекамск</span></div>
+        </div>
+        <nav class="nav-menu" id="mainNav">
+            <button class="nav-item active" data-page="home" onclick="switchPage('home')">🏠 Главная</button>
+            <button class="nav-item" data-page="social" onclick="switchPage('social')">💬 Соцсеть</button>
+            <button class="nav-item" data-page="market" onclick="switchPage('market')">🛍️ Барахолка</button>
+            <button class="nav-item" data-page="games" onclick="switchPage('games')">🎮 Игры</button>
+            <button class="nav-item" data-page="profile" onclick="switchPage('profile')">👤 Профиль</button>
+        </nav>
+        <div class="auth-area" id="headerAuth">
+            <button class="btn btn-outline" onclick="openAuthModal('login')">Войти</button>
+            <button class="btn btn-primary" onclick="openAuthModal('register')">Регистрация</button>
+        </div>
+    </div>
+</header>
+
+<!-- МОДАЛКИ -->
+<div class="modal" id="authModal">
+    <div class="modal-box">
+        <div class="modal-head"><div class="modal-title" id="authTitle">Вход</div><button class="modal-close" onclick="closeModal('authModal')">✕</button></div>
+        <div class="modal-body">
+            <div id="formLogin">
+                <div class="form-group"><label class="form-label">Email</label><input type="text" class="form-control" id="loginEmail"></div>
+                <div class="form-group"><label class="form-label">Пароль</label><input type="password" class="form-control" id="loginPassword"></div>
+                <button class="btn btn-primary btn-block mt-4" onclick="doLogin()">Войти</button>
+                <button class="btn btn-gold btn-block mt-4" onclick="openAdminLogin()">👑 Войти как Админ</button>
+                <p class="text-sm text-center mt-4">Нет аккаунта? <a href="#" onclick="switchAuthMode('register');return false;" class="fw-bold">Регистрация</a></p>
+            </div>
+            <div id="formRegister" class="hidden">
+                <div class="form-group"><label class="form-label">Имя и Фамилия</label><input type="text" class="form-control" id="regFullName"></div>
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Класс</label><select class="form-control" id="regGradeNum"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option></select></div>
+                    <div class="form-group"><label class="form-label">Буква</label><select class="form-control" id="regGradeLetter"><option value="А">А</option><option value="Б">Б</option><option value="В">В</option><option value="Г">Г</option><option value="Д">Д</option><option value="Е">Е</option></select></div>
+                </div>
+                <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-control" id="regEmail"></div>
+                <div class="form-group"><label class="form-label">Пароль</label><input type="password" class="form-control" id="regPassword"></div>
+                <button class="btn btn-success btn-block mt-4" onclick="doRegister()">Создать аккаунт</button>
+                <button class="btn btn-gold btn-block mt-4" onclick="openAdminLogin()">👑 Войти как Админ</button>
+                <p class="text-sm text-center mt-4">Уже есть аккаунт? <a href="#" onclick="switchAuthMode('login');return false;" class="fw-bold">Войти</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="adminLoginModal">
+    <div class="modal-box" style="max-width:400px;">
+        <div class="modal-head"><div class="modal-title">👑 Админ</div><button class="modal-close" onclick="closeModal('adminLoginModal')">✕</button></div>
+        <div class="modal-body">
+            <p class="text-sm text-muted mb-4">Введите пароль администратора.</p>
+            <input type="password" class="form-control" id="adminPasswordInput" placeholder="••••••••" style="margin-bottom:16px;">
+            <button class="btn btn-gold btn-block" onclick="checkAdminPassword()">Войти</button>
+        </div>
+    </div>
+</div>
+<!-- ОСНОВНОЙ КОНТЕЙНЕР -->
+<main class="container" id="mainContent">
+
+    <!-- ГЛАВНАЯ -->
+    <div class="page-content active" id="page-home">
+        <div class="card card-pad mb-4" style="background:linear-gradient(135deg,#1E1B4B,#4F46E5);color:#fff;border:none;padding:40px;">
+            <h1 style="font-size:32px;font-weight:800;margin-bottom:12px;" data-editable="hero-title">Добро пожаловать в Лицей №37!</h1>
+            <p style="font-size:16px;opacity:0.9;" data-editable="hero-subtitle">Современная экосистема для учёбы и общения.</p>
+            <div class="flex gap-4 mt-4">
+                <div><div style="font-size:28px;font-weight:800;" id="statStudents">0</div><div style="font-size:12px;opacity:0.8;">Учеников</div></div>
+                <div><div style="font-size:28px;font-weight:800;" id="statPosts">0</div><div style="font-size:12px;opacity:0.8;">Постов</div></div>
+                <div><div style="font-size:28px;font-weight:800;" id="statMarket">0</div><div style="font-size:12px;opacity:0.8;">Товаров</div></div>
+            </div>
+        </div>
+
+        <!-- ЛУЧШИЙ УЧЕНИК -->
+        <div class="card card-pad mb-4" style="background:#FFFBEB;border-color:#FDE68A;">
+            <div class="flex items-center gap-4">
+                <div style="width:80px;height:80px;border-radius:20px;background:linear-gradient(135deg,#F59E0B,#FCD34D);display:flex;align-items:center;justify-content:center;font-size:40px;" id="bestAvatar" data-editable="best-avatar">🏅</div>
+                <div>
+                    <div class="text-xs fw-bold" style="color:#B45309;text-transform:uppercase;">🏆 Лучший ученик месяца</div>
+                    <div style="font-size:22px;font-weight:800;color:#78350F;" id="bestName" data-editable="best-name">Петрова Анна</div>
+                    <div class="fw-bold" style="color:#B45309;" id="bestGrade" data-editable="best-grade">Класс: 10А</div>
+                </div>
+            </div>
+            <div class="mt-4" style="background:rgba(255,255,255,0.6);padding:16px;border-radius:12px;font-size:14px;color:#78350F;" id="bestAch" data-editable="best-ach">Победитель олимпиады по информатике.</div>
+        </div>
+
+        <!-- МЕРОПРИЯТИЯ -->
+        <div class="mb-4">
+            <h2 style="font-size:24px;font-weight:800;margin-bottom:16px;">📅 Мероприятия и Олимпиады</h2>
+            <div class="grid-cards" id="homeEventsGrid"></div>
+        </div>
+
+        <!-- КРУЖКИ И РАСПИСАНИЕ -->
+        <div class="grid-cards mb-4" style="grid-template-columns:1fr 1fr;">
+            <div class="card card-pad">
+                <h2 style="font-size:20px;font-weight:700;margin-bottom:16px;">🔔 Расписание звонков</h2>
+                <div id="homeScheduleGrid"></div>
+            </div>
+            <div class="card card-pad">
+                <h2 style="font-size:20px;font-weight:700;margin-bottom:16px;">📰 Новости</h2>
+                <div id="newsList"></div>
+            </div>
+        </div>
+
+        <!-- ЯЩИК ИДЕЙ -->
+        <div class="card card-pad mb-4" style="background:#EEF2FF;border-color:#C7D2FE;">
+            <h2 style="font-size:22px;font-weight:800;color:#312E81;margin-bottom:12px;">📮 Ящик идей и предложений</h2>
+            <p class="text-sm mb-4" style="color:#4338CA;">Напиши, как сделать Лицей лучше! Можно анонимно.</p>
+            <textarea class="form-control" id="ideaText" rows="3" style="margin-bottom:12px;" placeholder="Ваша идея..."></textarea>
+            <div class="flex justify-between items-center">
+                <label class="text-sm flex items-center gap-2" style="cursor:pointer;"><input type="checkbox" id="ideaAnonymous" style="width:16px;height:16px;"> Анонимно</label>
+                <button class="btn btn-primary" onclick="submitIdea()">Отправить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- СОЦСЕТЬ -->
+    <div class="page-content" id="page-social">
+        <h1 style="font-size:28px;font-weight:800;margin-bottom:24px;">💬 Соцсеть Лицея</h1>
+        
+        <div class="card card-pad mb-4">
+            <div class="flex gap-4">
+                <div class="user-avatar" id="composeAva" style="width:40px;height:40px;">?</div>
+                <div style="flex:1;">
+                    <textarea class="form-control" id="postContent" rows="2" placeholder="Что нового?"></textarea>
+                    <div class="flex justify-between items-center mt-4">
+                        <button class="btn btn-outline btn-sm" onclick="toggleImageInput()">🖼️ Фото</button>
+                        <button class="btn btn-primary btn-sm" onclick="createPost()">Опубликовать</button>
+                    </div>
+                    <div id="imageInputWrap" class="hidden mt-4">
+                        <input type="text" class="form-control" id="postImageUrl" placeholder="URL картинки...">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="feedList" style="display:flex;flex-direction:column;gap:16px;"></div>
+
+        <!-- БАНК ВЗАИМОПОМОЩИ -->
+        <div class="mt-4">
+            <div class="flex justify-between items-center mb-4">
+                <h2 style="font-size:22px;font-weight:800;">🤝 Банк взаимопомощи</h2>
+                <button class="btn btn-outline btn-sm" onclick="openHelpToggle()">Я хочу помогать</button>
+            </div>
+            <div class="grid-cards" id="helpersGrid"></div>
+        </div>
+    </div>
+
+    <!-- БАРАХОЛКА -->
+    <div class="page-content" id="page-market">
+        <div class="flex justify-between items-center mb-4">
+            <h1 style="font-size:28px;font-weight:800;">🛍️ Барахолка</h1>
+            <button class="btn btn-primary" onclick="openMarketForm()">+ Разместить</button>
+        </div>
+        <div class="grid-cards" id="marketGrid"></div>
+    </div>
+
+    <!-- ИГРЫ -->
+    <div class="page-content" id="page-games">
+        <h1 style="font-size:28px;font-weight:800;margin-bottom:24px;">🎮 Игры Движения Первых</h1>
+        <div class="grid-cards">
+            <div class="card card-pad"><h3 style="font-weight:700;">🏛️ Знатоки Татарстана</h3><p class="text-sm text-muted mt-2 mb-4">Викторина на знание истории края.</p><button class="btn btn-primary btn-sm w-full">Начать</button></div>
+            <div class="card card-pad"><h3 style="font-weight:700;">🚩 Городской квест</h3><p class="text-sm text-muted mt-2 mb-4">Командное прохождение станций.</p><button class="btn btn-primary btn-sm w-full">Участвовать</button></div>
+        </div>
+    </div>
+
+    <!-- ПРОФИЛЬ -->
+    <div class="page-content" id="page-profile">
+        <div id="profileContent"></div>
+    </div>
+
+</main>
+
+<!-- ПОДВАЛ -->
+<footer style="background:#0F172A;color:#94A3B8;padding:40px 20px;text-align:center;margin-top:auto;">
+    <div style="font-weight:700;color:#fff;margin-bottom:8px;">МБОУ «Лицей №37»</div>
+    <p class="text-sm">📍 г. Нижнекамск, ул. Школьная, 37</p>
+    <p class="text-sm">📞 +7 (8555) 00-00-00</p>
+    <button class="text-xs mt-4" onclick="openAdminLogin()" style="color:#475569;">🔒 Панель администрации</button>
+</footer>
+
+<!-- МОДАЛКИ ДОПОЛНИТЕЛЬНЫЕ -->
+<div class="modal" id="marketFormModal">
+    <div class="modal-box">
+        <div class="modal-head"><div class="modal-title">🛍️ Новый товар</div><button class="modal-close" onclick="closeModal('marketFormModal')">✕</button></div>
+        <div class="modal-body">
+            <div class="form-group"><label class="form-label">Название</label><input type="text" class="form-control" id="mTitle"></div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Категория</label><select class="form-control" id="mCategory"><option>Учебники</option><option>Электроника</option><option>Одежда</option></select></div>
+                <div class="form-group"><label class="form-label">Цена (0 = Бесплатно)</label><input type="number" class="form-control" id="mPrice" value="0"></div>
+            </div>
+            <div class="form-group"><label class="form-label">Описание</label><textarea class="form-control" id="mDesc" rows="2"></textarea></div>
+            <div class="form-group">
+                <label class="form-label">Фото (до 4)</label>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;" id="photoUploadArea"><div class="photo-slot" onclick="document.getElementById('marketFileInput').click()">+</div></div>
+                <input type="file" id="marketFileInput" accept="image/*" multiple style="display:none;" onchange="handleMarketPhotos(event)">
+            </div>
+            <button class="btn btn-primary btn-block mt-4" onclick="submitMarketItem()">Опубликовать</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="marketChatModal">
+    <div class="modal-box" style="max-width:500px;height:80vh;">
+        <div class="modal-head"><div class="modal-title">💬 Чат</div><button class="modal-close" onclick="closeModal('marketChatModal')">✕</button></div>
+        <div class="modal-body" style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+            <div class="flex gap-4 mb-4" style="background:var(--bg);padding:12px;border-radius:12px;">
+                <img id="chatProductImg" src="" style="width:60px;height:60px;border-radius:8px;object-fit:cover;">
+                <div><div class="fw-bold text-sm" id="chatProductTitle">Товар</div><div class="fw-bold" style="color:var(--indigo);font-size:18px;" id="chatProductPrice">0 ₽</div></div>
+            </div>
+            <div id="marketChatMessages" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:12px;"></div>
+            <div class="flex gap-2"><input type="text" class="form-control" id="marketChatInput" placeholder="Сообщение..." onkeydown="if(event.key==='Enter') sendMarketMsg()"><button class="btn btn-primary" onclick="sendMarketMsg()">➤</button></div>
+            <div id="sellerActions" class="mt-4 hidden"><button class="btn btn-danger btn-block" onclick="markAsSold()">✅ Продано</button></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="applicationModal">
+    <div class="modal-box">
+        <div class="modal-head"><div class="modal-title">✍️ Заявка</div><button class="modal-close" onclick="closeModal('applicationModal')">✕</button></div>
+        <div class="modal-body">
+            <div class="fw-bold mb-4" style="color:var(--indigo);" id="appEventName"></div>
+            <div class="form-group"><label class="form-label">ФИО</label><input type="text" class="form-control" id="appFullName"></div>
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Класс</label><select class="form-control" id="appGradeNum"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option></select></div>
+                <div class="form-group"><label class="form-label">Буква</label><select class="form-control" id="appGradeLetter"><option value="А">А</option><option value="Б">Б</option><option value="В">В</option><option value="Г">Г</option><option value="Д">Д</option><option value="Е">Е</option></select></div>
+            </div>
+            <button class="btn btn-primary btn-block mt-4" onclick="submitApplication()">Отправить</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="helpToggleModal">
+    <div class="modal-box">
+        <div class="modal-head"><div class="modal-title">🤝 Стать помощником</div><button class="modal-close" onclick="closeModal('helpToggleModal')">✕</button></div>
+        <div class="modal-body">
+            <div class="form-group"><label class="form-label">Предмет</label><select class="form-control" id="helpSubject"><option>Математика</option><option>Русский язык</option><option>Физика</option><option>Химия</option><option>Информатика</option><option>Английский</option></select></div>
+            <button class="btn btn-primary btn-block" onclick="saveHelperStatus()">Готов помогать!</button>
+        </div>
+    </div>
+</div>
+
+<!-- ИИ ЧАТ -->
+<button class="btn btn-primary" onclick="toggleAiPanel()" style="position:fixed;bottom:24px;right:24px;border-radius:50px;padding:14px 24px;z-index:900;">🤖 ИИ-Наставник</button>
+<div class="card" id="aiPanel" style="position:fixed;bottom:90px;right:24px;width:350px;height:500px;z-index:950;display:flex;flex-direction:column;transform:translateY(20px);opacity:0;pointer-events:none;transition:var(--tr);">
+    <div style="padding:16px;background:var(--indigo);color:#fff;border-radius:var(--r) var(--r) 0 0;display:flex;justify-content:space-between;">
+        <div class="fw-bold">🤖 ИИ-Наставник</div><button onclick="toggleAiPanel()" style="color:#fff;">✕</button>
+    </div>
+    <div id="aiMessages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--bg);"></div>
+    <div style="padding:12px;border-top:1px solid var(--border);display:flex;gap:8px;background:#fff;">
+        <input type="text" id="aiInput" class="form-control" placeholder="Вопрос..." onkeydown="if(event.key==='Enter') sendAiMessage()">
+        <button class="btn btn-primary" onclick="sendAiMessage()">➤</button>
+    </div>
+</div>
+
+<div id="toastContainer" style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;"></div>
+<script>
+/* ============================================================
+   1. ИНИЦИАЛИЗАЦИЯ И БАЗОВЫЕ НАСТРОЙКИ
+   ============================================================ */
+const SUPABASE_URL = "https://ektyxbnzkreekdjrdnnk.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_q60_3k3m7l3G8w8y7t30FA_2_jD4H1M";
+let supabaseClient = null;
+
+try {
+    if (window.supabase && window.supabase.createClient) {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log("✅ Supabase успешно подключен");
+    }
+} catch (e) { 
+    console.warn("⚠️ Ошибка инициализации Supabase:", e); 
+}
+
+// Настройки Telegram-бота по умолчанию
+let TG_BOT_TOKEN = "9079823520:AAFcp7OlfCQndEVYrQCK96-kttzA9cgkYbU";
+let TG_CHAT_ID = "9077553326";
+
+// Функция отправки уведомлений в Telegram
+async function sendTelegramNotify(text) {
+    if (!TG_BOT_TOKEN || !TG_CHAT_ID) return;
+    try {
+        const msg = `🏫 *Лицей №37*\n\n${text}`;
+        await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: TG_CHAT_ID,
+                text: msg,
+                parse_mode: 'Markdown'
+            })
+        });
+        console.log("📨 Уведомление в Telegram отправлено");
+    } catch (e) {
+        console.warn("⚠️ Ошибка отправки в Telegram:", e);
+    }
+}
+
+/* ============================================================
+   2. КЛЮЧИ LOCALSTORAGE И ГЛОБАЛЬНОЕ СОСТОЯНИЕ
+   ============================================================ */
+const LS = {
+    user: 'l37_user', profiles: 'l37_profiles', posts: 'l37_posts', 
+    market: 'l37_market', mChats: 'l37_mchats', apps: 'l37_apps',
+    ideas: 'l37_ideas', helpers: 'l37_helpers', scripts: 'l37_scripts', 
+    site: 'l37_site', theme: 'l37_theme', purchased: 'l37_purchased',
+    aiHist: 'l37_ai_hist', aiNick: 'l37_ai_nick', aiRem: 'l37_ai_rem', aiCtx: 'l37_ai_ctx'
+};
+
+// Хелперы для безопасной работы с localStorage
+function lsGet(key, fallback) { 
+    try { 
+        const val = localStorage.getItem(key); 
+        return val ? JSON.parse(val) : fallback; 
+    } catch (e) { return fallback; } 
+}
+function lsSet(key, val) { 
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { console.warn("LS Error"); } 
+}
+
+// Генератор уникальных ID
+function uid() { 
+    return 'id_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); 
+}
+
+// Защита от XSS (экранирование HTML)
+function esc(str) { 
+    if (!str) return ''; 
+    return String(str).replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c])); 
+}
+
+// Всплывающие уведомления (Toast)
+function toast(msg, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    const el = document.createElement('div');
+    const bgColor = type === 'error' ? 'var(--danger)' : 'var(--indigo)';
+    el.style.cssText = `background:${bgColor};color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,0.2);animation:fade 0.3s;pointer-events:none;text-align:center;margin-top:8px;`;
+    el.textContent = msg;
+    container.appendChild(el);
+    
+    setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity 0.4s'; }, 2500);
+    setTimeout(() => el.remove(), 3000);
+}
+
+/* ============================================================
+   3. ЗАГРУЗКА ДАННЫХ ИЗ ПАМЯТИ
+   ============================================================ */
+let currentUser = lsGet(LS.user, null);
+let allProfiles = lsGet(LS.profiles, []);
+let allPosts = lsGet(LS.posts, []);
+let allMarket = lsGet(LS.market, []);
+let allChats = lsGet(LS.mChats, []);
+let allApps = lsGet(LS.apps, []);
+let allIdeas = lsGet(LS.ideas, []);
+let allHelpers = lsGet(LS.helpers, []);
+let allScripts = lsGet(LS.scripts, []);
+
+// Применяем сохраненную тему при загрузке
+const savedTheme = lsGet(LS.theme, '');
+if (savedTheme) document.body.classList.add(savedTheme);
+
+/* ============================================================
+   4. НАВИГАЦИЯ ПО СТРАНИЦАМ
+   ============================================================ */
+function switchPage(pageId) {
+    // Скрываем все страницы
+    document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+    // Показываем нужную
+    const targetPage = document.getElementById('page-' + pageId);
+    if (targetPage) targetPage.classList.add('active');
+    
+    // Обновляем активную кнопку в меню
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
+    
+    // Скролл вверх
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Рендерим контент для конкретных страниц
+    if (pageId === 'home') renderHome();
+    if (pageId === 'social') { renderFeed(); renderHelpers(); }
+    if (pageId === 'market') renderMarket();
+    if (pageId === 'profile') renderProfile();
+}
+
+/* ============================================================
+   5. МОДАЛЬНЫЕ ОКНА И АВТОРИЗАЦИЯ
+   ============================================================ */
+function openAuthModal(mode) {
+    document.getElementById('authModal').classList.add('open');
+    switchAuthMode(mode);
+}
+
+function switchAuthMode(mode) {
+    document.getElementById('formLogin').style.display = mode === 'login' ? 'block' : 'none';
+    document.getElementById('formRegister').style.display = mode === 'register' ? 'block' : 'none';
+    document.getElementById('authTitle').textContent = mode === 'login' ? 'Вход в систему' : 'Регистрация';
+}
+
+function closeModal(id) { 
+    const modal = document.getElementById(id); 
+    if (modal) modal.classList.remove('open'); 
+}
+
+// Обновление шапки (аватарка, имя)
+function updateAuthUI() {
+    const area = document.getElementById('headerAuth');
+    if (!area) return;
+    
+    if (currentUser) {
+        const frameClass = currentUser.activeFrame ? `frame-${currentUser.activeFrame}` : '';
+        const statusHTML = currentUser.activeStatus ? `<span style="font-size:11px;color:var(--indigo);font-weight:bold;">${esc(currentUser.activeStatus)}</span><br>` : '';
+        
+        area.innerHTML = `
+            <div class="user-badge" onclick="switchPage('profile')">
+                <div class="user-avatar ${frameClass}">${currentUser.avatar ? `<img src="${currentUser.avatar}">` : esc(currentUser.name[0])}</div>
+                <div class="user-info">
+                    <div class="user-name">${statusHTML}${esc(currentUser.name)}</div>
+                    <div class="user-class">${currentUser.gradeNum}${currentUser.gradeLetter} класс</div>
+                </div>
+            </div>
+            <button class="btn btn-outline" onclick="logout()">Выйти</button>
+        `;
+    } else {
+        area.innerHTML = `
+            <button class="btn btn-outline" onclick="openAuthModal('login')">Войти</button>
+            <button class="btn btn-primary" onclick="openAuthModal('register')">Регистрация</button>
+        `;
+    }
+    
+    // Обновляем аватарку в поле создания поста
+    const composeAva = document.getElementById('composeAva');
+    if (composeAva) {
+        composeAva.innerHTML = currentUser ? (currentUser.avatar ? `<img src="${currentUser.avatar}">` : esc(currentUser.name[0])) : '?';
+    }
+}
+
+function logout() { 
+    currentUser = null; 
+    lsSet(LS.user, null); 
+    updateAuthUI(); 
+    switchPage('home'); 
+    toast('Вы вышли из аккаунта'); 
+}
+
+// Логин
+function doLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPassword').value;
+    
+    if (!email || !pass) return toast('Заполните все поля', 'error');
+    
+    const user = allProfiles.find(p => p.email === email && p.password === pass);
+    if (!user) return toast('Неверный email или пароль', 'error');
+    
+    currentUser = user; 
+    lsSet(LS.user, currentUser);
+    closeModal('authModal'); 
+    updateAuthUI(); 
+    toast('Добро пожаловать, ' + user.name + '!');
+}
+
+// Регистрация
+function doRegister() {
+    const name = document.getElementById('regFullName').value.trim();
+    const gn = document.getElementById('regGradeNum').value;
+    const gl = document.getElementById('regGradeLetter').value;
+    const email = document.getElementById('regEmail').value.trim();
+    const pass = document.getElementById('regPassword').value;
+    
+    if (!name || !gn || !gl || !email || !pass) return toast('Заполните все поля', 'error');
+    if (pass.length < 6) return toast('Пароль минимум 6 символов', 'error');
+    if (allProfiles.some(p => p.email === email)) return toast('Email уже занят', 'error');
+    
+    const newUser = { 
+        id: uid(), name, gradeNum: gn, gradeLetter: gl, 
+        email, password: pass, role: 'student', points: 0, 
+        avatar: '', nick: '', bio: '', activeFrame: '', activeStatus: ''
+    };
+    
+    allProfiles.push(newUser); 
+    lsSet(LS.profiles, allProfiles);
+    currentUser = newUser; 
+    lsSet(LS.user, currentUser);
+    
+    // Отправляем в Supabase
+    if (supabaseClient) {
+        supabaseClient.from('profiles').insert([newUser]).then(({error}) => {
+            if (error) console.warn('Ошибка сохранения профиля:', error);
+        });
+    }
+    
+    closeModal('authModal'); 
+    updateAuthUI(); 
+    toast('Регистрация успешна!');
+}
+
+/* ============================================================
+   6. РЕНДЕР ГЛАВНОЙ СТРАНИЦЫ
+   ============================================================ */
+const HOME_EVENTS = [
+    { id: 'e1', title: 'Олимпиада по информатике', desc: 'Республиканский этап для 8–11 классов', icon: '💻', date: '15 июня', tag: 'Олимпиада' },
+    { id: 'e2', title: 'Движение Первых: квест', desc: 'Городской командный квест для 5–8 классов', icon: '🚩', date: '25 июня', tag: 'Квест' }
+];
+
+function renderHome() {
+    document.getElementById('statStudents').textContent = allProfiles.length || 0;
+    document.getElementById('statPosts').textContent = allPosts.length || 0;
+    document.getElementById('statMarket').textContent = allMarket.length || 0;
+
+    // Рендер мероприятий
+    document.getElementById('homeEventsGrid').innerHTML = HOME_EVENTS.map(e => `
+        <div class="card card-pad">
+            <span class="text-xs fw-bold" style="color:var(--indigo);background:#EEF2FF;padding:4px 8px;border-radius:4px;">${esc(e.tag)}</span>
+            <h3 class="mt-4 mb-2" style="font-size:18px;font-weight:700;">${esc(e.icon)} ${esc(e.title)}</h3>
+            <p class="text-sm text-muted mb-4">${esc(e.desc)}</p>
+            <button class="btn btn-primary btn-sm" onclick="openApplicationForm('${esc(e.title)}')">✍️ Подать заявку</button>
+        </div>
+    `).join('');
+
+    // Рендер расписания
+    document.getElementById('homeScheduleGrid').innerHTML = `
+        <div class="flex justify-between" style="padding:8px 0;border-bottom:1px solid var(--border);"><span>1 урок</span><b>08:00 – 08:45</b></div>
+        <div class="flex justify-between" style="padding:8px 0;border-bottom:1px solid var(--border);"><span>2 урок</span><b>08:55 – 09:40</b></div>
+        <div class="flex justify-between" style="padding:8px 0;"><span>3 урок</span><b>09:55 – 10:40</b></div>
+    `;
+
+    // Рендер новостей
+    document.getElementById('newsList').innerHTML = `
+        <div style="padding:8px 0;border-bottom:1px solid var(--border);"><b>15 мая</b> — День открытых дверей</div>
+        <div style="padding:8px 0;"><b>12 мая</b> — Победа в олимпиаде</div>
+    `;
+}
+
+// Отправка идеи в Ящик
+async function submitIdea() {
+    const text = document.getElementById('ideaText').value.trim();
+    const isAnon = document.getElementById('ideaAnonymous').checked;
+    if (!text) return toast('Напишите идею', 'error');
+
+    const idea = {
+        id: uid(), text, isAnon,
+        author: isAnon ? 'Анонимно' : (currentUser ? currentUser.name : 'Гость'),
+        grade: isAnon ? '' : (currentUser ? currentUser.gradeNum + currentUser.gradeLetter : ''),
+        date: new Date().toISOString()
+    };
+
+    allIdeas.push(idea);
+    lsSet(LS.ideas, allIdeas);
+    
+    if (supabaseClient) supabaseClient.from('ideas').insert([idea]).then();
+    
+    const tgText = `💡 *Новая идея*\n\n*От:* ${idea.author} ${idea.grade ? '('+idea.grade+')' : ''}\n*Текст:* ${idea.text}`;
+    sendTelegramNotify(tgText);
+
+    document.getElementById('ideaText').value = '';
+    document.getElementById('ideaAnonymous').checked = false;
+    toast('Идея отправлена! Спасибо!');
+}
+
+// Подача заявки на мероприятие
+function openApplicationForm(eventName) {
+    if (!currentUser) {
+        toast('Войдите, чтобы подать заявку', 'error');
+        openAuthModal('login');
+        return;
+    }
+    document.getElementById('appEventName').textContent = eventName;
+    document.getElementById('appFullName').value = currentUser.name;
+    document.getElementById('applicationModal').classList.add('open');
+}
+
+function submitApplication() {
+    const name = document.getElementById('appFullName').value.trim();
+    const gn = document.getElementById('appGradeNum').value;
+    const gl = document.getElementById('appGradeLetter').value;
+    if (!name) return toast('Введите ФИО', 'error');
+
+    const app = {
+        id: uid(), event: document.getElementById('appEventName').textContent,
+        name: name, grade: gn + gl, date: new Date().toISOString()
+    };
+    
+    allApps.push(app); 
+    lsSet(LS.apps, allApps);
+    
+    if (supabaseClient) supabaseClient.from('applications').insert([app]).then();
+    
+    const tgText = `📝 *Новая заявка на мероприятие*\n\n*Событие:* ${app.event}\n*Ученик:* ${app.name} (${app.grade})`;
+    sendTelegramNotify(tgText);
+
+    closeModal('applicationModal'); 
+    toast('Заявка отправлена!');
+}
+
+/* ============================================================
+   7. СОЦСЕТЬ (Посты и Лайки)
+   ============================================================ */
+function toggleImageInput() {
+    const w = document.getElementById('imageInputWrap');
+    w.classList.toggle('hidden');
+}
+
+function createPost() {
+    if (!currentUser) return toast('Войдите, чтобы публиковать', 'error');
+    const text = document.getElementById('postContent').value.trim();
+    const img = document.getElementById('postImageUrl').value.trim();
+    if (!text) return toast('Напишите текст', 'error');
+
+    const post = { 
+        id: uid(), author_id: currentUser.id, author_name: currentUser.name, 
+        author_frame: currentUser.activeFrame || '',
+        content: text, image_url: img, likes: 0, created_at: new Date().toISOString() 
+    };
+    
+    allPosts.unshift(post); 
+    lsSet(LS.posts, allPosts);
+    
+    if (supabaseClient) supabaseClient.from('posts').insert([post]).then();
+    
+    document.getElementById('postContent').value = ''; 
+    document.getElementById('postImageUrl').value = '';
+    document.getElementById('imageInputWrap').classList.add('hidden');
+    
+    renderFeed(); 
+    toast('Пост опубликован!');
+}
+
+function renderFeed() {
+    const feed = document.getElementById('feedList');
+    if (!feed) return;
+    if (!allPosts.length) {
+        feed.innerHTML = '<div class="card card-pad text-center text-muted">Пока нет постов. Будьте первым!</div>';
+        return;
+    }
+    feed.innerHTML = allPosts.map(p => `
+        <div class="card" style="padding:20px;">
+            <div class="flex gap-2 mb-4">
+                <div class="user-avatar ${p.author_frame ? 'frame-' + p.author_frame : ''}" style="width:40px;height:40px;">${esc((p.author_name || 'У')[0])}</div>
+                <div>
+                    <div class="fw-bold">${esc(p.author_name)}</div>
+                    <div class="text-xs text-muted">${new Date(p.created_at).toLocaleString('ru-RU')}</div>
+                </div>
+            </div>
+            <p style="margin-bottom:16px;">${esc(p.content)}</p>
+            ${p.image_url ? `<img src="${esc(p.image_url)}" style="border-radius:12px;margin-bottom:16px;max-height:400px;object-fit:cover;">` : ''}
+            <div class="flex gap-2" style="border-top:1px solid var(--border);padding-top:12px;">
+                <button class="btn btn-outline btn-sm" onclick="likePost('${p.id}')">❤️ ${p.likes || 0}</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function likePost(id) {
+    const p = allPosts.find(x => x.id === id);
+    if (p) { 
+        p.likes = (p.likes || 0) + 1; 
+        lsSet(LS.posts, allPosts); 
+        renderFeed(); 
+    }
+}
+
+/* ============================================================
+   8. БАНК ВЗАИМОПОМОЩИ
+   ============================================================ */
+function openHelpToggle() {
+    if (!currentUser) return toast('Войдите, чтобы стать помощником', 'error');
+    document.getElementById('helpToggleModal').classList.add('open');
+}
+
+function saveHelperStatus() {
+    const subject = document.getElementById('helpSubject').value;
+    const existing = allHelpers.find(h => h.userId === currentUser.id);
+    
+    if (existing) {
+        existing.subject = subject;
+    } else {
+        allHelpers.push({ 
+            userId: currentUser.id, name: currentUser.name, 
+            subject: subject, grade: currentUser.gradeNum + currentUser.gradeLetter 
+        });
+    }
+    lsSet(LS.helpers, allHelpers);
+    
+    if (supabaseClient) supabaseClient.from('helpers').upsert([{ userId: currentUser.id, name: currentUser.name, subject, grade: currentUser.gradeNum + currentUser.gradeLetter }]).then();
+    
+    closeModal('helpToggleModal');
+    renderHelpers();
+    toast('Вы добавлены в список помощников!');
+}
+
+function renderHelpers() {
+    const grid = document.getElementById('helpersGrid');
+    if (!grid) return;
+    if (!allHelpers.length) {
+        grid.innerHTML = '<div class="card card-pad text-center text-muted" style="grid-column:1/-1;">Пока никто не готов помогать. Станьте первым!</div>';
+        return;
+    }
+    grid.innerHTML = allHelpers.map(h => `
+        <div class="card card-pad">
+            <div class="flex items-center gap-2 mb-4">
+                <div class="user-avatar" style="width:40px;height:40px;">${esc(h.name[0])}</div>
+                <div>
+                    <div class="fw-bold">${esc(h.name)}</div>
+                    <div class="text-xs text-muted">${esc(h.grade)} класс</div>
+                </div>
+            </div>
+            <div class="text-sm mb-4"><b>Предмет:</b> ${esc(h.subject)}</div>
+            <button class="btn btn-primary btn-sm btn-block" onclick="contactHelper('${h.userId}')">💬 Попросить помощи</button>
+        </div>
+    `).join('');
+}
+
+function contactHelper(userId) {
+    if (!currentUser) return toast('Войдите, чтобы написать', 'error');
+    if (currentUser.id === userId) return toast('Это вы!');
+    toast('Чат с помощником открыт (в разработке)');
+}
+
+/* ============================================================
+   9. БАРАХОЛКА (Логика с 4 фото)
+   ============================================================ */
+let uploadedPhotos = [];
+
+function openMarketForm() {
+    if (!currentUser) return toast('Войдите, чтобы разместить товар', 'error');
+    document.getElementById('marketFormModal').classList.add('open');
+}
+
+function handleMarketPhotos(e) {
+    const files = Array.from(e.target.files).slice(0, 4 - uploadedPhotos.length);
+    files.forEach(f => {
+        if (f.size > 2 * 1024 * 1024) return toast('Файл слишком большой (макс 2МБ)', 'error');
+        const r = new FileReader();
+        r.onload = ev => { 
+            uploadedPhotos.push(ev.target.result); 
+            renderPhotoUploads(); 
+        };
+        r.readAsDataURL(f);
+    });
+    e.target.value = '';
+}
+
+function renderPhotoUploads() {
+    const c = document.getElementById('photoUploadArea');
+    if (!c) return;
+    c.innerHTML = uploadedPhotos.map((src, i) => `
+        <div class="photo-slot"><img src="${src}"><div class="remove" onclick="removePhoto(${i})">✕</div></div>
+    `).join('') + (uploadedPhotos.length < 4 ? `<div class="photo-slot" onclick="document.getElementById('marketFileInput').click()">+</div>` : '');
+}
+
+function removePhoto(i) { 
+    uploadedPhotos.splice(i, 1); 
+    renderPhotoUploads(); 
+}
+
+function submitMarketItem() {
+    if (!currentUser) return;
+    const title = document.getElementById('mTitle').value.trim();
+    const cat = document.getElementById('mCategory').value;
+    const price = document.getElementById('mPrice').value || '0';
+    const desc = document.getElementById('mDesc').value.trim();
+    if (!title) return toast('Введите название', 'error');
+
+    const item = {
+        id: uid(), seller_id: currentUser.id, seller_name: currentUser.name,
+        seller_grade: currentUser.gradeNum + currentUser.gradeLetter,
+        title, cat, price, desc, images: uploadedPhotos.slice(), 
+        status: 'active', created_at: new Date().toISOString()
+    };
+    
+    allMarket.unshift(item); 
+    lsSet(LS.market, allMarket);
+    
+    if (supabaseClient) supabaseClient.from('market').insert([item]).then();
+    
+    const tgText = `🛍 *Новое объявление на Барахолке*\n\n*Товар:* ${item.title}\n*Цена:* ${item.price} ₽\n*Продавец:* ${item.seller_name} (${item.seller_grade})`;
+    sendTelegramNotify(tgText);
+
+    closeModal('marketFormModal'); 
+    uploadedPhotos = []; 
+    renderPhotoUploads(); 
+    renderMarket();
+    toast('Объявление опубликовано!');
+}
+
+function renderMarket() {
+    const el = document.getElementById('marketGrid');
+    if (!el) return;
+    if (!allMarket.length) { 
+        el.innerHTML = '<div class="card card-pad text-center text-muted" style="grid-column:1/-1;">Объявлений пока нет.</div>'; 
+        return; 
+    }
+    
+    el.innerHTML = allMarket.map(m => {
+        const imgSrc = m.images && m.images.length ? m.images[0] : 'https://via.placeholder.com/300x200?text=No+Photo';
+        const priceStr = m.price == '0' ? 'Бесплатно' : m.price + ' ₽';
+        const isOwner = currentUser && currentUser.id === m.seller_id;
+
+        return `
+            <div class="market-card">
+                <div class="market-gallery">
+                    ${m.status === 'sold' ? '<div class="sold-badge">ПРОДАНО</div>' : ''}
+                    <img src="${imgSrc}" class="market-img active" id="img_${m.id}_0">
+                    ${m.images && m.images.length > 1 ? `<div class="gallery-nav prev" onclick="switchImg('${m.id}', -1)">❮</div><div class="gallery-nav next" onclick="switchImg('${m.id}', 1)">❯</div>` : ''}
+                </div>
+                <div class="market-body">
+                    <div class="market-price">${priceStr}</div>
+                    <div class="market-title">${esc(m.title)}</div>
+                    <div class="text-xs text-muted mt-2">Продавец: ${esc(m.seller_name)} (${esc(m.seller_grade)})</div>
+                    <div class="flex gap-2 mt-4" style="margin-top:auto;">
+                        ${isOwner ? `<button class="btn btn-outline btn-sm w-full" onclick="deleteMarketItem('${m.id}')">Удалить</button>` : `<button class="btn btn-primary btn-sm w-full" onclick="openMarketChat('${m.id}')">💬 Написать</button>`}
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+const imgIndices = {};
+function switchImg(id, dir) {
+    const item = allMarket.find(x => x.id === id); 
+    if (!item || !item.images) return;
+    if (imgIndices[id] === undefined) imgIndices[id] = 0;
+    imgIndices[id] = (imgIndices[id] + dir + item.images.length) % item.images.length;
+    document.getElementById(`img_${id}_0`).src = item.images[imgIndices[id]];
+}
+
+function deleteMarketItem(id) {
+    if (!confirm('Удалить объявление?')) return;
+    allMarket = allMarket.filter(x => x.id !== id); 
+    lsSet(LS.market, allMarket); 
+    renderMarket();
+}
+
+/* ============================================================
+   10. ЧАТ БАРАХОЛКИ
+   ============================================================ */
+let currentChatItem = null;
+
+function openMarketChat(itemId) {
+    if (!currentUser) return toast('Войдите в аккаунт', 'error');
+    currentChatItem = allMarket.find(x => x.id === itemId);
+    
+    document.getElementById('chatProductTitle').textContent = currentChatItem.title;
+    document.getElementById('chatProductPrice').textContent = currentChatItem.price == '0' ? 'Бесплатно' : currentChatItem.price + ' ₽';
+    document.getElementById('chatProductImg').src = currentChatItem.images && currentChatItem.images.length ? currentChatItem.images[0] : 'https://via.placeholder.com/60';
+    
+    const isSeller = currentUser.id === currentChatItem.seller_id;
+    document.getElementById('sellerActions').classList.toggle('hidden', !isSeller);
+
+    document.getElementById('marketChatModal').classList.add('open');
+    renderMarketChat();
+}
+
+function renderMarketChat() {
+    const box = document.getElementById('marketChatMessages');
+    if (!box) return;
+    const msgs = allChats.filter(m => m.item_id === currentChatItem.id);
+    
+    if (!msgs.length) {
+        box.innerHTML = '<div class="text-center text-muted text-sm" style="margin-top:20px;">Напишите первое сообщение продавцу</div>';
+        return;
+    }
+    
+    box.innerHTML = msgs.map(m => {
+        const isOwn = m.sender_id === currentUser.id;
+        return `
+            <div style="align-self: ${isOwn ? 'flex-end' : 'flex-start'}; max-width: 80%;">
+                <div style="font-size:11px; color:var(--muted); margin-bottom:4px; text-align:${isOwn ? 'right' : 'left'};">${esc(m.sender_name)}</div>
+                <div style="background:${isOwn ? 'var(--indigo)' : '#fff'}; color:${isOwn ? '#fff' : '#000'}; padding:10px 14px; border-radius:12px; border:1px solid ${isOwn ? 'transparent' : 'var(--border)'}; font-size:14px;">
+                    ${esc(m.text)}
+                </div>
+            </div>
+        `;
+    }).join('');
+    box.scrollTop = box.scrollHeight;
+}
+
+function sendMarketMsg() {
+    const inp = document.getElementById('marketChatInput');
+    const txt = inp.value.trim(); 
+    if (!txt) return;
+    
+    const msg = { 
+        id: uid(), item_id: currentChatItem.id, sender_id: currentUser.id, 
+        sender_name: currentUser.name, text: txt, created_at: new Date().toISOString() 
+    };
+    
+    allChats.push(msg); 
+    lsSet(LS.mChats, allChats);
+    
+    if (supabaseClient) supabaseClient.from('market_chats').insert([msg]).then();
+    
+    inp.value = ''; 
+    renderMarketChat();
+}
+
+function markAsSold() {
+    currentChatItem.status = 'sold'; 
+    lsSet(LS.market, allMarket);
+    if (supabaseClient) supabaseClient.from('market').update({ status: 'sold' }).eq('id', currentChatItem.id).then();
+    toast('Товар снят с публикации'); 
+    closeModal('marketChatModal'); 
+    renderMarket();
+}
+
+/* ============================================================
+   11. ПРОФИЛЬ И МАГАЗИН НАГРАД
+   ============================================================ */
+function renderProfile() {
+    const el = document.getElementById('profileContent');
+    if (!el) return;
+    if (!currentUser) { 
+        el.innerHTML = '<div class="card card-pad text-center">Войдите в аккаунт, чтобы увидеть профиль</div>'; 
+        return; 
+    }
+
+    const frameClass = currentUser.activeFrame ? `frame-${currentUser.activeFrame}` : '';
+    const statusHTML = currentUser.activeStatus ? `<div class="fw-bold mt-2" style="color:var(--indigo);">${esc(currentUser.activeStatus)}</div>` : '';
+    
+    el.innerHTML = `
+        <div class="card card-pad mb-4" style="display:flex;gap:20px;align-items:center;">
+            <div class="user-avatar ${frameClass}" style="width:80px;height:80px;font-size:32px;">${currentUser.avatar ? `<img src="${currentUser.avatar}">` : esc(currentUser.name[0])}</div>
+            <div>
+                <h2 style="font-size:24px;font-weight:800;">${esc(currentUser.name)}</h2>
+                ${statusHTML}
+                <div class="text-muted mt-2">Класс: ${currentUser.gradeNum}${currentUser.gradeLetter}</div>
+                <div class="fw-bold mt-2" style="color:var(--indigo);">⭐ ${currentUser.points || 0} баллов</div>
+            </div>
+        </div>
+        
+        <div class="grid-cards mb-4">
+            <div class="card card-pad">
+                <h3 class="fw-bold mb-4">✏️ Редактировать</h3>
+                <div class="form-group"><label class="form-label">Никнейм</label><input class="form-control" id="pNick" value="${esc(currentUser.nick || '')}"></div>
+                <div class="form-group"><label class="form-label">О себе</label><textarea class="form-control" id="pBio" rows="3">${esc(currentUser.bio || '')}</textarea></div>
+                <button class="btn btn-primary" onclick="saveProfileExtended()">Сохранить</button>
+            </div>
+
+            <div class="card card-pad">
+                <h3 class="fw-bold mb-4">🎨 Магазин наград</h3>
+                <p class="text-sm text-muted mb-4">Трать баллы на уникальные рамки, статусы и темы.</p>
+                <button class="btn btn-gold w-full mb-2" onclick="openShopModal()">Открыть магазин</button>
+                <button class="btn btn-outline w-full" onclick="changeAvatar()">Сменить аватарку</button>
+            </div>
+        </div>
+    `;
+}
+
+function saveProfileExtended() {
+    if (!currentUser) return;
+    currentUser.nick = document.getElementById('pNick').value.trim();
+    currentUser.bio = document.getElementById('pBio').value.trim();
+    
+    const i = allProfiles.findIndex(p => p.id === currentUser.id);
+    if (i >= 0) allProfiles[i] = currentUser;
+    lsSet(LS.user, currentUser); 
+    lsSet(LS.profiles, allProfiles);
+    
+    if (supabaseClient) supabaseClient.from('profiles').update({ nick: currentUser.nick, bio: currentUser.bio }).eq('id', currentUser.id).then();
+    toast('Профиль сохранён');
+}
+
+function changeAvatar() {
+    const url = prompt('Введите ссылку на аватарку (или Base64):');
+    if (url) {
+        currentUser.avatar = url;
+        lsSet(LS.user, currentUser);
+        const i = allProfiles.findIndex(p => p.id === currentUser.id);
+        if (i >= 0) { allProfiles[i] = currentUser; lsSet(LS.profiles, allProfiles); }
+        renderProfile(); updateAuthUI();
+        if (supabaseClient) supabaseClient.from('profiles').update({ avatar: url }).eq('id', currentUser.id).then();
+        toast('Аватар обновлён!');
+    }
+}
+
+function openShopModal() {
+    const shopHTML = `
+        <div style="position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;" id="shopModal">
+            <div class="card card-pad" style="width:90%;max-width:500px;background:#fff;max-height:80vh;overflow-y:auto;">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="fw-bold" style="font-size:20px;">🎨 Магазин наград</h3>
+                    <button onclick="document.getElementById('shopModal').remove()" class="modal-close">✕</button>
+                </div>
+                <p class="text-sm text-muted mb-4">У вас <b>${currentUser.points || 0}</b> баллов.</p>
+                
+                <div class="mb-4">
+                    <h4 class="fw-bold mb-2">Рамки (50 баллов)</h4>
+                    <div class="flex gap-2">
+                        <button class="btn btn-outline btn-sm" onclick="buyItem('frame', 'gold', 50)">Золотая</button>
+                        <button class="btn btn-outline btn-sm" onclick="buyItem('frame', 'neon', 50)">Неон</button>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h4 class="fw-bold mb-2">Статусы (100 баллов)</h4>
+                    <div class="flex gap-2">
+                        <button class="btn btn-outline btn-sm" onclick="buyItem('status', '⚡ Гений Python', 100)">Python</button>
+                        <button class="btn btn-outline btn-sm" onclick="buyItem('status', '🏆 Гордость Лицея', 100)">Гордость</button>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="fw-bold mb-2">Темы сайта (200 баллов)</h4>
+                    <div class="flex gap-2">
+                        <button class="btn btn-outline btn-sm" onclick="buyItem('theme', 'theme-dark', 200)">Тёмная</button>
+                        <button class="btn btn-outline btn-sm" onclick="buyItem('theme', 'theme-emerald', 200)">Изумруд</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', shopHTML);
+}
+
+function buyItem(type, value, price) {
+    if ((currentUser.points || 0) < price) {
+        return toast('Недостаточно баллов!', 'error');
+    }
+    if (!confirm(`Купить за ${price} баллов?`)) return;
+    
+    currentUser.points -= price;
+    
+    if (type === 'frame') currentUser.activeFrame = value;
+    if (type === 'status') currentUser.activeStatus = value;
+    if (type === 'theme') {
+        document.body.className = value; 
+        lsSet(LS.theme, value);
+    }
+    
+    const i = allProfiles.findIndex(p => p.id === currentUser.id);
+    if (i >= 0) { allProfiles[i] = currentUser; lsSet(LS.profiles, allProfiles); }
+    lsSet(LS.user, currentUser);
+    
+    if (supabaseClient) supabaseClient.from('profiles').update({ points: currentUser.points, activeFrame: currentUser.activeFrame, activeStatus: currentUser.activeStatus }).eq('id', currentUser.id).then();
+    
+    document.getElementById('shopModal').remove();
+    renderProfile(); updateAuthUI();
+    toast('Покупка успешна!');
+}
+
+/* ============================================================
+   12. АДМИН-ПАНЕЛЬ
+   ============================================================ */
+function openAdminLogin() {
+    closeModal('authModal');
+    document.getElementById('adminLoginModal').classList.add('open');
+    document.getElementById('adminPasswordInput').value = '';
+}
+
+async function checkAdminPassword() {
+    const input = document.getElementById('adminPasswordInput').value;
+    const localPwd = lsGet(LS.site, {}).admin_password || 'лицей37';
+    let isValid = (input === localPwd || input === 'лицей37');
+
+    if (supabaseClient) {
+        try {
+            const { data } = await supabaseClient.from('site_content').select('*').eq('key', 'admin_password').limit(1);
+            if (data && data.length > 0) {
+                if (input === data[0].value) isValid = true;
+            }
+        } catch (e) {}
+    }
+
+    if (isValid) {
+        closeModal('adminLoginModal');
+        const bar = document.getElementById('adminTopBar');
+        bar.style.display = 'flex';
+        bar.classList.add('active');
+        document.body.style.paddingTop = '50px';
+        toast('Режим Администратора активирован 👑');
+    } else {
+        toast('Неверный пароль!', 'error');
+    }
+}
+
+function exitAdminMode() {
+    const bar = document.getElementById('adminTopBar');
+    bar.classList.remove('active');
+    bar.style.display = 'none';
+    document.body.style.paddingTop = '0';
+    document.getElementById('liveEditToggle').classList.remove('on');
+    document.querySelectorAll('[data-editable]').forEach(el => {
+        el.contentEditable = 'false';
+        el.style.outline = 'none';
+    });
+    toast('Режим администратора выключен');
+}
+
+function toggleLiveEdit() {
+    const t = document.getElementById('liveEditToggle');
+    t.classList.toggle('on');
+    const isOn = t.classList.contains('on');
+    document.querySelectorAll('[data-editable]').forEach(el => {
+        el.contentEditable = isOn ? 'true' : 'false';
+        el.style.outline = isOn ? '2px dashed var(--gold)' : 'none';
+        if (isOn) el.title = "Кликните, чтобы изменить";
+    });
+    if (isOn) toast('Живое редактирование ВКЛЮЧЕНО');
+}
+
+function openAdminApps() {
+    let html = '<h3 class="fw-bold mb-4">📋 Заявки на мероприятия</h3>';
+    if (!allApps.length) html += '<p class="text-muted text-sm mb-4">Нет заявок</p>';
+    else {
+        html += '<div style="max-height:200px;overflow-y:auto;margin-bottom:20px;font-size:13px;">';
+        allApps.forEach(a => { html += `<div style="border-bottom:1px solid var(--border);padding:8px 0;"><b>${esc(a.name)}</b> (${esc(a.grade)})<br>${esc(a.event)}</div>`; });
+        html += '</div>';
+    }
+    html += '<h3 class="fw-bold mb-4">💡 Идеи из Ящика</h3>';
+    if (!allIdeas.length) html += '<p class="text-muted text-sm">Нет идей</p>';
+    else {
+        html += '<div style="max-height:200px;overflow-y:auto;font-size:13px;">';
+        allIdeas.slice().reverse().forEach(i => { html += `<div style="border-bottom:1px solid var(--border);padding:8px 0;"><b>${esc(i.author)}</b>: ${esc(i.text)}</div>`; });
+        html += '</div>';
+    }
+    
+    const box = document.createElement('div');
+    box.className = 'modal open';
+    box.innerHTML = `<div class="modal-box" style="max-width:500px;"><div class="modal-head"><div class="modal-title">📋 Заявки и Идеи</div><button class="modal-close" onclick="this.closest('.modal').remove()">✕</button></div><div class="modal-body">${html}</div></div>`;
+    document.body.appendChild(box);
+}
+
+function openAdminTelegram() {
+    document.getElementById('adminTelegramModal').classList.add('open');
+    document.getElementById('tgTokenInput').value = TG_BOT_TOKEN;
+    document.getElementById('tgChatIdInput').value = TG_CHAT_ID;
+    
+    let ideasHtml = '';
+    allIdeas.slice(-5).reverse().forEach(i => {
+        ideasHtml += `<div style="margin-bottom:8px; border-bottom:1px solid var(--border); padding-bottom:4px;"><b>${esc(i.author)}</b>: ${esc(i.text)}</div>`;
+    });
+    document.getElementById('adminIdeasList').innerHTML = ideasHtml || '<span class="text-muted">Пока нет идей</span>';
+}
+
+function saveTelegramSettings() {
+    TG_BOT_TOKEN = document.getElementById('tgTokenInput').value.trim();
+    TG_CHAT_ID = document.getElementById('tgChatIdInput').value.trim();
+    lsSet('l37_tg_token', TG_BOT_TOKEN);
+    lsSet('l37_tg_chat', TG_CHAT_ID);
+    toast('Настройки Telegram сохранены');
+}
+
+function openAdminPassword() {
+    const newPwd = prompt('Введите новый пароль администратора (минимум 4 символа):');
+    if (!newPwd || newPwd.length < 4) return toast('Пароль слишком короткий', 'error');
+    
+    let siteData = lsGet(LS.site, {});
+    siteData.admin_password = newPwd;
+    lsSet(LS.site, siteData);
+    
+    if (supabaseClient) supabaseClient.from('site_content').upsert({ key: 'admin_password', value: newPwd }).then();
+    toast('Пароль успешно изменен!');
+}
+
+/* ============================================================
+   13. БИБЛИОТЕКА СКРИПТОВ
+   ============================================================ */
+function openAdminDrawer() { document.getElementById('adminDrawer').classList.add('open'); document.getElementById('drawerOverlay').classList.add('open'); }
+function closeAdminDrawer() { document.getElementById('adminDrawer').classList.remove('open'); document.getElementById('drawerOverlay').classList.remove('open'); }
+
+function autoNameScript(code) {
+    const l = code.toLowerCase();
+    if (/snow|flake|снег/.test(l)) return '❄️ Снегопад на сайте';
+    if (/firework|салют|confetti/.test(l)) return '🎆 Праздничный салют';
+    if (/timer|countdown/.test(l)) return '⏱ Таймер обратного отсчёта';
+    if (/audio|music/.test(l)) return '🎵 Фоновая музыка';
+    if (/banner|alert/.test(l)) return '📢 Баннер-объявление';
+    return '⚡ Пользовательский скрипт #' + (allScripts.length + 1);
+}
+
+function saveNewScript() {
+    const code = document.getElementById('scriptCodeInput').value.trim();
+    if (!code) return toast('Введите код', 'error');
+    
+    const customName = document.getElementById('scriptNameInput').value.trim();
+    const name = customName || autoNameScript(code);
+    const script = { id: uid(), name, code, enabled: true };
+    
+    allScripts.push(script); 
+    lsSet(LS.scripts, allScripts);
+    if (supabaseClient) supabaseClient.from('custom_code').upsert([{ id: 'main', scripts: allScripts }]).then();
+
+    runCustomScript(script.code, script.id);
+    document.getElementById('scriptCodeInput').value = '';
+    document.getElementById('scriptNameInput').value = '';
+    renderScriptsList();
+    toast('Скрипт сохранён и запущен');
+}
+
+function runCustomScript(code, id) {
+    stopCustomScript(id);
+    const container = document.createElement('div');
+    container.id = 'script_box_' + id;
+    container.innerHTML = code;
+    container.querySelectorAll('script').forEach(old => {
+        const ns = document.createElement('script');
+        Array.from(old.attributes).forEach(a => ns.setAttribute(a.name, a.value));
+        ns.textContent = old.textContent;
+        old.replaceWith(ns);
+    });
+    document.body.appendChild(container);
+}
+
+function stopCustomScript(id) { const el = document.getElementById('script_box_' + id); if (el) el.remove(); }
+
+function toggleScriptStatus(id) {
+    const s = allScripts.find(x => x.id === id);
+    if (!s) return;
+    s.enabled = !s.enabled;
+    lsSet(LS.scripts, allScripts);
+    if (supabaseClient) supabaseClient.from('custom_code').upsert([{ id: 'main', scripts: allScripts }]).then();
+    
+    if (s.enabled) { runCustomScript(s.code, s.id); toast('Скрипт запущен'); }
+    else { stopCustomScript(s.id); toast('Скрипт остановлен'); }
+    renderScriptsList();
+}
+
+function deleteScript(id) {
+    if (!confirm('Удалить скрипт?')) return;
+    stopCustomScript(id);
+    allScripts = allScripts.filter(x => x.id !== id);
+    lsSet(LS.scripts, allScripts);
+    if (supabaseClient) supabaseClient.from('custom_code').upsert([{ id: 'main', scripts: allScripts }]).then();
+    renderScriptsList();
+    toast('Удалено');
+}
+
+function renderScriptsList() {
+    const el = document.getElementById('scriptsList');
+    if (!el) return;
+    if (!allScripts.length) { el.innerHTML = '<p class="text-sm text-muted text-center">Нет скриптов.</p>'; return; }
+    el.innerHTML = allScripts.map(s => `
+        <div class="script-card">
+            <div class="script-icon">${s.enabled ? '🟢' : '🔴'}</div>
+            <div class="script-info">
+                <div class="script-name">${esc(s.name)}</div>
+                <div class="script-desc">${s.enabled ? 'Работает' : 'Остановлен'}</div>
+            </div>
+            <div class="script-actions">
+                <button class="icon-btn" onclick="toggleScriptStatus('${s.id}')">${s.enabled ? '⏸️' : '▶️'}</button>
+                <button class="icon-btn" onclick="deleteScript('${s.id}')">🗑️</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+/* ============================================================
+   14. ИИ-НАСТАВНИК (МОЗГ)
+   ============================================================ */
+let aiKnowledge = { cards: [], index: {}, loaded: false, loading: false };
+let aiNickname = lsGet(LS.aiNick, '');
+let aiReminders = lsGet(LS.aiRem, []);
+let aiMessageCounter = 0;
+
+const AI_FILES = ['omni_brain','dataset.txt',...Array.from({length:40},(_,i)=>'b'+(i+1)+'.txt')];
+
+function stem(word) {
+    if (!word) return '';
+    let w = word.toLowerCase().replace(/[^а-яёa-z0-9]/gi, '');
+    if (w.length <= 3) return w;
+    const suffixes = ['иями','ями','ами','ов','ев','ий','ый','ой','ая','ое','ые','ых','им','ем','ом','ах','ях','ам','ям','ую','юю','ешь','ишь','ете','ите','ут','ют','ат','ят','ла','ло','ли','ть','ся','сь','е','у','ю','а','я','ы','и','о'];
+    for (const s of suffixes) {
+        if (w.length - s.length >= 3 && w.endsWith(s)) { w = w.slice(0, -s.length); break; }
+    }
+    return w;
+}
+
+function tokenize(text) {
+    if (!text) return [];
+    return String(text).toLowerCase().replace(/[^а-яёa-z0-9\s]/gi, ' ').split(/\s+/).filter(w => w.length > 1).map(stem);
+}
+
+async function loadKB() {
+    if (aiKnowledge.loading || aiKnowledge.loaded) return;
+    aiKnowledge.loading = true;
+    let failStreak = 0;
+    
+    for (const file of AI_FILES) {
+        try {
+            const r = await fetch(file, { cache: 'force-cache' });
+            if (!r.ok) { failStreak++; if(failStreak>=3) break; continue; }
+            const txt = await r.text();
+            if (!txt || txt.trim().length < 10) continue;
+            failStreak = 0;
+            
+            // Простой парсинг
+            if (txt.includes('"id"')) {
+                const lines = txt.replace(/\}\s*\{/g, '}\n{').split('\n');
+                for (let l of lines) {
+                    if (l.startsWith('{')) {
+                        try {
+                            let obj = JSON.parse(l);
+                            obj._full = Object.values(obj).join(' ');
+                            aiKnowledge.cards.push(obj);
+                        } catch(e){}
+                    }
+                }
+            } else {
+                aiKnowledge.cards.push({ top: file, sum: txt.slice(0, 500), _full: txt });
+            }
+        } catch (e) { failStreak++; if(failStreak>=3) break; }
+    }
+    aiKnowledge.loaded = true;
+    aiKnowledge.loading = false;
+}
+
+async function fetchWeb(url) {
+    try { const r = await fetch('https://r.jina.ai/' + url); if (!r.ok) return null; return (await r.text()).slice(0, 5000); } catch (e) { return null; }
+}
+
+async function wikiSearch(q) {
+    try {
+        const r = await fetch(`https://ru.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srsearch=${encodeURIComponent(q)}&srlimit=1`);
+        const d = await r.json();
+        if (!d.query || !d.query.search || !d.query.search.length) return null;
+        const title = d.query.search[0].title;
+        const r2 = await fetch(`https://ru.wikipedia.org/w/api.php?action=query&prop=extracts&exintro=1&explaintext=1&format=json&origin=*&titles=${encodeURIComponent(title)}`);
+        const d2 = await r2.json();
+        const pages = d2.query.pages;
+        const k = Object.keys(pages)[0];
+        if (pages[k].extract) return { title, extract: pages[k].extract };
+        return null;
+    } catch (e) { return null; }
+}
+
+function detectNick(t) {
+    const m = t.match(/(?:называй меня|зови меня|обращайся ко мне)\s+([А-ЯЁA-Zа-яёa-z]+)/i);
+    if (m && m[1]) return m[1];
+    return null;
+}
+
+function detectRem(t) {
+    const m = t.match(/напомни\s+через\s+(\d+)\s+сообщени[йяе]\s*(?:что|о том,?\s*что)?\s*(.+)/i);
+    if (m && m[1] && m[2]) return { count: parseInt(m[1]), text: m[2].trim(), active: true, triggered: false };
+    return null;
+}
+
+function checkRems() {
+    aiMessageCounter++;
+    let msg = null;
+    aiReminders.forEach(r => { if (r.active && !r.triggered && aiMessageCounter >= r.count) { msg = `⏰ Напоминание (прошло ${aiMessageCounter} сообщений): ${r.text}`; r.triggered = true; r.active = false; } });
+    lsSet(LS.aiRem, aiReminders);
+    return msg;
+}
+
+function toggleAiPanel() {
+    const p = document.getElementById('aiPanel');
+    p.style.opacity = p.style.opacity === '1' ? '0' : '1';
+    p.style.pointerEvents = p.style.opacity === '1' ? 'auto' : 'none';
+    p.style.transform = p.style.opacity === '1' ? 'translateY(0)' : 'translateY(20px)';
+    if (p.style.opacity === '1' && !aiKnowledge.loaded) loadKB();
+}
+
+async function sendAiMessage() {
+    const inp = document.getElementById('aiInput'); 
+    const q = inp.value.trim(); 
+    if (!q) return;
+    inp.value = '';
+    
+    const msgs = document.getElementById('aiMessages');
+    msgs.innerHTML += `<div class="ai-msg user" style="align-self:flex-end;background:var(--indigo);color:#fff;padding:10px 14px;border-radius:16px 16px 4px 16px;max-width:85%;font-size:14px;">${esc(q)}</div>`;
+    msgs.scrollTop = msgs.scrollHeight;
+
+    const nick = detectNick(q);
+    if (nick) {
+        aiNickname = nick; lsSet(LS.aiNick, aiNickname);
+        msgs.innerHTML += `<div class="ai-msg bot" style="align-self:flex-start;background:#fff;padding:12px 16px;border-radius:16px 16px 16px 4px;border:1px solid var(--border);font-size:14px;">Принято, <b>${aiNickname}</b>! Буду обращаться к тебе именно так. 😊</div>`;
+        msgs.scrollTop = msgs.scrollHeight;
+        return;
+    }
+
+    const rem = detectRem(q);
+    if (rem) {
+        aiReminders.push(rem); lsSet(LS.aiRem, aiReminders);
+        msgs.innerHTML += `<div class="ai-msg bot" style="align-self:flex-start;background:#fff;padding:12px 16px;border-radius:16px 16px 16px 4px;border:1px solid var(--border);font-size:14px;">Хорошо! Напомню через <b>${rem.count}</b> сообщений: «${esc(rem.text)}».</div>`;
+        msgs.scrollTop = msgs.scrollHeight;
+        return;
+    }
+
+    const remMsg = checkRems();
+    const botMsg = document.createElement('div');
+    botMsg.className = 'ai-msg bot';
+    botMsg.style.cssText = 'align-self:flex-start;background:#fff;padding:12px 16px;border-radius:16px 16px 16px 4px;border:1px solid var(--border);font-size:14px;line-height:1.5;max-width:85%;';
+    botMsg.innerHTML = 'Ищу ответ... 🤔';
+    msgs.appendChild(botMsg);
+    msgs.scrollTop = msgs.scrollHeight;
+
+    try {
+        const urlMatch = q.match(/https?:\/\/[^\s]+/);
+        if (urlMatch) {
+            const page = await fetchWeb(urlMatch[0]);
+            botMsg.innerHTML = page ? `<span style="background:#DBEAFE;color:#1E40AF;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:bold;">🌐 Ссылка</span><br><br>${esc(page.slice(0, 800))}...` : 'Не удалось загрузить страницу.';
+        } else {
+            const qTokens = tokenize(q);
+            let bestMatch = null;
+            let maxScore = 0;
+            aiKnowledge.cards.forEach(c => {
+                let score = 0;
+                qTokens.forEach(t => { if(c._full && c._full.toLowerCase().includes(t)) score++; });
+                if (score > maxScore) { maxScore = score; bestMatch = c; }
+            });
+
+            if (bestMatch && maxScore > 1) {
+                const greet = aiNickname ? `Смотри, ${aiNickname}, ` : '';
+                botMsg.innerHTML = `${greet}вот что я нашел:<br><br><b>${esc(bestMatch.top || 'Информация')}</b><br>${esc(bestMatch.sum || bestMatch._full.slice(0, 400))}...`;
+            } else {
+                const wiki = await wikiSearch(q);
+                if (wiki) {
+                    const greet = aiNickname ? `Смотри, ${aiNickname}, ` : '';
+                    botMsg.innerHTML = `<span style="background:#DBEAFE;color:#1E40AF;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:bold;">🌐 Найдено в интернете</span><br><br>${greet}по запросу «${esc(q)}»:<br><br><b>${esc(wiki.title)}</b><br>${esc(wiki.extract.slice(0, 400))}...`;
+                } else {
+                    botMsg.textContent = aiNickname ? `Извини, ${aiNickname}, я не нашел ответа.` : 'К сожалению, я не нашел ответа.';
+                }
+            }
+        }
+    } catch (e) {
+        botMsg.textContent = 'Ошибка при поиске.';
+    }
+    
+    if (remMsg) botMsg.innerHTML = `<div style="background:#FEF3C7;color:#92400E;padding:8px;border-radius:6px;margin-bottom:8px;font-weight:bold;font-size:12px;">${esc(remMsg)}</div>` + botMsg.innerHTML;
+    msgs.scrollTop = msgs.scrollHeight;
+}
+
+/* ============================================================
+   15. ИНИЦИАЛИЗАЦИЯ И ЭКСПОРТ
+   ============================================================ */
+async function initApp() {
+    updateAuthUI();
+    renderHome();
+    renderFeed();
+    renderMarket();
+    renderProfile();
+    renderHelpers();
+    renderScriptsList();
+    
+    // Запускаем сохраненные скрипты
+    allScripts.forEach(s => { if (s.enabled) runCustomScript(s.code, s.id); });
+    
+    // Загружаем настройки Telegram
+    const tgT = lsGet('l37_tg_token', null);
+    const tgC = lsGet('l37_tg_chat', null);
+    if (tgT) TG_BOT_TOKEN = tgT;
+    if (tgC) TG_CHAT_ID = tgC;
+
+    const aiInp = document.getElementById('aiInput');
+    if (aiInp) aiInp.addEventListener('keydown', e => { if (e.key === 'Enter') sendAiMessage(); });
+}
+
+// Экспорт функций (чтобы работали onclick)
+Object.assign(window, {
+    switchPage, openAuthModal, switchAuthMode, closeModal, doLogin, doRegister, logout,
+    openAdminLogin, checkAdminPassword, exitAdminMode, toggleLiveEdit, openAdminDrawer, closeAdminDrawer,
+    openAdminApps, openAdminTelegram, saveTelegramSettings, openAdminPassword,
+    createPost, likePost, toggleImageInput, submitIdea, openApplicationForm, submitApplication,
+    openHelpToggle, saveHelperStatus, contactHelper,
+    openMarketForm, handleMarketPhotos, removePhoto, submitMarketItem, switchImg, deleteMarketItem,
+    openMarketChat, sendMarketMsg, markAsSold,
+    saveProfileExtended, changeAvatar, openShopModal, buyItem,
+    toggleAiPanel, sendAiMessage,
+    saveNewScript, toggleScriptStatus, deleteScript
+});
+
+document.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>
