@@ -2885,7 +2885,7 @@
     }
 
     /* ==================== 24. ЗАДАНИЕ 7 ==================== */
-    nav button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    button, .btn { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 
     .bell-timer {
       background: var(--grad);
@@ -3816,6 +3816,81 @@
   <div id="toast-container"></div>
 
   <script>
+    /* ============ 0. АВАРИЙНЫЙ СЛОЙ: самодостаточен и работает, даже если основной скрипт упал ============ */
+    window.__lp37Ready = false;
+    window.__lp37Errors = [];
+    function lp37ShowErrorBadge(msg) {
+      try {
+        if (window.__lp37Ready) return;
+        var b = document.getElementById('lp37-err-badge');
+        if (!b) {
+          b = document.createElement('div');
+          b.id = 'lp37-err-badge';
+          b.style.cssText = 'position:fixed;top:6px;left:6px;z-index:99999;background:#dc2626;color:#fff;font:600 11px/1.4 sans-serif;padding:5px 9px;border-radius:8px;max-width:70vw;word-break:break-word;cursor:pointer;';
+          b.title = 'Нажми, чтобы скрыть';
+          b.addEventListener('click', function () { if (b.parentNode) b.parentNode.removeChild(b); });
+          (document.body || document.documentElement).appendChild(b);
+        }
+        b.textContent = '⚠️ Ошибка сайта: ' + String(msg).slice(0, 140);
+      } catch (eL) {}
+    }
+    window.addEventListener('error', function (e) {
+      try {
+        var msg = (e && e.message) ? e.message : String(e);
+        window.__lp37Errors.push(msg);
+        console.error('Лицей37 · ошибка JS:', msg, 'строка', e.lineno);
+        lp37ShowErrorBadge(msg);
+      } catch (eL) {}
+    });
+    window.addEventListener('unhandledrejection', function (e) {
+      try {
+        var r = e && e.reason;
+        var msg = (r && r.message) ? r.message : String(r || 'promise');
+        window.__lp37Errors.push(msg);
+        console.error('Лицей37 · ошибка промиса:', msg);
+        lp37ShowErrorBadge(msg);
+      } catch (eL) {}
+    });
+    function lp37TabFallback(name) {
+      try {
+        var ps = document.querySelectorAll('.tab-panel');
+        for (var i = 0; i < ps.length; i++) { ps[i].style.display = 'none'; ps[i].classList.remove('active'); }
+        var target = document.getElementById('tab-' + name);
+        if (!target) return;
+        target.style.display = 'block';
+        target.classList.add('active');
+        var bs = document.querySelectorAll('#main-nav button[data-tab]');
+        for (var j = 0; j < bs.length; j++) bs[j].classList.toggle('active', bs[j].dataset.tab === name);
+        try { window.scrollTo(0, 0); } catch (eS) {}
+      } catch (eF) { try { console.error(eF); } catch (e2) {} }
+    }
+    function lp37ModalFallback(id, on) {
+      try {
+        var m = document.getElementById(id);
+        if (m) m.classList.toggle('open', !!on);
+      } catch (eF) { try { console.error(eF); } catch (e2) {} }
+    }
+    document.addEventListener('click', function (e) {
+      try {
+        if (window.__lp37Ready) return;
+        var t = e.target && e.target.closest ? e.target : null;
+        if (!t) return;
+        var tabBtn = t.closest('#main-nav button[data-tab]') || t.closest('[data-tab]');
+        if (tabBtn) { e.preventDefault(); lp37TabFallback(tabBtn.dataset.tab); return; }
+        var openBtn = t.closest('[data-open-modal]');
+        if (openBtn) { e.preventDefault(); lp37ModalFallback(openBtn.getAttribute('data-open-modal'), true); return; }
+        var closeBtn = t.closest('[data-close-modal]');
+        if (closeBtn) { e.preventDefault(); lp37ModalFallback(closeBtn.getAttribute('data-close-modal'), false); return; }
+        var fab = t.closest('#ai-fab');
+        if (fab) { e.preventDefault(); var w = document.getElementById('ai-window'); if (w) w.style.display = 'flex'; return; }
+        var aiClose = t.closest('#ai-close-btn');
+        if (aiClose) { e.preventDefault(); var w2 = document.getElementById('ai-window'); if (w2) w2.style.display = 'none'; return; }
+      } catch (eR) { try { console.error(eR); } catch (e2) {} }
+    }, true);
+  </script>
+
+  <script>
+
     'use strict';
 
     /* ============ КОНСТАНТЫ ============ */
@@ -4031,39 +4106,45 @@
     let lastTouchSwitch = 0;
     let navTouch = null;
 
-    document.addEventListener('click', function (e) {
-      const btn = e.target && e.target.closest ? e.target.closest('#main-nav button[data-tab]') : null;
-      if (!btn) return;
-      if (Date.now() - lastTouchSwitch < 600) { e.preventDefault(); return; }
-      setTab(btn.dataset.tab);
-    }, true);
+    try {
+  document.addEventListener('click', function (e) {
+        const btn = e.target && e.target.closest ? e.target.closest('#main-nav button[data-tab]') : null;
+        if (!btn) return;
+        if (Date.now() - lastTouchSwitch < 600) { e.preventDefault(); return; }
+        setTab(btn.dataset.tab);
+      }, true);
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     const navEl37 = document.getElementById('main-nav');
-    if (navEl37) {
-      navEl37.addEventListener('touchstart', function (e) {
-        const btn = e.target && e.target.closest ? e.target.closest('button[data-tab]') : null;
-        navTouch = btn && e.touches && e.touches[0] ? { x: e.touches[0].clientX, y: e.touches[0].clientY, tab: btn.dataset.tab } : null;
-      }, { passive: true });
-      navEl37.addEventListener('touchend', function (e) {
-        if (!navTouch) return;
-        const t = e.changedTouches && e.changedTouches[0];
-        const moved = t ? Math.abs(t.clientX - navTouch.x) + Math.abs(t.clientY - navTouch.y) : 0;
-        const tab = navTouch.tab;
-        navTouch = null;
-        if (moved > 12) return;
-        e.preventDefault();
-        lastTouchSwitch = Date.now();
-        setTab(tab);
-      }, { passive: false });
-    }
-
-    document.addEventListener('click', function (e) {
-      const navEl = e.target.closest('[data-tab]');
-      if (navEl && !navEl.matches('#main-nav button')) {
-        e.preventDefault();
-        setTab(navEl.dataset.tab);
+    try {
+  if (navEl37) {
+        navEl37.addEventListener('touchstart', function (e) {
+          const btn = e.target && e.target.closest ? e.target.closest('button[data-tab]') : null;
+          navTouch = btn && e.touches && e.touches[0] ? { x: e.touches[0].clientX, y: e.touches[0].clientY, tab: btn.dataset.tab } : null;
+        }, { passive: true });
+        navEl37.addEventListener('touchend', function (e) {
+          if (!navTouch) return;
+          const t = e.changedTouches && e.changedTouches[0];
+          const moved = t ? Math.abs(t.clientX - navTouch.x) + Math.abs(t.clientY - navTouch.y) : 0;
+          const tab = navTouch.tab;
+          navTouch = null;
+          if (moved > 12) return;
+          e.preventDefault();
+          lastTouchSwitch = Date.now();
+          setTab(tab);
+        }, { passive: false });
       }
-    });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.addEventListener('click', function (e) {
+        const navEl = e.target.closest('[data-tab]');
+        if (navEl && !navEl.matches('#main-nav button')) {
+          e.preventDefault();
+          setTab(navEl.dataset.tab);
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ============ МОДАЛЬНЫЕ ОКНА ============ */
     function openModal(id) {
@@ -4080,33 +4161,45 @@
       document.querySelectorAll('.modal.open').forEach(function (m) { m.classList.remove('open'); });
     }
 
-    document.querySelectorAll('[data-close-modal]').forEach(function (btn) {
-      btn.addEventListener('click', function () { closeModal(btn.dataset.closeModal); });
-    });
-
-    document.querySelectorAll('.modal').forEach(function (modal) {
-      modal.addEventListener('click', function (e) {
-        if (e.target === modal) closeModal(modal.id);
+    try {
+  document.querySelectorAll('[data-close-modal]').forEach(function (btn) {
+        btn.addEventListener('click', function () { closeModal(btn.dataset.closeModal); });
       });
-    });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeAllModals();
-    });
+    try {
+  document.querySelectorAll('.modal').forEach(function (modal) {
+        modal.addEventListener('click', function (e) {
+          if (e.target === modal) closeModal(modal.id);
+        });
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('go-to-register').addEventListener('click', function () {
-      closeModal('modal-login');
-      openModal('modal-register');
-    });
+    try {
+  document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeAllModals();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('go-to-login').addEventListener('click', function () {
-      closeModal('modal-register');
-      openModal('modal-login');
-    });
+    try {
+  document.getElementById('go-to-register').addEventListener('click', function () {
+        closeModal('modal-login');
+        openModal('modal-register');
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('hero-join-btn').addEventListener('click', function () {
-      if (getCurrentUser()) { setTab('class'); } else { openModal('modal-register'); }
-    });
+    try {
+  document.getElementById('go-to-login').addEventListener('click', function () {
+        closeModal('modal-register');
+        openModal('modal-login');
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('hero-join-btn').addEventListener('click', function () {
+        if (getCurrentUser()) { setTab('class'); } else { openModal('modal-register'); }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ============ ВЫБОР КЛАССА (1–11 и строго А, Б, В, Г, Д) ============ */
     function fillClassSelects() {
@@ -4176,22 +4269,24 @@
       });
     }
 
-    document.getElementById('avatar-file-input').addEventListener('change', async function (e) {
-      const file = e.target.files && e.target.files[0];
-      if (!file) return;
-      try {
-        const dataUrl = await compressImageToAvatar(file);
-        pendingAvatar = { type: 'image', value: dataUrl };
-        const zone = document.getElementById('avatar-upload-zone');
-        zone.classList.add('has-image');
-        document.getElementById('avatar-upload-text').textContent = '✅ Фото готово — нажми на эмодзи, чтобы выбрать вместо него';
-        document.querySelectorAll('.avatar-option').forEach(function (b) { b.classList.remove('selected'); });
-      } catch (err) {
-        toast('Не удалось обработать фото: ' + err.message, 'error');
-      } finally {
-        e.target.value = '';
-      }
-    });
+    try {
+  document.getElementById('avatar-file-input').addEventListener('change', async function (e) {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        try {
+          const dataUrl = await compressImageToAvatar(file);
+          pendingAvatar = { type: 'image', value: dataUrl };
+          const zone = document.getElementById('avatar-upload-zone');
+          zone.classList.add('has-image');
+          document.getElementById('avatar-upload-text').textContent = '✅ Фото готово — нажми на эмодзи, чтобы выбрать вместо него';
+          document.querySelectorAll('.avatar-option').forEach(function (b) { b.classList.remove('selected'); });
+        } catch (err) {
+          toast('Не удалось обработать фото: ' + err.message, 'error');
+        } finally {
+          e.target.value = '';
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function resetRegisterForm() {
       document.getElementById('register-form').reset();
@@ -4212,151 +4307,148 @@
       return getUsers();
     }
 
-    document.getElementById('register-form').addEventListener('submit', async function (e) {
-      e.preventDefault();
-      showFormError('register-error', null);
+    try {
+  document.getElementById('register-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        showFormError('register-error', null);
 
-      const name = document.getElementById('reg-name').value.trim().replace(/\s+/g, ' ');
-      const grade = document.getElementById('reg-grade').value;
-      const letter = document.getElementById('reg-letter').value;
-      const password = document.getElementById('reg-password').value;
-      const password2 = document.getElementById('reg-password2').value;
+        const name = document.getElementById('reg-name').value.trim().replace(/\s+/g, ' ');
+        const grade = document.getElementById('reg-grade').value;
+        const letter = document.getElementById('reg-letter').value;
+        const password = document.getElementById('reg-password').value;
+        const password2 = document.getElementById('reg-password2').value;
 
-      if (name.length < 2 || name.length > 32) {
-        showFormError('register-error', 'Имя должно быть от 2 до 32 символов.');
-        return;
-      }
-      if (!/^[А-Яа-яЁёA-Za-z][А-Яа-яЁёA-Za-z\s-]+$/.test(name)) {
-        showFormError('register-error', 'Имя может содержать только русские/латинские буквы, пробелы и дефис.');
-        return;
-      }
-      if (!isValidClass(grade, letter)) {
-        showFormError('register-error', 'Выбери класс: цифра 1–11 и буква строго А, Б, В, Г или Д.');
-        return;
-      }
-      if (password.length < 4) {
-        showFormError('register-error', 'Пароль должен быть не короче 4 символов.');
-        return;
-      }
-      if (password !== password2) {
-        showFormError('register-error', 'Пароли не совпадают.');
-        return;
-      }
-      if (!pendingAvatar) {
-        showFormError('register-error', 'Выбери эмодзи-аватар или загрузи своё фото.');
-        return;
-      }
-
-      const submitBtn = e.target.querySelector('button[type="submit"]');
-      submitBtn.disabled = true;
-
-      try {
-        const users = await refreshUsersFromCloud();
-        const taken = users.some(function (u) {
-          return String(u.name || '').trim().toLowerCase() === name.toLowerCase();
-        });
-        if (taken) {
-          showFormError('register-error', 'Это имя уже занято — придумай другой никнейм.');
+        if (name.length < 2 || name.length > 32) {
+          showFormError('register-error', 'Имя должно быть от 2 до 32 символов.');
+          return;
+        }
+        if (!/^[А-Яа-яЁёA-Za-z][А-Яа-яЁёA-Za-z\s-]+$/.test(name)) {
+          showFormError('register-error', 'Имя может содержать только русские/латинские буквы, пробелы и дефис.');
+          return;
+        }
+        if (!isValidClass(grade, letter)) {
+          showFormError('register-error', 'Выбери класс: цифра 1–11 и буква строго А, Б, В, Г или Д.');
+          return;
+        }
+        if (password.length < 4) {
+          showFormError('register-error', 'Пароль должен быть не короче 4 символов.');
+          return;
+        }
+        if (password !== password2) {
+          showFormError('register-error', 'Пароли не совпадают.');
+          return;
+        }
+        if (!pendingAvatar) {
+          showFormError('register-error', 'Выбери эмодзи-аватар или загрузи своё фото.');
           return;
         }
 
-        const user = {
-          id: 'u_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
-          name: name,
-          grade: Number(grade),
-          letter: letter,
-          passwordHash: await hashPassword(password),
-          avatar: pendingAvatar,
-          points: START_POINTS,
-          status: 'Новичок',
-          isAdmin: false,
-          owned: [],
-          frame: null,
-          customStatus: null,
-          theme: null,
-          about: '',
-          volunteer: false,
-          history: [{ ts: Date.now(), delta: START_POINTS, reason: '🎁 Стартовые баллы за регистрацию' }],
-          createdAt: new Date().toISOString()
-        };
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
 
-        users.push(user);
-        saveUsers(users);
-        setSessionUserId(user.id);
-        closeModal('modal-register');
-        resetRegisterForm();
-        updateAuthUI();
-        updateStats();
-        renderProfileTab();
-        toast('Добро пожаловать в Лицей №37, ' + user.name + '! Начислено 💎 ' + START_POINTS + ' баллов.', 'success');
-      } catch (err) {
-        console.warn('Регистрация: ошибка', err);
-        showFormError('register-error', 'Что-то пошло не так. Попробуй ещё раз — данные сохранятся локально даже без сети.');
-      } finally {
-        submitBtn.disabled = false;
-      }
-    });
+        try {
+          const users = await refreshUsersFromCloud();
+          const taken = users.some(function (u) {
+            return String(u.name || '').trim().toLowerCase() === name.toLowerCase();
+          });
+          if (taken) {
+            showFormError('register-error', 'Это имя уже занято — придумай другой никнейм.');
+            return;
+          }
+
+          const user = {
+            id: 'u_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+            name: name,
+            grade: Number(grade),
+            letter: letter,
+            passwordHash: await hashPassword(password),
+            avatar: pendingAvatar,
+            points: START_POINTS,
+            status: 'Новичок',
+            isAdmin: false,
+            owned: [],
+            frame: null,
+            customStatus: null,
+            theme: null,
+            about: '',
+            volunteer: false,
+            history: [{ ts: Date.now(), delta: START_POINTS, reason: '🎁 Стартовые баллы за регистрацию' }],
+            createdAt: new Date().toISOString()
+          };
+
+          users.push(user);
+          saveUsers(users);
+          setSessionUserId(user.id);
+          closeModal('modal-register');
+          resetRegisterForm();
+          updateAuthUI();
+          updateStats();
+          renderProfileTab();
+          toast('Добро пожаловать в Лицей №37, ' + user.name + '! Начислено 💎 ' + START_POINTS + ' баллов.', 'success');
+        } catch (err) {
+          console.warn('Регистрация: ошибка', err);
+          showFormError('register-error', 'Что-то пошло не так. Попробуй ещё раз — данные сохранятся локально даже без сети.');
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ============ ВХОД ============ */
-    document.getElementById('login-form').addEventListener('submit', async function (e) {
-      e.preventDefault();
-      showFormError('login-error', null);
+    try {
+  document.getElementById('login-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        showFormError('login-error', null);
 
-      const name = document.getElementById('login-name').value.trim().replace(/\s+/g, ' ');
-      const password = document.getElementById('login-password').value;
+        const name = document.getElementById('login-name').value.trim().replace(/\s+/g, ' ');
+        const password = document.getElementById('login-password').value;
 
-      if (!name || !password) {
-        showFormError('login-error', 'Введи имя и пароль.');
-        return;
-      }
-
-      const submitBtn = e.target.querySelector('button[type="submit"]');
-      submitBtn.disabled = true;
-
-      try {
-        const users = await refreshUsersFromCloud();
-        const user = users.find(function (u) {
-          return String(u.name || '').trim().toLowerCase() === name.toLowerCase();
-        });
-
-        if (!user) {
-          showFormError('login-error', 'Ученик с таким именем не найден. Проверь написание или зарегистрируйся.');
+        if (!name || !password) {
+          showFormError('login-error', 'Введи имя и пароль.');
           return;
         }
 
-        const hash = await hashPassword(password);
-        if (user.passwordHash !== hash) {
-          showFormError('login-error', 'Неверный пароль. Попробуй ещё раз.');
-          return;
-        }
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
 
-        setSessionUserId(user.id);
-        closeModal('modal-login');
-        document.getElementById('login-form').reset();
-        updateAuthUI();
-        updateStats();
-        renderProfileTab();
-        toast('С возвращением, ' + user.name + '! 👋', 'success');
-      } catch (err) {
-        console.warn('Вход: ошибка', err);
-        showFormError('login-error', 'Что-то пошло не так. Попробуй ещё раз.');
-      } finally {
-        submitBtn.disabled = false;
-      }
-    });
+        try {
+          const users = await refreshUsersFromCloud();
+          const user = users.find(function (u) {
+            return String(u.name || '').trim().toLowerCase() === name.toLowerCase();
+          });
+
+          if (!user) {
+            showFormError('login-error', 'Ученик с таким именем не найден. Проверь написание или зарегистрируйся.');
+            return;
+          }
+
+          const hash = await hashPassword(password);
+          if (user.passwordHash !== hash) {
+            showFormError('login-error', 'Неверный пароль. Попробуй ещё раз.');
+            return;
+          }
+
+          setSessionUserId(user.id);
+          closeModal('modal-login');
+          document.getElementById('login-form').reset();
+          updateAuthUI();
+          updateStats();
+          renderProfileTab();
+          toast('С возвращением, ' + user.name + '! 👋', 'success');
+        } catch (err) {
+          console.warn('Вход: ошибка', err);
+          showFormError('login-error', 'Что-то пошло не так. Попробуй ещё раз.');
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ============ ЗАЛОГ АДМИНКИ (реализация на Шаге 5) ============ */
-    function openAdminLogin() {
-      if (adminActive) { toast('👑 Ты уже в админке — панель сверху экрана.', 'info'); return; }
-      if (Date.now() < adminLockUntil) { toast('🔒 Слишком много попыток — подожди немного.', 'error'); return; }
-      openModal('modal-admin-login');
-      setTimeout(function () {
-        const inp = document.getElementById('admin-pass-input');
-        if (inp) inp.focus();
-      }, 150);
-    }
 
-    document.getElementById('admin-login-btn').addEventListener('click', openAdminLogin);
+    try {
+  document.getElementById('admin-login-btn').addEventListener('click', openAdminLogin);
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ============ ШАПКА: кнопки входа или бейдж ученика ============ */
     function avatarHtml(avatar, extraClass) {
@@ -4703,30 +4795,34 @@
       toast('Аккаунт удалён. Мы будем скучать! 💙', 'info');
     }
 
-    document.getElementById('profile-box').addEventListener('click', function (e) {
-      const buyBtn = e.target.closest('[data-shop-buy]');
-      if (buyBtn) { buyShopItem(buyBtn.dataset.shopBuy); return; }
-      const useBtn = e.target.closest('[data-shop-use]');
-      if (useBtn) { useShopItem(useBtn.dataset.shopUse, false); return; }
-      if (e.target.closest('#pf-delete-btn')) { deleteMyAccount(); return; }
-      if (e.target.closest('#pf-photo-btn')) { document.getElementById('pf-photo').click(); return; }
-      const avaBtn = e.target.closest('[data-pf-emoji]');
-      if (avaBtn) { applyAvatar({ type: 'emoji', value: avaBtn.dataset.pfEmoji }); return; }
-      if (e.target.closest('#pf-save')) { saveProfileChanges(); }
-    });
+    try {
+  document.getElementById('profile-box').addEventListener('click', function (e) {
+        const buyBtn = e.target.closest('[data-shop-buy]');
+        if (buyBtn) { buyShopItem(buyBtn.dataset.shopBuy); return; }
+        const useBtn = e.target.closest('[data-shop-use]');
+        if (useBtn) { useShopItem(useBtn.dataset.shopUse, false); return; }
+        if (e.target.closest('#pf-delete-btn')) { deleteMyAccount(); return; }
+        if (e.target.closest('#pf-photo-btn')) { document.getElementById('pf-photo').click(); return; }
+        const avaBtn = e.target.closest('[data-pf-emoji]');
+        if (avaBtn) { applyAvatar({ type: 'emoji', value: avaBtn.dataset.pfEmoji }); return; }
+        if (e.target.closest('#pf-save')) { saveProfileChanges(); }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('profile-box').addEventListener('change', async function (e) {
-      if (e.target.id !== 'pf-photo') return;
-      const f = (e.target.files || [])[0];
-      e.target.value = '';
-      if (!f) return;
-      try {
-        const dataUrl = await compressImageToAvatar(f);
-        applyAvatar({ type: 'image', value: dataUrl });
-      } catch (err) {
-        toast('Не удалось обработать фото.', 'error');
-      }
-    });
+    try {
+  document.getElementById('profile-box').addEventListener('change', async function (e) {
+        if (e.target.id !== 'pf-photo') return;
+        const f = (e.target.files || [])[0];
+        e.target.value = '';
+        if (!f) return;
+        try {
+          const dataUrl = await compressImageToAvatar(f);
+          applyAvatar({ type: 'image', value: dataUrl });
+        } catch (err) {
+          toast('Не удалось обработать фото.', 'error');
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
     /* ============ ШАГ 2: ГЛАВНАЯ СТРАНИЦА И МОЙ КЛАСС ============ */
 
     const BEASTS = [
@@ -4841,32 +4937,38 @@
       }
     }
 
-    document.getElementById('idea-mode-open').addEventListener('click', function () { setIdeaMode('open'); });
-    document.getElementById('idea-mode-anon').addEventListener('click', function () { setIdeaMode('anon'); });
+    try {
+  document.getElementById('idea-mode-open').addEventListener('click', function () { setIdeaMode('open'); });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('idea-mode-anon').addEventListener('click', function () { setIdeaMode('anon'); });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('idea-submit').addEventListener('click', function () {
-      const textarea = document.getElementById('idea-text');
-      const text = textarea.value.trim();
-      if (text.length < 10) { toast('Опиши идею подробнее — минимум 10 символов.', 'error'); return; }
-      if (!antispamCheck('idea', text)) return;
-      const user = getCurrentUser();
-      if (ideaMode === 'open' && !user) {
-        toast('Чтобы подписать идею именем, войди в аккаунт или выбери «Анонимно».', 'error');
-        return;
-      }
-      const list = getList('ideas');
-      list.push({
-        id: makeId('idea'),
-        text: text,
-        mode: ideaMode,
-        name: ideaMode === 'open' && user ? user.name : 'Аноним',
-        classId: ideaMode === 'open' && user ? classIdOf(user.grade, user.letter) : null,
-        createdAt: Date.now()
+    try {
+  document.getElementById('idea-submit').addEventListener('click', function () {
+        const textarea = document.getElementById('idea-text');
+        const text = textarea.value.trim();
+        if (text.length < 10) { toast('Опиши идею подробнее — минимум 10 символов.', 'error'); return; }
+        if (!antispamCheck('idea', text)) return;
+        const user = getCurrentUser();
+        if (ideaMode === 'open' && !user) {
+          toast('Чтобы подписать идею именем, войди в аккаунт или выбери «Анонимно».', 'error');
+          return;
+        }
+        const list = getList('ideas');
+        list.push({
+          id: makeId('idea'),
+          text: text,
+          mode: ideaMode,
+          name: ideaMode === 'open' && user ? user.name : 'Аноним',
+          classId: ideaMode === 'open' && user ? classIdOf(user.grade, user.letter) : null,
+          createdAt: Date.now()
+        });
+        dbSave('ideas', list);
+        textarea.value = '';
+        toast('Идея отправлена! Спасибо, что заботишься о лицее 💙', 'success');
       });
-      dbSave('ideas', list);
-      textarea.value = '';
-      toast('Идея отправлена! Спасибо, что заботишься о лицее 💙', 'success');
-    });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ---- Лучший ученик месяца: поздравления ---- */
 
@@ -4883,67 +4985,73 @@
       }
     }
 
-    document.getElementById('congrats-btn').addEventListener('click', function () {
-      const user = getCurrentUser();
-      if (!user) {
-        openModal('modal-login');
-        toast('Войди, чтобы поздравить лучшего ученика.', 'info');
-        return;
-      }
-      const likes = getList('bestLikes');
-      const idx = likes.indexOf(user.id);
-      if (idx !== -1) {
-        likes.splice(idx, 1);
-        toast('Поздравление отменено.', 'info');
-      } else {
-        likes.push(user.id);
-        toast('👏 Спасибо за поздравление!', 'success');
-      }
-      dbSave('bestLikes', likes);
-      updateLikeCounter();
-    });
+    try {
+  document.getElementById('congrats-btn').addEventListener('click', function () {
+        const user = getCurrentUser();
+        if (!user) {
+          openModal('modal-login');
+          toast('Войди, чтобы поздравить лучшего ученика.', 'info');
+          return;
+        }
+        const likes = getList('bestLikes');
+        const idx = likes.indexOf(user.id);
+        if (idx !== -1) {
+          likes.splice(idx, 1);
+          toast('Поздравление отменено.', 'info');
+        } else {
+          likes.push(user.id);
+          toast('👏 Спасибо за поздравление!', 'success');
+        }
+        dbSave('bestLikes', likes);
+        updateLikeCounter();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ---- Заявки на мероприятия ---- */
 
     let applyEventTitle = '';
 
-    document.querySelectorAll('.apply-open-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        applyEventTitle = btn.dataset.event || '';
-        document.getElementById('apply-event-name').textContent = applyEventTitle;
-        showFormError('apply-error', '');
-        const user = getCurrentUser();
-        const fio = document.getElementById('apply-fio');
-        const grade = document.getElementById('apply-grade');
-        const letter = document.getElementById('apply-letter');
-        if (user) {
-          fio.value = user.name;
-          grade.value = String(user.grade);
-          letter.value = user.letter;
-        } else {
-          fio.value = '';
-        }
-        document.getElementById('apply-contact').value = '';
-        openModal('modal-apply');
+    try {
+  document.querySelectorAll('.apply-open-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          applyEventTitle = btn.dataset.event || '';
+          document.getElementById('apply-event-name').textContent = applyEventTitle;
+          showFormError('apply-error', '');
+          const user = getCurrentUser();
+          const fio = document.getElementById('apply-fio');
+          const grade = document.getElementById('apply-grade');
+          const letter = document.getElementById('apply-letter');
+          if (user) {
+            fio.value = user.name;
+            grade.value = String(user.grade);
+            letter.value = user.letter;
+          } else {
+            fio.value = '';
+          }
+          document.getElementById('apply-contact').value = '';
+          openModal('modal-apply');
+        });
       });
-    });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('apply-form').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const fio = document.getElementById('apply-fio').value.trim();
-      const grade = document.getElementById('apply-grade').value;
-      const letter = document.getElementById('apply-letter').value;
-      const contact = document.getElementById('apply-contact').value.trim();
-      if (fio.length < 3) { showFormError('apply-error', 'Введи ФИО (минимум 3 символа).'); return; }
-      if (!isValidClass(grade, letter)) { showFormError('apply-error', 'Класс: цифра 1–11 и буква только А, Б, В, Г или Д.'); return; }
-      if (contact.length < 3) { showFormError('apply-error', 'Введи контакт для связи (телефон, Telegram или email).'); return; }
-      const list = getList('applications');
-      list.push({ id: makeId('app'), event: applyEventTitle, fio: fio, classId: classIdOf(grade, letter), contact: contact, createdAt: Date.now() });
-      dbSave('applications', list);
-      closeModal('modal-apply');
-      e.target.reset();
-      toast('✍️ Заявка на «' + applyEventTitle + '» отправлена!', 'success');
-    });
+    try {
+  document.getElementById('apply-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const fio = document.getElementById('apply-fio').value.trim();
+        const grade = document.getElementById('apply-grade').value;
+        const letter = document.getElementById('apply-letter').value;
+        const contact = document.getElementById('apply-contact').value.trim();
+        if (fio.length < 3) { showFormError('apply-error', 'Введи ФИО (минимум 3 символа).'); return; }
+        if (!isValidClass(grade, letter)) { showFormError('apply-error', 'Класс: цифра 1–11 и буква только А, Б, В, Г или Д.'); return; }
+        if (contact.length < 3) { showFormError('apply-error', 'Введи контакт для связи (телефон, Telegram или email).'); return; }
+        const list = getList('applications');
+        list.push({ id: makeId('app'), event: applyEventTitle, fio: fio, classId: classIdOf(grade, letter), contact: contact, createdAt: Date.now() });
+        dbSave('applications', list);
+        closeModal('modal-apply');
+        e.target.reset();
+        toast('✍️ Заявка на «' + applyEventTitle + '» отправлена!', 'success');
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ---- Капсула времени ---- */
 
@@ -4989,33 +5097,35 @@
       }).join('');
     }
 
-    document.getElementById('capsule-submit').addEventListener('click', function () {
-      const user = getCurrentUser();
-      let author = '';
-      let classId = null;
-      if (user) {
-        author = user.name;
-        classId = classIdOf(user.grade, user.letter);
-      } else {
-        author = document.getElementById('cap-name').value.trim();
-        const grade = document.getElementById('cap-grade').value;
-        const letter = document.getElementById('cap-letter').value;
-        if (author.length < 2) { toast('Введи своё имя (или войди в аккаунт).', 'error'); return; }
-        if (!isValidClass(grade, letter)) { toast('Выбери класс: 1–11 и буква А, Б, В, Г или Д.', 'error'); return; }
-        classId = classIdOf(grade, letter);
-      }
-      const message = document.getElementById('cap-message').value.trim();
-      if (message.length < 5) { toast('Напиши послание — минимум 5 символов.', 'error'); return; }
-      const openDate = document.getElementById('cap-date').value;
-      if (!openDate) { toast('Выбери дату открытия капсулы.', 'error'); return; }
-      const list = getList('capsule');
-      list.push({ id: makeId('cap'), author: author, classId: classId, message: message, openDate: openDate, createdAt: Date.now() });
-      dbSave('capsule', list);
-      document.getElementById('cap-message').value = '';
-      document.getElementById('cap-date').value = '';
-      renderCapsules();
-      toast('📸 Капсула запечатана! Откроется ' + fmtDate(openDate) + '.', 'success');
-    });
+    try {
+  document.getElementById('capsule-submit').addEventListener('click', function () {
+        const user = getCurrentUser();
+        let author = '';
+        let classId = null;
+        if (user) {
+          author = user.name;
+          classId = classIdOf(user.grade, user.letter);
+        } else {
+          author = document.getElementById('cap-name').value.trim();
+          const grade = document.getElementById('cap-grade').value;
+          const letter = document.getElementById('cap-letter').value;
+          if (author.length < 2) { toast('Введи своё имя (или войди в аккаунт).', 'error'); return; }
+          if (!isValidClass(grade, letter)) { toast('Выбери класс: 1–11 и буква А, Б, В, Г или Д.', 'error'); return; }
+          classId = classIdOf(grade, letter);
+        }
+        const message = document.getElementById('cap-message').value.trim();
+        if (message.length < 5) { toast('Напиши послание — минимум 5 символов.', 'error'); return; }
+        const openDate = document.getElementById('cap-date').value;
+        if (!openDate) { toast('Выбери дату открытия капсулы.', 'error'); return; }
+        const list = getList('capsule');
+        list.push({ id: makeId('cap'), author: author, classId: classId, message: message, openDate: openDate, createdAt: Date.now() });
+        dbSave('capsule', list);
+        document.getElementById('cap-message').value = '';
+        document.getElementById('cap-date').value = '';
+        renderCapsules();
+        toast('📸 Капсула запечатана! Откроется ' + fmtDate(openDate) + '.', 'success');
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ---- Пространство класса ---- */
 
@@ -5047,19 +5157,23 @@
       renderChat();
     }
 
-    document.getElementById('view-class-btn').addEventListener('click', function () {
-      const grade = document.getElementById('view-grade').value;
-      const letter = document.getElementById('view-letter').value;
-      if (!isValidClass(grade, letter)) { toast('Выбери класс: 1–11 и буква А, Б, В, Г или Д.', 'error'); return; }
-      dbSave('viewClass', classIdOf(grade, letter));
-      renderClassTab();
-      toast('Открыт класс ' + classIdOf(grade, letter), 'success');
-    });
+    try {
+  document.getElementById('view-class-btn').addEventListener('click', function () {
+        const grade = document.getElementById('view-grade').value;
+        const letter = document.getElementById('view-letter').value;
+        if (!isValidClass(grade, letter)) { toast('Выбери класс: 1–11 и буква А, Б, В, Г или Д.', 'error'); return; }
+        dbSave('viewClass', classIdOf(grade, letter));
+        renderClassTab();
+        toast('Открыт класс ' + classIdOf(grade, letter), 'success');
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('change-class-btn').addEventListener('click', function () {
-      dbSave('viewClass', null);
-      renderClassTab();
-    });
+    try {
+  document.getElementById('change-class-btn').addEventListener('click', function () {
+        dbSave('viewClass', null);
+        renderClassTab();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ---- Талисман класса ---- */
 
@@ -5216,7 +5330,9 @@
       applyPetDecay(pet);
       pet.xp += amount;
       let leveled = false;
-      while (pet.xp >= PET_XP_PER_LEVEL) { pet.xp -= PET_XP_PER_LEVEL; pet.level++; leveled = true; }
+      if (!isFinite(pet.xp)) pet.xp = 0;
+      let xpGuard37 = 0;
+      while (pet.xp >= PET_XP_PER_LEVEL && xpGuard37++ < 1000) { pet.xp -= PET_XP_PER_LEVEL; pet.level++; leveled = true; }
       savePet(classId, pet);
       if (leveled) {
         launchConfetti();
@@ -5442,10 +5558,12 @@
       });
     }
 
-    setInterval(function () {
-      const panel = document.getElementById('tab-class');
-      if (panel && panel.classList.contains('active') && currentClass) renderPet();
-    }, 60000);
+    try {
+  setInterval(function () {
+        const panel = document.getElementById('tab-class');
+        if (panel && panel.classList.contains('active') && currentClass) renderPet();
+      }, 60000);
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ---- Доска дедлайнов ---- */
 
@@ -5474,41 +5592,45 @@
       }).join('');
     }
 
-    document.getElementById('hw-add-btn').addEventListener('click', function () {
-      const user = getCurrentUser();
-      if (!user) { openModal('modal-login'); toast('Войди, чтобы добавить задание на доску.', 'info'); return; }
-      const subject = document.getElementById('hw-subject').value;
-      const text = document.getElementById('hw-text').value.trim();
-      const dueDate = document.getElementById('hw-date').value;
-      if (!subject) { toast('Выбери предмет.', 'error'); return; }
-      if (text.length < 3) { toast('Опиши задание (минимум 3 символа).', 'error'); return; }
-      if (!dueDate) { toast('Выбери дату дедлайна.', 'error'); return; }
-      const list = getList('homework');
-      list.push({ id: makeId('hw'), classId: currentClass, subject: subject, text: text, dueDate: dueDate, doneBy: [], author: user.name, createdAt: Date.now() });
-      dbSave('homework', list);
-      document.getElementById('hw-text').value = '';
-      document.getElementById('hw-date').value = '';
-      renderHomework();
-      toast('📌 Задание добавлено на доску класса ' + currentClass + '.', 'success');
-    });
+    try {
+  document.getElementById('hw-add-btn').addEventListener('click', function () {
+        const user = getCurrentUser();
+        if (!user) { openModal('modal-login'); toast('Войди, чтобы добавить задание на доску.', 'info'); return; }
+        const subject = document.getElementById('hw-subject').value;
+        const text = document.getElementById('hw-text').value.trim();
+        const dueDate = document.getElementById('hw-date').value;
+        if (!subject) { toast('Выбери предмет.', 'error'); return; }
+        if (text.length < 3) { toast('Опиши задание (минимум 3 символа).', 'error'); return; }
+        if (!dueDate) { toast('Выбери дату дедлайна.', 'error'); return; }
+        const list = getList('homework');
+        list.push({ id: makeId('hw'), classId: currentClass, subject: subject, text: text, dueDate: dueDate, doneBy: [], author: user.name, createdAt: Date.now() });
+        dbSave('homework', list);
+        document.getElementById('hw-text').value = '';
+        document.getElementById('hw-date').value = '';
+        renderHomework();
+        toast('📌 Задание добавлено на доску класса ' + currentClass + '.', 'success');
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('hw-list').addEventListener('change', function (e) {
-      const checkbox = e.target.closest('input[data-hw]');
-      if (!checkbox || !checkbox.checked) return;
-      const user = getCurrentUser();
-      if (!user) { renderHomework(); return; }
-      const list = getList('homework');
-      const item = list.find(function (h) { return h.id === checkbox.dataset.hw; });
-      if (!item) return;
-      item.doneBy = item.doneBy || [];
-      if (item.doneBy.indexOf(user.id) !== -1) return;
-      item.doneBy.push(user.id);
-      dbSave('homework', list);
-      if (getPet(currentClass)) addPetXp(currentClass, 5);
-      addPointsToUser(user.id, 5);
-      renderHomework();
-      toast('✅ Готово! +5 баллов в профиль и +5 XP питомцу.', 'success');
-    });
+    try {
+  document.getElementById('hw-list').addEventListener('change', function (e) {
+        const checkbox = e.target.closest('input[data-hw]');
+        if (!checkbox || !checkbox.checked) return;
+        const user = getCurrentUser();
+        if (!user) { renderHomework(); return; }
+        const list = getList('homework');
+        const item = list.find(function (h) { return h.id === checkbox.dataset.hw; });
+        if (!item) return;
+        item.doneBy = item.doneBy || [];
+        if (item.doneBy.indexOf(user.id) !== -1) return;
+        item.doneBy.push(user.id);
+        dbSave('homework', list);
+        if (getPet(currentClass)) addPetXp(currentClass, 5);
+        addPointsToUser(user.id, 5);
+        renderHomework();
+        toast('✅ Готово! +5 баллов в профиль и +5 XP питомцу.', 'success');
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ---- Закрытый чат класса ---- */
 
@@ -5564,45 +5686,53 @@
       renderChat();
     }
 
-    document.getElementById('chat-send-btn').addEventListener('click', sendChatMessage);
-    document.getElementById('chat-input').addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendChatMessage();
-      }
-    });
+    try {
+  document.getElementById('chat-send-btn').addEventListener('click', sendChatMessage);
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('chat-input').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendChatMessage();
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('chat-list').addEventListener('click', function (e) {
-      const user = getCurrentUser();
-      if (!user) return;
-      const editBtn = e.target.closest('[data-chat-edit]');
-      const delBtn = e.target.closest('[data-chat-del]');
-      if (!editBtn && !delBtn) return;
-      const list = getList('chat');
-      const id = editBtn ? editBtn.dataset.chatEdit : delBtn.dataset.chatDel;
-      const msg = list.find(function (m) { return m.id === id && m.userId === user.id; });
-      if (!msg) return;
-      if (editBtn) {
-        const newText = prompt('Редактировать сообщение:', msg.text);
-        if (newText === null) return;
-        const trimmed = newText.trim();
-        if (!trimmed) { toast('Сообщение не может быть пустым.', 'error'); return; }
-        msg.text = trimmed;
-        msg.edited = true;
-        dbSave('chat', list);
-        renderChat();
-      } else {
-        if (!confirm('Удалить это сообщение?')) return;
-        const idx = list.indexOf(msg);
-        if (idx !== -1) list.splice(idx, 1);
-        dbSave('chat', list);
-        renderChat();
-      }
-    });
+    try {
+  document.getElementById('chat-list').addEventListener('click', function (e) {
+        const user = getCurrentUser();
+        if (!user) return;
+        const editBtn = e.target.closest('[data-chat-edit]');
+        const delBtn = e.target.closest('[data-chat-del]');
+        if (!editBtn && !delBtn) return;
+        const list = getList('chat');
+        const id = editBtn ? editBtn.dataset.chatEdit : delBtn.dataset.chatDel;
+        const msg = list.find(function (m) { return m.id === id && m.userId === user.id; });
+        if (!msg) return;
+        if (editBtn) {
+          const newText = prompt('Редактировать сообщение:', msg.text);
+          if (newText === null) return;
+          const trimmed = newText.trim();
+          if (!trimmed) { toast('Сообщение не может быть пустым.', 'error'); return; }
+          msg.text = trimmed;
+          msg.edited = true;
+          dbSave('chat', list);
+          renderChat();
+        } else {
+          if (!confirm('Удалить это сообщение?')) return;
+          const idx = list.indexOf(msg);
+          if (idx !== -1) list.splice(idx, 1);
+          dbSave('chat', list);
+          renderChat();
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    setInterval(function () {
-      if (panels.home.classList.contains('active')) renderCapsules();
-    }, 30000);
+    try {
+  setInterval(function () {
+        if (panels.home.classList.contains('active')) renderCapsules();
+      }, 30000);
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ============ ШАГ 3: БАРАХОЛКА И СОЦСЕТЬ ============ */
 
@@ -5721,56 +5851,62 @@
       }).join('');
     }
 
-    document.getElementById('market-search').addEventListener('input', function () {
-      marketQuery = this.value;
-      renderMarket();
-    });
-
-    document.getElementById('cat-filters').addEventListener('click', function (e) {
-      const btn = e.target.closest('.cat-btn');
-      if (!btn) return;
-      marketCat = btn.dataset.cat;
-      document.querySelectorAll('#cat-filters .cat-btn').forEach(function (b) { b.classList.toggle('active', b === btn); });
-      renderMarket();
-    });
-
-    document.getElementById('market-grid').addEventListener('click', function (e) {
-      const gal = e.target.closest('[data-gal]');
-      if (gal) {
-        const sep = gal.dataset.gal.lastIndexOf('|');
-        const id = gal.dataset.gal.slice(0, sep);
-        const val = gal.dataset.gal.slice(sep + 1);
-        const item = getList('listings').find(function (l) { return l.id === id; });
-        const photos = item && Array.isArray(item.photos) ? item.photos : [];
-        if (!photos.length) return;
-        const cur = galleryIndex[id] || 0;
-        let next;
-        if (val === 'prev') next = (cur - 1 + photos.length) % photos.length;
-        else if (val === 'next') next = (cur + 1) % photos.length;
-        else next = Math.min(Number(val), photos.length - 1);
-        galleryIndex[id] = next;
-        const box = gal.closest('.listing-photo');
-        box.querySelector('img').src = photos[next];
-        box.querySelectorAll('.gal-dot').forEach(function (d, i) { d.classList.toggle('active', i === next); });
-        return;
-      }
-      const pchatBtn = e.target.closest('[data-pchat]');
-      if (pchatBtn) { openProductChat(pchatBtn.dataset.pchat); return; }
-      const delBtn = e.target.closest('[data-listing-del]');
-      if (delBtn) {
-        const user = getCurrentUser();
-        if (!user) return;
-        const list = getList('listings');
-        const item = list.find(function (l) { return l.id === delBtn.dataset.listingDel; });
-        if (!item) return;
-        if (item.sellerId !== user.id && !user.isAdmin) { toast('Снять с продажи может только автор объявления или админ.', 'error'); return; }
-        if (!confirm('Снять объявление «' + item.title + '» с продажи?')) return;
-        list.splice(list.indexOf(item), 1);
-        dbSave('listings', list);
+    try {
+  document.getElementById('market-search').addEventListener('input', function () {
+        marketQuery = this.value;
         renderMarket();
-        toast('Объявление снято с продажи.', 'info');
-      }
-    });
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('cat-filters').addEventListener('click', function (e) {
+        const btn = e.target.closest('.cat-btn');
+        if (!btn) return;
+        marketCat = btn.dataset.cat;
+        document.querySelectorAll('#cat-filters .cat-btn').forEach(function (b) { b.classList.toggle('active', b === btn); });
+        renderMarket();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('market-grid').addEventListener('click', function (e) {
+        const gal = e.target.closest('[data-gal]');
+        if (gal) {
+          const sep = gal.dataset.gal.lastIndexOf('|');
+          const id = gal.dataset.gal.slice(0, sep);
+          const val = gal.dataset.gal.slice(sep + 1);
+          const item = getList('listings').find(function (l) { return l.id === id; });
+          const photos = item && Array.isArray(item.photos) ? item.photos : [];
+          if (!photos.length) return;
+          const cur = galleryIndex[id] || 0;
+          let next;
+          if (val === 'prev') next = (cur - 1 + photos.length) % photos.length;
+          else if (val === 'next') next = (cur + 1) % photos.length;
+          else next = Math.min(Number(val), photos.length - 1);
+          galleryIndex[id] = next;
+          const box = gal.closest('.listing-photo');
+          box.querySelector('img').src = photos[next];
+          box.querySelectorAll('.gal-dot').forEach(function (d, i) { d.classList.toggle('active', i === next); });
+          return;
+        }
+        const pchatBtn = e.target.closest('[data-pchat]');
+        if (pchatBtn) { openProductChat(pchatBtn.dataset.pchat); return; }
+        const delBtn = e.target.closest('[data-listing-del]');
+        if (delBtn) {
+          const user = getCurrentUser();
+          if (!user) return;
+          const list = getList('listings');
+          const item = list.find(function (l) { return l.id === delBtn.dataset.listingDel; });
+          if (!item) return;
+          if (item.sellerId !== user.id && !user.isAdmin) { toast('Снять с продажи может только автор объявления или админ.', 'error'); return; }
+          if (!confirm('Снять объявление «' + item.title + '» с продажи?')) return;
+          list.splice(list.indexOf(item), 1);
+          dbSave('listings', list);
+          renderMarket();
+          toast('Объявление снято с продажи.', 'info');
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function setDealMode(mode) {
       listingDeal = mode;
@@ -5778,37 +5914,45 @@
       document.getElementById('li-price').style.display = mode === 'price' ? '' : 'none';
     }
 
-    document.querySelectorAll('#listing-form .deal-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () { setDealMode(btn.dataset.deal); });
-    });
+    try {
+  document.querySelectorAll('#listing-form .deal-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () { setDealMode(btn.dataset.deal); });
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('new-listing-btn').addEventListener('click', function () {
-      const user = getCurrentUser();
-      if (!user) { openModal('modal-login'); toast('Войди, чтобы подать объявление.', 'info'); return; }
-      listingPhotos = [];
-      renderListingThumbs();
-      document.getElementById('listing-form').reset();
-      setDealMode('price');
-      showFormError('listing-error', '');
-      openModal('modal-listing');
-    });
+    try {
+  document.getElementById('new-listing-btn').addEventListener('click', function () {
+        const user = getCurrentUser();
+        if (!user) { openModal('modal-login'); toast('Войди, чтобы подать объявление.', 'info'); return; }
+        listingPhotos = [];
+        renderListingThumbs();
+        document.getElementById('listing-form').reset();
+        setDealMode('price');
+        showFormError('listing-error', '');
+        openModal('modal-listing');
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('li-photos-btn').addEventListener('click', function () {
-      document.getElementById('li-photos').click();
-    });
+    try {
+  document.getElementById('li-photos-btn').addEventListener('click', function () {
+        document.getElementById('li-photos').click();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('li-photos').addEventListener('change', async function () {
-      const files = Array.from(this.files || []);
-      const room = 4 - listingPhotos.length;
-      this.value = '';
-      if (room <= 0) { toast('Можно приложить максимум 4 фотографии.', 'error'); return; }
-      if (files.length > room) toast('Загружены первые ' + room + ' фото — максимум 4.', 'info');
-      for (const f of files.slice(0, room)) {
-        try { listingPhotos.push(await compressImage(f, 500, 0.7)); }
-        catch (err) { toast('Не удалось обработать одно из фото.', 'error'); }
-      }
-      renderListingThumbs();
-    });
+    try {
+  document.getElementById('li-photos').addEventListener('change', async function () {
+        const files = Array.from(this.files || []);
+        const room = 4 - listingPhotos.length;
+        this.value = '';
+        if (room <= 0) { toast('Можно приложить максимум 4 фотографии.', 'error'); return; }
+        if (files.length > room) toast('Загружены первые ' + room + ' фото — максимум 4.', 'info');
+        for (const f of files.slice(0, room)) {
+          try { listingPhotos.push(await compressImage(f, 500, 0.7)); }
+          catch (err) { toast('Не удалось обработать одно из фото.', 'error'); }
+        }
+        renderListingThumbs();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function renderListingThumbs() {
       const wrap = document.getElementById('li-thumbs');
@@ -5818,39 +5962,43 @@
       }).join('');
     }
 
-    document.getElementById('li-thumbs').addEventListener('click', function (e) {
-      const btn = e.target.closest('[data-thumb-del]');
-      if (!btn) return;
-      listingPhotos.splice(Number(btn.dataset.thumbDel), 1);
-      renderListingThumbs();
-    });
+    try {
+  document.getElementById('li-thumbs').addEventListener('click', function (e) {
+        const btn = e.target.closest('[data-thumb-del]');
+        if (!btn) return;
+        listingPhotos.splice(Number(btn.dataset.thumbDel), 1);
+        renderListingThumbs();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('listing-form').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const user = getCurrentUser();
-      if (!user) { openModal('modal-login'); return; }
-      const title = document.getElementById('li-title').value.trim();
-      const cat = document.getElementById('li-cat').value;
-      const desc = document.getElementById('li-desc').value.trim();
-      const price = Number(document.getElementById('li-price').value);
-      if (title.length < 3) { showFormError('listing-error', 'Введи название (минимум 3 символа).'); return; }
-      if (listingDeal === 'price' && (!price || price <= 0)) { showFormError('listing-error', 'Укажи цену в рублях или выбери «Бесплатно» / «Обмен».'); return; }
-      const list = getList('listings');
-      const item = {
-        id: makeId('li'), sellerId: user.id, sellerName: user.name,
-        sellerClassId: classIdOf(user.grade, user.letter),
-        title: title, cat: cat, deal: listingDeal,
-        price: listingDeal === 'price' ? price : null,
-        desc: desc, photos: listingPhotos.slice(),
-        active: true, createdAt: Date.now()
-      };
-      list.push(item);
-      dbSave('listings', list);
-      closeModal('modal-listing');
-      galleryIndex[item.id] = 0;
-      renderMarket();
-      toast('🛍️ Объявление опубликовано на Барахолке!', 'success');
-    });
+    try {
+  document.getElementById('listing-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const user = getCurrentUser();
+        if (!user) { openModal('modal-login'); return; }
+        const title = document.getElementById('li-title').value.trim();
+        const cat = document.getElementById('li-cat').value;
+        const desc = document.getElementById('li-desc').value.trim();
+        const price = Number(document.getElementById('li-price').value);
+        if (title.length < 3) { showFormError('listing-error', 'Введи название (минимум 3 символа).'); return; }
+        if (listingDeal === 'price' && (!price || price <= 0)) { showFormError('listing-error', 'Укажи цену в рублях или выбери «Бесплатно» / «Обмен».'); return; }
+        const list = getList('listings');
+        const item = {
+          id: makeId('li'), sellerId: user.id, sellerName: user.name,
+          sellerClassId: classIdOf(user.grade, user.letter),
+          title: title, cat: cat, deal: listingDeal,
+          price: listingDeal === 'price' ? price : null,
+          desc: desc, photos: listingPhotos.slice(),
+          active: true, createdAt: Date.now()
+        };
+        list.push(item);
+        dbSave('listings', list);
+        closeModal('modal-listing');
+        galleryIndex[item.id] = 0;
+        renderMarket();
+        toast('🛍️ Объявление опубликовано на Барахолке!', 'success');
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function openProductChat(listingId) {
       const item = getList('listings').find(function (l) { return l.id === listingId; });
@@ -5913,37 +6061,43 @@
       renderProductChat();
     }
 
-    document.getElementById('pchat-send').addEventListener('click', sendProductChat);
-    document.getElementById('pchat-input').addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendProductChat(); }
-    });
+    try {
+  document.getElementById('pchat-send').addEventListener('click', sendProductChat);
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('pchat-input').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendProductChat(); }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('pchat-list').addEventListener('click', function (e) {
-      const user = getCurrentUser();
-      if (!user) return;
-      const editBtn = e.target.closest('[data-pchat-edit]');
-      const delBtn = e.target.closest('[data-pchat-del]');
-      if (!editBtn && !delBtn) return;
-      const list = getList('pchat');
-      const id = editBtn ? editBtn.dataset.pchatEdit : delBtn.dataset.pchatDel;
-      const msg = list.find(function (m) { return m.id === id && m.userId === user.id; });
-      if (!msg) return;
-      if (editBtn) {
-        const newText = prompt('Редактировать сообщение:', msg.text);
-        if (newText === null) return;
-        const trimmed = newText.trim();
-        if (!trimmed) { toast('Сообщение не может быть пустым.', 'error'); return; }
-        msg.text = trimmed;
-        msg.edited = true;
-        dbSave('pchat', list);
-        renderProductChat();
-      } else {
-        if (!confirm('Удалить это сообщение?')) return;
-        list.splice(list.indexOf(msg), 1);
-        dbSave('pchat', list);
-        renderProductChat();
-      }
-    });
+    try {
+  document.getElementById('pchat-list').addEventListener('click', function (e) {
+        const user = getCurrentUser();
+        if (!user) return;
+        const editBtn = e.target.closest('[data-pchat-edit]');
+        const delBtn = e.target.closest('[data-pchat-del]');
+        if (!editBtn && !delBtn) return;
+        const list = getList('pchat');
+        const id = editBtn ? editBtn.dataset.pchatEdit : delBtn.dataset.pchatDel;
+        const msg = list.find(function (m) { return m.id === id && m.userId === user.id; });
+        if (!msg) return;
+        if (editBtn) {
+          const newText = prompt('Редактировать сообщение:', msg.text);
+          if (newText === null) return;
+          const trimmed = newText.trim();
+          if (!trimmed) { toast('Сообщение не может быть пустым.', 'error'); return; }
+          msg.text = trimmed;
+          msg.edited = true;
+          dbSave('pchat', list);
+          renderProductChat();
+        } else {
+          if (!confirm('Удалить это сообщение?')) return;
+          list.splice(list.indexOf(msg), 1);
+          dbSave('pchat', list);
+          renderProductChat();
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ---- ЛИЧНЫЕ СООБЩЕНИЯ (ЛС) ---- */
 
@@ -6016,37 +6170,43 @@
       renderDmMessages();
     }
 
-    document.getElementById('dm-send').addEventListener('click', sendDm);
-    document.getElementById('dm-input').addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendDm(); }
-    });
+    try {
+  document.getElementById('dm-send').addEventListener('click', sendDm);
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('dm-input').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendDm(); }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('dm-list-modal').addEventListener('click', function (e) {
-      const user = getCurrentUser();
-      if (!user) return;
-      const editBtn = e.target.closest('[data-dmmsg-edit]');
-      const delBtn = e.target.closest('[data-dmmsg-del]');
-      if (!editBtn && !delBtn) return;
-      const list = getList('dms');
-      const id = editBtn ? editBtn.dataset.dmmsgEdit : delBtn.dataset.dmmsgDel;
-      const msg = list.find(function (m) { return m.id === id && m.from === user.id; });
-      if (!msg) return;
-      if (editBtn) {
-        const newText = prompt('Редактировать сообщение:', msg.text);
-        if (newText === null) return;
-        const trimmed = newText.trim();
-        if (!trimmed) { toast('Сообщение не может быть пустым.', 'error'); return; }
-        msg.text = trimmed;
-        msg.edited = true;
-        dbSave('dms', list);
-        renderDmMessages();
-      } else {
-        if (!confirm('Удалить это сообщение?')) return;
-        list.splice(list.indexOf(msg), 1);
-        dbSave('dms', list);
-        renderDmMessages();
-      }
-    });
+    try {
+  document.getElementById('dm-list-modal').addEventListener('click', function (e) {
+        const user = getCurrentUser();
+        if (!user) return;
+        const editBtn = e.target.closest('[data-dmmsg-edit]');
+        const delBtn = e.target.closest('[data-dmmsg-del]');
+        if (!editBtn && !delBtn) return;
+        const list = getList('dms');
+        const id = editBtn ? editBtn.dataset.dmmsgEdit : delBtn.dataset.dmmsgDel;
+        const msg = list.find(function (m) { return m.id === id && m.from === user.id; });
+        if (!msg) return;
+        if (editBtn) {
+          const newText = prompt('Редактировать сообщение:', msg.text);
+          if (newText === null) return;
+          const trimmed = newText.trim();
+          if (!trimmed) { toast('Сообщение не может быть пустым.', 'error'); return; }
+          msg.text = trimmed;
+          msg.edited = true;
+          dbSave('dms', list);
+          renderDmMessages();
+        } else {
+          if (!confirm('Удалить это сообщение?')) return;
+          list.splice(list.indexOf(msg), 1);
+          dbSave('dms', list);
+          renderDmMessages();
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function renderDms() {
       const user = getCurrentUser();
@@ -6106,39 +6266,45 @@
         : '<p class="empty-line">Архив пуст.</p>';
     }
 
-    document.getElementById('archive-toggle').addEventListener('click', function () {
-      archiveOpen = !archiveOpen;
-      document.getElementById('archive-list').classList.toggle('open', archiveOpen);
-      document.getElementById('archive-arrow').textContent = archiveOpen ? '▾' : '▸';
-    });
+    try {
+  document.getElementById('archive-toggle').addEventListener('click', function () {
+        archiveOpen = !archiveOpen;
+        document.getElementById('archive-list').classList.toggle('open', archiveOpen);
+        document.getElementById('archive-arrow').textContent = archiveOpen ? '▾' : '▸';
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('dm-list').addEventListener('click', function (e) {
-      const user = getCurrentUser();
-      if (!user) return;
-      const openBtn = e.target.closest('[data-dm-open]');
-      if (openBtn) { openDm(openBtn.dataset.dmOpen); return; }
-      const archBtn = e.target.closest('[data-dm-archive]');
-      if (archBtn) {
+    try {
+  document.getElementById('dm-list').addEventListener('click', function (e) {
+        const user = getCurrentUser();
+        if (!user) return;
+        const openBtn = e.target.closest('[data-dm-open]');
+        if (openBtn) { openDm(openBtn.dataset.dmOpen); return; }
+        const archBtn = e.target.closest('[data-dm-archive]');
+        if (archBtn) {
+          const archived = getArchived(user.id);
+          if (archived.indexOf(archBtn.dataset.dmArchive) === -1) archived.push(archBtn.dataset.dmArchive);
+          setArchived(user.id, archived);
+          renderDms();
+          toast('Чат перемещён в архив 📥', 'info');
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('archive-list').addEventListener('click', function (e) {
+        const user = getCurrentUser();
+        if (!user) return;
+        const btn = e.target.closest('[data-dm-unarchive]');
+        if (!btn) return;
         const archived = getArchived(user.id);
-        if (archived.indexOf(archBtn.dataset.dmArchive) === -1) archived.push(archBtn.dataset.dmArchive);
+        const idx = archived.indexOf(btn.dataset.dmUnarchive);
+        if (idx !== -1) archived.splice(idx, 1);
         setArchived(user.id, archived);
         renderDms();
-        toast('Чат перемещён в архив 📥', 'info');
-      }
-    });
-
-    document.getElementById('archive-list').addEventListener('click', function (e) {
-      const user = getCurrentUser();
-      if (!user) return;
-      const btn = e.target.closest('[data-dm-unarchive]');
-      if (!btn) return;
-      const archived = getArchived(user.id);
-      const idx = archived.indexOf(btn.dataset.dmUnarchive);
-      if (idx !== -1) archived.splice(idx, 1);
-      setArchived(user.id, archived);
-      renderDms();
-      toast('Чат возвращён из архива 📤', 'info');
-    });
+        toast('Чат возвращён из архива 📤', 'info');
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ---- СОЦСЕТЬ: подвкладки ---- */
 
@@ -6156,10 +6322,12 @@
       renderSocial();
     }
 
-    document.getElementById('social-subtabs').addEventListener('click', function (e) {
-      const btn = e.target.closest('.subtab');
-      if (btn) setSocialSub(btn.dataset.sub);
-    });
+    try {
+  document.getElementById('social-subtabs').addEventListener('click', function (e) {
+        const btn = e.target.closest('.subtab');
+        if (btn) setSocialSub(btn.dataset.sub);
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function renderSocial() {
       if (socialSub === 'feed') { renderFeed(); renderPeople(); }
@@ -6228,104 +6396,112 @@
       }).join('');
     }
 
-    document.getElementById('feed-list').addEventListener('click', function (e) {
-      const user = getCurrentUser();
-      const likeBtn = e.target.closest('[data-post-like]');
-      if (likeBtn) {
-        if (!user) { openModal('modal-login'); toast('Войди, чтобы ставить лайки.', 'info'); return; }
-        const posts = getList('posts');
-        const p = posts.find(function (x) { return x.id === likeBtn.dataset.postLike; });
-        if (!p) return;
-        p.likes = p.likes || [];
-        const idx = p.likes.indexOf(user.id);
-        if (idx !== -1) p.likes.splice(idx, 1); else p.likes.push(user.id);
-        dbSave('posts', posts);
-        renderFeed();
-        return;
-      }
-      const comBtn = e.target.closest('[data-post-comments]');
-      if (comBtn) {
-        openPostComments[comBtn.dataset.postComments] = !openPostComments[comBtn.dataset.postComments];
-        renderFeed();
-        return;
-      }
-      const editBtn = e.target.closest('[data-post-edit]');
-      if (editBtn) {
-        if (!user) return;
-        const posts = getList('posts');
-        const p = posts.find(function (x) { return x.id === editBtn.dataset.postEdit && x.userId === user.id; });
-        if (!p) return;
-        const newText = prompt('Редактировать текст поста:', p.text);
-        if (newText === null) return;
-        const trimmed = newText.trim();
-        if (!trimmed) { toast('Текст поста не может быть пустым.', 'error'); return; }
-        p.text = trimmed;
-        p.edited = true;
-        dbSave('posts', posts);
-        renderFeed();
-        toast('Пост обновлён — добавлена пометка (изменено).', 'success');
-        return;
-      }
-      const delBtn = e.target.closest('[data-post-del]');
-      if (delBtn) {
-        if (!user) return;
-        const posts = getList('posts');
-        const p = posts.find(function (x) { return x.id === delBtn.dataset.postDel && x.userId === user.id; });
-        if (!p) return;
-        if (!confirm('Удалить пост безвозвратно?')) return;
-        posts.splice(posts.indexOf(p), 1);
-        dbSave('posts', posts);
-        renderFeed();
-        toast('Пост удалён.', 'info');
-        return;
-      }
-      const comDelBtn = e.target.closest('[data-comment-del]');
-      if (comDelBtn) {
-        if (!user) return;
-        const sep = comDelBtn.dataset.commentDel.lastIndexOf('|');
-        const postId = comDelBtn.dataset.commentDel.slice(0, sep);
-        const commentId = comDelBtn.dataset.commentDel.slice(sep + 1);
-        const posts = getList('posts');
-        const p = posts.find(function (x) { return x.id === postId; });
-        if (!p || !Array.isArray(p.comments)) return;
-        const c = p.comments.find(function (x) { return x.id === commentId && x.userId === user.id; });
-        if (!c) return;
-        p.comments.splice(p.comments.indexOf(c), 1);
-        dbSave('posts', posts);
-        renderFeed();
-      }
-    });
+    try {
+  document.getElementById('feed-list').addEventListener('click', function (e) {
+        const user = getCurrentUser();
+        const likeBtn = e.target.closest('[data-post-like]');
+        if (likeBtn) {
+          if (!user) { openModal('modal-login'); toast('Войди, чтобы ставить лайки.', 'info'); return; }
+          const posts = getList('posts');
+          const p = posts.find(function (x) { return x.id === likeBtn.dataset.postLike; });
+          if (!p) return;
+          p.likes = p.likes || [];
+          const idx = p.likes.indexOf(user.id);
+          if (idx !== -1) p.likes.splice(idx, 1); else p.likes.push(user.id);
+          dbSave('posts', posts);
+          renderFeed();
+          return;
+        }
+        const comBtn = e.target.closest('[data-post-comments]');
+        if (comBtn) {
+          openPostComments[comBtn.dataset.postComments] = !openPostComments[comBtn.dataset.postComments];
+          renderFeed();
+          return;
+        }
+        const editBtn = e.target.closest('[data-post-edit]');
+        if (editBtn) {
+          if (!user) return;
+          const posts = getList('posts');
+          const p = posts.find(function (x) { return x.id === editBtn.dataset.postEdit && x.userId === user.id; });
+          if (!p) return;
+          const newText = prompt('Редактировать текст поста:', p.text);
+          if (newText === null) return;
+          const trimmed = newText.trim();
+          if (!trimmed) { toast('Текст поста не может быть пустым.', 'error'); return; }
+          p.text = trimmed;
+          p.edited = true;
+          dbSave('posts', posts);
+          renderFeed();
+          toast('Пост обновлён — добавлена пометка (изменено).', 'success');
+          return;
+        }
+        const delBtn = e.target.closest('[data-post-del]');
+        if (delBtn) {
+          if (!user) return;
+          const posts = getList('posts');
+          const p = posts.find(function (x) { return x.id === delBtn.dataset.postDel && x.userId === user.id; });
+          if (!p) return;
+          if (!confirm('Удалить пост безвозвратно?')) return;
+          posts.splice(posts.indexOf(p), 1);
+          dbSave('posts', posts);
+          renderFeed();
+          toast('Пост удалён.', 'info');
+          return;
+        }
+        const comDelBtn = e.target.closest('[data-comment-del]');
+        if (comDelBtn) {
+          if (!user) return;
+          const sep = comDelBtn.dataset.commentDel.lastIndexOf('|');
+          const postId = comDelBtn.dataset.commentDel.slice(0, sep);
+          const commentId = comDelBtn.dataset.commentDel.slice(sep + 1);
+          const posts = getList('posts');
+          const p = posts.find(function (x) { return x.id === postId; });
+          if (!p || !Array.isArray(p.comments)) return;
+          const c = p.comments.find(function (x) { return x.id === commentId && x.userId === user.id; });
+          if (!c) return;
+          p.comments.splice(p.comments.indexOf(c), 1);
+          dbSave('posts', posts);
+          renderFeed();
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('feed-list').addEventListener('keydown', function (e) {
-      const input = e.target.closest('[data-comment-input]');
-      if (!input || e.key !== 'Enter') return;
-      e.preventDefault();
-      const user = getCurrentUser();
-      if (!user) return;
-      const text = input.value.trim();
-      if (!text) return;
-      const posts = getList('posts');
-      const p = posts.find(function (x) { return x.id === input.dataset.commentInput; });
-      if (!p) return;
-      p.comments = p.comments || [];
-      p.comments.push({ id: makeId('cmt'), userId: user.id, name: user.name, avatar: user.avatar, text: text, ts: Date.now() });
-      dbSave('posts', posts);
-      openPostComments[p.id] = true;
-      renderFeed();
-    });
+    try {
+  document.getElementById('feed-list').addEventListener('keydown', function (e) {
+        const input = e.target.closest('[data-comment-input]');
+        if (!input || e.key !== 'Enter') return;
+        e.preventDefault();
+        const user = getCurrentUser();
+        if (!user) return;
+        const text = input.value.trim();
+        if (!text) return;
+        const posts = getList('posts');
+        const p = posts.find(function (x) { return x.id === input.dataset.commentInput; });
+        if (!p) return;
+        p.comments = p.comments || [];
+        p.comments.push({ id: makeId('cmt'), userId: user.id, name: user.name, avatar: user.avatar, text: text, ts: Date.now() });
+        dbSave('posts', posts);
+        openPostComments[p.id] = true;
+        renderFeed();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('post-photo-btn').addEventListener('click', function () {
-      document.getElementById('post-photo').click();
-    });
+    try {
+  document.getElementById('post-photo-btn').addEventListener('click', function () {
+        document.getElementById('post-photo').click();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('post-photo').addEventListener('change', async function () {
-      const f = (this.files || [])[0];
-      this.value = '';
-      if (!f) return;
-      try { postPhoto = await compressImage(f, 900, 0.72); }
-      catch (err) { toast('Не удалось обработать фото.', 'error'); }
-      renderPostPreview();
-    });
+    try {
+  document.getElementById('post-photo').addEventListener('change', async function () {
+        const f = (this.files || [])[0];
+        this.value = '';
+        if (!f) return;
+        try { postPhoto = await compressImage(f, 900, 0.72); }
+        catch (err) { toast('Не удалось обработать фото.', 'error'); }
+        renderPostPreview();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function renderPostPreview() {
       const wrap = document.getElementById('post-photo-preview');
@@ -6335,41 +6511,47 @@
         : '';
     }
 
-    document.getElementById('post-photo-preview').addEventListener('click', function (e) {
-      if (e.target.closest('#post-photo-del')) {
+    try {
+  document.getElementById('post-photo-preview').addEventListener('click', function (e) {
+        if (e.target.closest('#post-photo-del')) {
+          postPhoto = null;
+          renderPostPreview();
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('post-submit').addEventListener('click', function () {
+        const user = getCurrentUser();
+        if (!user) { openModal('modal-login'); toast('Войди, чтобы публиковать посты.', 'info'); return; }
+        const input = document.getElementById('post-text');
+        const text = input.value.trim();
+        if (text.length < 3) { toast('Напиши текст поста (минимум 3 символа).', 'error'); return; }
+        if (!antispamCheck('post', text)) return;
+        const posts = getList('posts');
+        posts.push({
+          id: makeId('post'), userId: user.id, name: user.name,
+          classId: classIdOf(user.grade, user.letter), avatar: user.avatar,
+          text: text, photo: postPhoto, likes: [], comments: [],
+          ts: Date.now(), edited: false
+        });
+        dbSave('posts', posts);
+        input.value = '';
         postPhoto = null;
         renderPostPreview();
-      }
-    });
-
-    document.getElementById('post-submit').addEventListener('click', function () {
-      const user = getCurrentUser();
-      if (!user) { openModal('modal-login'); toast('Войди, чтобы публиковать посты.', 'info'); return; }
-      const input = document.getElementById('post-text');
-      const text = input.value.trim();
-      if (text.length < 3) { toast('Напиши текст поста (минимум 3 символа).', 'error'); return; }
-      if (!antispamCheck('post', text)) return;
-      const posts = getList('posts');
-      posts.push({
-        id: makeId('post'), userId: user.id, name: user.name,
-        classId: classIdOf(user.grade, user.letter), avatar: user.avatar,
-        text: text, photo: postPhoto, likes: [], comments: [],
-        ts: Date.now(), edited: false
+        renderFeed();
+        toast('🚀 Пост опубликован в ленте!', 'success');
       });
-      dbSave('posts', posts);
-      input.value = '';
-      postPhoto = null;
-      renderPostPreview();
-      renderFeed();
-      toast('🚀 Пост опубликован в ленте!', 'success');
-    });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ---- Поиск людей ---- */
 
-    document.getElementById('people-search').addEventListener('input', function () {
-      peopleQuery = this.value;
-      renderPeople();
-    });
+    try {
+  document.getElementById('people-search').addEventListener('input', function () {
+        peopleQuery = this.value;
+        renderPeople();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function renderPeople() {
       const wrap = document.getElementById('people-grid');
@@ -6462,88 +6644,90 @@
           : '<p class="empty-line">Публикаций пока нет.</p>');
     }
 
-    document.getElementById('channels-grid').addEventListener('click', function (e) {
-      const user = getCurrentUser();
-      const subBtn = e.target.closest('[data-ch-sub]');
-      if (subBtn) {
-        if (!user) { openModal('modal-login'); toast('Войди, чтобы подписываться на каналы.', 'info'); return; }
-        const list = getList('channels');
-        const ch = list.find(function (x) { return x.id === subBtn.dataset.chSub; });
-        if (!ch) return;
-        ch.subs = ch.subs || [];
-        const idx = ch.subs.indexOf(user.id);
-        if (idx !== -1) { ch.subs.splice(idx, 1); toast('Вы отписались от канала.', 'info'); }
-        else { ch.subs.push(user.id); toast('Вы подписались! 🔔', 'success'); }
-        dbSave('channels', list);
-        renderChannels();
-        return;
-      }
-      const openBtn = e.target.closest('[data-ch-open]');
-      if (openBtn) {
-        const panel = document.getElementById('ch-posts-' + openBtn.dataset.chOpen);
-        if (!panel) return;
-        const show = panel.style.display === 'none';
-        panel.style.display = show ? 'block' : 'none';
-        if (show) renderChannelFeed(openBtn.dataset.chOpen);
-        return;
-      }
-      const postBtn = e.target.closest('[data-ch-post]');
-      if (postBtn) {
-        if (!user) { openModal('modal-login'); return; }
-        const chId = postBtn.dataset.chPost;
-        const list = getList('channels');
-        const ch = list.find(function (x) { return x.id === chId; });
-        if (!ch) return;
-        if (ch.ownerId !== user.id && !user.isAdmin && !(ch.mode === 'community' && (ch.subs || []).indexOf(user.id) !== -1)) {
-          toast('Публиковать может только создатель канала и админы.', 'error');
+    try {
+  document.getElementById('channels-grid').addEventListener('click', function (e) {
+        const user = getCurrentUser();
+        const subBtn = e.target.closest('[data-ch-sub]');
+        if (subBtn) {
+          if (!user) { openModal('modal-login'); toast('Войди, чтобы подписываться на каналы.', 'info'); return; }
+          const list = getList('channels');
+          const ch = list.find(function (x) { return x.id === subBtn.dataset.chSub; });
+          if (!ch) return;
+          ch.subs = ch.subs || [];
+          const idx = ch.subs.indexOf(user.id);
+          if (idx !== -1) { ch.subs.splice(idx, 1); toast('Вы отписались от канала.', 'info'); }
+          else { ch.subs.push(user.id); toast('Вы подписались! 🔔', 'success'); }
+          dbSave('channels', list);
+          renderChannels();
           return;
         }
-        const input = document.querySelector('[data-ch-input="' + chId + '"]');
-        const text = input ? input.value.trim() : '';
-        if (text.length < 3) { toast('Напиши текст публикации (минимум 3 символа).', 'error'); return; }
-        ch.posts = ch.posts || [];
-        ch.posts.push({ id: makeId('chp'), userId: user.id, name: user.name, avatar: user.avatar, text: text, ts: Date.now(), edited: false });
-        dbSave('channels', list);
-        renderChannelFeed(chId);
-        toast('🚀 Публикация отправлена в канал!', 'success');
-        return;
-      }
-      const chpEdit = e.target.closest('[data-chp-edit]');
-      if (chpEdit) {
-        if (!user) return;
-        const sep = chpEdit.dataset.chpEdit.lastIndexOf('|');
-        const chId = chpEdit.dataset.chpEdit.slice(0, sep);
-        const postId = chpEdit.dataset.chpEdit.slice(sep + 1);
-        const list = getList('channels');
-        const ch = list.find(function (x) { return x.id === chId; });
-        const p = ch && (ch.posts || []).find(function (x) { return x.id === postId; });
-        if (!p || !(p.userId === user.id || user.isAdmin || ch.ownerId === user.id)) return;
-        const newText = prompt('Редактировать публикацию:', p.text);
-        if (newText === null) return;
-        const trimmed = newText.trim();
-        if (!trimmed) { toast('Текст не может быть пустым.', 'error'); return; }
-        p.text = trimmed;
-        p.edited = true;
-        dbSave('channels', list);
-        renderChannelFeed(chId);
-        return;
-      }
-      const chpDel = e.target.closest('[data-chp-del]');
-      if (chpDel) {
-        if (!user) return;
-        const sep = chpDel.dataset.chpDel.lastIndexOf('|');
-        const chId = chpDel.dataset.chpDel.slice(0, sep);
-        const postId = chpDel.dataset.chpDel.slice(sep + 1);
-        const list = getList('channels');
-        const ch = list.find(function (x) { return x.id === chId; });
-        const p = ch && (ch.posts || []).find(function (x) { return x.id === postId; });
-        if (!p || !(p.userId === user.id || user.isAdmin || ch.ownerId === user.id)) return;
-        if (!confirm('Удалить публикацию?')) return;
-        ch.posts.splice(ch.posts.indexOf(p), 1);
-        dbSave('channels', list);
-        renderChannelFeed(chId);
-      }
-    });
+        const openBtn = e.target.closest('[data-ch-open]');
+        if (openBtn) {
+          const panel = document.getElementById('ch-posts-' + openBtn.dataset.chOpen);
+          if (!panel) return;
+          const show = panel.style.display === 'none';
+          panel.style.display = show ? 'block' : 'none';
+          if (show) renderChannelFeed(openBtn.dataset.chOpen);
+          return;
+        }
+        const postBtn = e.target.closest('[data-ch-post]');
+        if (postBtn) {
+          if (!user) { openModal('modal-login'); return; }
+          const chId = postBtn.dataset.chPost;
+          const list = getList('channels');
+          const ch = list.find(function (x) { return x.id === chId; });
+          if (!ch) return;
+          if (ch.ownerId !== user.id && !user.isAdmin && !(ch.mode === 'community' && (ch.subs || []).indexOf(user.id) !== -1)) {
+            toast('Публиковать может только создатель канала и админы.', 'error');
+            return;
+          }
+          const input = document.querySelector('[data-ch-input="' + chId + '"]');
+          const text = input ? input.value.trim() : '';
+          if (text.length < 3) { toast('Напиши текст публикации (минимум 3 символа).', 'error'); return; }
+          ch.posts = ch.posts || [];
+          ch.posts.push({ id: makeId('chp'), userId: user.id, name: user.name, avatar: user.avatar, text: text, ts: Date.now(), edited: false });
+          dbSave('channels', list);
+          renderChannelFeed(chId);
+          toast('🚀 Публикация отправлена в канал!', 'success');
+          return;
+        }
+        const chpEdit = e.target.closest('[data-chp-edit]');
+        if (chpEdit) {
+          if (!user) return;
+          const sep = chpEdit.dataset.chpEdit.lastIndexOf('|');
+          const chId = chpEdit.dataset.chpEdit.slice(0, sep);
+          const postId = chpEdit.dataset.chpEdit.slice(sep + 1);
+          const list = getList('channels');
+          const ch = list.find(function (x) { return x.id === chId; });
+          const p = ch && (ch.posts || []).find(function (x) { return x.id === postId; });
+          if (!p || !(p.userId === user.id || user.isAdmin || ch.ownerId === user.id)) return;
+          const newText = prompt('Редактировать публикацию:', p.text);
+          if (newText === null) return;
+          const trimmed = newText.trim();
+          if (!trimmed) { toast('Текст не может быть пустым.', 'error'); return; }
+          p.text = trimmed;
+          p.edited = true;
+          dbSave('channels', list);
+          renderChannelFeed(chId);
+          return;
+        }
+        const chpDel = e.target.closest('[data-chp-del]');
+        if (chpDel) {
+          if (!user) return;
+          const sep = chpDel.dataset.chpDel.lastIndexOf('|');
+          const chId = chpDel.dataset.chpDel.slice(0, sep);
+          const postId = chpDel.dataset.chpDel.slice(sep + 1);
+          const list = getList('channels');
+          const ch = list.find(function (x) { return x.id === chId; });
+          const p = ch && (ch.posts || []).find(function (x) { return x.id === postId; });
+          if (!p || !(p.userId === user.id || user.isAdmin || ch.ownerId === user.id)) return;
+          if (!confirm('Удалить публикацию?')) return;
+          ch.posts.splice(ch.posts.indexOf(p), 1);
+          dbSave('channels', list);
+          renderChannelFeed(chId);
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function renderChannelEmoji() {
       const wrap = document.getElementById('ch-emoji-grid');
@@ -6553,57 +6737,65 @@
       }).join('');
     }
 
-    document.getElementById('ch-emoji-grid').addEventListener('click', function (e) {
-      const btn = e.target.closest('[data-emoji]');
-      if (!btn) return;
-      channelDraftEmoji = btn.dataset.emoji;
-      renderChannelEmoji();
-    });
+    try {
+  document.getElementById('ch-emoji-grid').addEventListener('click', function (e) {
+        const btn = e.target.closest('[data-emoji]');
+        if (!btn) return;
+        channelDraftEmoji = btn.dataset.emoji;
+        renderChannelEmoji();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function setChannelMode(mode) {
       document.querySelectorAll('#channel-form .deal-btn').forEach(function (b) { b.classList.toggle('active', b.dataset.mode === mode); });
     }
 
-    document.querySelectorAll('#channel-form .deal-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () { setChannelMode(btn.dataset.mode); });
-    });
-
-    document.getElementById('new-channel-btn').addEventListener('click', function () {
-      const user = getCurrentUser();
-      if (!user) { openModal('modal-login'); toast('Войди, чтобы создать канал.', 'info'); return; }
-      channelDraftEmoji = '📢';
-      renderChannelEmoji();
-      setChannelMode('channel');
-      document.getElementById('channel-form').reset();
-      showFormError('channel-error', '');
-      openModal('modal-channel');
-    });
-
-    document.getElementById('channel-form').addEventListener('submit', function (e) {
-      e.preventDefault();
-      const user = getCurrentUser();
-      if (!user) { openModal('modal-login'); return; }
-      const name = document.getElementById('ch-name').value.trim();
-      const desc = document.getElementById('ch-desc').value.trim();
-      const modeBtn = document.querySelector('#channel-form .deal-btn.active');
-      const mode = modeBtn ? modeBtn.dataset.mode : 'channel';
-      if (name.length < 3) { showFormError('channel-error', 'Введи название (минимум 3 символа).'); return; }
-      const list = getList('channels');
-      if (list.some(function (c) { return (c.name || '').toLowerCase() === name.toLowerCase(); })) {
-        showFormError('channel-error', 'Канал или сообщество с таким названием уже существует.');
-        return;
-      }
-      list.push({
-        id: makeId('ch'), name: name, desc: desc,
-        icon: { type: 'emoji', value: channelDraftEmoji },
-        mode: mode, ownerId: user.id, ownerName: user.name,
-        subs: [user.id], posts: [], createdAt: Date.now()
+    try {
+  document.querySelectorAll('#channel-form .deal-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () { setChannelMode(btn.dataset.mode); });
       });
-      dbSave('channels', list);
-      closeModal('modal-channel');
-      renderChannels();
-      toast(mode === 'channel' ? '📢 Канал создан! Ты автоматически подписан.' : '👥 Сообщество создано! Ты автоматически подписан.', 'success');
-    });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('new-channel-btn').addEventListener('click', function () {
+        const user = getCurrentUser();
+        if (!user) { openModal('modal-login'); toast('Войди, чтобы создать канал.', 'info'); return; }
+        channelDraftEmoji = '📢';
+        renderChannelEmoji();
+        setChannelMode('channel');
+        document.getElementById('channel-form').reset();
+        showFormError('channel-error', '');
+        openModal('modal-channel');
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('channel-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const user = getCurrentUser();
+        if (!user) { openModal('modal-login'); return; }
+        const name = document.getElementById('ch-name').value.trim();
+        const desc = document.getElementById('ch-desc').value.trim();
+        const modeBtn = document.querySelector('#channel-form .deal-btn.active');
+        const mode = modeBtn ? modeBtn.dataset.mode : 'channel';
+        if (name.length < 3) { showFormError('channel-error', 'Введи название (минимум 3 символа).'); return; }
+        const list = getList('channels');
+        if (list.some(function (c) { return (c.name || '').toLowerCase() === name.toLowerCase(); })) {
+          showFormError('channel-error', 'Канал или сообщество с таким названием уже существует.');
+          return;
+        }
+        list.push({
+          id: makeId('ch'), name: name, desc: desc,
+          icon: { type: 'emoji', value: channelDraftEmoji },
+          mode: mode, ownerId: user.id, ownerName: user.name,
+          subs: [user.id], posts: [], createdAt: Date.now()
+        });
+        dbSave('channels', list);
+        closeModal('modal-channel');
+        renderChannels();
+        toast(mode === 'channel' ? '📢 Канал создан! Ты автоматически подписан.' : '👥 Сообщество создано! Ты автоматически подписан.', 'success');
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ---- Банк взаимопомощи ---- */
 
@@ -6615,13 +6807,15 @@
       }).join('');
     }
 
-    document.getElementById('vol-filter').addEventListener('click', function (e) {
-      const btn = e.target.closest('.cat-btn');
-      if (!btn) return;
-      volFilter = btn.dataset.vol;
-      document.querySelectorAll('#vol-filter .cat-btn').forEach(function (b) { b.classList.toggle('active', b === btn); });
-      renderVolunteers();
-    });
+    try {
+  document.getElementById('vol-filter').addEventListener('click', function (e) {
+        const btn = e.target.closest('.cat-btn');
+        if (!btn) return;
+        volFilter = btn.dataset.vol;
+        document.querySelectorAll('#vol-filter .cat-btn').forEach(function (b) { b.classList.toggle('active', b === btn); });
+        renderVolunteers();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function renderVolunteers() {
       const user = getCurrentUser();
@@ -6653,45 +6847,49 @@
       }).join('');
     }
 
-    document.getElementById('vol-grid').addEventListener('click', function (e) {
-      const user = getCurrentUser();
-      const askBtn = e.target.closest('[data-vol-ask]');
-      if (askBtn) { openDm(askBtn.dataset.volAsk); return; }
-      const quitBtn = e.target.closest('[data-vol-quit]');
-      if (quitBtn) {
-        if (!user) return;
+    try {
+  document.getElementById('vol-grid').addEventListener('click', function (e) {
+        const user = getCurrentUser();
+        const askBtn = e.target.closest('[data-vol-ask]');
+        if (askBtn) { openDm(askBtn.dataset.volAsk); return; }
+        const quitBtn = e.target.closest('[data-vol-quit]');
+        if (quitBtn) {
+          if (!user) return;
+          const list = getList('volunteers');
+          const v = list.find(function (x) { return x.id === quitBtn.dataset.volQuit && x.userId === user.id; });
+          if (!v) return;
+          if (!confirm('Перестать быть волонтёром банка взаимопомощи?')) return;
+          list.splice(list.indexOf(v), 1);
+          dbSave('volunteers', list);
+          renderVolunteers();
+          toast('Ты больше не в банке взаимопомощи.', 'info');
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('vol-join-btn').addEventListener('click', function () {
+        const user = getCurrentUser();
+        if (!user) { openModal('modal-login'); toast('Войди, чтобы стать волонтёром.', 'info'); return; }
+        const subjects = Array.prototype.map.call(document.querySelectorAll('#vol-checks input:checked'), function (i) { return i.value; });
+        if (!subjects.length) { toast('Выбери хотя бы один предмет.', 'error'); return; }
         const list = getList('volunteers');
-        const v = list.find(function (x) { return x.id === quitBtn.dataset.volQuit && x.userId === user.id; });
-        if (!v) return;
-        if (!confirm('Перестать быть волонтёром банка взаимопомощи?')) return;
-        list.splice(list.indexOf(v), 1);
+        const existing = list.find(function (v) { return v.userId === user.id; });
+        const entry = {
+          id: existing ? existing.id : makeId('vol'),
+          userId: user.id, name: user.name,
+          classId: classIdOf(user.grade, user.letter),
+          avatar: user.avatar, subjects: subjects,
+          note: document.getElementById('vol-note').value.trim(),
+          createdAt: Date.now()
+        };
+        if (existing) list.splice(list.indexOf(existing), 1, entry);
+        else list.push(entry);
         dbSave('volunteers', list);
         renderVolunteers();
-        toast('Ты больше не в банке взаимопомощи.', 'info');
-      }
-    });
-
-    document.getElementById('vol-join-btn').addEventListener('click', function () {
-      const user = getCurrentUser();
-      if (!user) { openModal('modal-login'); toast('Войди, чтобы стать волонтёром.', 'info'); return; }
-      const subjects = Array.prototype.map.call(document.querySelectorAll('#vol-checks input:checked'), function (i) { return i.value; });
-      if (!subjects.length) { toast('Выбери хотя бы один предмет.', 'error'); return; }
-      const list = getList('volunteers');
-      const existing = list.find(function (v) { return v.userId === user.id; });
-      const entry = {
-        id: existing ? existing.id : makeId('vol'),
-        userId: user.id, name: user.name,
-        classId: classIdOf(user.grade, user.letter),
-        avatar: user.avatar, subjects: subjects,
-        note: document.getElementById('vol-note').value.trim(),
-        createdAt: Date.now()
-      };
-      if (existing) list.splice(list.indexOf(existing), 1, entry);
-      else list.push(entry);
-      dbSave('volunteers', list);
-      renderVolunteers();
-      toast('🤝 Ты в банке взаимопомощи! Спасибо, что помогаешь!', 'success');
-    });
+        toast('🤝 Ты в банке взаимопомощи! Спасибо, что помогаешь!', 'success');
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ============ ШАГ 4: ИГРОВАЯ ЛИЦЕЯ 37 ============ */
 
@@ -6766,9 +6964,11 @@
       });
     }
 
-    window.aiGenerateQuizQuestions = async function () {
-      return generateQuizRound();
-    };
+    try {
+  window.aiGenerateQuizQuestions = async function () {
+        return generateQuizRound();
+      };
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function startQuiz(questions) {
       quizRound = questions;
@@ -6793,31 +6993,33 @@
       quizLock = false;
     }
 
-    document.getElementById('quiz-answers').addEventListener('click', function (e) {
-      const btn = e.target.closest('.quiz-answer');
-      if (!btn || quizLock) return;
-      quizLock = true;
-      const q = quizRound[quizIndex];
-      const picked = Number(btn.dataset.qi);
-      this.querySelectorAll('.quiz-answer').forEach(function (b, i) {
-        b.disabled = true;
-        if (i === q.correct) b.classList.add('correct');
-        else if (i === picked) b.classList.add('wrong');
+    try {
+  document.getElementById('quiz-answers').addEventListener('click', function (e) {
+        const btn = e.target.closest('.quiz-answer');
+        if (!btn || quizLock) return;
+        quizLock = true;
+        const q = quizRound[quizIndex];
+        const picked = Number(btn.dataset.qi);
+        this.querySelectorAll('.quiz-answer').forEach(function (b, i) {
+          b.disabled = true;
+          if (i === q.correct) b.classList.add('correct');
+          else if (i === picked) b.classList.add('wrong');
+        });
+        if (picked === q.correct) {
+          quizScore++;
+          document.getElementById('quiz-hint').textContent = '✅ Верно! +10 баллов';
+          const user = getCurrentUser();
+          if (user) addPointsToUser(user.id, 10, '🧠 Викторина: правильный ответ');
+        } else {
+          document.getElementById('quiz-hint').textContent = '❌ Не совсем... Правильный ответ подсвечен зелёным.';
+        }
+        setTimeout(function () {
+          quizIndex++;
+          if (quizIndex >= quizRound.length) finishQuiz();
+          else renderQuizQuestion();
+        }, 1100);
       });
-      if (picked === q.correct) {
-        quizScore++;
-        document.getElementById('quiz-hint').textContent = '✅ Верно! +10 баллов';
-        const user = getCurrentUser();
-        if (user) addPointsToUser(user.id, 10, '🧠 Викторина: правильный ответ');
-      } else {
-        document.getElementById('quiz-hint').textContent = '❌ Не совсем... Правильный ответ подсвечен зелёным.';
-      }
-      setTimeout(function () {
-        quizIndex++;
-        if (quizIndex >= quizRound.length) finishQuiz();
-        else renderQuizQuestion();
-      }, 1100);
-    });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function finishQuiz() {
       document.getElementById('quiz-area').style.display = 'none';
@@ -6837,22 +7039,26 @@
       });
     }
 
-    document.getElementById('quiz-start-btn').addEventListener('click', function () { startQuiz(generateQuizRound()); });
-    document.getElementById('ai-quiz-btn').addEventListener('click', async function () {
-      const btn = this;
-      btn.disabled = true;
-      btn.textContent = '🤖 ИИ-Наставник 37 готовит вопросы...';
-      let round = null;
-      try {
-        if (typeof window.aiGenerateQuizQuestions === 'function') round = await window.aiGenerateQuizQuestions();
-      } catch (e) { round = null; }
-      if (!Array.isArray(round) || round.length < 5 || !round.every(function (q) { return q && q.q && Array.isArray(q.answers) && q.answers.length === 4 && typeof q.correct === 'number'; })) {
-        round = generateQuizRound();
-      }
-      btn.disabled = false;
-      btn.textContent = '🤖 Сгенерировать свежий раунд через ИИ-Наставника 37';
-      startQuiz(round);
-    });
+    try {
+  document.getElementById('quiz-start-btn').addEventListener('click', function () { startQuiz(generateQuizRound()); });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('ai-quiz-btn').addEventListener('click', async function () {
+        const btn = this;
+        btn.disabled = true;
+        btn.textContent = '🤖 ИИ-Наставник 37 готовит вопросы...';
+        let round = null;
+        try {
+          if (typeof window.aiGenerateQuizQuestions === 'function') round = await window.aiGenerateQuizQuestions();
+        } catch (e) { round = null; }
+        if (!Array.isArray(round) || round.length < 5 || !round.every(function (q) { return q && q.q && Array.isArray(q.answers) && q.answers.length === 4 && typeof q.correct === 'number'; })) {
+          round = generateQuizRound();
+        }
+        btn.disabled = false;
+        btn.textContent = '🤖 Сгенерировать свежий раунд через ИИ-Наставника 37';
+        startQuiz(round);
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ---- Тренажёр реакции ---- */
 
@@ -6871,34 +7077,36 @@
         }).join('') + '</tbody></table>';
     }
 
-    document.getElementById('reaction-zone').addEventListener('click', function () {
-      if (reactionState === 'idle') {
-        reactionState = 'waiting';
-        this.className = 'reaction-zone waiting';
-        this.textContent = 'Приготовься... ЖДИ зелёный! 🟡';
-        const self = this;
-        reactionTimer = setTimeout(function () {
-          reactionState = 'ready';
-          reactionStart = Date.now();
-          self.className = 'reaction-zone ready';
-          self.textContent = 'ЖМИ! ⚡';
-        }, 1400 + Math.floor(Math.random() * 2600));
-      } else if (reactionState === 'waiting') {
-        clearTimeout(reactionTimer);
-        reactionState = 'idle';
-        this.className = 'reaction-zone idle';
-        this.textContent = 'Фальстарт! 😅 Нажми, чтобы попробовать снова';
-        const res = document.getElementById('reaction-result');
-        res.textContent = 'Рано! Дождись зелёного света.';
-        res.style.color = 'var(--danger)';
-      } else if (reactionState === 'ready') {
-        const ms = Date.now() - reactionStart;
-        reactionState = 'idle';
-        this.className = 'reaction-zone result';
-        this.textContent = ms + ' мс — нажми, чтобы сыграть ещё';
-        handleReactionResult(ms);
-      }
-    });
+    try {
+  document.getElementById('reaction-zone').addEventListener('click', function () {
+        if (reactionState === 'idle') {
+          reactionState = 'waiting';
+          this.className = 'reaction-zone waiting';
+          this.textContent = 'Приготовься... ЖДИ зелёный! 🟡';
+          const self = this;
+          reactionTimer = setTimeout(function () {
+            reactionState = 'ready';
+            reactionStart = Date.now();
+            self.className = 'reaction-zone ready';
+            self.textContent = 'ЖМИ! ⚡';
+          }, 1400 + Math.floor(Math.random() * 2600));
+        } else if (reactionState === 'waiting') {
+          clearTimeout(reactionTimer);
+          reactionState = 'idle';
+          this.className = 'reaction-zone idle';
+          this.textContent = 'Фальстарт! 😅 Нажми, чтобы попробовать снова';
+          const res = document.getElementById('reaction-result');
+          res.textContent = 'Рано! Дождись зелёного света.';
+          res.style.color = 'var(--danger)';
+        } else if (reactionState === 'ready') {
+          const ms = Date.now() - reactionStart;
+          reactionState = 'idle';
+          this.className = 'reaction-zone result';
+          this.textContent = ms + ' мс — нажми, чтобы сыграть ещё';
+          handleReactionResult(ms);
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function handleReactionResult(ms) {
       const res = document.getElementById('reaction-result');
@@ -6935,12 +7143,14 @@
       }).join('');
     }
 
-    document.getElementById('comp-stickers').addEventListener('click', function (e) {
-      const btn = e.target.closest('[data-sticker]');
-      if (!btn) return;
-      compSticker = btn.dataset.sticker;
-      renderStickers();
-    });
+    try {
+  document.getElementById('comp-stickers').addEventListener('click', function (e) {
+        const btn = e.target.closest('[data-sticker]');
+        if (!btn) return;
+        compSticker = btn.dataset.sticker;
+        renderStickers();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function setCompMode(mode) {
       compMode = mode;
@@ -6948,8 +7158,12 @@
       document.getElementById('comp-mode-anon').classList.toggle('active', mode === 'anon');
     }
 
-    document.getElementById('comp-mode-open').addEventListener('click', function () { setCompMode('open'); });
-    document.getElementById('comp-mode-anon').addEventListener('click', function () { setCompMode('anon'); });
+    try {
+  document.getElementById('comp-mode-open').addEventListener('click', function () { setCompMode('open'); });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('comp-mode-anon').addEventListener('click', function () { setCompMode('anon'); });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function fillComplimentTargets() {
       const sel = document.getElementById('comp-to');
@@ -6968,31 +7182,33 @@
       return BAD_WORDS.some(function (w) { return t.indexOf(w) !== -1; });
     }
 
-    document.getElementById('comp-send').addEventListener('click', function () {
-      const text = document.getElementById('comp-text').value.trim();
-      if (text.length < 5) { toast('Напиши тёплое пожелание (минимум 5 символов).', 'error'); return; }
-      if (containsBadWord(text)) { toast('В Почте комплиментов только добрые слова 💙 — переформулируй, пожалуйста.', 'error'); return; }
-      if (!antispamCheck('compliment', text)) return;
-      const toId = document.getElementById('comp-to').value;
-      let toName = 'Всему Лицею №37';
-      if (toId !== 'all') {
-        const pu = getUserById(toId);
-        if (!pu) { toast('Получатель не найден.', 'error'); return; }
-        toName = pu.name;
-      }
-      const user = getCurrentUser();
-      const list = getList('compliments');
-      list.push({
-        id: makeId('comp'), toId: toId, toName: toName,
-        fromName: compMode === 'open' && user ? user.name : 'Тайный друг 🕵️',
-        fromClass: compMode === 'open' && user ? classIdOf(user.grade, user.letter) : '',
-        sticker: compSticker, text: text, ts: Date.now()
+    try {
+  document.getElementById('comp-send').addEventListener('click', function () {
+        const text = document.getElementById('comp-text').value.trim();
+        if (text.length < 5) { toast('Напиши тёплое пожелание (минимум 5 символов).', 'error'); return; }
+        if (containsBadWord(text)) { toast('В Почте комплиментов только добрые слова 💙 — переформулируй, пожалуйста.', 'error'); return; }
+        if (!antispamCheck('compliment', text)) return;
+        const toId = document.getElementById('comp-to').value;
+        let toName = 'Всему Лицею №37';
+        if (toId !== 'all') {
+          const pu = getUserById(toId);
+          if (!pu) { toast('Получатель не найден.', 'error'); return; }
+          toName = pu.name;
+        }
+        const user = getCurrentUser();
+        const list = getList('compliments');
+        list.push({
+          id: makeId('comp'), toId: toId, toName: toName,
+          fromName: compMode === 'open' && user ? user.name : 'Тайный друг 🕵️',
+          fromClass: compMode === 'open' && user ? classIdOf(user.grade, user.letter) : '',
+          sticker: compSticker, text: text, ts: Date.now()
+        });
+        dbSave('compliments', list);
+        document.getElementById('comp-text').value = '';
+        renderCompliments();
+        toast('💌 Открытка отправлена: ' + toName + '!', 'success');
       });
-      dbSave('compliments', list);
-      document.getElementById('comp-text').value = '';
-      renderCompliments();
-      toast('💌 Открытка отправлена: ' + toName + '!', 'success');
-    });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function renderCompliments() {
       const wrap = document.getElementById('compliment-list');
@@ -7275,35 +7491,37 @@
       if (on) toast('✏️ Режим включён — кликни по любому тексту с пунктирной рамкой.', 'info');
     }
 
-    document.addEventListener('click', function (e) {
-      if (!liveEditOn) return;
-      const el = e.target.closest ? e.target.closest('[data-editable]') : null;
-      if (!el) return;
-      e.preventDefault();
-      e.stopPropagation();
-      const key = el.getAttribute('data-editable');
-      const before = el.textContent;
-      el.setAttribute('contenteditable', 'true');
-      el.focus();
-      function finish() {
-        el.removeAttribute('contenteditable');
-        const after = el.textContent.trim();
-        if (after && after !== before) {
-          const map = dbLoad('editableTexts', {});
-          map[key] = after;
-          dbSave('editableTexts', map);
-          adminLogAction('edit', 'Правка текста «' + key + '»', { kind: 'editable', key: key, before: before });
-          toast('💾 Сохранено: «' + key + '»', 'success');
+    try {
+  document.addEventListener('click', function (e) {
+        if (!liveEditOn) return;
+        const el = e.target.closest ? e.target.closest('[data-editable]') : null;
+        if (!el) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const key = el.getAttribute('data-editable');
+        const before = el.textContent;
+        el.setAttribute('contenteditable', 'true');
+        el.focus();
+        function finish() {
+          el.removeAttribute('contenteditable');
+          const after = el.textContent.trim();
+          if (after && after !== before) {
+            const map = dbLoad('editableTexts', {});
+            map[key] = after;
+            dbSave('editableTexts', map);
+            adminLogAction('edit', 'Правка текста «' + key + '»', { kind: 'editable', key: key, before: before });
+            toast('💾 Сохранено: «' + key + '»', 'success');
+          }
+          el.removeEventListener('blur', finish);
+          el.removeEventListener('keydown', onKey);
         }
-        el.removeEventListener('blur', finish);
-        el.removeEventListener('keydown', onKey);
-      }
-      function onKey(ev) {
-        if (ev.key === 'Enter') { ev.preventDefault(); el.blur(); }
-      }
-      el.addEventListener('blur', finish);
-      el.addEventListener('keydown', onKey);
-    }, true);
+        function onKey(ev) {
+          if (ev.key === 'Enter') { ev.preventDefault(); el.blur(); }
+        }
+        el.addEventListener('blur', finish);
+        el.addEventListener('keydown', onKey);
+      }, true);
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ---- Таблицы заявок и идей ---- */
     let adminTablesTab = null;
@@ -7652,73 +7870,95 @@
     }
 
     /* ---- Общие обработчики админки ---- */
-    document.getElementById('admin-pass-submit').addEventListener('click', tryAdminLogin);
-    document.getElementById('admin-pass-input').addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') { e.preventDefault(); tryAdminLogin(); }
-    });
+    try {
+  document.getElementById('admin-pass-submit').addEventListener('click', tryAdminLogin);
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('admin-pass-input').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); tryAdminLogin(); }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('admin-panel').addEventListener('click', function (e) {
-      const b = e.target.closest('button');
-      if (!b) return;
-      if (b.id === 'adm-live-edit-btn') { setLiveEdit(!liveEditOn); return; }
-      if (b.id === 'adm-exit-btn') { setAdminActive(false); toast('🚪 Ты вышел из админки.', 'info'); return; }
-      const t = b.getAttribute('data-adm');
-      if (t === 'tables') openAdminTables('applications');
-      if (t === 'log') openAdminTool('log');
-      if (t === 'rights') openAdminTool('rights');
-      if (t === 'scripts') toggleAdminDrawer(true);
-      if (t === 'rewards') openAdminTool('rewards');
-      if (t === 'pets') openAdminTool('pets');
-      if (t === 'ticker') openAdminTool('ticker');
-      if (t === 'pass') openAdminTool('pass');
-    });
+    try {
+  document.getElementById('admin-panel').addEventListener('click', function (e) {
+        const b = e.target.closest('button');
+        if (!b) return;
+        if (b.id === 'adm-live-edit-btn') { setLiveEdit(!liveEditOn); return; }
+        if (b.id === 'adm-exit-btn') { setAdminActive(false); toast('🚪 Ты вышел из админки.', 'info'); return; }
+        const t = b.getAttribute('data-adm');
+        if (t === 'tables') openAdminTables('applications');
+        if (t === 'log') openAdminTool('log');
+        if (t === 'rights') openAdminTool('rights');
+        if (t === 'scripts') toggleAdminDrawer(true);
+        if (t === 'rewards') openAdminTool('rewards');
+        if (t === 'pets') openAdminTool('pets');
+        if (t === 'ticker') openAdminTool('ticker');
+        if (t === 'pass') openAdminTool('pass');
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('adm-tab-apps').addEventListener('click', function () { adminTablesTab = 'applications'; renderAdminTables(); });
-    document.getElementById('adm-tab-ideas').addEventListener('click', function () { adminTablesTab = 'ideas'; renderAdminTables(); });
+    try {
+  document.getElementById('adm-tab-apps').addEventListener('click', function () { adminTablesTab = 'applications'; renderAdminTables(); });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('adm-tab-ideas').addEventListener('click', function () { adminTablesTab = 'ideas'; renderAdminTables(); });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.getElementById('admin-drawer-close').addEventListener('click', function () { toggleAdminDrawer(false); });
-    document.getElementById('admin-drawer-overlay').addEventListener('click', function () { toggleAdminDrawer(false); });
-    document.getElementById('script-save-btn').addEventListener('click', saveAdminScript);
+    try {
+  document.getElementById('admin-drawer-close').addEventListener('click', function () { toggleAdminDrawer(false); });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('admin-drawer-overlay').addEventListener('click', function () { toggleAdminDrawer(false); });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('script-save-btn').addEventListener('click', saveAdminScript);
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    document.addEventListener('click', function (e) {
-      const t = e.target;
-      if (!t.closest) return;
-      const undoBtn = t.closest('[data-undo-log]');
-      if (undoBtn) { undoAdminAction(undoBtn.getAttribute('data-undo-log')); return; }
-      const approveBtn = t.closest('[data-approve-app]');
-      if (approveBtn) { approveApplication(approveBtn.getAttribute('data-approve-app')); return; }
-      const delApp = t.closest('[data-del-app]');
-      if (delApp) { deleteAdminItem('applications', delApp.getAttribute('data-del-app'), 'Заявки'); return; }
-      const delIdea = t.closest('[data-del-idea]');
-      if (delIdea) { deleteAdminItem('ideas', delIdea.getAttribute('data-del-idea'), 'Идеи'); return; }
-      const toggleAdmin = t.closest('[data-toggle-admin]');
-      if (toggleAdmin) { toggleUserAdmin(toggleAdmin.getAttribute('data-toggle-admin')); return; }
-      const delReward = t.closest('[data-del-reward]');
-      if (delReward) { deleteCustomReward(delReward.getAttribute('data-del-reward')); return; }
-      const csvBtn = t.closest('#adm-csv-btn');
-      if (csvBtn) { downloadAdminCsv(); return; }
-      const runBtn = t.closest('[data-script-run]');
-      if (runBtn) { runAdminScript(runBtn.getAttribute('data-script-run')); return; }
-      const stopBtn = t.closest('[data-script-stop]');
-      if (stopBtn) { stopAdminScript(stopBtn.getAttribute('data-script-stop')); return; }
-      const editBtn = t.closest('[data-script-edit]');
-      if (editBtn) {
-        const s = getList('customScripts').find(function (x) { return x.id === editBtn.getAttribute('data-script-edit'); });
-        if (s) {
-          document.getElementById('script-code').value = s.code;
-          document.getElementById('script-kind').value = s.kind || 'js';
-          toast('✏️ Код загружен в редактор — нажми «Добавить», чтобы сохранить как новый.', 'info');
+    try {
+  document.addEventListener('click', function (e) {
+        const t = e.target;
+        if (!t.closest) return;
+        const undoBtn = t.closest('[data-undo-log]');
+        if (undoBtn) { undoAdminAction(undoBtn.getAttribute('data-undo-log')); return; }
+        const approveBtn = t.closest('[data-approve-app]');
+        if (approveBtn) { approveApplication(approveBtn.getAttribute('data-approve-app')); return; }
+        const delApp = t.closest('[data-del-app]');
+        if (delApp) { deleteAdminItem('applications', delApp.getAttribute('data-del-app'), 'Заявки'); return; }
+        const delIdea = t.closest('[data-del-idea]');
+        if (delIdea) { deleteAdminItem('ideas', delIdea.getAttribute('data-del-idea'), 'Идеи'); return; }
+        const toggleAdmin = t.closest('[data-toggle-admin]');
+        if (toggleAdmin) { toggleUserAdmin(toggleAdmin.getAttribute('data-toggle-admin')); return; }
+        const delReward = t.closest('[data-del-reward]');
+        if (delReward) { deleteCustomReward(delReward.getAttribute('data-del-reward')); return; }
+        const csvBtn = t.closest('#adm-csv-btn');
+        if (csvBtn) { downloadAdminCsv(); return; }
+        const runBtn = t.closest('[data-script-run]');
+        if (runBtn) { runAdminScript(runBtn.getAttribute('data-script-run')); return; }
+        const stopBtn = t.closest('[data-script-stop]');
+        if (stopBtn) { stopAdminScript(stopBtn.getAttribute('data-script-stop')); return; }
+        const editBtn = t.closest('[data-script-edit]');
+        if (editBtn) {
+          const s = getList('customScripts').find(function (x) { return x.id === editBtn.getAttribute('data-script-edit'); });
+          if (s) {
+            document.getElementById('script-code').value = s.code;
+            document.getElementById('script-kind').value = s.kind || 'js';
+            toast('✏️ Код загружен в редактор — нажми «Добавить», чтобы сохранить как новый.', 'info');
+          }
+          return;
         }
-        return;
-      }
-      const delScript = t.closest('[data-script-del]');
-      if (delScript) { deleteAdminScript(delScript.getAttribute('data-script-del')); return; }
-    });
+        const delScript = t.closest('[data-script-del]');
+        if (delScript) { deleteAdminScript(delScript.getAttribute('data-script-del')); return; }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     const ideasAdminBtn = document.getElementById('admin-ideas-table-btn');
-    if (ideasAdminBtn) ideasAdminBtn.addEventListener('click', function () { openAdminTables('ideas'); });
+    try {
+  if (ideasAdminBtn) ideasAdminBtn.addEventListener('click', function () { openAdminTables('ideas'); });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
     const eventsAdminBtn = document.getElementById('admin-events-table-btn');
-    if (eventsAdminBtn) eventsAdminBtn.addEventListener('click', function () { openAdminTables('applications'); });
+    try {
+  if (eventsAdminBtn) eventsAdminBtn.addEventListener('click', function () { openAdminTables('applications'); });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ============================================================
        ШАГ 5: ИИ-НАСТАВНИК 37
@@ -7895,13 +8135,15 @@
       return qs;
     }
 
-    window.aiGenerateQuizQuestions = async function () {
-      try {
-        const made = aiQuizFromKnowledge();
-        if (made.length >= 5) return made;
-      } catch (e) { /* падаем на банк вопросов */ }
-      return generateQuizRound();
-    };
+    try {
+  window.aiGenerateQuizQuestions = async function () {
+        try {
+          const made = aiQuizFromKnowledge();
+          if (made.length >= 5) return made;
+        } catch (e) { /* падаем на банк вопросов */ }
+        return generateQuizRound();
+      };
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function aiStartQuizFromTutor(round) {
       if (typeof setTab === 'function') setTab('games');
@@ -8046,47 +8288,55 @@
       }
     }
 
-    document.getElementById('ai-fab').addEventListener('click', function (e) {
-      e.stopPropagation();
-      aiToggle(true);
-    });
-    document.getElementById('ai-close-btn').addEventListener('click', function (e) {
-      e.stopPropagation();
-      aiToggle(false);
-    });
-    document.getElementById('ai-memory-btn').addEventListener('click', function (e) {
-      e.stopPropagation();
-      aiShowMemoryCard();
-    });
-    document.getElementById('ai-send').addEventListener('click', function () { aiSend(); });
-    document.getElementById('ai-input').addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') { e.preventDefault(); aiSend(); }
-    });
-    document.querySelectorAll('.ai-chips [data-chip]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        document.getElementById('ai-input').value = btn.getAttribute('data-chip');
-        aiSend();
+    try {
+  document.getElementById('ai-fab').addEventListener('click', function (e) {
+        e.stopPropagation();
+        aiToggle(true);
       });
-    });
-    document.addEventListener('click', function (e) {
-      const win = document.getElementById('ai-window');
-      if (win.style.display !== 'flex') return;
-      if (win.contains(e.target) || document.getElementById('ai-fab').contains(e.target)) return;
-      aiToggle(false);
-    });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('ai-close-btn').addEventListener('click', function (e) {
+        e.stopPropagation();
+        aiToggle(false);
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('ai-memory-btn').addEventListener('click', function (e) {
+        e.stopPropagation();
+        aiShowMemoryCard();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('ai-send').addEventListener('click', function () { aiSend(); });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('ai-input').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); aiSend(); }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.querySelectorAll('.ai-chips [data-chip]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.getElementById('ai-input').value = btn.getAttribute('data-chip');
+          aiSend();
+        });
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.addEventListener('click', function (e) {
+        const win = document.getElementById('ai-window');
+        if (win.style.display !== 'flex') return;
+        if (win.contains(e.target) || document.getElementById('ai-fab').contains(e.target)) return;
+        aiToggle(false);
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function initAiTutor() {
       updateAiStatus();
       aiLoadFiles();
     }
 
-    /* ============ ШАГ 7: НАДЁЖНОСТЬ, ЗВОНКИ, ОГОНЁК, КАЛЬКУЛЯТОР, ПОИСК, ПЛАШКА ============ */
-    window.addEventListener('error', function (e) {
-      try { console.error('Глобальная ошибка JS:', e.message, 'строка', e.lineno); } catch (eL) {}
-    });
-    window.addEventListener('unhandledrejection', function (e) {
-      try { console.error('Необработанная ошибка промиса:', e.reason); } catch (eL) {}
-    });
+    /* ============ ШАГ 7: ЗВОНКИ, ОГОНЁК, КАЛЬКУЛЯТОР, ПОИСК, ПЛАШКА ============ */
 
     /* ---- 1. Официальное расписание звонков и живой таймер по МСК ---- */
     const BELL_SCHEDULE = [
@@ -8161,7 +8411,9 @@
         box.innerHTML = 'Уроки закончились · Первый звонок в 08:00 МСК';
       }
     }
-    setInterval(updateBellTimer, 1000);
+    try {
+  setInterval(updateBellTimer, 1000);
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ---- 2. Огонёк Лицея: счётчик дней подряд ---- */
     function updateStreak() {
@@ -8206,42 +8458,44 @@
         ' (порог ' + threshold.toFixed(2) + '), нужно ещё <b>' + need + '</b> ' +
         (target === 5 ? 'пятёрок' : 'четвёрок') + ' подряд → средний станет <b>' + proj.toFixed(2) + '</b>';
     }
-    (function initGradeCalculator() {
-      document.querySelectorAll('[data-gc-add]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          if (gcMarks.length >= 40) { toast('Максимум 40 оценок.', 'info'); return; }
-          gcMarks.push(Number(btn.getAttribute('data-gc-add')));
+    try {
+  (function initGradeCalculator() {
+        document.querySelectorAll('[data-gc-add]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            if (gcMarks.length >= 40) { toast('Максимум 40 оценок.', 'info'); return; }
+            gcMarks.push(Number(btn.getAttribute('data-gc-add')));
+            gcRender();
+          });
+        });
+        const gcChips = document.getElementById('gc-chips');
+        if (gcChips) gcChips.addEventListener('click', function (e) {
+          const chip = e.target.closest('[data-gc-del]');
+          if (!chip) return;
+          gcMarks.splice(Number(chip.getAttribute('data-gc-del')), 1);
           gcRender();
         });
-      });
-      const gcChips = document.getElementById('gc-chips');
-      if (gcChips) gcChips.addEventListener('click', function (e) {
-        const chip = e.target.closest('[data-gc-del]');
-        if (!chip) return;
-        gcMarks.splice(Number(chip.getAttribute('data-gc-del')), 1);
-        gcRender();
-      });
-      const gcInput = document.getElementById('gc-input');
-      if (gcInput) {
-        const applyGc = function () {
-          const nums = String(gcInput.value || '').split(/[^2-5]+/).filter(Boolean).map(Number)
-            .filter(function (n) { return n >= 2 && n <= 5; });
-          nums.forEach(function (n) { if (gcMarks.length < 40) gcMarks.push(n); });
-          gcInput.value = '';
-          gcRender();
-          if (nums.length) toast('Добавлено оценок: ' + nums.length, 'success');
-        };
-        const applyBtn = document.getElementById('gc-apply-input');
-        if (applyBtn) applyBtn.addEventListener('click', applyGc);
-        gcInput.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter') { e.preventDefault(); applyGc(); }
-        });
-      }
-      const gcClearBtn = document.getElementById('gc-clear');
-      if (gcClearBtn) gcClearBtn.addEventListener('click', function () { gcMarks = []; gcRender(); });
-      const gcTargetSel = document.getElementById('gc-target');
-      if (gcTargetSel) gcTargetSel.addEventListener('change', gcRender);
-    })();
+        const gcInput = document.getElementById('gc-input');
+        if (gcInput) {
+          const applyGc = function () {
+            const nums = String(gcInput.value || '').split(/[^2-5]+/).filter(Boolean).map(Number)
+              .filter(function (n) { return n >= 2 && n <= 5; });
+            nums.forEach(function (n) { if (gcMarks.length < 40) gcMarks.push(n); });
+            gcInput.value = '';
+            gcRender();
+            if (nums.length) toast('Добавлено оценок: ' + nums.length, 'success');
+          };
+          const applyBtn = document.getElementById('gc-apply-input');
+          if (applyBtn) applyBtn.addEventListener('click', applyGc);
+          gcInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); applyGc(); }
+          });
+        }
+        const gcClearBtn = document.getElementById('gc-clear');
+        if (gcClearBtn) gcClearBtn.addEventListener('click', function () { gcMarks = []; gcRender(); });
+        const gcTargetSel = document.getElementById('gc-target');
+        if (gcTargetSel) gcTargetSel.addEventListener('change', gcRender);
+      })();
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ---- 4. Глобальный быстрый поиск (Ctrl+K) ---- */
     let gsActions = [];
@@ -8295,33 +8549,35 @@
           }).join('')
         : '<div class="field-hint">Ничего не найдено. Попробуй другое слово.</div>';
     }
-    (function initGlobalSearch() {
-      const gsBtn = document.getElementById('global-search-btn');
-      if (gsBtn) gsBtn.addEventListener('click', function () {
-        openModal('modal-search');
-        const si = document.getElementById('global-search-input');
-        if (si) si.value = '';
-        globalSearch('');
-        if (si) setTimeout(function () { si.focus(); }, 120);
-      });
-      const gsInput = document.getElementById('global-search-input');
-      if (gsInput) gsInput.addEventListener('input', function () { globalSearch(gsInput.value); });
-      const gsBox = document.getElementById('global-search-results');
-      if (gsBox) gsBox.addEventListener('click', function (e) {
-        const item = e.target.closest('[data-gs]');
-        if (!item) return;
-        const act = gsActions[Number(item.getAttribute('data-gs'))];
-        closeModal('modal-search');
-        if (act) { try { act.act(); } catch (eAct) { console.error(eAct); } }
-      });
-      document.addEventListener('keydown', function (e) {
-        if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K' || e.key === 'к' || e.key === 'К' || e.code === 'KeyK')) {
-          e.preventDefault();
-          const gsBtnK = document.getElementById('global-search-btn');
-          if (gsBtnK) gsBtnK.click();
-        }
-      });
-    })();
+    try {
+  (function initGlobalSearch() {
+        const gsBtn = document.getElementById('global-search-btn');
+        if (gsBtn) gsBtn.addEventListener('click', function () {
+          openModal('modal-search');
+          const si = document.getElementById('global-search-input');
+          if (si) si.value = '';
+          globalSearch('');
+          if (si) setTimeout(function () { si.focus(); }, 120);
+        });
+        const gsInput = document.getElementById('global-search-input');
+        if (gsInput) gsInput.addEventListener('input', function () { globalSearch(gsInput.value); });
+        const gsBox = document.getElementById('global-search-results');
+        if (gsBox) gsBox.addEventListener('click', function (e) {
+          const item = e.target.closest('[data-gs]');
+          if (!item) return;
+          const act = gsActions[Number(item.getAttribute('data-gs'))];
+          closeModal('modal-search');
+          if (act) { try { act.act(); } catch (eAct) { console.error(eAct); } }
+        });
+        document.addEventListener('keydown', function (e) {
+          if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K' || e.key === 'к' || e.key === 'К' || e.code === 'KeyK')) {
+            e.preventDefault();
+            const gsBtnK = document.getElementById('global-search-btn');
+            if (gsBtnK) gsBtnK.click();
+          }
+        });
+      })();
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ---- 5. Плашка важных новостей (бегущая строка) ---- */
     function initTicker() {
@@ -8356,10 +8612,24 @@
       });
     }
 
-    boot();
+    try {
+      window.switchTab = setTab;
+      window.setTab = setTab;
+      window.openModal = openModal;
+      window.closeModal = closeModal;
+      window.closeAllModals = closeAllModals;
+      window.toast = toast;
+      window.globalSearch = globalSearch;
+      window.initTicker = initTicker;
+      window.renderBellSchedule = renderBellSchedule;
+      window.updateBellTimer = updateBellTimer;
+    } catch (eW37) { try { console.error(eW37); } catch (e2) {} }
 
-    initAdminSession();
-    initAiTutor();
+    window.__lp37Ready = true;
+
+    try { Promise.resolve(boot()).catch(function (eB37) { try { console.error('boot:', eB37); } catch (e2) {} }); } catch (eB2_37) { try { console.error(eB2_37); } catch (e2) {} }
+    try { initAdminSession(); } catch (eA37) { try { console.error(eA37); } catch (e2) {} }
+    try { initAiTutor(); } catch (eAI37) { try { console.error(eAI37); } catch (e2) {} }
   </script>
 </body>
 </html>
