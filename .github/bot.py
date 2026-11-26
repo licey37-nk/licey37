@@ -40,10 +40,7 @@ def extract_json(text):
         return json.loads(text)
     except:
         pass
-    patterns = [
-        r'```(?:json)?\s*(\{.*?\})\s*```',
-        r'(\{.*\})',
-    ]
+    patterns = [r'```(?:json)?\s*(\{.*?\})\s*```', r'(\{.*\})']
     for pat in patterns:
         match = re.search(pat, text, re.DOTALL)
         if match:
@@ -82,23 +79,35 @@ def get_current_html():
     if os.path.exists("index.html"):
         with open("index.html", "r", encoding="utf-8") as f:
             txt = f.read()
-            if len(txt) > 45000:
-                return txt[:22000] + "\n\n... [СЕРЕДИНА ФАЙЛА СКРЫТА ДЛЯ ЭКОНОМИИ] ...\n\n" + txt[-22000:]
+            if len(txt) > 50000:
+                return txt[:25000] + "\n\n... [СЕРЕДИНА СКРЫТА] ...\n\n" + txt[-25000:]
             return txt
     return "(Файл index.html пока не создан)"
+
+def smart_replace(content, old_block, new_block):
+    # 1. Точное совпадение
+    if old_block in content:
+        return content.replace(old_block, new_block, 1), True
+    # 2. Совпадение без учёта лишних пробелов и переносов строк
+    pattern = r'\s+'.join(re.escape(part) for part in old_block.split())
+    if pattern:
+        new_content, count = re.subn(pattern, lambda m: new_block, content, count=1)
+        if count > 0:
+            return new_content, True
+    return content, False
 
 def call_chat(base_url, model):
     url = f"{base_url}/chat/completions"
     current_html = get_current_html()
     prompt = (
-        "Ты — Senior-разработчик репозитория. У тебя есть два инструмента работы с файлами:\n"
-        "1. `files`: создание нового файла или полная перезапись (используй ТОЛЬКО для новых файлов или если просят переписать файл с нуля).\n"
-        "2. `edits`: точечное редактирование существующего файла (замена фрагмента `old` на `new` без потери остального кода!).\n\n"
-        "Верни СТРОГО JSON без markdown-обёртки:\n"
+        "Ты — Senior-разработчик репозитория. У тебя есть два инструмента:\n"
+        "1. `files`: создание нового файла или полная перезапись.\n"
+        "2. `edits`: точечное редактирование существующего файла (замена `old` на `new` без удаления остального кода). ВАЖНО: бери в `old` 3–6 уникальных строк строго из переданного ниже кода `index.html`!\n\n"
+        "Верни СТРОГО JSON без лишнего текста:\n"
         "{\n"
         "  \"reply\": \"подробный отчёт на русском\",\n"
         "  \"files\": [{\"path\": \"путь/новый_файл.txt\", \"content\": \"содержимое\"}],\n"
-        "  \"edits\": [{\"path\": \"index.html\", \"old\": \"точный старый кусок кода\", \"new\": \"новый кусок кода\"}]\n"
+        "  \"edits\": [{\"path\": \"index.html\", \"old\": \"точный старый фрагмент\", \"new\": \"новый фрагмент\"}]\n"
         "}\n\n"
         f"Текущий код index.html:\n```html\n{current_html}\n```\n\n"
         f"Запрос пользователя: {ISSUE_BODY}\n"
@@ -108,17 +117,17 @@ def call_chat(base_url, model):
         "model": model,
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.2,
+        "max_tokens": 16000
     }
     status, body = make_request(url, "POST", data=payload)
-    log(f"[POST] {url} ({model}) -> {status}")
     if status != 200:
-        log(f"  Ошибка: {body[:300]}")
+        log(f"Ошибка {status}: {body[:300]}")
         return None
     try:
         data = json.loads(body)
         return data["choices"][0]["message"]["content"]
     except Exception as e:
-        log(f"  Ошибка парсинга ответа: {e}")
+        log(f"Ошибка парсинга ответа: {e}")
         return None
 
 def process_result(content):
@@ -126,8 +135,7 @@ def process_result(content):
     if not obj:
         return "❌ Не удалось извлечь JSON из ответа.\n\n" + content[:800]
     reply = obj.get("reply", "Готово.")
-    created = []
-    edited = []
+    created, edited, failed = [], [], []
 
     for f in obj.get("files", []):
         path = f.get("path", "").strip()
@@ -148,20 +156,22 @@ def process_result(content):
         if path and os.path.exists(path) and old_txt:
             with open(path, "r", encoding="utf-8") as fh:
                 file_data = fh.read()
-            if old_txt in file_data:
-                file_data = file_data.replace(old_txt, new_txt, 1)
+            updated_data, ok = smart_replace(file_data, old_txt, new_txt)
+            if ok:
                 with open(path, "w", encoding="utf-8") as fh:
-                    fh.write(file_data)
+                    fh.write(updated_data)
                 edited.append(path)
             else:
-                log(f"⚠️ Не найден точный фрагмент для замены в {path}")
+                failed.append(f"Не найден кусок: `{old_txt[:60]}...`")
 
     report = "🤖 " + reply + "\n\n"
     if created:
-        report += "**Созданы/перезаписаны файлы:**\n" + "\n".join(f"- `{p}`" for p in created) + "\n"
+        report += "**Созданы/перезаписаны:**\n" + "\n".join(f"- `{p}`" for p in created) + "\n"
     if edited:
-        report += "**Точечно обновлены файлы (старый код сохранён):**\n" + "\n".join(f"- `{p}`" for p in edited) + "\n"
-    if not created and not edited:
+        report += "**Точечно обновлены:**\n" + "\n".join(f"- `{p}`" for p in edited) + "\n"
+    if failed:
+        report += "**⚠️ Не удалось применить часть правок:**\n" + "\n".join(f"- {x}" for x in failed) + "\n"
+    if not created and not edited and not failed:
         report += "Файлы не изменялись."
     return report
 
@@ -186,3 +196,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
