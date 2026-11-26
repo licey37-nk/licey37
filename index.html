@@ -2698,6 +2698,116 @@
         grid-template-columns: 1fr 1fr;
       }
     }
+
+    /* ======== 21. СУПЕР-АДМИНКА (ШАГ 5) ======== */
+    #admin-panel {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      padding: 8px 14px;
+      background: linear-gradient(135deg, #1d4ed8, #059669);
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
+    }
+    #admin-panel button {
+      border: 1px solid rgba(255, 255, 255, 0.35); background: rgba(255, 255, 255, 0.12);
+      color: #fff; border-radius: 10px; padding: 7px 12px; font-size: 0.82rem;
+      font-weight: 600; cursor: pointer; transition: background 0.15s;
+    }
+    #admin-panel button:hover { background: rgba(255, 255, 255, 0.25); }
+    #admin-panel button.active { background: #fff; color: #1d4ed8; }
+    .admin-panel-title { color: #fff; font-weight: 800; font-size: 0.9rem; margin-right: 4px; }
+    body.admin-mode .navbar { top: 44px; }
+    .admin-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+    .admin-tabs button {
+      flex: 1; padding: 9px; border-radius: 12px; border: 1px solid var(--border);
+      background: var(--card); font-weight: 700; cursor: pointer; color: var(--text);
+    }
+    .admin-tabs button.active { background: linear-gradient(135deg, #1d4ed8, #059669); color: #fff; border-color: transparent; }
+    .admin-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px;
+      margin-bottom: 8px; background: var(--card);
+    }
+    .admin-row .admin-row-main { min-width: 0; }
+    .admin-row b { display: block; font-size: 0.9rem; }
+    .admin-row small { color: var(--muted); font-size: 0.76rem; word-break: break-word; }
+    .admin-row-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .badge-approved { background: #d1fae5; color: #065f46; border-radius: 8px; padding: 2px 8px; font-size: 0.72rem; font-weight: 700; }
+    body.live-edit-on [data-editable] { outline: 2px dashed #38bdf8; outline-offset: 2px; cursor: pointer; }
+    body.live-edit-on [data-editable]:hover { background: rgba(56, 189, 248, 0.12); }
+    body.live-edit-on [data-editable][contenteditable="true"] { outline: 2px solid #059669; background: rgba(5, 150, 105, 0.08); }
+
+    #admin-drawer-overlay {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); z-index: 1100;
+    }
+    #admin-drawer {
+      position: fixed; top: 0; right: 0; bottom: 0; width: min(420px, 94vw); z-index: 1101;
+      background: var(--bg); box-shadow: -12px 0 40px rgba(15, 23, 42, 0.3);
+      display: flex; flex-direction: column;
+    }
+    .admin-drawer-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 18px; font-weight: 800;
+      background: linear-gradient(135deg, #1d4ed8, #059669); color: #fff;
+    }
+    .admin-drawer-head button { background: rgba(255,255,255,0.15); border: none; color: #fff; border-radius: 8px; padding: 4px 10px; cursor: pointer; }
+    .admin-drawer-body { padding: 16px 18px; overflow-y: auto; flex: 1; }
+    .script-item { border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; background: var(--card); }
+    .script-item b { display: block; margin-bottom: 6px; }
+    .script-item .admin-row-actions { margin-top: 6px; }
+
+    /* ======== 22. ИИ-НАСТАВНИК 37 (ШАГ 5) ======== */
+    #ai-fab {
+      position: fixed; bottom: 20px; right: 20px; z-index: 999;
+      width: 62px; height: 62px; border-radius: 50%; border: none; cursor: pointer;
+      font-size: 1.7rem; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #1d4ed8, #059669);
+      box-shadow: 0 10px 30px rgba(29, 78, 216, 0.45);
+      transition: transform 0.15s;
+    }
+    #ai-fab:hover { transform: scale(1.08); }
+    #ai-window {
+      position: fixed; bottom: 96px; right: 20px; z-index: 999;
+      width: min(380px, calc(100vw - 32px)); max-height: min(600px, 78vh);
+      background: var(--bg); border: 1px solid var(--border); border-radius: 20px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .ai-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 14px; color: #fff; font-weight: 800;
+      background: linear-gradient(135deg, #1d4ed8, #059669);
+    }
+    .ai-head-actions button {
+      background: rgba(255, 255, 255, 0.16); border: none; color: #fff;
+      border-radius: 8px; padding: 4px 9px; margin-left: 6px; cursor: pointer; font-size: 0.9rem;
+    }
+    .ai-head-actions button:hover { background: rgba(255, 255, 255, 0.3); }
+    .ai-status {
+      padding: 6px 14px; font-size: 0.72rem; color: var(--muted);
+      border-bottom: 1px solid var(--border); background: var(--card);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .ai-msgs { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-height: 180px; }
+    .ai-msg { max-width: 88%; padding: 9px 12px; border-radius: 14px; font-size: 0.86rem; line-height: 1.45; word-break: break-word; white-space: pre-wrap; }
+    .ai-msg.bot { align-self: flex-start; background: var(--card); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+    .ai-msg.user { align-self: flex-end; color: #fff; background: linear-gradient(135deg, #1d4ed8, #059669); border-bottom-right-radius: 4px; }
+    .ai-msg.ai-facts { background: #ecfdf5; border: 1px dashed #059669; font-size: 0.8rem; }
+    .ai-chips { display: flex; gap: 6px; padding: 0 12px 8px; flex-wrap: wrap; }
+    .ai-chips button {
+      border: 1px solid var(--border); background: var(--card); color: var(--text);
+      border-radius: 999px; padding: 5px 11px; font-size: 0.74rem; cursor: pointer; font-weight: 600;
+    }
+    .ai-chips button:hover { border-color: #1d4ed8; color: #1d4ed8; }
+    .ai-input-row { display: flex; gap: 8px; padding: 10px 12px 12px; border-top: 1px solid var(--border); }
+    .ai-input-row input { flex: 1; }
+    .ai-input-row .btn { padding: 10px 14px; }
+
+    @media (max-width: 640px) {
+      #admin-panel { padding: 6px 8px; gap: 6px; }
+      #admin-panel button { padding: 5px 8px; font-size: 0.72rem; }
+      #ai-window { right: 12px; bottom: 88px; }
+      #ai-fab { bottom: 14px; right: 14px; width: 56px; height: 56px; }
+    }
   </style>
 </head>
 <body class="theme-light">
@@ -2850,6 +2960,7 @@
           </div>
           <textarea id="idea-text" class="textarea-field" placeholder="Твоя идея — подпишемся твоим именем и классом..."></textarea>
           <button class="btn btn-primary btn-block" id="idea-submit" style="margin-top:10px;">✉️ Отправить идею</button>
+          <button class="btn btn-outline btn-block admin-only" id="admin-ideas-table-btn" style="margin-top:8px;display:none;">📊 Открыть таблицу ответов</button>
         </div>
       </div>
 
@@ -2884,6 +2995,7 @@
           <button class="btn btn-outline btn-sm apply-open-btn" data-event="Новогодний бал Первых">✍️ Подать заявку</button>
         </div>
       </div>
+      <button class="btn btn-outline btn-sm admin-only" id="admin-events-table-btn" style="margin-top:14px;display:none;">📊 Открыть таблицу ответов</button>
 
       <div class="section-title" style="margin-top:36px;">
         <div class="section-icon">📸</div>
@@ -3398,6 +3510,104 @@
     </div>
   </div>
 
+  <!-- ======== ШАГ 5: СУПЕР-АДМИНКА ======== -->
+  <div class="modal" id="modal-admin-login" aria-modal="true" role="dialog">
+    <div class="modal-content">
+      <button class="modal-close" data-close-modal="modal-admin-login">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">👑</div>
+        <h3>Вход администратора</h3>
+        <p>Для продолжения введите пароль администратора</p>
+      </div>
+      <div class="form-error" id="admin-login-error"></div>
+      <input type="password" id="admin-pass-input" class="input-field" autocomplete="off" placeholder="••••••••">
+      <button class="btn btn-primary btn-block" id="admin-pass-submit" style="margin-top:12px;">Войти в админку</button>
+    </div>
+  </div>
+
+  <div id="admin-panel" style="display:none;">
+    <span class="admin-panel-title">👑 Админка</span>
+    <button id="adm-live-edit-btn">✏️ Живое редактирование: ВЫКЛ</button>
+    <button data-adm="tables">📊 Таблицы</button>
+    <button data-adm="log">📜 Журнал</button>
+    <button data-adm="rights">👥 Права</button>
+    <button data-adm="scripts">💻 Скрипты</button>
+    <button data-adm="rewards">🎁 Призы</button>
+    <button data-adm="pass">🔑 Пароль</button>
+    <button id="adm-exit-btn">🚪 Выйти</button>
+  </div>
+
+  <div class="modal" id="modal-admin-tools" aria-modal="true" role="dialog">
+    <div class="modal-content">
+      <button class="modal-close" data-close-modal="modal-admin-tools">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">👑</div>
+        <h3 id="admin-tools-title">Администрирование</h3>
+        <p>Лицей №37 · панель управления</p>
+      </div>
+      <div id="admin-tools-body"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-admin-tables" aria-modal="true" role="dialog">
+    <div class="modal-content">
+      <button class="modal-close" data-close-modal="modal-admin-tables">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">📊</div>
+        <h3>Таблицы заявок и идей</h3>
+        <p>Лицей №37 · ответы учеников</p>
+      </div>
+      <div class="admin-tabs">
+        <button type="button" id="adm-tab-apps" class="active">✍️ Заявки</button>
+        <button type="button" id="adm-tab-ideas">💡 Идеи</button>
+      </div>
+      <div id="admin-tables-body"></div>
+    </div>
+  </div>
+
+  <div id="admin-drawer-overlay" style="display:none;"></div>
+  <div id="admin-drawer" style="display:none;">
+    <div class="admin-drawer-head">
+      <span>💻 Библиотека скриптов</span>
+      <button id="admin-drawer-close">✕</button>
+    </div>
+    <div class="admin-drawer-body">
+      <div class="field-row">
+        <select id="script-kind">
+          <option value="js">🧬 JavaScript</option>
+          <option value="css">🎨 CSS</option>
+        </select>
+      </div>
+      <textarea id="script-code" class="textarea-field" rows="7" placeholder="Вставь код скрипта... (название подберётся автоматически по смыслу)"></textarea>
+      <button class="btn btn-primary btn-block" id="script-save-btn">💾 Добавить в библиотеку</button>
+      <div id="admin-scripts-list" style="margin-top:14px;"></div>
+    </div>
+  </div>
+
+  <!-- ======== ШАГ 5: ИИ-НАСТАВНИК 37 ======== -->
+  <button id="ai-fab" title="🤖 ИИ-Наставник 37">🤖</button>
+  <div id="ai-window" style="display:none;">
+    <div class="ai-head">
+      <span class="ai-head-title">🤖 ИИ-Наставник 37</span>
+      <span class="ai-head-actions">
+        <button id="ai-memory-btn" title="Карточка памяти">🧠</button>
+        <button id="ai-close-btn" title="Закрыть">✕</button>
+      </span>
+    </div>
+    <div class="ai-status" id="ai-status">📚 База знаний: загрузка…</div>
+    <div class="ai-msgs" id="ai-msgs"></div>
+    <div class="ai-chips">
+      <button type="button" data-chip="Расскажи о Лицее №37">🏫 О лицее</button>
+      <button type="button" data-chip="Что ты знаешь о Нижнекамске?">🏙️ Город</button>
+      <button type="button" data-chip="Помоги с Python!">🐍 Python</button>
+      <button type="button" data-chip="Сгенерируй викторину!">🎲 Викторина</button>
+    </div>
+    <div class="ai-input-row">
+      <input id="ai-input" placeholder="Спроси меня о чём угодно…" maxlength="500">
+      <button id="ai-send" class="btn btn-primary">➤</button>
+    </div>
+  </div>
+
   <div id="toast-container"></div>
 
   <script>
@@ -3439,6 +3649,7 @@
     }
 
     function dbSave(key, data) {
+      data = clipRing(key, data);
       try {
         localStorage.setItem(LS_PREFIX + key, JSON.stringify(data));
       } catch (e) {
@@ -3897,7 +4108,13 @@
 
     /* ============ ЗАЛОГ АДМИНКИ (реализация на Шаге 5) ============ */
     function openAdminLogin() {
-      toast('👑 Вход для администратора будет полностью реализован на Шаге 5.', 'info');
+      if (adminActive) { toast('👑 Ты уже в админке — панель сверху экрана.', 'info'); return; }
+      if (Date.now() < adminLockUntil) { toast('🔒 Слишком много попыток — подожди немного.', 'error'); return; }
+      openModal('modal-admin-login');
+      setTimeout(function () {
+        const inp = document.getElementById('admin-pass-input');
+        if (inp) inp.focus();
+      }, 150);
     }
 
     document.getElementById('admin-login-btn').addEventListener('click', openAdminLogin);
@@ -4377,6 +4594,7 @@
       const textarea = document.getElementById('idea-text');
       const text = textarea.value.trim();
       if (text.length < 10) { toast('Опиши идею подробнее — минимум 10 символов.', 'error'); return; }
+      if (!antispamCheck('idea', text)) return;
       const user = getCurrentUser();
       if (ideaMode === 'open' && !user) {
         toast('Чтобы подписать идею именем, войди в аккаунт или выбери «Анонимно».', 'error');
@@ -4811,6 +5029,7 @@
       const input = document.getElementById('chat-input');
       const text = input.value.trim();
       if (!text) return;
+      if (!antispamCheck('chat', text)) return;
       const list = getList('chat');
       list.push({ id: makeId('msg'), classId: currentClass, userId: user.id, name: user.name, avatar: user.avatar, text: text, ts: Date.now(), edited: false });
       dbSave('chat', list);
@@ -5159,6 +5378,7 @@
       const input = document.getElementById('pchat-input');
       const text = input.value.trim();
       if (!text || !openListingId) return;
+      if (!antispamCheck('pchat', text)) return;
       const list = getList('pchat');
       list.push({ id: makeId('pcm'), listingId: openListingId, userId: user.id, name: user.name, avatar: user.avatar, text: text, ts: Date.now(), edited: false });
       dbSave('pchat', list);
@@ -5261,6 +5481,7 @@
       const input = document.getElementById('dm-input');
       const text = input.value.trim();
       if (!text) return;
+      if (!antispamCheck('dm', text)) return;
       const list = getList('dms');
       list.push({ id: makeId('dm'), key: dmKey(user.id, currentDmPartner), from: user.id, name: user.name, avatar: user.avatar, text: text, ts: Date.now(), edited: false });
       dbSave('dms', list);
@@ -5600,6 +5821,7 @@
       const input = document.getElementById('post-text');
       const text = input.value.trim();
       if (text.length < 3) { toast('Напиши текст поста (минимум 3 символа).', 'error'); return; }
+      if (!antispamCheck('post', text)) return;
       const posts = getList('posts');
       posts.push({
         id: makeId('post'), userId: user.id, name: user.name,
@@ -6222,6 +6444,7 @@
       const text = document.getElementById('comp-text').value.trim();
       if (text.length < 5) { toast('Напиши тёплое пожелание (минимум 5 символов).', 'error'); return; }
       if (containsBadWord(text)) { toast('В Почте комплиментов только добрые слова 💙 — переформулируй, пожалуйста.', 'error'); return; }
+      if (!antispamCheck('compliment', text)) return;
       const toId = document.getElementById('comp-to').value;
       let toName = 'Всему Лицею №37';
       if (toId !== 'all') {
@@ -6302,7 +6525,1021 @@
       renderSocial();
     }
 
+
+    /* ============================================================
+       ШАГ 5: АНТИСПАМ-ЩИТ БАЗЫ ДАННЫХ
+       ============================================================ */
+    const RING_LIMITS = {
+      chat: 300, pchat: 300, dms: 300, dmArchive: 300, listings: 200,
+      posts: 200, ideas: 200, applications: 300, compliments: 200,
+      adminLog: 300, customScripts: 100, shopCustomRewards: 100, capsule: 200
+    };
+    const lastSendAt = {};
+
+    function clipRing(key, data) {
+      const lim = RING_LIMITS[key];
+      if (lim && Array.isArray(data) && data.length > lim) return data.slice(-lim);
+      return data;
+    }
+
+    function antispamCheck(type, text) {
+      const uid = (getCurrentUser() || {}).id || 'guest';
+      const now = Date.now();
+      const stamp = type + ':' + uid;
+      if (lastSendAt[stamp] && now - lastSendAt[stamp] < 5000) {
+        const left = Math.ceil((5000 - (now - lastSendAt[stamp])) / 1000);
+        toast('⏳ Антиспам: подожди ещё ' + left + ' с. перед следующей отправкой.', 'error');
+        return false;
+      }
+      if (text && String(text).length > 1500) {
+        toast('✂️ Слишком длинно — максимум 1 500 символов.', 'error');
+        return false;
+      }
+      lastSendAt[stamp] = now;
+      return true;
+    }
+
+    /* ============================================================
+       ШАГ 5: СУПЕР-АДМИНКА
+       ============================================================ */
+    const ADMIN_DEFAULT_HASH = 'a1cf317655b1b261d990dbe8a65ddd1f7cb4f3435c8eaaa097fdc67d91d56022';
+    let adminActive = false;
+    let adminAttempts = 0;
+    let adminLockUntil = 0;
+    let liveEditOn = false;
+
+    function sha256Hex(str) {
+      const ascii = unescape(encodeURIComponent(str));
+      function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
+      const maxWord = Math.pow(2, 32);
+      let i, j;
+      let result = '';
+      const words = [];
+      const asciiBitLength = ascii.length * 8;
+      let hash = [];
+      const k = [];
+      let primeCounter = 0;
+      const isComposite = {};
+      for (let candidate = 2; primeCounter < 64; candidate++) {
+        if (!isComposite[candidate]) {
+          for (i = 0; i < 313; i += candidate) isComposite[i] = candidate;
+          hash[primeCounter] = (Math.pow(candidate, 0.5) * maxWord) | 0;
+          k[primeCounter++] = (Math.pow(candidate, 1 / 3) * maxWord) | 0;
+        }
+      }
+      const padded = ascii + '\x80';
+      let pad = padded;
+      while (pad.length % 64 - 56) pad += '\x00';
+      for (i = 0; i < pad.length; i++) {
+        j = pad.charCodeAt(i);
+        if (j >> 8) return '';
+        words[i >> 2] |= j << ((3 - i) % 4) * 8;
+      }
+      words[words.length] = (asciiBitLength / maxWord) | 0;
+      words[words.length] = asciiBitLength;
+      for (j = 0; j < words.length;) {
+        const w = words.slice(j, j += 16);
+        const oldHash = hash;
+        hash = hash.slice(0, 8);
+        for (i = 0; i < 64; i++) {
+          const w15 = w[i - 15];
+          const w2 = w[i - 2];
+          const a = hash[0];
+          const e = hash[4];
+          const temp1 = hash[7] + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) + ((e & hash[5]) ^ ((~e) & hash[6])) + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) | 0);
+          const temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+          hash = [(temp1 + temp2) | 0].concat(hash);
+          hash[4] = (hash[4] + temp1) | 0;
+        }
+        for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+      }
+      for (i = 0; i < 8; i++) {
+        for (j = 3; j + 1; j--) {
+          const b = (hash[i] >> (j * 8)) & 255;
+          result += ((b < 16) ? '0' : '') + b.toString(16);
+        }
+      }
+      return result;
+    }
+
+    function adminPassHash() {
+      return dbLoad('admin_pass_hash', ADMIN_DEFAULT_HASH);
+    }
+
+    function setAdminActive(on) {
+      adminActive = on;
+      try { sessionStorage.setItem('lp37_admin', on ? '1' : '0'); } catch (e) {}
+      document.body.classList.toggle('admin-mode', on);
+      const panel = document.getElementById('admin-panel');
+      if (panel) panel.style.display = on ? 'flex' : 'none';
+      document.querySelectorAll('.admin-only').forEach(function (el) { el.style.display = on ? '' : 'none'; });
+      if (!on && liveEditOn) setLiveEdit(false);
+    }
+
+    function initAdminSession() {
+      const user = getCurrentUser();
+      let flag = false;
+      try { flag = sessionStorage.getItem('lp37_admin') === '1'; } catch (e) {}
+      if ((user && user.isAdmin) || flag) setAdminActive(true);
+    }
+
+    function openAdminLogin() {
+      if (adminActive) { toast('👑 Ты уже в админке — панель сверху экрана.', 'info'); return; }
+      if (Date.now() < adminLockUntil) { toast('🔒 Слишком много попыток — подожди немного.', 'error'); return; }
+      openModal('modal-admin-login');
+      setTimeout(function () {
+        const inp = document.getElementById('admin-pass-input');
+        if (inp) inp.focus();
+      }, 150);
+    }
+
+    function tryAdminLogin() {
+      const inp = document.getElementById('admin-pass-input');
+      const err = document.getElementById('admin-login-error');
+      if (!inp || !err) return;
+      if (Date.now() < adminLockUntil) {
+        err.textContent = 'Слишком много попыток — вход временно заблокирован.';
+        return;
+      }
+      if (sha256Hex(inp.value) === adminPassHash()) {
+        inp.value = '';
+        err.textContent = '';
+        adminAttempts = 0;
+        closeModal('modal-admin-login');
+        setAdminActive(true);
+        adminLogAction('access', 'Вход в админ-панель', null);
+        toast('👑 Добро пожаловать в админку Лицея №37!', 'success');
+      } else {
+        adminAttempts++;
+        if (adminAttempts >= 5) {
+          adminLockUntil = Date.now() + 30000;
+          adminAttempts = 0;
+          err.textContent = 'Слишком много попыток — вход заблокирован на 30 секунд.';
+        } else {
+          err.textContent = 'Неверный пароль. Осталось попыток: ' + (5 - adminAttempts) + '.';
+        }
+      }
+    }
+
+    function adminLogAction(type, desc, undo) {
+      const log = getList('adminLog');
+      log.push({
+        id: makeId('log'), type: type, desc: desc, undo: undo || null,
+        ts: Date.now(), by: (getCurrentUser() || {}).name || 'Админ'
+      });
+      dbSave('adminLog', log);
+    }
+
+    function undoAdminAction(id) {
+      const log = getList('adminLog');
+      const entry = log.find(function (l) { return l.id === id; });
+      if (!entry || !entry.undo) { toast('У этого действия нет снимка для отмены.', 'error'); return; }
+      const u = entry.undo;
+      if (u.kind === 'editable') {
+        const map = dbLoad('editableTexts', {});
+        if (u.before === undefined || u.before === null) delete map[u.key]; else map[u.key] = u.before;
+        dbSave('editableTexts', map);
+        applyEditableTexts();
+      } else if (u.kind === 'list') {
+        dbSave(u.key, u.before);
+        if (u.key === 'shopCustomRewards') renderShop();
+      } else if (u.kind === 'users') {
+        dbSave('users', u.before);
+        updateAuthUI();
+        renderProfileTab();
+      }
+      log.splice(log.indexOf(entry), 1);
+      dbSave('adminLog', log);
+      if (adminToolsMode === 'log') renderAdminLog();
+      if (adminTablesTab) renderAdminTables();
+      toast('↩️ Действие отменено — данные восстановлены.', 'success');
+    }
+
+    function applyEditableTexts() {
+      const map = dbLoad('editableTexts', {});
+      Object.keys(map).forEach(function (key) {
+        document.querySelectorAll('[data-editable="' + key + '"]').forEach(function (el) {
+          el.textContent = map[key];
+        });
+      });
+    }
+
+    function setLiveEdit(on) {
+      liveEditOn = on;
+      document.body.classList.toggle('live-edit-on', on);
+      const btn = document.getElementById('adm-live-edit-btn');
+      if (btn) {
+        btn.classList.toggle('active', on);
+        btn.textContent = on ? '✏️ Живое редактирование: ВКЛ' : '✏️ Живое редактирование: ВЫКЛ';
+      }
+      if (on) toast('✏️ Режим включён — кликни по любому тексту с пунктирной рамкой.', 'info');
+    }
+
+    document.addEventListener('click', function (e) {
+      if (!liveEditOn) return;
+      const el = e.target.closest ? e.target.closest('[data-editable]') : null;
+      if (!el) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const key = el.getAttribute('data-editable');
+      const before = el.textContent;
+      el.setAttribute('contenteditable', 'true');
+      el.focus();
+      function finish() {
+        el.removeAttribute('contenteditable');
+        const after = el.textContent.trim();
+        if (after && after !== before) {
+          const map = dbLoad('editableTexts', {});
+          map[key] = after;
+          dbSave('editableTexts', map);
+          adminLogAction('edit', 'Правка текста «' + key + '»', { kind: 'editable', key: key, before: before });
+          toast('💾 Сохранено: «' + key + '»', 'success');
+        }
+        el.removeEventListener('blur', finish);
+        el.removeEventListener('keydown', onKey);
+      }
+      function onKey(ev) {
+        if (ev.key === 'Enter') { ev.preventDefault(); el.blur(); }
+      }
+      el.addEventListener('blur', finish);
+      el.addEventListener('keydown', onKey);
+    }, true);
+
+    /* ---- Таблицы заявок и идей ---- */
+    let adminTablesTab = null;
+    let adminToolsMode = null;
+
+    function openAdminTables(tab) {
+      adminTablesTab = tab || 'applications';
+      openModal('modal-admin-tables');
+      renderAdminTables();
+    }
+
+    function renderAdminTables() {
+      const body = document.getElementById('admin-tables-body');
+      if (!body) return;
+      document.getElementById('adm-tab-apps').classList.toggle('active', adminTablesTab === 'applications');
+      document.getElementById('adm-tab-ideas').classList.toggle('active', adminTablesTab === 'ideas');
+      const isApps = adminTablesTab === 'applications';
+      const list = getList(isApps ? 'applications' : 'ideas').slice().reverse();
+      let html = '<div style="margin-bottom:10px;"><button class="btn btn-outline btn-sm" id="adm-csv-btn">⬇️ Скачать CSV</button></div>';
+      if (!list.length) {
+        html += '<div class="stub-card" style="text-align:center;padding:20px;"><div class="stub-icon">📭</div><p>Пока пусто.</p></div>';
+      }
+      list.forEach(function (item) {
+        if (isApps) {
+          html += '<div class="admin-row">' +
+            '<div class="admin-row-main"><b>' + esc(item.fio) + ' · ' + esc(item.classId) + (item.approved ? ' <span class="badge-approved">Одобрено</span>' : '') + '</b>' +
+            '<small>«' + esc(item.event) + '» · ' + esc(item.contact) + ' · ' + fmtDateTime(item.createdAt) + '</small></div>' +
+            '<div class="admin-row-actions">' +
+              (item.approved ? '' : '<button class="btn btn-primary btn-sm" data-approve-app="' + esc(item.id) + '">Одобрить</button>') +
+              '<button class="btn btn-ghost btn-sm" data-del-app="' + esc(item.id) + '">🗑️</button>' +
+            '</div></div>';
+        } else {
+          html += '<div class="admin-row">' +
+            '<div class="admin-row-main"><b>' + esc(item.name) + (item.classId ? ' · ' + esc(item.classId) : '') + '</b>' +
+            '<small>' + esc(item.text) + ' · ' + fmtDateTime(item.createdAt) + '</small></div>' +
+            '<div class="admin-row-actions"><button class="btn btn-ghost btn-sm" data-del-idea="' + esc(item.id) + '">🗑️</button></div></div>';
+        }
+      });
+      body.innerHTML = html;
+    }
+
+    function approveApplication(id) {
+      const list = getList('applications');
+      const before = JSON.parse(JSON.stringify(list));
+      const item = list.find(function (x) { return x.id === id; });
+      if (!item) return;
+      item.approved = true;
+      dbSave('applications', list);
+      adminLogAction('approve', 'Одобрена заявка «' + item.fio + '» → ' + item.event, { kind: 'list', key: 'applications', before: before });
+      renderAdminTables();
+      toast('✅ Заявка одобрена!', 'success');
+    }
+
+    function deleteAdminItem(key, id, label) {
+      const list = getList(key);
+      const before = JSON.parse(JSON.stringify(list));
+      const item = list.find(function (x) { return x.id === id; });
+      if (!item) return;
+      dbSave(key, list.filter(function (x) { return x.id !== id; }));
+      adminLogAction('delete', 'Удалено из «' + label + '»', { kind: 'list', key: key, before: before });
+      renderAdminTables();
+      toast('🗑️ Удалено (можно отменить в Журнале).', 'info');
+    }
+
+    function downloadAdminCsv() {
+      const isApps = adminTablesTab === 'applications';
+      const list = getList(isApps ? 'applications' : 'ideas');
+      const head = isApps ? ['ФИО', 'Класс', 'Мероприятие', 'Контакт', 'Одобрено', 'Дата'] : ['Имя', 'Класс', 'Идея', 'Режим', 'Дата'];
+      const rows = list.map(function (item) {
+        if (isApps) return [item.fio, item.classId, item.event, item.contact, item.approved ? 'да' : 'нет', fmtDateTime(item.createdAt)];
+        return [item.name, item.classId || '', item.text, item.mode, fmtDateTime(item.createdAt)];
+      });
+      const csv = '\uFEFF' + [head].concat(rows).map(function (r) {
+        return r.map(function (cell) { return '"' + String(cell === undefined || cell === null ? '' : cell).replace(/"/g, '""') + '"'; }).join(';');
+      }).join('\r\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = isApps ? 'l37_zayavki.csv' : 'l37_idei.csv';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      adminLogAction('export', 'Скачан CSV: ' + (isApps ? 'заявки' : 'идеи') + ' (' + rows.length + ' строк)', null);
+    }
+
+    /* ---- Инструменты админки (Журнал / Права / Призы / Пароль) ---- */
+    function openAdminTool(mode) {
+      adminToolsMode = mode;
+      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pass: '🔑 Смена пароля админа' };
+      document.getElementById('admin-tools-title').textContent = titles[mode] || 'Администрирование';
+      openModal('modal-admin-tools');
+      if (mode === 'log') renderAdminLog();
+      if (mode === 'rights') renderAdminRights('');
+      if (mode === 'rewards') renderAdminRewards();
+      if (mode === 'pass') renderAdminPass();
+    }
+
+    function renderAdminLog() {
+      const body = document.getElementById('admin-tools-body');
+      const log = getList('adminLog').slice().reverse();
+      let html = log.length ? '' : '<p class="info-desc">Журнал пуст — здесь появятся действия администратора.</p>';
+      log.forEach(function (item) {
+        html += '<div class="admin-row">' +
+          '<div class="admin-row-main"><b>' + esc(item.desc) + '</b>' +
+          '<small>' + esc(item.by) + ' · ' + fmtDateTime(item.ts) + ' · ' + esc(item.type) + '</small></div>' +
+          (item.undo ? '<div class="admin-row-actions"><button class="btn btn-outline btn-sm" data-undo-log="' + esc(item.id) + '">↩️ Отменить</button></div>' : '') +
+        '</div>';
+      });
+      body.innerHTML = html;
+    }
+
+    function renderAdminRights(filter) {
+      const body = document.getElementById('admin-tools-body');
+      const f = String(filter || '').toLowerCase();
+      const users = getUsers().filter(function (u) { return !f || u.name.toLowerCase().indexOf(f) !== -1 || classIdOf(u.grade, u.letter).toLowerCase().indexOf(f) !== -1; });
+      let html = '<input type="text" id="adm-rights-search" class="input-field" placeholder="🔍 Поиск по имени или классу…" value="' + esc(filter || '') + '" style="margin-bottom:12px;">';
+      if (!users.length) html += '<p class="info-desc">Ученики не найдены.</p>';
+      users.forEach(function (u) {
+        html += '<div class="admin-row">' +
+          '<div class="admin-row-main"><b>' + esc(u.name) + (u.isAdmin ? ' 👑' : '') + '</b><small>' + esc(classIdOf(u.grade, u.letter)) + ' · 💎 ' + Number(u.points || 0) + ' б.</small></div>' +
+          '<div class="admin-row-actions"><button class="btn ' + (u.isAdmin ? 'btn-ghost' : 'btn-primary') + ' btn-sm" data-toggle-admin="' + esc(u.id) + '">' + (u.isAdmin ? 'Снять права' : '👑 Выдать админку') + '</button></div>' +
+        '</div>';
+      });
+      body.innerHTML = html;
+      const search = document.getElementById('adm-rights-search');
+      search.addEventListener('input', function () { renderAdminRights(search.value); });
+    }
+
+    function toggleUserAdmin(id) {
+      const users = getUsers();
+      const before = JSON.parse(JSON.stringify(users));
+      const u = users.find(function (x) { return x.id === id; });
+      if (!u) return;
+      u.isAdmin = !u.isAdmin;
+      dbSave('users', users);
+      adminLogAction('rights', (u.isAdmin ? 'Выдана админка' : 'Снята админка') + ': ' + u.name, { kind: 'users', before: before });
+      updateAuthUI();
+      renderAdminRights(document.getElementById('adm-rights-search') ? document.getElementById('adm-rights-search').value : '');
+      toast(u.isAdmin ? '👑 ' + u.name + ' теперь админ!' : 'Права сняты: ' + u.name, 'success');
+    }
+
+    function renderAdminRewards() {
+      const body = document.getElementById('admin-tools-body');
+      const items = getList('shopCustomRewards');
+      let html =
+        '<div class="field-row">' +
+          '<input type="text" id="rw-icon" class="input-field" placeholder="Иконка (🎁)" maxlength="4">' +
+          '<input type="number" id="rw-price" class="input-field" placeholder="Цена в баллах" min="1">' +
+        '</div>' +
+        '<input type="text" id="rw-name" class="input-field" placeholder="Название приза (например: Пицца от директора)" maxlength="64" style="margin:10px 0;">' +
+        '<div class="field-row"><input type="number" id="rw-stock" class="input-field" placeholder="Сколько штук (stock)" min="0">' +
+        '<button class="btn btn-primary" id="rw-add-btn">➕ Добавить</button></div>' +
+        '<div style="margin-top:14px;">';
+      if (!items.length) html += '<p class="info-desc">Пока нет кастомных призов. Добавь первый — он сразу появится в Магазине наград у всех учеников!</p>';
+      items.forEach(function (r) {
+        html += '<div class="admin-row">' +
+          '<div class="admin-row-main"><b>' + esc(r.icon || '🎁') + ' ' + esc(r.name) + '</b><small>💎 ' + Number(r.price) + ' б. · на складе: ' + Number(r.stock) + ' шт.</small></div>' +
+          '<div class="admin-row-actions"><button class="btn btn-ghost btn-sm" data-del-reward="' + esc(r.id) + '">🗑️</button></div>' +
+        '</div>';
+      });
+      html += '</div>';
+      body.innerHTML = html;
+      document.getElementById('rw-add-btn').addEventListener('click', addCustomReward);
+    }
+
+    function addCustomReward() {
+      const icon = document.getElementById('rw-icon').value.trim() || '🎁';
+      const name = document.getElementById('rw-name').value.trim();
+      const price = Number(document.getElementById('rw-price').value);
+      const stock = Number(document.getElementById('rw-stock').value);
+      if (name.length < 3) { toast('Введи название приза.', 'error'); return; }
+      if (!(price > 0)) { toast('Введи цену в баллах.', 'error'); return; }
+      if (!(stock >= 0)) { toast('Укажи количество штук.', 'error'); return; }
+      const items = getList('shopCustomRewards');
+      const before = JSON.parse(JSON.stringify(items));
+      items.push({ id: makeId('rw'), icon: icon, name: name, price: price, stock: stock, custom: true });
+      dbSave('shopCustomRewards', items);
+      adminLogAction('reward', 'Добавлен приз «' + name + '» (' + stock + ' шт.)', { kind: 'list', key: 'shopCustomRewards', before: before });
+      renderShop();
+      renderAdminRewards();
+      toast('🎁 Приз добавлен в Магазин наград!', 'success');
+    }
+
+    function deleteCustomReward(id) {
+      const items = getList('shopCustomRewards');
+      const before = JSON.parse(JSON.stringify(items));
+      const item = items.find(function (x) { return x.id === id; });
+      dbSave('shopCustomRewards', items.filter(function (x) { return x.id !== id; }));
+      if (item) adminLogAction('reward', 'Удалён приз «' + item.name + '»', { kind: 'list', key: 'shopCustomRewards', before: before });
+      renderShop();
+      renderAdminRewards();
+      toast('🗑️ Приз удалён.', 'info');
+    }
+
+    function renderAdminPass() {
+      const body = document.getElementById('admin-tools-body');
+      body.innerHTML =
+        '<p class="info-desc" style="margin-bottom:12px;">Пароль хранится только как SHA-256 хеш. После смены старый пароль перестанет работать.</p>' +
+        '<input type="password" id="adm-new-pass" class="input-field" placeholder="Новый пароль (минимум 4 символа)" style="margin-bottom:10px;">' +
+        '<input type="password" id="adm-new-pass2" class="input-field" placeholder="Повтори новый пароль" style="margin-bottom:12px;">' +
+        '<button class="btn btn-primary btn-block" id="adm-pass-save">🔑 Сохранить новый пароль</button>';
+      document.getElementById('adm-pass-save').addEventListener('click', function () {
+        const p1 = document.getElementById('adm-new-pass').value;
+        const p2 = document.getElementById('adm-new-pass2').value;
+        if (p1.length < 4) { toast('Пароль слишком короткий.', 'error'); return; }
+        if (p1 !== p2) { toast('Пароли не совпадают.', 'error'); return; }
+        dbSave('admin_pass_hash', sha256Hex(p1));
+        adminLogAction('pass', 'Смена пароля администратора', null);
+        toast('🔑 Пароль админа обновлён!', 'success');
+        closeModal('modal-admin-tools');
+      });
+    }
+
+    /* ---- Библиотека скриптов (Drawer) ---- */
+    const scriptRuntimes = {};
+
+    function toggleAdminDrawer(on) {
+      document.getElementById('admin-drawer').style.display = on ? 'flex' : 'none';
+      document.getElementById('admin-drawer-overlay').style.display = on ? 'block' : 'none';
+      if (on) renderAdminScripts();
+    }
+
+    function autoNameScript(code, kind) {
+      const low = String(code).toLowerCase();
+      if (/снег|snow/.test(low)) return '❄️ Снегопад';
+      if (/салют|firework|фейерв/.test(low)) return '🎆 Салют';
+      if (/setinterval|таймер|countdown/.test(low)) return '⏱ Таймер';
+      if (/баннер|banner|marquee/.test(low)) return '📢 Баннер';
+      if (/дождь|rain/.test(low)) return '🌧️ Дождь';
+      if (/heart|сердц/.test(low)) return '💖 Сердечки';
+      if (kind === 'css') return '🎨 Оформление #' + (getList('customScripts').length + 1);
+      return '⚡ Скрипт #' + (getList('customScripts').length + 1);
+    }
+
+    function renderAdminScripts() {
+      const wrap = document.getElementById('admin-scripts-list');
+      if (!wrap) return;
+      const scripts = getList('customScripts');
+      if (!scripts.length) { wrap.innerHTML = '<p class="info-desc">Библиотека пуста — добавь первый скрипт выше!</p>'; return; }
+      wrap.innerHTML = scripts.slice().reverse().map(function (s) {
+        return '<div class="script-item">' +
+          '<b>' + esc(s.name) + (s.active ? ' 🟢' : ' ⚪') + '</b>' +
+          '<small class="info-desc">' + (s.kind === 'css' ? 'CSS' : 'JS') + ' · ' + fmtDateTime(s.ts) + '</small>' +
+          '<div class="admin-row-actions">' +
+            (s.active
+              ? '<button class="btn btn-ghost btn-sm" data-script-stop="' + esc(s.id) + '">⏹ Остановить</button>'
+              : '<button class="btn btn-primary btn-sm" data-script-run="' + esc(s.id) + '">▶️ Включить</button>') +
+            '<button class="btn btn-outline btn-sm" data-script-edit="' + esc(s.id) + '">✏️</button>' +
+            '<button class="btn btn-ghost btn-sm" data-script-del="' + esc(s.id) + '">🗑️</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function saveAdminScript() {
+      const code = document.getElementById('script-code').value.trim();
+      const kind = document.getElementById('script-kind').value;
+      if (code.length < 5) { toast('Вставь код скрипта.', 'error'); return; }
+      const scripts = getList('customScripts');
+      const before = JSON.parse(JSON.stringify(scripts));
+      scripts.push({ id: makeId('scr'), name: autoNameScript(code, kind), kind: kind, code: code, active: false, ts: Date.now() });
+      dbSave('customScripts', scripts);
+      adminLogAction('script', 'Добавлен скрипт в библиотеку', { kind: 'list', key: 'customScripts', before: before });
+      document.getElementById('script-code').value = '';
+      renderAdminScripts();
+      toast('💾 Скрипт добавлен в библиотеку!', 'success');
+    }
+
+    function runAdminScript(id) {
+      const scripts = getList('customScripts');
+      const s = scripts.find(function (x) { return x.id === id; });
+      if (!s) return;
+      stopAdminScript(id, true);
+      const rt = { timers: [], nodes: [], obs: null };
+      if (s.kind === 'css') {
+        const st = document.createElement('style');
+        st.setAttribute('data-cust-script', id);
+        st.textContent = s.code;
+        document.head.appendChild(st);
+        rt.nodes.push(st);
+      } else {
+        const added = [];
+        try {
+          const obs = new MutationObserver(function (muts) {
+            muts.forEach(function (m) {
+              Array.prototype.forEach.call(m.addedNodes, function (n) { if (n.nodeType === 1) added.push(n); });
+            });
+          });
+          obs.observe(document.body, { childList: true, subtree: true });
+          rt.obs = obs;
+          rt.nodes = added;
+          const trackedSetInterval = function (fn, ms) {
+            const t = setInterval(fn, ms);
+            rt.timers.push(t);
+            return t;
+          };
+          const trackedSetTimeout = function (fn, ms) {
+            const t = setTimeout(function () {
+              const i = rt.timers.indexOf(t);
+              if (i >= 0) rt.timers.splice(i, 1);
+              fn();
+            }, ms);
+            rt.timers.push(t);
+            return t;
+          };
+          new Function('setInterval', 'setTimeout', s.code).call(window, trackedSetInterval, trackedSetTimeout);
+        } catch (e) {
+          toast('⚠️ Ошибка скрипта: ' + e.message, 'error');
+        }
+        setTimeout(function () { if (rt.obs) { rt.obs.disconnect(); rt.obs = null; } }, 5000);
+      }
+      s.active = true;
+      dbSave('customScripts', scripts);
+      scriptRuntimes[id] = rt;
+      renderAdminScripts();
+      adminLogAction('script', 'Запущен скрипт «' + s.name + '»', null);
+      toast('▶️ Скрипт включён!', 'success');
+    }
+
+    function stopAdminScript(id, silent) {
+      const rt = scriptRuntimes[id];
+      if (rt) {
+        rt.timers.forEach(function (t) { clearInterval(t); clearTimeout(t); });
+        rt.nodes.forEach(function (n) { if (n && n.parentNode) n.parentNode.removeChild(n); });
+        if (rt.obs) rt.obs.disconnect();
+        delete scriptRuntimes[id];
+      }
+      document.querySelectorAll('[data-cust-script="' + id + '"]').forEach(function (el) { el.remove(); });
+      const scripts = getList('customScripts');
+      const s = scripts.find(function (x) { return x.id === id; });
+      if (s && s.active) { s.active = false; dbSave('customScripts', scripts); }
+      if (!silent) { renderAdminScripts(); toast('⏹ Скрипт остановлен, таймеры и элементы очищены.', 'info'); }
+    }
+
+    function deleteAdminScript(id) {
+      stopAdminScript(id, true);
+      const scripts = getList('customScripts');
+      const before = JSON.parse(JSON.stringify(scripts));
+      const s = scripts.find(function (x) { return x.id === id; });
+      dbSave('customScripts', scripts.filter(function (x) { return x.id !== id; }));
+      if (s) adminLogAction('script', 'Удалён скрипт «' + s.name + '»', { kind: 'list', key: 'customScripts', before: before });
+      renderAdminScripts();
+      toast('🗑️ Скрипт удалён.', 'info');
+    }
+
+    /* ---- Общие обработчики админки ---- */
+    document.getElementById('admin-pass-submit').addEventListener('click', tryAdminLogin);
+    document.getElementById('admin-pass-input').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); tryAdminLogin(); }
+    });
+
+    document.getElementById('admin-panel').addEventListener('click', function (e) {
+      const b = e.target.closest('button');
+      if (!b) return;
+      if (b.id === 'adm-live-edit-btn') { setLiveEdit(!liveEditOn); return; }
+      if (b.id === 'adm-exit-btn') { setAdminActive(false); toast('🚪 Ты вышел из админки.', 'info'); return; }
+      const t = b.getAttribute('data-adm');
+      if (t === 'tables') openAdminTables('applications');
+      if (t === 'log') openAdminTool('log');
+      if (t === 'rights') openAdminTool('rights');
+      if (t === 'scripts') toggleAdminDrawer(true);
+      if (t === 'rewards') openAdminTool('rewards');
+      if (t === 'pass') openAdminTool('pass');
+    });
+
+    document.getElementById('adm-tab-apps').addEventListener('click', function () { adminTablesTab = 'applications'; renderAdminTables(); });
+    document.getElementById('adm-tab-ideas').addEventListener('click', function () { adminTablesTab = 'ideas'; renderAdminTables(); });
+
+    document.getElementById('admin-drawer-close').addEventListener('click', function () { toggleAdminDrawer(false); });
+    document.getElementById('admin-drawer-overlay').addEventListener('click', function () { toggleAdminDrawer(false); });
+    document.getElementById('script-save-btn').addEventListener('click', saveAdminScript);
+
+    document.addEventListener('click', function (e) {
+      const t = e.target;
+      if (!t.closest) return;
+      const undoBtn = t.closest('[data-undo-log]');
+      if (undoBtn) { undoAdminAction(undoBtn.getAttribute('data-undo-log')); return; }
+      const approveBtn = t.closest('[data-approve-app]');
+      if (approveBtn) { approveApplication(approveBtn.getAttribute('data-approve-app')); return; }
+      const delApp = t.closest('[data-del-app]');
+      if (delApp) { deleteAdminItem('applications', delApp.getAttribute('data-del-app'), 'Заявки'); return; }
+      const delIdea = t.closest('[data-del-idea]');
+      if (delIdea) { deleteAdminItem('ideas', delIdea.getAttribute('data-del-idea'), 'Идеи'); return; }
+      const toggleAdmin = t.closest('[data-toggle-admin]');
+      if (toggleAdmin) { toggleUserAdmin(toggleAdmin.getAttribute('data-toggle-admin')); return; }
+      const delReward = t.closest('[data-del-reward]');
+      if (delReward) { deleteCustomReward(delReward.getAttribute('data-del-reward')); return; }
+      const csvBtn = t.closest('#adm-csv-btn');
+      if (csvBtn) { downloadAdminCsv(); return; }
+      const runBtn = t.closest('[data-script-run]');
+      if (runBtn) { runAdminScript(runBtn.getAttribute('data-script-run')); return; }
+      const stopBtn = t.closest('[data-script-stop]');
+      if (stopBtn) { stopAdminScript(stopBtn.getAttribute('data-script-stop')); return; }
+      const editBtn = t.closest('[data-script-edit]');
+      if (editBtn) {
+        const s = getList('customScripts').find(function (x) { return x.id === editBtn.getAttribute('data-script-edit'); });
+        if (s) {
+          document.getElementById('script-code').value = s.code;
+          document.getElementById('script-kind').value = s.kind || 'js';
+          toast('✏️ Код загружен в редактор — нажми «Добавить», чтобы сохранить как новый.', 'info');
+        }
+        return;
+      }
+      const delScript = t.closest('[data-script-del]');
+      if (delScript) { deleteAdminScript(delScript.getAttribute('data-script-del')); return; }
+    });
+
+    const ideasAdminBtn = document.getElementById('admin-ideas-table-btn');
+    if (ideasAdminBtn) ideasAdminBtn.addEventListener('click', function () { openAdminTables('ideas'); });
+    const eventsAdminBtn = document.getElementById('admin-events-table-btn');
+    if (eventsAdminBtn) eventsAdminBtn.addEventListener('click', function () { openAdminTables('applications'); });
+
+    /* ============================================================
+       ШАГ 5: ИИ-НАСТАВНИК 37
+       ============================================================ */
+    const AI_FILES = ['omni_brain', 'dataset.txt'].concat(Array.from({ length: 100 }, function (_, i) { return 'b' + (i + 1) + '.txt'; }));
+    const aiKnowledge = [];
+    let aiLoadedFiles = 0;
+    let aiChat = [];
+    let aiGreeted = false;
+    let aiBusy = false;
+    let aiUserMsgCount = 0;
+
+    const AI_HI = ['Привет, {name}! 👋', 'О, приветствую, {name}! ✨', 'Здравствуй, {name}! 🌟', 'Привет-привет, {name}! 😊', 'Рад тебя видеть, {name}! 💫', 'Привет, {name}! Всегда готов помочь! 🤝', 'А вот и {name}! 🙌', 'Добрый день, {name}! ☀️', 'Приветик, {name}! 🍀', 'Хэй, {name}! ⚡', 'Привет, {name}! Какой отличный день, чтобы узнавать новое! 🚀', 'Ооо, {name} на связи! 💙'];
+    const AI_LEAD = ['Вот что я знаю:', 'Смотри, получается вот что:', 'У меня есть кое-что интересное:', 'Держи ответ:', 'Рассказываю по порядку:', 'Проверил свою базу знаний — вот результат:', 'Отличный вопрос! Итак:', 'Хм, дай подумать… Вот что нашлось:', 'О, это как раз моя тема!', 'Ура, вопрос по моей специальности!'];
+    const AI_LINK = ['Кстати, ', 'Интересно и то, что ', 'Ещё полезно знать: ', 'И вдобавок: ', 'Бонусом: ', 'Не менее важно: ', 'И ещё один факт: ', 'А кроме того, '];
+    const AI_TAIL = ['Надеюсь, это было полезно! 😊', 'Если что — спрашивай ещё! 💙', 'Обращайся, я всегда на связи! 🤖', 'Удачи в учёбе! 🍀', 'Ты отлично справляешься! 💪', 'Пиши, если будут ещё вопросы! ✨', 'Вместе мы — Первые! 🚀', 'Лицей №37 всегда рядом! 🏫', 'Учись на здоровье! 📚', 'Веришь в тебя! 🔥'];
+    const AI_THINK = ['Дай мне секундочку… ⏳', 'Сейчас посмотрю… 🔍', 'Секунду, проверяю базу… 📚', 'Хм, интересный вопрос… 🤔', 'Пороюсь в своей картотеке… 🗂️'];
+    const AI_DUNNO = ['Хм, я пока не знаю точного ответа 🤔 Но я учусь каждый день! Попробуй спросить о Лицее №37, Нижнекамске или учёбе — тут я силён!', 'В моей картотеке такого не нашлось 📚 Зато я много знаю о школе, городе и предметах. Спроси что-нибудь ещё!'];
+
+    function aiName() {
+      const u = getCurrentUser();
+      if (!u) return 'друг';
+      return String(u.name).split(' ')[0] || u.name;
+    }
+
+    function aiPick(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function aiWords(s) {
+      return String(s).toLowerCase().replace(/[^a-zа-яё0-9\s]/gi, ' ').split(/\s+/).filter(function (w) { return w.length > 2; });
+    }
+
+    function aiIndexFile(name, text) {
+      text.split('\n').forEach(function (raw) {
+        let line = raw.trim();
+        while (line.length > 0) {
+          if (line.length <= 300) {
+            if (line.length >= 25) aiKnowledge.push({ s: name, t: line });
+            break;
+          }
+          let cut = -1;
+          for (let i = 120; i < Math.min(300, line.length); i++) {
+            if ('.!;?'.indexOf(line[i]) !== -1) { cut = i + 1; break; }
+          }
+          if (cut === -1) cut = 200;
+          const chunk = line.slice(0, cut).trim();
+          if (chunk.length >= 25) aiKnowledge.push({ s: name, t: chunk });
+          line = line.slice(cut).trim();
+        }
+      });
+    }
+
+    function updateAiStatus() {
+      const el = document.getElementById('ai-status');
+      if (el) el.textContent = '📚 База знаний: ' + aiLoadedFiles + ' из ' + AI_FILES.length + ' файлов · ' + aiKnowledge.length + ' фактов в памяти';
+    }
+
+    async function aiLoadFiles() {
+      if (typeof fetch !== 'function') { updateAiStatus(); return; }
+      const BATCH = 10;
+      for (let i = 0; i < AI_FILES.length; i += BATCH) {
+        const batch = AI_FILES.slice(i, i + BATCH);
+        await Promise.all(batch.map(async function (name) {
+          try {
+            const res = await fetch(encodeURI(name), { cache: 'no-cache' });
+            if (!res.ok) return;
+            const text = await res.text();
+            if (text && text.trim()) { aiIndexFile(name, text); aiLoadedFiles++; }
+          } catch (e) { /* 404 и сбои сети тихо игнорируем */ }
+        }));
+        updateAiStatus();
+      }
+      updateAiStatus();
+    }
+
+    function aiSearchKnowledge(query, limit) {
+      const qw = aiWords(query);
+      if (!qw.length) return [];
+      const scored = [];
+      for (let i = 0; i < aiKnowledge.length; i++) {
+        const t = aiKnowledge[i].t.toLowerCase();
+        let score = 0;
+        for (let j = 0; j < qw.length; j++) {
+          if (t.indexOf(qw[j]) !== -1) score++;
+        }
+        if (score > 0) scored.push({ item: aiKnowledge[i], score: score });
+      }
+      scored.sort(function (a, b) { return b.score - a.score; });
+      return scored.slice(0, limit || 3).map(function (x) { return x.item; });
+    }
+
+    function aiComposeAnswer(query, facts) {
+      const parts = [];
+      if (!aiGreeted) parts.push(aiPick(AI_HI).replace('{name}', aiName()));
+      parts.push(aiPick(AI_LEAD));
+      facts.slice(0, 3).forEach(function (f, i) {
+        let t = String(f.t).replace(/\s+/g, ' ').trim();
+        if (i > 0) t = aiPick(AI_LINK) + t.charAt(0).toLowerCase() + t.slice(1);
+        parts.push(t + (/[.!?…]$/.test(t) ? '' : '.'));
+      });
+      parts.push(aiPick(AI_TAIL));
+      return parts.join(' ');
+    }
+
+    async function aiFetchText(url) {
+      const res = await fetch('https://r.jina.ai/' + url);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.text();
+    }
+
+    async function aiWebSearch(query) {
+      const out = [];
+      try {
+        const res = await fetch('https://ru.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srsearch=' + encodeURIComponent(query));
+        if (res.ok) {
+          const data = await res.json();
+          ((data.query && data.query.search) || []).slice(0, 3).forEach(function (r) {
+            out.push('📖 ' + r.title + ': ' + String(r.snippet || '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim());
+          });
+        }
+      } catch (e) { /* тихо */ }
+      try {
+        const ddg = await aiFetchText('https://html.duckduckgo.com/html/?q=' + encodeURIComponent(query));
+        ddg.split('\n').map(function (l) { return l.trim(); }).filter(function (l) { return l.length > 60 && l.length < 300; }).slice(0, 3).forEach(function (l) { out.push(l); });
+      } catch (e) { /* тихо */ }
+      return out;
+    }
+
+    async function aiReadUrl(url) {
+      const text = await aiFetchText(url);
+      return text.split('\n').map(function (s) { return s.trim(); }).filter(function (s) { return s.length > 40; }).slice(0, 5);
+    }
+
+    function aiQuizFromKnowledge() {
+      const qs = [];
+      const candidates = aiKnowledge.filter(function (k) {
+        const t = k.t;
+        return t.length < 250 && (/ — /.test(t) || / – /.test(t) || /\bэто\s/i.test(t));
+      });
+      for (let i = candidates.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = candidates[i]; candidates[i] = candidates[j]; candidates[j] = tmp;
+      }
+      for (let i = 0; i < candidates.length && qs.length < 10; i++) {
+        const t = candidates[i].t;
+        let left = '';
+        let right = '';
+        const dashIdx = t.search(/ — | – /);
+        if (dashIdx > 3) {
+          left = t.slice(0, dashIdx).trim();
+          right = t.slice(dashIdx + 3).trim();
+        } else {
+          const m = t.match(/^(.{10,120}?)\bэто\s+(.{5,120})$/i);
+          if (!m) continue;
+          left = m[1].trim();
+          right = m[2].trim();
+        }
+        if (left.length < 10 || left.length > 140 || right.length < 3 || right.length > 90) continue;
+        const wrong = [];
+        for (let j = 0; j < candidates.length && wrong.length < 3; j++) {
+          if (j === i) continue;
+          const cand = candidates[j].t.split(/ — | – /).pop().trim();
+          if (cand !== right && cand.length >= 3 && cand.length <= 90 && wrong.indexOf(cand) === -1) wrong.push(cand);
+        }
+        if (wrong.length < 3) continue;
+        const idx = [0, 1, 2, 3];
+        for (let s = idx.length - 1; s > 0; s--) {
+          const r = Math.floor(Math.random() * (s + 1));
+          const t2 = idx[s]; idx[s] = idx[r]; idx[r] = t2;
+        }
+        qs.push({ q: 'Что такое: ' + left + '?', answers: idx.map(function (ix) { return [right, wrong[0], wrong[1], wrong[2]][ix]; }), correct: idx.indexOf(0) });
+      }
+      return qs;
+    }
+
+    window.aiGenerateQuizQuestions = async function () {
+      try {
+        const made = aiQuizFromKnowledge();
+        if (made.length >= 5) return made;
+      } catch (e) { /* падаем на банк вопросов */ }
+      return generateQuizRound();
+    };
+
+    function aiStartQuizFromTutor(round) {
+      if (typeof setTab === 'function') setTab('games');
+      if (typeof startQuiz === 'function') startQuiz(round);
+    }
+
+    function aiRememberUser(text) {
+      aiChat.push({ who: 'user', t: text, ts: Date.now() });
+      if (aiChat.length > 20) aiChat = aiChat.slice(-20);
+      aiUserMsgCount++;
+      let facts = [];
+      try { facts = JSON.parse(localStorage.getItem('lp37_ai_medical_facts') || '[]'); } catch (e) { facts = []; }
+      let changed = false;
+      function addFact(t, tag) {
+        t = String(t).trim();
+        if (t.length < 4) return;
+        if (t.length > 120) t = t.slice(0, 117) + '…';
+        const telegraph = tag + ' ' + t;
+        if (!facts.some(function (f) { return f.t === telegraph; })) {
+          facts.push({ t: telegraph, ts: Date.now() });
+          changed = true;
+        }
+      }
+      const user = getCurrentUser();
+      if (user && !facts.some(function (f) { return f.k === 'profile'; })) {
+        facts.push({ t: '👤 ' + user.name + ', ' + classIdOf(user.grade, user.letter), ts: Date.now(), k: 'profile' });
+        changed = true;
+      }
+      if (/запомни/i.test(text)) addFact(text.replace(/^[\s\S]*?запомни[:,\s]+/i, ''), '📌');
+      const nm = text.match(/меня зовут\s+([\wа-яё\- ]{3,32})/i);
+      if (nm) addFact(nm[1].trim(), '🏷 Зовут:');
+      const cl = text.match(/\b(\d{1,2})\s?([АБВГДабвгд])\b/);
+      if (cl && Number(cl[1]) >= 1 && Number(cl[1]) <= 11) addFact('🏫 Класс: ' + cl[1] + cl[2].toUpperCase(), '');
+      if (/люблю|увлекаюсь|интересуюсь/i.test(text)) addFact(text.trim(), '💜');
+      if (/напомни/i.test(text)) addFact(text.trim(), '⏰');
+      if (aiUserMsgCount % 6 === 0) {
+        const topic = aiWords(text).slice(0, 3).join(', ');
+        if (topic) addFact(topic, '🗂 Тема диалога:');
+      }
+      if (changed) {
+        while (facts.length > 30) facts.shift();
+        try { localStorage.setItem('lp37_ai_medical_facts', JSON.stringify(facts)); } catch (e) {}
+      }
+    }
+
+    function aiShowMemoryCard() {
+      let facts = [];
+      try { facts = JSON.parse(localStorage.getItem('lp37_ai_medical_facts') || '[]'); } catch (e) {}
+      const text = facts.length
+        ? '🧠 Карточка памяти — что я знаю о тебе:\n' + facts.map(function (f) { return '• ' + f.t; }).join('\n')
+        : '🧠 Карточка памяти пока пуста. Расскажи о себе — например: «Запомни, я люблю физику» — и я всё зафиксирую!';
+      aiPushMsg('bot', text);
+    }
+
+    function aiPushMsg(who, text, cls) {
+      aiChat.push({ who: who, t: text, ts: Date.now(), cls: cls || '' });
+      if (aiChat.length > 22) aiChat = aiChat.slice(-22);
+      renderAiMsgs();
+    }
+
+    function renderAiMsgs() {
+      const wrap = document.getElementById('ai-msgs');
+      if (!wrap) return;
+      wrap.innerHTML = aiChat.map(function (m) {
+        const cls = m.who === 'user' ? 'user' : (m.cls === 'facts' ? 'bot ai-facts' : 'bot');
+        return '<div class="ai-msg ' + cls + '">' + esc(m.t) + '</div>';
+      }).join('');
+      wrap.scrollTop = wrap.scrollHeight;
+    }
+
+    async function aiAnswer(text) {
+      if (/викторин/i.test(text)) {
+        let round = null;
+        try { round = await window.aiGenerateQuizQuestions(); } catch (e) { round = null; }
+        if (Array.isArray(round) && round.length) {
+          aiStartQuizFromTutor(round);
+          return 'Готово! Я собрал свежий раунд из ' + round.length + ' вопросов и уже открыл его во вкладке «🎮 Игровая Лицея 37» 🎯 Удачи, ' + aiName() + '!';
+        }
+      }
+      const urlMatch = text.match(/https?:\/\/[^\s]+/);
+      if (urlMatch) {
+        if (typeof fetch !== 'function') return 'Похоже, в этом браузере у меня нет доступа к сети 🙈 Но я всё равно здесь и готов помочь с учёбой!';
+        try {
+          const facts = await aiReadUrl(urlMatch[0]);
+          if (facts.length) return aiComposeAnswer(text, facts.map(function (t) { return { s: 'web', t: t }; }));
+        } catch (e) { /* упадём в заглушку ниже */ }
+        return 'Хм, не смог открыть эту страницу 🙈 Проверь ссылку — или попробуй позже, иногда сайты закрыты от гостей.';
+      }
+      const local = aiSearchKnowledge(text, 3);
+      if (local.length) return aiComposeAnswer(text, local);
+      if (typeof fetch === 'function') {
+        const web = await aiWebSearch(text);
+        if (web.length) {
+          const intro = (!aiGreeted ? aiPick(AI_HI).replace('{name}', aiName()) + ' ' : '');
+          const body = web.slice(0, 3).map(function (w, i) {
+            return (i === 0 ? 'Вот главное: ' : aiPick(AI_LINK)) + w.replace(/\s+/g, ' ').trim();
+          }).join(' ');
+          return intro + 'В моей базе точного ответа не нашлось, поэтому я поискал в интернете 🔎 ' + body + ' ' + aiPick(AI_TAIL);
+        }
+      }
+      return aiPick(AI_DUNNO);
+    }
+
+    async function aiSend() {
+      const inp = document.getElementById('ai-input');
+      const text = inp.value.trim();
+      if (!text || aiBusy) return;
+      inp.value = '';
+      aiGreeted = true;
+      aiPushMsg('user', text);
+      aiRememberUser(text);
+      aiBusy = true;
+      aiPushMsg('bot', aiPick(AI_THINK));
+      let answer;
+      try {
+        answer = await aiAnswer(text);
+      } catch (e) {
+        answer = 'Ой, что-то пошло не так 🙈 Попробуй спросить ещё раз!';
+      }
+      aiChat = aiChat.filter(function (m) { return m.who !== 'bot' || AI_THINK.indexOf(m.t) === -1; });
+      aiPushMsg('bot', answer);
+      aiBusy = false;
+    }
+
+    function aiToggle(force) {
+      const win = document.getElementById('ai-window');
+      const fab = document.getElementById('ai-fab');
+      const open = force !== undefined ? force : win.style.display !== 'flex';
+      win.style.display = open ? 'flex' : 'none';
+      fab.style.display = open ? 'none' : 'flex';
+      if (open && !aiGreeted) {
+        aiGreeted = true;
+        const u = getCurrentUser();
+        let hello = aiPick(AI_HI).replace('{name}', aiName());
+        if (u) hello += ' Я вижу, ты из ' + classIdOf(u.grade, u.letter) + ' класса — здорово!';
+        hello += ' Я — ИИ-Наставник Лицея №37 🤖 Могу рассказать о школе, Нижнекамске и Татарстане, помочь с Python, физикой и математикой, найти информацию в интернете и сгенерировать викторину. Спроси что-нибудь! 😊';
+        aiPushMsg('bot', hello);
+      }
+      if (open) {
+        renderAiMsgs();
+        setTimeout(function () { document.getElementById('ai-input').focus(); }, 100);
+      }
+    }
+
+    document.getElementById('ai-fab').addEventListener('click', function (e) {
+      e.stopPropagation();
+      aiToggle(true);
+    });
+    document.getElementById('ai-close-btn').addEventListener('click', function (e) {
+      e.stopPropagation();
+      aiToggle(false);
+    });
+    document.getElementById('ai-memory-btn').addEventListener('click', function (e) {
+      e.stopPropagation();
+      aiShowMemoryCard();
+    });
+    document.getElementById('ai-send').addEventListener('click', function () { aiSend(); });
+    document.getElementById('ai-input').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); aiSend(); }
+    });
+    document.querySelectorAll('.ai-chips [data-chip]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.getElementById('ai-input').value = btn.getAttribute('data-chip');
+        aiSend();
+      });
+    });
+    document.addEventListener('click', function (e) {
+      const win = document.getElementById('ai-window');
+      if (win.style.display !== 'flex') return;
+      if (win.contains(e.target) || document.getElementById('ai-fab').contains(e.target)) return;
+      aiToggle(false);
+    });
+
+    function initAiTutor() {
+      updateAiStatus();
+      aiLoadFiles();
+    }
+
     boot();
+
+    initAdminSession();
+    initAiTutor();
   </script>
 </body>
 </html>
