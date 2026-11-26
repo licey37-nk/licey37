@@ -4100,7 +4100,7 @@
       if (liveSyncTimer) return;
       liveSyncTimer = setInterval(function () {
         if (document.visibilityState === 'visible') liveSyncTick();
-      }, 15000);
+      }, 2000);
       try {
         document.addEventListener('visibilitychange', function () {
           if (document.visibilityState === 'visible') liveSyncTick();
