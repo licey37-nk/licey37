@@ -4130,24 +4130,49 @@
       liveSyncBusy = false;
     }
 
+    function handleRealtimeRow(row) {
+      try {
+        if (!row || row.key === undefined || row.value === undefined) return;
+        if (DEVICE_LOCAL_KEYS.indexOf(row.key) !== -1) return;
+        const before = liveSyncSnapshot();
+        mergeIntoStorage(row.key, row.value);
+        if (liveSyncSnapshot() !== before) { refreshActiveViews(); refreshChatViews(); }
+      } catch (e) {}
+    }
+
+    let realtimeChannel = null;
+    let realtimeRetryTimer = null;
+
+    function startRealtime() {
+      if (!sb37 || realtimeChannel) return;
+      try {
+        realtimeChannel = sb37.channel('lp37-live-' + Date.now())
+          .on('postgres_changes', { event: '*', schema: 'public', table: TABLE }, function (payload) {
+            handleRealtimeRow(payload && payload.new);
+          })
+          .subscribe(function (status) {
+            try {
+              if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+                try { sb37.removeChannel(realtimeChannel); } catch (eRm) {}
+                realtimeChannel = null;
+                if (!realtimeRetryTimer) realtimeRetryTimer = setTimeout(function () { realtimeRetryTimer = null; startRealtime(); }, 5000);
+              }
+            } catch (eSub) {}
+          });
+      } catch (e) { realtimeChannel = null; }
+    }
+
     function startLiveSync() {
       if (liveSyncTimer) return;
-      liveSyncTimer = setInterval(function () {
-        if (document.visibilityState === 'visible') liveSyncTick();
-      }, 2000);
       try {
-        chatSyncTimer = setInterval(function () {
-          if (document.visibilityState === 'visible') chatSyncTick();
-        }, 300);
-        offlineSyncTimer = setInterval(function () {
-          if (document.visibilityState !== 'visible') liveSyncTick();
-        }, 3000);
-      } catch (e) {}
-      try {
+        liveSyncTimer = setInterval(function () {
+          if (document.visibilityState === 'visible') liveSyncTick();
+        }, 60000);
         document.addEventListener('visibilitychange', function () {
-          if (document.visibilityState === 'visible') { chatSyncTick(); liveSyncTick(); }
+          if (document.visibilityState === 'visible') { chatSyncTick(); liveSyncTick(); startRealtime(); }
         });
       } catch (e) {}
+      startRealtime();
       liveSyncTick();
     }
 
