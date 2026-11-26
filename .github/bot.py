@@ -1,4 +1,3 @@
-```python
 import os
 import json
 import urllib.request
@@ -345,4 +344,3 @@ if __name__ == "__main__":
         with open("r.txt", "w", encoding="utf-8") as f:
             f.write("❌ Ошибка выполнения бота:\n\n")
             f.write(traceback.format_exc())
-```
