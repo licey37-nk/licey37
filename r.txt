@@ -1,2 +1,0 @@
-⚠️ Не удалось получить ответ от нейросети.
-Последняя ошибка: Системная ошибка с openai/gpt-4o-mini: Expecting value: line 1 column 1 (char 0)
