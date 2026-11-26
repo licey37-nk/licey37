@@ -3045,6 +3045,47 @@
     .dm-controls .btn:disabled { opacity:0.5; cursor:not-allowed; }
     .ch-form-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
     .ch-post-form .thumb-row { margin-top:8px; }
+    .vbadge { color:#1d6ff2; font-size:0.85em; margin-left:3px; }
+    .pin-badge { display:inline-block; background:rgba(245,158,11,0.15); color:#b45309; border-radius:999px; padding:1px 8px; font-size:0.7rem; font-weight:700; margin-left:6px; white-space:nowrap; }
+    body.theme-neon .pin-badge { background:rgba(56,189,248,0.12); color:#7dd3fc; }
+    .ch-pinned { border-left:3px solid #f59e0b !important; }
+    @keyframes bcIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:none; } }
+    #broadcast-banner { display:none; margin:10px auto 0; max-width:1100px; padding:0 16px; }
+    .broadcast-inner { display:flex; gap:12px; align-items:flex-start; background:linear-gradient(135deg,#1d4ed8,#059669); color:#fff; border-radius:16px; padding:14px 16px; box-shadow:0 10px 30px rgba(15,23,42,0.25); animation:bcIn 0.35s ease; }
+    .broadcast-ico { font-size:1.6rem; }
+    .broadcast-text { flex:1; min-width:0; }
+    .broadcast-text b { display:block; font-size:0.85rem; opacity:0.92; }
+    .broadcast-text p { margin:2px 0 0; font-weight:700; word-break:break-word; }
+    #broadcast-close { background:rgba(255,255,255,0.2); border:none; color:#fff; border-radius:8px; width:28px; height:28px; cursor:pointer; flex-shrink:0; font-size:0.9rem; }
+    #bell-btn { position:relative; }
+    #bell-btn.has-unread::after { content:''; position:absolute; top:3px; right:3px; width:9px; height:9px; border-radius:50%; background:#f59e0b; box-shadow:0 0 0 2px #fff; }
+    body.theme-neon #bell-btn.has-unread::after { box-shadow:0 0 0 2px #0b1120; }
+    .wire-board { position:relative; }
+    #wire-svg { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+    .wire-cols { position:relative; z-index:1; display:grid; grid-template-columns:1fr 1fr; gap:56px; }
+    .wire-col { display:flex; flex-direction:column; gap:10px; }
+    .wire-user, .wire-node { position:relative; display:flex; align-items:center; gap:10px; background:#fff; border:1.5px solid #e2e8f0; border-radius:14px; padding:10px 14px; box-shadow:0 4px 14px rgba(15,23,42,0.06); }
+    .wire-user { justify-content:space-between; padding-right:22px; }
+    .wire-node { padding-left:22px; }
+    .wire-user small, .wire-node small { display:block; color:var(--muted, #64748b); font-size:0.72rem; }
+    .wire-user b, .wire-node b { font-size:0.86rem; }
+    .wport { position:absolute; top:50%; transform:translateY(-50%); width:20px; height:20px; border-radius:50%; border:3px solid #fff; background:linear-gradient(135deg,#1d4ed8,#059669); cursor:crosshair; padding:0; box-shadow:0 0 0 2px rgba(29,78,216,0.25), 0 0 10px rgba(56,189,248,0.55); transition:transform 0.15s ease, box-shadow 0.15s ease; z-index:3; }
+    .wport:hover { transform:translateY(-50%) scale(1.25); }
+    .wport-out { right:-12px; }
+    .wport-in { left:-12px; }
+    .wport.armed { transform:translateY(-50%) scale(1.3); box-shadow:0 0 0 4px rgba(56,189,248,0.4), 0 0 18px rgba(56,189,248,0.9); }
+    #wire-svg .wire-path { fill:none; stroke:#3b82f6; stroke-width:3; stroke-linecap:round; pointer-events:stroke; cursor:pointer; filter:drop-shadow(0 0 5px rgba(59,130,246,0.7)); }
+    #wire-svg .wire-path:hover { stroke:#ef4444; filter:drop-shadow(0 0 6px rgba(239,68,68,0.8)); }
+    #wire-svg .wire-temp { fill:none; stroke:#38bdf8; stroke-width:3; stroke-dasharray:7 6; pointer-events:none; }
+    .chm-grid { display:grid; gap:12px; }
+    .chm-sec { border:1.5px solid #e2e8f0; border-radius:14px; padding:14px; background:#fff; }
+    .chm-sec h4 { margin:0 0 10px; font-size:0.95rem; }
+    .chm-sec .field-hint { display:block; margin:8px 0 4px; }
+    .member-row { display:flex; align-items:center; gap:8px; justify-content:space-between; padding:6px 0; border-bottom:1px dashed #e2e8f0; flex-wrap:wrap; }
+    .member-row:last-child { border-bottom:none; }
+    body.theme-neon .wire-user, body.theme-neon .wire-node, body.theme-neon .chm-sec { background:rgba(15,23,42,0.65); border-color:rgba(56,189,248,0.35); }
+    body.theme-tatar .wire-user, body.theme-tatar .wire-node, body.theme-tatar .chm-sec { background:#fff; border-color:#a7f3d0; }
+    @media (max-width:640px) { .wire-cols { gap:40px; } .broadcast-inner { padding:12px; } }
   </style>
 </head>
 <body class="theme-light">
@@ -3069,11 +3110,14 @@
       </nav>
 
       <button class="btn btn-ghost btn-sm" id="global-search-btn" title="Быстрый поиск (Ctrl+K)">🔍 Поиск...</button>
+      <button class="btn btn-ghost btn-sm" id="bell-btn" title="Уведомления">🔔</button>
       <div class="header-auth" id="header-auth"></div>
     </div>
   </header>
 
   <div id="top-ticker" data-ticker-marquee="false"><span id="top-ticker-text" data-editable="top_ticker">Лицей №37</span></div>
+
+  <div id="broadcast-banner" class="broadcast-banner"></div>
 
   <main>
     <!-- ВКЛАДКА 1: ГЛАВНАЯ -->
@@ -3791,6 +3835,37 @@
     </div>
   </div>
 
+  <div class="modal" id="modal-wires" aria-modal="true" role="dialog">
+    <div class="modal-content" style="max-width:900px;">
+      <button class="modal-close" data-close-modal="modal-wires">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">🔌</div>
+        <h3 id="wires-title">Узлы и провода</h3>
+        <p id="wires-subtitle">Визуальный конструктор прав</p>
+      </div>
+      <div class="wire-board" id="wire-board">
+        <svg id="wire-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="wire-cols">
+          <div class="wire-col" id="wire-left"></div>
+          <div class="wire-col" id="wire-right"></div>
+        </div>
+      </div>
+      <p class="field-hint">Потяни провод от порта ника (справа на карточке ученика) к порту права — или тапни порт ника, затем порт права. Клик по проводу разрывает связь.</p>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-ch-manage" aria-modal="true" role="dialog">
+    <div class="modal-content" style="max-width:640px;">
+      <button class="modal-close" data-close-modal="modal-ch-manage">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">⚙️</div>
+        <h3 id="chm-title">Управление каналом</h3>
+        <p>Лицей №37 · настройки канала и прав</p>
+      </div>
+      <div id="chm-body" class="chm-grid"></div>
+    </div>
+  </div>
+
   <div id="admin-panel" style="display:none;">
     <button id="adm-collapse-btn" title="Свернуть / развернуть панель" type="button">▾</button>
     <span class="admin-panel-title">👑 Админка</span>
@@ -3801,6 +3876,8 @@
       <button data-adm="rights">👥 Права</button>
       <button data-adm="scripts">💻 Скрипты</button>
       <button data-adm="rewards">🎁 Призы</button>
+      <button data-adm="verified">☑️ Галочки</button>
+      <button data-adm="broadcast">📣 Рассылка</button>
       <button data-adm="pets">🐾 Талисманы</button>
       <button data-adm="classreset">🗑 Класс</button>
       <button data-adm="ticker">📰 Плашка</button>
@@ -4126,6 +4203,7 @@
 
     function refreshChatViews() {
       try {
+        renderBroadcastBanner();
         if (panels.class.classList.contains('active')) renderClassTab();
         if (panels.social.classList.contains('active')) renderSocial();
         const dmModal = document.getElementById('modal-dm');
@@ -4147,7 +4225,7 @@
     }
 
     function liveSyncSnapshot() {
-      const keys = ['users', 'posts', 'channels', 'volunteers', 'chat', 'pchat', 'dms', 'homework', 'ideas', 'listings', 'compliments', 'capsule', 'pets', 'reaction', 'customScripts', 'shopCustomRewards', 'applications', 'adminLog', 'topTicker', 'bestLikes'];
+      const keys = ['users', 'posts', 'channels', 'volunteers', 'chat', 'pchat', 'dms', 'homework', 'ideas', 'listings', 'compliments', 'capsule', 'pets', 'reaction', 'customScripts', 'shopCustomRewards', 'applications', 'adminLog', 'topTicker', 'bestLikes', 'broadcast'];
       let s = '';
       keys.forEach(function (k) { s += (localStorage.getItem(LS_PREFIX + k) || '') + '|'; });
       return s;
@@ -4699,6 +4777,7 @@
       const user = getCurrentUser();
       renderCapsuleAuthorArea();
       updateLikeCounter();
+      applyAdminButtonPermissions();
       if (panels.market.classList.contains('active')) renderMarket();
       if (panels.social.classList.contains('active')) renderSocial();
 
@@ -6087,7 +6166,7 @@
         const photos = Array.isArray(l.photos) ? l.photos : [];
         const idx = Math.min(galleryIndex[l.id] || 0, Math.max(0, photos.length - 1));
         const mine = user && l.sellerId === user.id;
-        const admin = user && user.isAdmin;
+        const admin = canModerateAll(user);
         let photoHtml;
         if (!photos.length) {
           photoHtml = '<div class="listing-photo">' + (l.cat === 'lost' ? '🆘' : '📦') + '</div>';
@@ -6173,7 +6252,7 @@
           const list = getList('listings');
           const item = list.find(function (l) { return l.id === delBtn.dataset.listingDel; });
           if (!item) return;
-          if (item.sellerId !== user.id && !user.isAdmin) { toast('Снять с продажи может только автор объявления или админ.', 'error'); return; }
+          if (item.sellerId !== user.id && !canModerateAll(user)) { toast('Снять с продажи может только автор объявления или админ.', 'error'); return; }
           if (!confirm('Снять объявление «' + item.title + '» с продажи?')) return;
           list.splice(list.indexOf(item), 1);
           dbSave('listings', list);
@@ -6410,7 +6489,7 @@
       const pu = getUserById(partnerId);
       if (!pu) { toast('Пользователь не найден.', 'error'); return; }
       currentDmPartner = partnerId;
-      document.getElementById('dm-with').innerHTML = esc(pu.name) + ' <span class="user-class">' + esc(classIdOf(pu.grade, pu.letter)) + '</span>';
+      document.getElementById('dm-with').innerHTML = esc(pu.name) + userVerifiedSpan(pu) + ' <span class="user-class">' + esc(classIdOf(pu.grade, pu.letter)) + '</span>';
       updateDmControls();
       renderDmMessages();
       openModal('modal-dm');
@@ -6701,7 +6780,8 @@
         return;
       }
       wrap.innerHTML = posts.map(function (p) {
-        const mine = user && p.userId === user.id;
+        const mine = user && (p.userId === user.id || canModerateAll(user));
+        const pAuthor = getUserById(p.userId);
         const liked = user && (p.likes || []).indexOf(user.id) !== -1;
         const comments = Array.isArray(p.comments) ? p.comments : [];
         const open = !!openPostComments[p.id];
@@ -6709,7 +6789,7 @@
           '<div class="post-head">' +
             avatarHtml(p.avatar) +
             '<div style="min-width:0;">' +
-              '<div style="font-weight:700;">' + esc(p.name) + ' <span class="user-class">' + esc(p.classId || '') + '</span></div>' +
+              '<div style="font-weight:700;">' + esc(p.name) + userVerifiedSpan(pAuthor) + ' <span class="user-class">' + esc(p.classId || '') + '</span></div>' +
               '<div class="field-hint">' + fmtDateTime(p.ts) + (p.edited ? ' · (изменено)' : '') + '</div>' +
             '</div>' +
           '</div>' +
@@ -6771,7 +6851,7 @@
         if (editBtn) {
           if (!user) return;
           const posts = getList('posts');
-          const p = posts.find(function (x) { return x.id === editBtn.dataset.postEdit && x.userId === user.id; });
+          const p = posts.find(function (x) { return x.id === editBtn.dataset.postEdit && (x.userId === user.id || canModerateAll(user)); });
           if (!p) return;
           const newText = prompt('Редактировать текст поста:', p.text);
           if (newText === null) return;
@@ -6788,7 +6868,7 @@
         if (delBtn) {
           if (!user) return;
           const posts = getList('posts');
-          const p = posts.find(function (x) { return x.id === delBtn.dataset.postDel && x.userId === user.id; });
+          const p = posts.find(function (x) { return x.id === delBtn.dataset.postDel && (x.userId === user.id || canModerateAll(user)); });
           if (!p) return;
           if (!confirm('Удалить пост безвозвратно?')) return;
           posts.splice(posts.indexOf(p), 1);
@@ -6931,7 +7011,7 @@
         const st = statusFor(u.points || 0);
         return '<div class="card person-card">' +
           avatarHtml(u.avatar) +
-          '<div style="font-weight:700;">' + esc(u.name) + '</div>' +
+          '<div style="font-weight:700;">' + esc(u.name) + userVerifiedSpan(u) + '</div>' +
           '<span class="user-class">' + esc(classIdOf(u.grade, u.letter)) + '</span>' +
           '<span class="field-hint">' + st.icon + ' ' + esc(st.title) + ' · 💎 ' + Number(u.points || 0) + '</span>' +
           (self
@@ -6950,6 +7030,7 @@
       const q = channelQuery.trim();
       let channels = getList('channels').slice().sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
       if (q) channels = channels.filter(function (ch) { return fuzzyMatch(q, ch.name) || fuzzyMatch(q, ch.ownerName); });
+      if (user) channels = channels.filter(function (ch) { return ch.ownerId === user.id || (ch.hiddenFrom || []).indexOf(user.id) === -1; });
       if (!channels.length) {
         if (q) {
           wrap.innerHTML = '<p class="empty-line">🔍 По запросу «' + esc(q) + '» ничего не найдено.</p>';
@@ -6963,17 +7044,27 @@
           ? '<div class="channel-ico" style="background-image:url(' + ch.icon.value + ');"></div>'
           : '<div class="channel-ico">' + esc((ch.icon && ch.icon.value) || '📢') + '</div>';
         const subscribed = user && (ch.subs || []).indexOf(user.id) !== -1;
+        const bannedMe = user && (ch.banned || []).indexOf(user.id) !== -1;
+        const notifOff = user && (ch.notifOff || []).indexOf(user.id) !== -1;
+        const hiddenMe = user && (ch.hiddenFrom || []).indexOf(user.id) !== -1;
+        const canCtrl = user && chCanManage(user, ch);
         return '<div class="card channel-card">' +
           '<div class="channel-head">' + icon +
             '<div style="min-width:0;">' +
-              '<div style="font-weight:800; font-size:1.02rem;">' + esc(ch.name) + '</div>' +
+              '<div style="font-weight:800; font-size:1.02rem;">' + esc(ch.name) + (ch.verified ? verifySpan() : '') + '</div>' +
               '<div class="field-hint">' + (ch.mode === 'channel' ? '📢 Канал' : '👥 Сообщество') + ' · 👤 ' + (ch.subs || []).length + ' подписчиков · автор: ' + esc(ch.ownerName || '') + '</div>' +
             '</div>' +
           '</div>' +
           (ch.desc ? '<p class="info-desc">' + esc(ch.desc) + '</p>' : '') +
           '<div class="post-foot">' +
-            '<button type="button" class="btn btn-outline btn-sm" data-ch-sub="' + esc(ch.id) + '">' + (subscribed ? '✅ Отписаться' : '➕ Подписаться') + '</button>' +
+            (bannedMe
+              ? '<span class="field-hint">🚫 Вы забанены в этом канале.</span>'
+              : '<button type="button" class="btn btn-outline btn-sm" data-ch-sub="' + esc(ch.id) + '">' + (subscribed ? '✅ Отписаться' : '➕ Подписаться') + '</button>') +
+            (subscribed && !bannedMe ? '<button type="button" class="btn btn-ghost btn-sm" data-ch-notif="' + esc(ch.id) + '" title="Уведомления">' + (notifOff ? '🔔 ВЫКЛ' : '🔔 ВКЛ') + '</button>' +
+              '<button type="button" class="btn btn-ghost btn-sm" data-ch-hide="' + esc(ch.id) + '" title="' + (hiddenMe ? 'Вернуть в рекомендации' : 'Не показывать в рекомендациях') + '">' + (hiddenMe ? '🙈 Скрыт' : '🙈') + '</button>' : '') +
             '<button type="button" class="btn btn-ghost btn-sm" data-ch-open="' + esc(ch.id) + '">📰 Лента канала</button>' +
+            (canCtrl ? '<button type="button" class="btn btn-ghost btn-sm" data-ch-manage="' + esc(ch.id) + '">⚙️ Управление каналом</button>' : '') +
+            (canCtrl ? '<button type="button" class="btn btn-ghost btn-sm" data-ch-wires="' + esc(ch.id) + '">🔌 Помощники и права</button>' : '') +
           '</div>' +
           '<div class="channel-posts" id="ch-posts-' + esc(ch.id) + '" style="display:none;"></div>' +
         '</div>';
@@ -6985,8 +7076,8 @@
       const user = getCurrentUser();
       const ch = getList('channels').find(function (x) { return x.id === chId; });
       if (!panel || !ch) return;
-      const canPost = user && (ch.ownerId === user.id || user.isAdmin || (ch.mode === 'community' && (ch.subs || []).indexOf(user.id) !== -1));
-      const posts = (ch.posts || []).slice().sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
+      const canPost = chCanPostIn(user, ch);
+      const posts = (ch.posts || []).slice().sort(function (a, b) { return ((b.pinned ? 1 : 0) - (a.pinned ? 1 : 0)) || ((b.pinnedAt || 0) - (a.pinnedAt || 0)) || ((b.ts || 0) - (a.ts || 0)); });
       panel.innerHTML =
         (canPost
           ? '<div class="ch-post-form"><textarea class="textarea-field" rows="2" maxlength="800" placeholder="Новая публикация в канале..." data-ch-input="' + esc(chId) + '">' + esc(chDrafts[chId] || '') + '</textarea>' +
@@ -6995,31 +7086,38 @@
           : (!user ? '<p class="empty-line">Войди, чтобы публиковать записи.</p>' : '')) +
         (posts.length
           ? posts.map(function (p) {
-              const canManage = user && (p.userId === user.id || user.isAdmin || ch.ownerId === user.id);
+              const canEditThis = user && (p.userId === user.id || chCanEditOthers(user, ch));
+              const canDelThis = user && (p.userId === user.id || chCanDelete(user, ch));
+              const canPinThis = chCanPin(user, ch);
               const chpLiked = user && (p.likes || []).indexOf(user.id) !== -1;
-              const chpComments = Array.isArray(p.comments) ? p.comments : [];
+              const chpComments = (Array.isArray(p.comments) ? p.comments : []).slice().sort(function (a, b) { return ((b.pinned ? 1 : 0) - (a.pinned ? 1 : 0)) || ((a.ts || 0) - (b.ts || 0)); });
               const chpOpen = !!chCmtOpen[p.id];
-              return '<div class="comment">' +
+              const chpAuthor = getUserById(p.userId);
+              return '<div class="comment' + (p.pinned ? ' ch-pinned' : '') + '">' +
                 avatarHtml(p.avatar) +
                 '<div class="comment-body">' +
-                  '<div class="mini-head"><span class="mini-author">' + esc(p.name) + '</span><span>' + fmtDateTime(p.ts) + (p.edited ? ' · изменено' : '') + '</span></div>' +
+                  '<div class="mini-head"><span class="mini-author">' + esc(p.name) + userVerifiedSpan(chpAuthor) + '</span><span>' + (p.pinned ? '📌 Закреплено · ' : '') + fmtDateTime(p.ts) + (p.edited ? ' · изменено' : '') + '</span></div>' +
                   '<div>' + esc(p.text) + '</div>' +
                   (p.photo ? '<img class="post-photo" src="' + p.photo + '" alt="">' : '') +
                   '<div class="post-foot">' +
                     '<button type="button" class="btn btn-ghost btn-sm" data-chp-like="' + esc(chId) + '|' + esc(p.id) + '">' + (chpLiked ? '❤️' : '🤍') + ' ' + (p.likes || []).length + '</button>' +
                     '<button type="button" class="btn btn-ghost btn-sm" data-chp-cmts="' + esc(chId) + '|' + esc(p.id) + '">💬 ' + chpComments.length + '</button>' +
-                    (canManage ? '<button type="button" class="btn btn-ghost btn-sm" data-chp-edit="' + esc(chId) + '|' + esc(p.id) + '">✏️ Изменить</button><button type="button" class="btn btn-ghost btn-sm" data-chp-del="' + esc(chId) + '|' + esc(p.id) + '">🗑️ Удалить</button>' : '') +
+                    (canPinThis ? '<button type="button" class="btn btn-ghost btn-sm" data-chp-pin="' + esc(chId) + '|' + esc(p.id) + '">' + (p.pinned ? '📌 Открепить' : '📌 Закрепить') + '</button>' : '') +
+                    (canEditThis ? '<button type="button" class="btn btn-ghost btn-sm" data-chp-edit="' + esc(chId) + '|' + esc(p.id) + '">✏️ Изменить</button>' : '') +
+                    (canDelThis ? '<button type="button" class="btn btn-ghost btn-sm" data-chp-del="' + esc(chId) + '|' + esc(p.id) + '">🗑️ Удалить</button>' : '') +
                   '</div>' +
                   '<div class="comment-block' + (chpOpen ? ' open' : '') + '">' +
                     (chpComments.length
                       ? chpComments.map(function (c) {
                           const mineC = user && c.userId === user.id;
-                          return '<div class="comment">' +
+                          const canPinC = chCanPin(user, ch);
+                          const canDelC = user && (mineC || chCanDelete(user, ch));
+                          return '<div class="comment' + (c.pinned ? ' ch-pinned' : '') + '">' +
                             avatarHtml(c.avatar) +
                             '<div class="comment-body">' +
-                              '<div class="mini-head"><span class="mini-author">' + esc(c.name) + '</span><span>' + fmtDateTime(c.ts) + '</span></div>' +
+                              '<div class="mini-head"><span class="mini-author">' + esc(c.name) + '</span><span>' + (c.pinned ? '📌 Лучший · ' : '') + fmtDateTime(c.ts) + '</span></div>' +
                               '<div>' + esc(c.text) + '</div>' +
-                              (mineC ? '<div class="mini-actions"><button type="button" data-chpc-del="' + esc(chId) + '|' + esc(p.id) + '|' + esc(c.id) + '">🗑️ Удалить</button></div>' : '') +
+                              ((mineC || canPinC || canDelC) ? '<div class="mini-actions">' + (canPinC ? '<button type="button" data-chpc-pin="' + esc(chId) + '|' + esc(p.id) + '|' + esc(c.id) + '">' + (c.pinned ? '📌 Открепить' : '📌 Лучший') + '</button>' : '') + (canDelC ? '<button type="button" data-chpc-del="' + esc(chId) + '|' + esc(p.id) + '|' + esc(c.id) + '">🗑️ Удалить</button>' : '') + '</div>' : '') +
                             '</div>' +
                           '</div>';
                         }).join('')
@@ -7047,6 +7145,7 @@ try {
           const list = getList('channels');
           const ch = list.find(function (x) { return x.id === subBtn.dataset.chSub; });
           if (!ch) return;
+          if ((ch.banned || []).indexOf(user.id) !== -1) { toast('🚫 Вы забанены в этом канале.', 'error'); return; }
           ch.subs = ch.subs || [];
           const idx = ch.subs.indexOf(user.id);
           if (idx !== -1) { ch.subs.splice(idx, 1); toast('Вы отписались от канала.', 'info'); }
@@ -7071,7 +7170,7 @@ try {
           const list = getList('channels');
           const ch = list.find(function (x) { return x.id === chId; });
           if (!ch) return;
-          if (ch.ownerId !== user.id && !user.isAdmin && !(ch.mode === 'community' && (ch.subs || []).indexOf(user.id) !== -1)) {
+          if (!chCanPostIn(user, ch)) {
             toast('Публиковать может только создатель канала и админы.', 'error');
             return;
           }
@@ -7143,6 +7242,18 @@ try {
           renderChannelFeed(chId);
           return;
         }
+        const chManageBtn = e.target.closest('[data-ch-manage]');
+        if (chManageBtn) { openChManage(chManageBtn.dataset.chManage); return; }
+        const chWiresBtn = e.target.closest('[data-ch-wires]');
+        if (chWiresBtn) { openWireEditor('channel', chWiresBtn.dataset.chWires); return; }
+        const chNotifBtn = e.target.closest('[data-ch-notif]');
+        if (chNotifBtn) { chToggleNotif(chNotifBtn.dataset.chNotif); return; }
+        const chHideBtn = e.target.closest('[data-ch-hide]');
+        if (chHideBtn) { chToggleHide(chHideBtn.dataset.chHide); return; }
+        const chpPinBtn = e.target.closest('[data-chp-pin]');
+        if (chpPinBtn) { const pp = chpPinBtn.dataset.chpPin.split('|'); chTogglePinPost(pp[0], pp[1]); return; }
+        const chpcPinBtn = e.target.closest('[data-chpc-pin]');
+        if (chpcPinBtn) { const pc = chpcPinBtn.dataset.chpcPin.split('|'); chTogglePinComment(pc[0], pc[1], pc[2]); return; }
         const chpEdit = e.target.closest('[data-chp-edit]');
         if (chpEdit) {
           if (!user) return;
@@ -7152,7 +7263,7 @@ try {
           const list = getList('channels');
           const ch = list.find(function (x) { return x.id === chId; });
           const p = ch && (ch.posts || []).find(function (x) { return x.id === postId; });
-          if (!p || !(p.userId === user.id || user.isAdmin || ch.ownerId === user.id)) return;
+          if (!p || !(p.userId === user.id || chCanEditOthers(user, ch))) return;
           const newText = prompt('Редактировать публикацию:', p.text);
           if (newText === null) return;
           const trimmed = newText.trim();
@@ -7172,7 +7283,7 @@ try {
           const list = getList('channels');
           const ch = list.find(function (x) { return x.id === chId; });
           const p = ch && (ch.posts || []).find(function (x) { return x.id === postId; });
-          if (!p || !(p.userId === user.id || user.isAdmin || ch.ownerId === user.id)) return;
+          if (!p || !(p.userId === user.id || chCanDelete(user, ch))) return;
           if (!confirm('Удалить публикацию?')) return;
           ch.posts.splice(ch.posts.indexOf(p), 1);
           dbSave('channels', list);
@@ -7225,6 +7336,607 @@ try {
       dbSave('channels', list);
       renderChannelFeed(chId);
     }
+
+    /* ==== УЗЛЫ И ПРОВОДА + УПРАВЛЕНИЕ КАНАЛАМИ + ВЕРИФИКАЦИЯ + РАССЫЛКА ==== */
+    const CHANNEL_CATS = ['Учеба и ОГЭ/ЕГЭ', 'IT и программирование', 'Спорт и игры', 'Творчество и медиа', 'Жизнь класса', 'Общение'];
+    const CH_NODES = [
+      { id: 'post', label: '✍️ Выкладывание постов' },
+      { id: 'edit_others', label: '✏️ Редактирование чужих постов' },
+      { id: 'delete', label: '🗑️ Удаление постов и комментариев' },
+      { id: 'pin', label: '📌 Закрепление постов и комментариев' },
+      { id: 'ban', label: '🚫 Бан/разбан участников в канале' },
+      { id: 'settings', label: '⚙️ Изменение названия, темы и описания канала' }
+    ];
+    const GLOBAL_NODES = [
+      { id: 'liveedit', label: '✏️ Живое редактирование текстов и картинок сайта' },
+      { id: 'tables', label: '📊 Таблицы заявок и идей' },
+      { id: 'log', label: '📜 Журнал действий и отмена правок' },
+      { id: 'pets', label: '🐾 Управление талисманами классов' },
+      { id: 'scripts', label: '💻 Доступ к Библиотеке скриптов' },
+      { id: 'rewards', label: '🎁 Управление призами Магазина' },
+      { id: 'verify', label: '☑️ Выдача синей галочки верификации' },
+      { id: 'broadcast', label: '📣 Отправка срочной рассылки' },
+      { id: 'moderation', label: '🛡️ Полная модерация Барахолки и Соцсети' }
+    ];
+
+    let wireCtx = { mode: 'global', chId: null };
+    let wireArmed = null;
+    let wireDrag = null;
+    let mngChId = null;
+    let mngIconDraft = { type: 'emoji', value: '📢' };
+    let mngMode = 'channel';
+
+    function userGnodes(u) { return u && Array.isArray(u.gnodes) ? u.gnodes : []; }
+    function hasGlobalNode(u, node) { return !!u && (u.isAdmin || userGnodes(u).indexOf(node) !== -1); }
+    function canModerateAll(u) { return hasGlobalNode(u, 'moderation'); }
+    function chHasNode(ch, userId, node) {
+      if (!ch || !Array.isArray(ch.nodes)) return false;
+      return ch.nodes.some(function (n) { return n.userId === userId && n.node === node; });
+    }
+    function chCanManage(u, ch) { return !!u && !!ch && (ch.ownerId === u.id || u.isAdmin || chHasNode(ch, u.id, 'settings')); }
+    function chCanBan(u, ch) { return !!u && !!ch && (ch.ownerId === u.id || u.isAdmin || chHasNode(ch, u.id, 'ban')); }
+    function chCanPin(u, ch) { return !!u && !!ch && (ch.ownerId === u.id || u.isAdmin || chHasNode(ch, u.id, 'pin')); }
+    function chCanEditOthers(u, ch) { return !!u && !!ch && (ch.ownerId === u.id || u.isAdmin || chHasNode(ch, u.id, 'edit_others')); }
+    function chCanDelete(u, ch) { return !!u && !!ch && (ch.ownerId === u.id || u.isAdmin || chHasNode(ch, u.id, 'delete')); }
+    function chCanPostIn(u, ch) {
+      if (!u || !ch) return false;
+      if (ch.ownerId === u.id || u.isAdmin) return true;
+      if ((ch.banned || []).indexOf(u.id) !== -1) return false;
+      if (ch.mode === 'community') return (ch.subs || []).indexOf(u.id) !== -1;
+      return chHasNode(ch, u.id, 'post');
+    }
+    function verifySpan() { return '<span class="vbadge" title="Верифицировано">☑️</span>'; }
+    function userVerifiedSpan(u) { return u && u.verified ? verifySpan() : ''; }
+
+    function currentWireConns() {
+      if (wireCtx.mode === 'channel') {
+        const ch = getList('channels').find(function (x) { return x.id === wireCtx.chId; });
+        return ch ? (ch.nodes || []).slice() : [];
+      }
+      const conns = [];
+      getUsers().forEach(function (u) { userGnodes(u).forEach(function (n) { conns.push({ userId: u.id, node: n }); }); });
+      return conns;
+    }
+
+    function openWireEditor(mode, chId) {
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); return; }
+      if (mode === 'channel') {
+        const ch = getList('channels').find(function (x) { return x.id === chId; });
+        if (!ch) return;
+        if (!chCanManage(user, ch) && !chCanBan(user, ch) && !chCanPin(user, ch)) { toast('Конструктор прав доступен создателю и модераторам канала.', 'error'); return; }
+        wireCtx = { mode: 'channel', chId: chId };
+        document.getElementById('wires-title').textContent = '🔌 Помощники и права';
+        document.getElementById('wires-subtitle').textContent = ch.name + ' — модерация этого канала';
+      } else {
+        if (!user.isAdmin) { toast('Глобальные узлы — только для Главного Админа.', 'error'); return; }
+        wireCtx = { mode: 'global', chId: null };
+        document.getElementById('wires-title').textContent = '👥 Права — Узлы и провода';
+        document.getElementById('wires-subtitle').textContent = 'Глобальные узлы управления всем порталом';
+      }
+      wireArmed = null;
+      wireDrag = null;
+      renderWireBoard();
+      openModal('modal-wires');
+      setTimeout(drawWires, 80);
+      setTimeout(drawWires, 320);
+    }
+
+    function renderWireBoard() {
+      const left = document.getElementById('wire-left');
+      const right = document.getElementById('wire-right');
+      if (!left || !right) return;
+      let users = [];
+      let nodes = [];
+      if (wireCtx.mode === 'channel') {
+        const ch = getList('channels').find(function (x) { return x.id === wireCtx.chId; });
+        if (!ch) { closeModal('modal-wires'); return; }
+        users = getUsers().filter(function (u) { return (ch.subs || []).indexOf(u.id) !== -1 || u.id === ch.ownerId; });
+        nodes = CH_NODES;
+      } else {
+        users = getUsers().slice();
+        nodes = GLOBAL_NODES;
+      }
+      const conns = currentWireConns();
+      left.innerHTML = users.map(function (u) {
+        return '<div class="wire-user"><div style="display:flex; align-items:center; gap:10px; min-width:0;">' + avatarHtml(u.avatar, 'mini-ava') +
+          '<div style="min-width:0;"><b>' + esc(u.name) + '</b>' + userVerifiedSpan(u) + '<small>' + esc(classIdOf(u.grade, u.letter)) + '</small></div></div>' +
+          '<button type="button" class="wport wport-out" data-wport_out="' + esc(u.id) + '" title="Порт ника — начни провод отсюда"></button></div>';
+      }).join('') || '<p class="empty-line">Участников пока нет.</p>';
+      right.innerHTML = nodes.map(function (n) {
+        const cnt = conns.filter(function (c) { return c.node === n.id; }).length;
+        return '<div class="wire-node"><button type="button" class="wport wport-in" data-wport_in="' + esc(n.id) + '" title="Порт права — соедини провод сюда"></button>' +
+          '<div style="min-width:0;"><b>' + esc(n.label) + '</b><small>подключено: ' + cnt + '</small></div></div>';
+      }).join('');
+      drawWires();
+    }
+
+    function portCenter(el) {
+      const board = document.getElementById('wire-board');
+      const b = board.getBoundingClientRect();
+      const r = el.getBoundingClientRect();
+      return { x: r.left + r.width / 2 - b.left, y: r.top + r.height / 2 - b.top };
+    }
+
+    function wirePathD(x1, y1, x2, y2) {
+      const dx = Math.max(40, Math.abs(x2 - x1) * 0.45);
+      return 'M ' + x1 + ' ' + y1 + ' C ' + (x1 + dx) + ' ' + y1 + ', ' + (x2 - dx) + ' ' + y2 + ', ' + x2 + ' ' + y2;
+    }
+
+    function drawWires(tempPts) {
+      const svg = document.getElementById('wire-svg');
+      const board = document.getElementById('wire-board');
+      if (!svg || !board) return;
+      let html = '';
+      currentWireConns().forEach(function (c) {
+        const out = document.querySelector('[data-wport_out="' + c.userId + '"]');
+        const inn = document.querySelector('[data-wport_in="' + c.node + '"]');
+        if (!out || !inn) return;
+        const p1 = portCenter(out);
+        const p2 = portCenter(inn);
+        html += '<path class="wire-path" data-wconn="' + esc(c.userId) + '|' + esc(c.node) + '" d="' + wirePathD(p1.x, p1.y, p2.x, p2.y) + '"></path>';
+      });
+      if (tempPts) html += '<path class="wire-temp" d="' + wirePathD(tempPts.x1, tempPts.y1, tempPts.x2, tempPts.y2) + '"></path>';
+      svg.innerHTML = html;
+    }
+
+    function wireConnect(userId, node) {
+      if (!userId || !node) return;
+      if (wireCtx.mode === 'channel') {
+        const list = getList('channels');
+        const ch = list.find(function (x) { return x.id === wireCtx.chId; });
+        if (!ch) return;
+        ch.nodes = ch.nodes || [];
+        if (ch.nodes.some(function (n) { return n.userId === userId && n.node === node; })) return;
+        ch.nodes.push({ userId: userId, node: node });
+        dbSave('channels', list);
+      } else {
+        const users = getUsers();
+        const u = users.find(function (x) { return x.id === userId; });
+        if (!u) return;
+        u.gnodes = Array.isArray(u.gnodes) ? u.gnodes : [];
+        if (u.gnodes.indexOf(node) !== -1) return;
+        u.gnodes.push(node);
+        saveUsers(users);
+        applyAdminButtonPermissions();
+      }
+      renderWireBoard();
+    }
+
+    function wireDisconnect(userId, node) {
+      if (wireCtx.mode === 'channel') {
+        const list = getList('channels');
+        const ch = list.find(function (x) { return x.id === wireCtx.chId; });
+        if (!ch || !ch.nodes) return;
+        ch.nodes = ch.nodes.filter(function (n) { return !(n.userId === userId && n.node === node); });
+        dbSave('channels', list);
+      } else {
+        const users = getUsers();
+        const u = users.find(function (x) { return x.id === userId; });
+        if (!u) return;
+        u.gnodes = (u.gnodes || []).filter(function (n) { return n !== node; });
+        saveUsers(users);
+        applyAdminButtonPermissions();
+      }
+      renderWireBoard();
+      toast('🔌 Провод отключён — право снято.', 'info');
+    }
+
+    function clearWireArmed() {
+      wireArmed = null;
+      wireDrag = null;
+      document.querySelectorAll('.wport.armed').forEach(function (el) { el.classList.remove('armed'); });
+    }
+
+    function initWireBoard() {
+      const board = document.getElementById('wire-board');
+      if (!board) return;
+      board.addEventListener('pointerdown', function (e) {
+        const out = e.target.closest('[data-wport_out]');
+        if (!out) return;
+        e.preventDefault();
+        wireArmed = out.getAttribute('data-wport_out');
+        out.classList.add('armed');
+        const p = portCenter(out);
+        wireDrag = { x1: p.x, y1: p.y };
+      });
+      board.addEventListener('pointermove', function (e) {
+        if (!wireDrag) return;
+        const b = board.getBoundingClientRect();
+        drawWires({ x1: wireDrag.x1, y1: wireDrag.y1, x2: e.clientX - b.left, y2: e.clientY - b.top });
+      });
+      board.addEventListener('pointerup', function (e) {
+        if (!wireArmed) { wireDrag = null; return; }
+        const el = document.elementFromPoint(e.clientX, e.clientY);
+        const target = el && el.closest ? el.closest('[data-wport_in]') : null;
+        if (target) { wireConnect(wireArmed, target.getAttribute('data-wport_in')); clearWireArmed(); }
+        wireDrag = null;
+        drawWires();
+      });
+      board.addEventListener('click', function (e) {
+        const outTap = e.target.closest('[data-wport_out]');
+        if (outTap) {
+          wireArmed = outTap.getAttribute('data-wport_out');
+          document.querySelectorAll('.wport.armed').forEach(function (el) { el.classList.remove('armed'); });
+          outTap.classList.add('armed');
+          return;
+        }
+        const inn = e.target.closest('[data-wport_in]');
+        if (inn && wireArmed) { wireConnect(wireArmed, inn.getAttribute('data-wport_in')); clearWireArmed(); drawWires(); return; }
+        const wire = e.target.closest('[data-wconn]');
+        if (wire) {
+          const parts = wire.getAttribute('data-wconn').split('|');
+          wireDisconnect(parts[0], parts[1]);
+        }
+      });
+      const mcontent = document.querySelector('#modal-wires .modal-content');
+      if (mcontent) mcontent.addEventListener('scroll', function () { drawWires(); });
+      window.addEventListener('resize', function () {
+        const m = document.getElementById('modal-wires');
+        if (m && m.classList.contains('open')) drawWires();
+      });
+    }
+
+    /* ---- Управление каналом ---- */
+    function openChManage(chId) {
+      const user = getCurrentUser();
+      const ch = getList('channels').find(function (x) { return x.id === chId; });
+      if (!user || !ch) return;
+      if (!chCanManage(user, ch) && !chCanBan(user, ch)) { toast('Управление доступно создателю и модераторам.', 'error'); return; }
+      mngChId = chId;
+      mngIconDraft = ch.icon ? JSON.parse(JSON.stringify(ch.icon)) : { type: 'emoji', value: '📢' };
+      mngMode = ch.mode || 'channel';
+      renderChManage();
+      openModal('modal-ch-manage');
+    }
+
+    function renderChManage() {
+      const body = document.getElementById('chm-body');
+      const user = getCurrentUser();
+      const ch = getList('channels').find(function (x) { return x.id === mngChId; });
+      if (!body || !ch) return;
+      document.getElementById('chm-title').textContent = '⚙️ Управление: ' + ch.name;
+      const isOwner = user && ch.ownerId === user.id;
+      const canEditProfile = chCanManage(user, ch);
+      const canBan = chCanBan(user, ch);
+      const subs = (ch.subs || []).map(function (id) { return getUserById(id); }).filter(Boolean);
+      const cats = CHANNEL_CATS.map(function (c) { return '<option value="' + esc(c) + '"' + (ch.cat === c ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('');
+      const stickers = CHANNEL_EMOJIS.map(function (em) {
+        return '<button type="button" class="beast-option ch-emoji' + (mngIconDraft && mngIconDraft.type === 'emoji' && mngIconDraft.value === em ? ' selected' : '') + '" data-chm-emoji="' + em + '"><span class="beast-emoji">' + em + '</span></button>';
+      }).join('');
+      let html = '';
+      if (canEditProfile) {
+        html +=
+          '<div class="chm-sec"><h4>🎨 Профиль канала</h4>' +
+            '<span class="field-hint">Название</span><input type="text" id="chm-name" class="input-field" maxlength="48" value="' + esc(ch.name) + '">' +
+            '<span class="field-hint">Описание</span><textarea id="chm-desc" class="textarea-field" rows="3" maxlength="500">' + esc(ch.desc || '') + '</textarea>' +
+            '<span class="field-hint">Тема / категория</span><select id="chm-cat" class="input-field">' + cats + '</select>' +
+            '<span class="field-hint">Тип</span><div style="display:flex; gap:8px; flex-wrap:wrap;">' +
+              '<button type="button" class="deal-btn' + (mngMode === 'channel' ? ' active' : '') + '" data-chm-mode="channel">📢 Канал</button>' +
+              '<button type="button" class="deal-btn' + (mngMode === 'community' ? ' active' : '') + '" data-chm-mode="community">👥 Сообщество</button></div>' +
+            '<span class="field-hint">Аватар: стикер или фото</span>' +
+            '<div class="beast-picker" id="chm-emoji-grid" style="grid-template-columns:repeat(8, 1fr);">' + stickers + '</div>' +
+            (mngIconDraft && mngIconDraft.type === 'image' ? '<div class="thumb-row"><div class="thumb"><img src="' + mngIconDraft.value + '" alt=""><button type="button" class="thumb-del" id="chm-photo-del">✕</button></div></div>' : '') +
+            '<div class="ch-form-row"><button type="button" class="btn btn-outline btn-sm" id="chm-photo-btn">📷 Загрузить фото-аватар</button><input type="file" accept="image/*" hidden id="chm-photo-input"><button type="button" class="btn btn-primary btn-sm" id="chm-save">💾 Сохранить профиль</button></div>' +
+          '</div>';
+      }
+      if (canBan) {
+        html += '<div class="chm-sec"><h4>👥 Участники (' + subs.length + ')</h4>';
+        if (!subs.length) html += '<p class="empty-line">Подписчиков пока нет.</p>';
+        subs.forEach(function (u) {
+          const banned = (ch.banned || []).indexOf(u.id) !== -1;
+          html += '<div class="member-row"><div style="display:flex; align-items:center; gap:8px; min-width:0;">' + avatarHtml(u.avatar, 'mini-ava') +
+            '<div style="min-width:0;"><b>' + esc(u.name) + '</b>' + userVerifiedSpan(u) + ' <span class="user-class">' + esc(classIdOf(u.grade, u.letter)) + '</span></div></div>' +
+            '<button type="button" class="btn ' + (banned ? 'btn-outline' : 'btn-ghost') + ' btn-sm" data-chm-ban="' + esc(u.id) + '">' + (banned ? '✅ Разбанить' : '🚫 Забанить') + '</button></div>';
+        });
+        html += '</div>';
+      }
+      if (isOwner || (user && user.isAdmin)) {
+        const opts = subs.map(function (u) { return '<option value="' + esc(u.id) + '">' + esc(u.name) + ' (' + esc(classIdOf(u.grade, u.letter)) + ')</option>'; }).join('');
+        html +=
+          '<div class="chm-sec"><h4>👑 Передать права владельца</h4>' +
+            '<select id="chm-transfer-select" class="input-field"><option value="">— выбери подписчика —</option>' + opts + '</select>' +
+            '<button type="button" class="btn btn-outline btn-sm" id="chm-transfer" style="margin-top:8px;">👑 Передать права</button>' +
+          '</div>' +
+          '<div class="chm-sec"><h4>⚠️ Опасная зона</h4>' +
+            '<div class="ch-form-row"><button type="button" class="btn btn-outline btn-sm" id="chm-clearposts">🧹 Очистить все посты и сообщения</button>' +
+            '<button type="button" class="btn btn-ghost btn-sm" id="chm-delete" style="color:#dc2626;">🗑️ Удалить канал / сообщество</button></div>' +
+          '</div>';
+      }
+      body.innerHTML = html;
+      const photoBtn = document.getElementById('chm-photo-btn');
+      if (photoBtn) photoBtn.addEventListener('click', function () { const fi = document.getElementById('chm-photo-input'); if (fi) fi.click(); });
+      const photoInp = document.getElementById('chm-photo-input');
+      if (photoInp) photoInp.addEventListener('change', async function () {
+        if (!photoInp.files || !photoInp.files[0]) return;
+        try { mngIconDraft = { type: 'image', value: await compressImage(photoInp.files[0], 300, 0.75) }; renderChManage(); }
+        catch (errChm37) { toast('Не удалось обработать фото.', 'error'); }
+      });
+      const pd = document.getElementById('chm-photo-del');
+      if (pd) pd.addEventListener('click', function () { mngIconDraft = { type: 'emoji', value: '📢' }; renderChManage(); });
+      const saveBtn = document.getElementById('chm-save');
+      if (saveBtn) saveBtn.addEventListener('click', saveChManage);
+      const trBtn = document.getElementById('chm-transfer');
+      if (trBtn) trBtn.addEventListener('click', function () { transferChOwnership(document.getElementById('chm-transfer-select').value); });
+      const cpBtn = document.getElementById('chm-clearposts');
+      if (cpBtn) cpBtn.addEventListener('click', clearChPosts);
+      const delBtn = document.getElementById('chm-delete');
+      if (delBtn) delBtn.addEventListener('click', deleteCh);
+    }
+
+    function saveChManage() {
+      const list = getList('channels');
+      const ch = list.find(function (x) { return x.id === mngChId; });
+      const nameEl = document.getElementById('chm-name');
+      if (!ch || !nameEl) return;
+      const name = nameEl.value.trim();
+      if (name.length < 2) { toast('Название — минимум 2 символа.', 'error'); return; }
+      ch.name = name;
+      ch.desc = document.getElementById('chm-desc').value.trim().slice(0, 500);
+      ch.cat = document.getElementById('chm-cat').value;
+      ch.icon = mngIconDraft;
+      ch.mode = mngMode;
+      dbSave('channels', list);
+      renderChannels();
+      toast('⚙️ Настройки канала сохранены.', 'success');
+    }
+
+    function transferChOwnership(newOwnerId) {
+      const user = getCurrentUser();
+      const list = getList('channels');
+      const ch = list.find(function (x) { return x.id === mngChId; });
+      if (!ch || !newOwnerId) return;
+      if (!(ch.ownerId === user.id || user.isAdmin)) { toast('Передать права может только владелец.', 'error'); return; }
+      const nu = getUserById(newOwnerId);
+      if (!nu) return;
+      if (!confirm('Передать права владельца канала «' + ch.name + '» ученику ' + nu.name + '? Ты потеряешь контроль над каналом.')) return;
+      ch.ownerId = nu.id;
+      ch.ownerName = nu.name;
+      ch.nodes = (ch.nodes || []).filter(function (n) { return n.userId !== nu.id; });
+      dbSave('channels', list);
+      renderChManage();
+      renderChannels();
+      toast('👑 Права владельца переданы: ' + nu.name, 'success');
+    }
+
+    function clearChPosts() {
+      const list = getList('channels');
+      const ch = list.find(function (x) { return x.id === mngChId; });
+      if (!ch) return;
+      if (!confirm('Удалить ВСЕ посты и комментарии этого канала? Действие необратимо.')) return;
+      ch.posts = [];
+      dbSave('channels', list);
+      renderChManage();
+      renderChannelFeed(mngChId);
+      renderChannels();
+      toast('🧹 Лента канала очищена.', 'success');
+    }
+
+    function deleteCh() {
+      if (!confirm('Безвозвратно удалить канал/сообщество со всеми постами?')) return;
+      dbSave('channels', getList('channels').filter(function (x) { return x.id !== mngChId; }));
+      closeModal('modal-ch-manage');
+      renderChannels();
+      toast('🗑️ Канал удалён.', 'success');
+    }
+
+    function chToggleBan(chId, userId, ban) {
+      const list = getList('channels');
+      const ch = list.find(function (x) { return x.id === chId; });
+      if (!ch || !chCanBan(getCurrentUser(), ch)) return;
+      ch.banned = ch.banned || [];
+      if (ban) {
+        if (ch.banned.indexOf(userId) === -1) ch.banned.push(userId);
+        ch.subs = (ch.subs || []).filter(function (s) { return s !== userId; });
+      } else {
+        ch.banned = ch.banned.filter(function (b) { return b !== userId; });
+      }
+      dbSave('channels', list);
+      renderChManage();
+      renderChannels();
+    }
+
+    /* ---- Закрепление / подписка / верификация / рассылка ---- */
+    function chTogglePinPost(chId, postId) {
+      const user = getCurrentUser();
+      const list = getList('channels');
+      const ch = list.find(function (x) { return x.id === chId; });
+      const p = ch && (ch.posts || []).find(function (x) { return x.id === postId; });
+      if (!p || !chCanPin(user, ch)) return;
+      p.pinned = !p.pinned;
+      p.pinnedAt = p.pinned ? Date.now() : null;
+      dbSave('channels', list);
+      renderChannelFeed(chId);
+      toast(p.pinned ? '📌 Пост закреплён вверху ленты.' : 'Пост откреплён.', 'success');
+    }
+
+    function chTogglePinComment(chId, postId, cmtId) {
+      const user = getCurrentUser();
+      const list = getList('channels');
+      const ch = list.find(function (x) { return x.id === chId; });
+      const p = ch && (ch.posts || []).find(function (x) { return x.id === postId; });
+      if (!p || !chCanPin(user, ch)) return;
+      const c = (p.comments || []).find(function (x) { return x.id === cmtId; });
+      if (!c) return;
+      const newState = !c.pinned;
+      (p.comments || []).forEach(function (x) { x.pinned = false; });
+      c.pinned = newState;
+      dbSave('channels', list);
+      renderChannelFeed(chId);
+      toast(newState ? '📌 Комментарий закреплён как лучший.' : 'Комментарий откреплён.', 'success');
+    }
+
+    function chToggleNotif(chId) {
+      const user = getCurrentUser();
+      const list = getList('channels');
+      const ch = list.find(function (x) { return x.id === chId; });
+      if (!ch || !user) return;
+      ch.notifOff = ch.notifOff || [];
+      const i = ch.notifOff.indexOf(user.id);
+      if (i === -1) { ch.notifOff.push(user.id); toast('🔔 Уведомления выключены.', 'info'); }
+      else { ch.notifOff.splice(i, 1); toast('🔔 Уведомления включены.', 'success'); }
+      dbSave('channels', list);
+      renderChannels();
+    }
+
+    function chToggleHide(chId) {
+      const user = getCurrentUser();
+      const list = getList('channels');
+      const ch = list.find(function (x) { return x.id === chId; });
+      if (!ch || !user) return;
+      ch.hiddenFrom = ch.hiddenFrom || [];
+      const i = ch.hiddenFrom.indexOf(user.id);
+      if (i === -1) { ch.hiddenFrom.push(user.id); toast('🙈 Канал скрыт из рекомендаций.', 'info'); }
+      else { ch.hiddenFrom.splice(i, 1); toast('Канал снова виден в рекомендациях.', 'success'); }
+      dbSave('channels', list);
+      renderChannels();
+    }
+
+    function toggleUserVerified(userId) {
+      const user = getCurrentUser();
+      if (!hasGlobalNode(user, 'verify')) { toast('Галочки выдаёт только владелец узла «☑️ Верификация».', 'error'); return; }
+      const users = getUsers();
+      const u = users.find(function (x) { return x.id === userId; });
+      if (!u) return;
+      u.verified = !u.verified;
+      saveUsers(users);
+      renderAdminVerified();
+      renderChannels();
+      toast((u.verified ? '☑️ ' : 'Галочка снята: ') + u.name, 'success');
+    }
+
+    function toggleChannelVerified(chId) {
+      const user = getCurrentUser();
+      if (!hasGlobalNode(user, 'verify')) { toast('Галочки выдаёт только владелец узла «☑️ Верификация».', 'error'); return; }
+      const list = getList('channels');
+      const ch = list.find(function (x) { return x.id === chId; });
+      if (!ch) return;
+      ch.verified = !ch.verified;
+      dbSave('channels', list);
+      renderAdminVerified();
+      renderChannels();
+      toast((ch.verified ? '☑️ ' : 'Галочка снята: ') + ch.name, 'success');
+    }
+
+    function renderAdminVerified() {
+      const body = document.getElementById('admin-tools-body');
+      if (!body) return;
+      let html = '<p class="info-desc">Синяя галочка ☑️ подтверждает подлинность ученика, канала или сообщества.</p><h4 style="margin:10px 0 6px;">Ученики</h4>';
+      const users = getUsers();
+      if (!users.length) html += '<p class="empty-line">Учеников пока нет.</p>';
+      users.forEach(function (u) {
+        html += '<div class="admin-row"><div class="admin-row-main"><b>' + esc(u.name) + userVerifiedSpan(u) + '</b><small>' + esc(classIdOf(u.grade, u.letter)) + '</small></div>' +
+          '<div class="admin-row-actions"><button class="btn ' + (u.verified ? 'btn-ghost' : 'btn-primary') + ' btn-sm" data-verify-user="' + esc(u.id) + '">' + (u.verified ? 'Снять ☑️' : '☑️ Верифицировать') + '</button></div></div>';
+      });
+      html += '<h4 style="margin:14px 0 6px;">Каналы и сообщества</h4>';
+      const chs = getList('channels');
+      if (!chs.length) html += '<p class="empty-line">Каналов пока нет.</p>';
+      chs.forEach(function (ch) {
+        html += '<div class="admin-row"><div class="admin-row-main"><b>' + esc(ch.name) + (ch.verified ? verifySpan() : '') + '</b><small>' + (ch.mode === 'channel' ? '📢 Канал' : '👥 Сообщество') + '</small></div>' +
+          '<div class="admin-row-actions"><button class="btn ' + (ch.verified ? 'btn-ghost' : 'btn-primary') + ' btn-sm" data-verify-ch="' + esc(ch.id) + '">' + (ch.verified ? 'Снять ☑️' : '☑️ Верифицировать') + '</button></div></div>';
+      });
+      body.innerHTML = html;
+    }
+
+    function getBroadcast() { return dbLoad('broadcast', null); }
+    function broadcastSeenTs() { try { return Number(localStorage.getItem('lp37_broadcast_seen') || 0); } catch (e) { return 0; } }
+    function markBroadcastSeen() {
+      try { localStorage.setItem('lp37_broadcast_seen', String(Date.now())); } catch (e) {}
+      renderBroadcastBanner();
+    }
+    function renderBroadcastBanner() {
+      const b = getBroadcast();
+      const banner = document.getElementById('broadcast-banner');
+      const bell = document.getElementById('bell-btn');
+      if (!banner) return;
+      const fresh = !!(b && b.text && (b.ts || 0) > broadcastSeenTs());
+      banner.innerHTML = fresh
+        ? '<div class="broadcast-inner"><span class="broadcast-ico">📣</span><div class="broadcast-text"><b>Срочная рассылка Лицея №37</b><p>' + esc(b.text) + '</p></div><button type="button" id="broadcast-close" title="Прочитано">✕</button></div>'
+        : '';
+      banner.style.display = fresh ? 'block' : 'none';
+      if (bell) bell.classList.toggle('has-unread', fresh);
+    }
+
+    function sendBroadcast() {
+      const user = getCurrentUser();
+      if (!hasGlobalNode(user, 'broadcast')) { toast('Рассылку может отправить только владелец узла «📣 Рассылка».', 'error'); return; }
+      const ta = document.getElementById('adm-broadcast-text');
+      if (!ta) return;
+      const text = ta.value.trim();
+      if (text.length < 3) { toast('Напиши текст рассылки.', 'error'); return; }
+      dbSave('broadcast', { text: text, ts: Date.now(), by: user.name });
+      ta.value = '';
+      renderBroadcastBanner();
+      toast('📣 Рассылка отправлена всем!', 'success');
+    }
+
+    function renderAdminBroadcast() {
+      const body = document.getElementById('admin-tools-body');
+      if (!body) return;
+      const b = getBroadcast();
+      body.innerHTML =
+        '<p class="info-desc">Баннер появится у всех учеников над страницей, а колокольчик 🔔 в шапке загорится, пока рассылку не прочтут.</p>' +
+        '<textarea id="adm-broadcast-text" class="textarea-field" rows="3" maxlength="300" placeholder="Текст срочной рассылки…">' + (b && b.text ? esc(b.text) : '') + '</textarea>' +
+        '<button class="btn btn-primary" id="adm-broadcast-send" style="margin-top:10px;">📣 Отправить рассылку</button>' +
+        (b ? '<p class="field-hint" style="margin-top:10px;">Последняя рассылка: ' + esc(b.text) + ' · ' + fmtDateTime(b.ts) + (b.by ? ' · ' + esc(b.by) : '') + '</p>' : '');
+      document.getElementById('adm-broadcast-send').addEventListener('click', sendBroadcast);
+    }
+
+    /* ---- Кнопки админки по глобальным узлам ---- */
+    const ADM_NODE_BTN = { tables: 'tables', log: 'log', pets: 'pets', scripts: 'scripts', rewards: 'rewards', verified: 'verify', broadcast: 'broadcast' };
+    function applyAdminButtonPermissions() {
+      try {
+        const panel = document.getElementById('admin-panel');
+        if (!panel) return;
+        const user = getCurrentUser();
+        const full = !!(user && user.isAdmin);
+        panel.querySelectorAll('[data-adm]').forEach(function (btn) {
+          const t = btn.getAttribute('data-adm');
+          const node = ADM_NODE_BTN[t];
+          btn.style.display = (full || (node && hasGlobalNode(user, node))) ? '' : 'none';
+        });
+        const le = document.getElementById('adm-live-edit-btn');
+        if (le) le.style.display = (full || hasGlobalNode(user, 'liveedit')) ? '' : 'none';
+      } catch (e) {}
+    }
+
+    try {
+  initWireBoard();
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  renderBroadcastBanner();
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.addEventListener('click', function (e) {
+        const vu = e.target.closest('[data-verify-user]');
+        if (vu) { toggleUserVerified(vu.getAttribute('data-verify-user')); return; }
+        const vch = e.target.closest('[data-verify-ch]');
+        if (vch) { toggleChannelVerified(vch.getAttribute('data-verify-ch')); return; }
+        const bc = e.target.closest('#broadcast-close');
+        if (bc) { markBroadcastSeen(); return; }
+        const bell = e.target.closest('#bell-btn');
+        if (bell) {
+          const b = getBroadcast();
+          if (b && b.text) toast('📣 ' + b.text, 'info');
+          markBroadcastSeen();
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  document.getElementById('chm-body').addEventListener('click', function (e) {
+        const em = e.target.closest('[data-chm-emoji]');
+        if (em) { mngIconDraft = { type: 'emoji', value: em.getAttribute('data-chm-emoji') }; renderChManage(); return; }
+        const mb = e.target.closest('[data-chm-mode]');
+        if (mb) { mngMode = mb.getAttribute('data-chm-mode'); renderChManage(); return; }
+        const banBtn = e.target.closest('[data-chm-ban]');
+        if (banBtn) {
+          const ch = getList('channels').find(function (x) { return x.id === mngChId; });
+          if (!ch) return;
+          const uid = banBtn.getAttribute('data-chm-ban');
+          chToggleBan(mngChId, uid, (ch.banned || []).indexOf(uid) === -1);
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function renderChannelEmoji() {
       const wrap = document.getElementById('ch-emoji-grid');
@@ -7899,7 +8611,7 @@ try {
       const panel = document.getElementById('admin-panel');
       if (panel) panel.style.display = on ? 'flex' : 'none';
       document.querySelectorAll('.admin-only').forEach(function (el) { el.style.display = on ? '' : 'none'; });
-      if (on) { admRestoreCollapsed(); }
+      if (on) { admRestoreCollapsed(); applyAdminButtonPermissions(); }
       setTimeout(admApplyOffset, 30);
       if (!on && liveEditOn) setLiveEdit(false);
     }
@@ -7908,7 +8620,7 @@ try {
       const user = getCurrentUser();
       let flag = false;
       try { flag = sessionStorage.getItem('lp37_admin') === '1'; } catch (e) {}
-      if ((user && user.isAdmin) || flag) setAdminActive(true);
+      if ((user && user.isAdmin) || flag || (user && userGnodes(user).length > 0)) setAdminActive(true);
     }
 
     function openAdminLogin() {
@@ -8136,7 +8848,7 @@ try {
     /* ---- Инструменты админки (Журнал / Права / Призы / Пароль) ---- */
     function openAdminTool(mode) {
       adminToolsMode = mode;
-      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pets: '🐾 Талисманы классов', classreset: '🗑 Очистка данных класса', pass: '🔑 Смена пароля админа', ticker: '📰 Плашка новостей' };
+      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pets: '🐾 Талисманы классов', classreset: '🗑 Очистка данных класса', pass: '🔑 Смена пароля админа', ticker: '📰 Плашка новостей', verified: '☑️ Верификация', broadcast: '📣 Срочная рассылка' };
       document.getElementById('admin-tools-title').textContent = titles[mode] || 'Администрирование';
       openModal('modal-admin-tools');
       if (mode === 'log') renderAdminLog();
@@ -8146,6 +8858,8 @@ try {
       if (mode === 'pets') renderAdminPets();
       if (mode === 'classreset') renderAdminClassReset();
       if (mode === 'ticker') renderAdminTicker();
+      if (mode === 'verified') renderAdminVerified();
+      if (mode === 'broadcast') renderAdminBroadcast();
     }
 
     function renderAdminClassReset() {
@@ -8233,19 +8947,27 @@ try {
 
     function renderAdminRights(filter) {
       const body = document.getElementById('admin-tools-body');
+      const me = getCurrentUser();
       const f = String(filter || '').toLowerCase();
       const users = getUsers().filter(function (u) { return !f || fuzzyMatch(f, u.name) || classIdOf(u.grade, u.letter).toLowerCase().indexOf(f) !== -1; });
-      let html = '<input type="text" id="adm-rights-search" class="input-field" placeholder="🔍 Поиск по имени или классу…" value="' + esc(filter || '') + '" style="margin-bottom:12px;">';
+      let html = '<div class="post-foot" style="margin-bottom:12px;"><button type="button" class="btn btn-primary btn-sm" id="adm-wires-btn">🔌 Узлы и провода (права)</button><span class="field-hint">Протяни провод от ника ученика к узлу — у него появятся только эти кнопки в панели.</span></div>';
+      html += '<input type="text" id="adm-rights-search" class="input-field" placeholder="🔍 Поиск по имени или классу…" value="' + esc(filter || '') + '" style="margin-bottom:12px;">';
       if (!users.length) html += '<p class="info-desc">Ученики не найдены.</p>';
       users.forEach(function (u) {
+        const gn = userGnodes(u);
         html += '<div class="admin-row">' +
-          '<div class="admin-row-main"><b>' + esc(u.name) + (u.isAdmin ? ' 👑' : '') + '</b><small>' + esc(classIdOf(u.grade, u.letter)) + ' · 💎 ' + Number(u.points || 0) + ' б.</small></div>' +
-          '<div class="admin-row-actions"><button class="btn ' + (u.isAdmin ? 'btn-ghost' : 'btn-primary') + ' btn-sm" data-toggle-admin="' + esc(u.id) + '">' + (u.isAdmin ? 'Снять права' : '👑 Выдать админку') + '</button></div>' +
+          '<div class="admin-row-main"><b>' + esc(u.name) + userVerifiedSpan(u) + (u.isAdmin ? ' 👑' : '') + '</b><small>' + esc(classIdOf(u.grade, u.letter)) + ' · 💎 ' + Number(u.points || 0) + ' б. · узлов: ' + gn.length + '</small></div>' +
+          '<div class="admin-row-actions">' +
+            (hasGlobalNode(me, 'verify') ? '<button type="button" class="btn btn-ghost btn-sm" data-verify-user="' + esc(u.id) + '">' + (u.verified ? '☑️ Снять галочку' : '☑️ Галочка') + '</button>' : '') +
+            '<button class="btn ' + (u.isAdmin ? 'btn-ghost' : 'btn-primary') + ' btn-sm" data-toggle-admin="' + esc(u.id) + '">' + (u.isAdmin ? 'Снять права' : '👑 Выдать админку') + '</button>' +
+          '</div>' +
         '</div>';
       });
       body.innerHTML = html;
       const search = document.getElementById('adm-rights-search');
       search.addEventListener('input', function () { renderAdminRights(search.value); });
+      const wiresBtn = document.getElementById('adm-wires-btn');
+      if (wiresBtn) wiresBtn.addEventListener('click', function () { closeModal('modal-admin-tools'); openWireEditor('global', null); });
     }
 
     function toggleUserAdmin(id) {
@@ -8494,6 +9216,8 @@ try {
         if (t === 'rights') openAdminTool('rights');
         if (t === 'scripts') toggleAdminDrawer(true);
         if (t === 'rewards') openAdminTool('rewards');
+        if (t === 'verified') openAdminTool('verified');
+        if (t === 'broadcast') openAdminTool('broadcast');
         if (t === 'pets') openAdminTool('pets');
         if (t === 'classreset') openAdminTool('classreset');
         if (t === 'ticker') openAdminTool('ticker');
