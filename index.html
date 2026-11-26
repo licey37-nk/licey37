@@ -141,8 +141,59 @@
     </section>
     
     <section class="ideas-section">
-      <h2>📮 Ящик идей и предложений Лицея №37</h2>
-    </section>
+  <h2>📮 Ящик идей и предложений Лицея №37</h2>
+</section>
+
+<section class="marketplace-section">
+  <h2>🛍️ Барахолка Лицея №37</h2>
+  <div class="marketplace-controls">
+    <input type="text" id="marketplace-search" placeholder="Поиск по названию...">
+    <select id="marketplace-category">
+      <option value="all">Все</option>
+      <option value="books">Учебники и пособия</option>
+      <option value="stationery">Канцелярия</option>
+      <option value="electronics">Электроника</option>
+      <option value="clothing">Одежда и спорт</option>
+      <option value="lost">🆘 Бюро находок</option>
+    </select>
+    <button id="add-listing-btn">➕ Подать объявление</button>
+  </div>
+  <div id="marketplace-listings"></div>
+</section>
+
+<div class="modal" id="listing-modal">
+  <form id="listing-form">
+    <input type="text" id="listing-title" placeholder="Название" required>
+    <select id="listing-category" required>
+      <option value="">Категория</option>
+      <option value="books">Учебники и пособия</option>
+      <option value="stationery">Канцелярия</option>
+      <option value="electronics">Электроника</option>
+      <option value="clothing">Одежда и спорт</option>
+      <option value="lost">🆘 Бюро находок</option>
+    </select>
+    <div class="price-controls">
+      <input type="number" id="listing-price" placeholder="Цена в рублях">
+      <label><input type="radio" name="price-type" value="free"> Бесплатно</label>
+      <label><input type="radio" name="price-type" value="exchange"> Обмен</label>
+    </div>
+    <textarea id="listing-description" placeholder="Описание" required></textarea>
+    <input type="file" id="listing-images" multiple accept="image/*">
+    <div id="image-preview"></div>
+    <button type="submit">Опубликовать</button>
+  </form>
+</div>
+
+<div class="modal" id="chat-modal">
+  <div class="chat-header">
+    <div id="chat-listing-preview"></div>
+  </div>
+  <div id="chat-messages"></div>
+  <form id="chat-form">
+    <textarea id="chat-input" placeholder="Ваше сообщение"></textarea>
+    <button type="submit">Отправить</button>
+  </form>
+</div>
   </main>
   
   <!-- MODALS -->
@@ -165,12 +216,229 @@
   
   <script>
     const SUPABASE_URL = "https://ektyxbnzkreekdjrdnnk.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_q60_3k3m7l3G8w8y7t30FA_2_jD4H1M";
+const SUPABASE_ANON_KEY = "sb_publishable_q60_3k3m7l3G8w8y7t30FA_2_jD4H1M";
+
+// Marketplace tables
+const MARKETPLACE_LISTINGS = 'marketplace_listings';
+const MARKETPLACE_CHATS = 'marketplace_chats';
     
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
     // JS_MODULES
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
+  // Marketplace logic
+  const marketplaceSearch = document.getElementById('marketplace-search');
+  const marketplaceCategory = document.getElementById('marketplace-category');
+  const marketplaceListings = document.getElementById('marketplace-listings');
+  const addListingBtn = document.getElementById('add-listing-btn');
+  const listingModal = document.getElementById('listing-modal');
+  const listingForm = document.getElementById('listing-form');
+  const listingImages = document.getElementById('listing-images');
+  const imagePreview = document.getElementById('image-preview');
+  const chatModal = document.getElementById('chat-modal');
+  const chatMessages = document.getElementById('chat-messages');
+  const chatForm = document.getElementById('chat-form');
+  const chatInput = document.getElementById('chat-input');
+  const chatListingPreview = document.getElementById('chat-listing-preview');
+
+  let currentListingId = null;
+  let currentChatId = null;
+
+  // Load marketplace listings
+  async function loadMarketplace() {
+    const { data: listings, error } = await supabase
+      .from(MARKETPLACE_LISTINGS)
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error loading listings:', error);
+      return;
+    }
+
+    renderMarketplace(listings);
+  }
+
+  function renderMarketplace(listings) {
+    marketplaceListings.innerHTML = listings.map(listing => `
+      <div class="listing-card" data-id="${listing.id}">
+        <div class="listing-images">
+          ${listing.images.map((img, i) => `
+            <img src="${img}" alt="Listing image ${i + 1}" ${i > 0 ? 'style="display:none"' : ''}>
+          `).join('')}
+        </div>
+        <div class="listing-info">
+          <h3>${listing.title}</h3>
+          <p class="listing-price">${getPriceDisplay(listing.price)}</p>
+          <p class="listing-description">${listing.description}</p>
+          <p class="listing-class">Класс продавца: ${listing.class}</p>
+          <button class="chat-btn" data-id="${listing.id}">💬 Написать продавцу</button>
+          ${listing.user_id === supabase.auth.user()?.id ? `
+            <button class="delete-listing-btn" data-id="${listing.id}">🗑️ Удалить</button>
+          ` : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function getPriceDisplay(price) {
+    if (price === 'free') return 'Бесплатно';
+    if (price === 'exchange') return 'Обмен';
+    return `${price} ₽`;
+  }
+
+  // Handle listing submission
+  listingForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const images = await Promise.all(
+      Array.from(listingImages.files).map(compressImage)
+    );
+
+    const { data: listing, error } = await supabase
+      .from(MARKETPLACE_LISTINGS)
+      .insert([{
+        title: listingForm.title.value,
+        category: listingForm.category.value,
+        price: listingForm.querySelector('input[name="price-type"]:checked')?.value || listingForm.price.value,
+        description: listingForm.description.value,
+        images,
+        class: localStorage.getItem('selectedClass'),
+        user_id: supabase.auth.user()?.id
+      }]);
+
+    if (error) {
+      console.error('Error creating listing:', error);
+      return;
+    }
+
+    listingModal.style.display = 'none';
+    loadMarketplace();
+  });
+
+  // Handle chat initiation
+  marketplaceListings.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('chat-btn')) {
+      currentListingId = e.target.dataset.id;
+      const { data: listing } = await supabase
+        .from(MARKETPLACE_LISTINGS)
+        .select('*')
+        .eq('id', currentListingId)
+        .single();
+
+      chatListingPreview.innerHTML = `
+        <img src="${listing.images[0]}" alt="${listing.title}">
+        <h3>${listing.title}</h3>
+        <p>${getPriceDisplay(listing.price)}</p>
+      `;
+
+      // Check if chat exists or create new
+      const { data: existingChat } = await supabase
+        .from(MARKETPLACE_CHATS)
+        .select('*')
+        .eq('listing_id', currentListingId)
+        .contains('participants', [supabase.auth.user()?.id, listing.user_id]);
+
+      if (existingChat) {
+        currentChatId = existingChat.id;
+      } else {
+        const { data: newChat } = await supabase
+          .from(MARKETPLACE_CHATS)
+          .insert([{
+            listing_id: currentListingId,
+            participants: [supabase.auth.user()?.id, listing.user_id],
+            messages: []
+          }]);
+        currentChatId = newChat.id;
+      }
+
+      loadChatMessages();
+      chatModal.style.display = 'block';
+    }
+  });
+
+  // Handle chat messages
+  chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const { data: chat } = await supabase
+      .from(MARKETPLACE_CHATS)
+      .select('*')
+      .eq('id', currentChatId)
+      .single();
+
+    const updatedMessages = [
+      ...chat.messages,
+      {
+        user_id: supabase.auth.user()?.id,
+        text: chatInput.value,
+        timestamp: new Date().toISOString()
+      }
+    ];
+
+    await supabase
+      .from(MARKETPLACE_CHATS)
+      .update({ messages: updatedMessages })
+      .eq('id', currentChatId);
+
+    chatInput.value = '';
+    loadChatMessages();
+  });
+
+  async function loadChatMessages() {
+    const { data: chat } = await supabase
+      .from(MARKETPLACE_CHATS)
+      .select('*')
+      .eq('id', currentChatId)
+      .single();
+
+    chatMessages.innerHTML = chat.messages.map(msg => `
+      <div class="chat-message ${msg.user_id === supabase.auth.user()?.id ? 'own' : 'other'}">
+        <p>${msg.text}</p>
+        <span class="timestamp">${new Date(msg.timestamp).toLocaleTimeString()}</span>
+      </div>
+    `).join('');
+  }
+
+  // Image compression
+  function compressImage(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          const MAX_WIDTH = 800;
+          const MAX_HEIGHT = 800;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.7));
+        };
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Initial load
+  loadMarketplace();
       // Admin panel logic
       const adminBtns = document.querySelectorAll('.admin-btn');
       const adminPanel = document.querySelector('.admin-panel');
