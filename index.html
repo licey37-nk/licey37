@@ -3758,6 +3758,7 @@
       <button data-adm="scripts">💻 Скрипты</button>
       <button data-adm="rewards">🎁 Призы</button>
       <button data-adm="pets">🐾 Талисманы</button>
+      <button data-adm="classreset">🗑 Класс</button>
       <button data-adm="ticker">📰 Плашка</button>
       <button data-adm="pass">🔑 Пароль</button>
       <button id="adm-exit-btn">🚪 Выйти</button>
@@ -7502,6 +7503,13 @@
         savePet(u.classId, u.before || null);
         if (currentClass === u.classId) renderPet();
         renderPetTop();
+      } else if (u.kind === 'class_reset') {
+        const map = getPetsMap();
+        if (u.pet) map[u.classId] = u.pet; else delete map[u.classId];
+        dbSave('pets', map);
+        dbSave('homework', getList('homework').filter(function (h) { return h.classId !== u.classId; }).concat(u.homework || []));
+        dbSave('chat', getList('chat').filter(function (m) { return m.classId !== u.classId; }).concat(u.chat || []));
+        if (panels.class.classList.contains('active')) renderClassTab();
       } else if (u.kind === 'ticker') {
         dbSave('topTicker', u.before || {});
         initTicker();
@@ -7652,7 +7660,7 @@
     /* ---- Инструменты админки (Журнал / Права / Призы / Пароль) ---- */
     function openAdminTool(mode) {
       adminToolsMode = mode;
-      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pets: '🐾 Талисманы классов', pass: '🔑 Смена пароля админа', ticker: '📰 Плашка новостей' };
+      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pets: '🐾 Талисманы классов', classreset: '🗑 Очистка данных класса', pass: '🔑 Смена пароля админа', ticker: '📰 Плашка новостей' };
       document.getElementById('admin-tools-title').textContent = titles[mode] || 'Администрирование';
       openModal('modal-admin-tools');
       if (mode === 'log') renderAdminLog();
@@ -7660,7 +7668,77 @@
       if (mode === 'rewards') renderAdminRewards();
       if (mode === 'pass') renderAdminPass();
       if (mode === 'pets') renderAdminPets();
+      if (mode === 'classreset') renderAdminClassReset();
       if (mode === 'ticker') renderAdminTicker();
+    }
+
+    function renderAdminClassReset() {
+      const body = document.getElementById('admin-tools-body');
+      if (!body) return;
+      const grades = CLASS_GRADES.map(function (g) { return '<option value="' + g + '">' + g + '</option>'; }).join('');
+      const letters = CLASS_LETTERS.map(function (l) { return '<option value="' + l + '">' + l + '</option>'; }).join('');
+      body.innerHTML =
+        '<p class="info-desc">Полностью очищает данные выбранного класса: талисман (кличка, вид, аватар, XP, уровень, голод, веселье), доску дедлайнов и домашки, чат класса. Учеников и их баллы это не затрагивает. Действие можно отменить в 📜 Журнале.</p>' +
+        '<div class="field"><label>Класс</label><div class="field-row">' +
+          '<select id="adm-cr-grade">' + grades + '</select>' +
+          '<select id="adm-cr-letter">' + letters + '</select>' +
+          '<button class="btn btn-ghost btn-sm" id="adm-cr-load">🔍 Показать</button>' +
+        '</div></div>' +
+        '<div id="adm-cr-info"></div>';
+      document.getElementById('adm-cr-load').addEventListener('click', renderAdminClassResetInfo);
+      renderAdminClassResetInfo();
+    }
+
+    function renderAdminClassResetInfo() {
+      const grade = document.getElementById('adm-cr-grade');
+      const letter = document.getElementById('adm-cr-letter');
+      const box = document.getElementById('adm-cr-info');
+      if (!grade || !letter || !box) return;
+      const classId = classIdOf(grade.value, letter.value);
+      const pet = getPetRaw(classId);
+      const hw = getList('homework').filter(function (h) { return h.classId === classId; });
+      const chat = getList('chat').filter(function (m) { return m.classId === classId; });
+      let html =
+        '<div class="admin-row"><div class="admin-row-main"><b>🐾 Талисман: ' + (pet ? esc(pet.nick || '') + ' (' + esc(pet.beastName || '') + ')' : 'не выбран') + '</b>' +
+        (pet ? '<small>уровень ' + (pet.level || 1) + ' · XP ' + (pet.xp || 0) + ' · голод ' + (pet.hunger != null ? pet.hunger : '—') + '/100 · веселье ' + (pet.fun != null ? pet.fun : '—') + '/100 — будет удалён полностью</small>' : '<small>удалять нечего</small>') + '</div></div>' +
+        '<div class="admin-row"><div class="admin-row-main"><b>📌 Доска дедлайнов и домашки</b><small>' + hw.length + ' записей будет удалено</small></div></div>' +
+        '<div class="admin-row"><div class="admin-row-main"><b>💬 Чат класса</b><small>' + chat.length + ' сообщений будет удалено</small></div></div>' +
+        '<button class="btn btn-block" id="adm-cr-wipe" style="background:var(--danger);color:#fff;margin-top:10px;">🗑 Полностью очистить класс ' + esc(classId) + '</button>' +
+        '<p class="info-desc" style="margin-top:8px;">После первого нажатия попросит подтверждение — нажми ещё раз.</p>';
+      box.innerHTML = html;
+      let armed = false;
+      document.getElementById('adm-cr-wipe').addEventListener('click', function () {
+        const btn = document.getElementById('adm-cr-wipe');
+        if (!armed) {
+          armed = true;
+          btn.textContent = '⚠️ Точно удалить ВСЁ по классу ' + classId + '? Нажми ещё раз!';
+          btn.style.background = '#b91c1c';
+          return;
+        }
+        wipeClassData(classId);
+        renderAdminClassResetInfo();
+      });
+    }
+
+    function wipeClassData(classId) {
+      try {
+        const beforePet = getPetRaw(classId);
+        const beforeHw = getList('homework').filter(function (h) { return h.classId === classId; });
+        const beforeChat = getList('chat').filter(function (m) { return m.classId === classId; });
+        const pets = getPetsMap();
+        delete pets[classId];
+        dbSave('pets', pets);
+        dbSave('homework', getList('homework').filter(function (h) { return h.classId !== classId; }));
+        dbSave('chat', getList('chat').filter(function (m) { return m.classId !== classId; }));
+        adminLogAction('class_reset', '🗑 Полная очистка данных класса ' + classId + ' (талисман' + (beforePet ? ': ' + beforePet.nick : ' отсутствовал') + ', дедлайны: ' + beforeHw.length + ', чат: ' + beforeChat.length + ')', {
+          kind: 'class_reset', classId: classId,
+          pet: beforePet || null, homework: beforeHw, chat: beforeChat
+        });
+        if (panels.class.classList.contains('active')) renderClassTab();
+        toast('🗑 Данные класса ' + classId + ' полностью очищены. Можно отменить в Журнале.', 'success');
+      } catch (e) {
+        toast('Не удалось очистить класс: ' + (e && e.message ? e.message : e), 'error');
+      }
     }
 
     function renderAdminLog() {
@@ -7941,6 +8019,7 @@
         if (t === 'scripts') toggleAdminDrawer(true);
         if (t === 'rewards') openAdminTool('rewards');
         if (t === 'pets') openAdminTool('pets');
+        if (t === 'classreset') openAdminTool('classreset');
         if (t === 'ticker') openAdminTool('ticker');
         if (t === 'pass') openAdminTool('pass');
       });
