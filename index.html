@@ -1652,6 +1652,702 @@
       }
     }
 
+    /* ============ 17. БАРАХОЛКА ============ */
+    .market-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .search-input {
+      flex: 1 1 240px;
+      min-width: 200px;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--primary-soft);
+    }
+
+    .cat-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .cat-btn {
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.84rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cat-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .cat-btn.active {
+      background: var(--grad);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 6px 16px rgba(29, 78, 216, 0.25);
+    }
+
+    .listing-card {
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .listing-photo {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      background: var(--grad-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.2rem;
+      overflow: hidden;
+    }
+
+    .listing-photo img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .gal-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(15, 23, 42, 0.55);
+      color: #fff;
+      font-size: 1.1rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 2;
+    }
+
+    .listing-photo:hover .gal-btn {
+      opacity: 1;
+    }
+
+    .gal-btn.prev { left: 10px; }
+    .gal-btn.next { right: 10px; }
+
+    .gal-dots {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      z-index: 2;
+    }
+
+    .gal-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: none;
+      padding: 0;
+      background: rgba(255, 255, 255, 0.55);
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .gal-dot.active {
+      background: #fff;
+      transform: scale(1.2);
+    }
+
+    .listing-body {
+      padding: 18px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .listing-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .listing-price {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 1.12rem;
+      color: var(--primary);
+    }
+
+    .badge-free,
+    .badge-trade {
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .badge-free { background: var(--accent-soft); color: var(--accent); }
+    .badge-trade { background: var(--primary-soft); color: var(--primary); }
+
+    .listing-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+
+    .listing-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .listing-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .seller-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    .listing-actions {
+      margin-top: auto;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .deal-btn {
+      flex: 1;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .deal-btn.active {
+      background: var(--grad);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .thumb-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .thumb {
+      position: relative;
+      width: 74px;
+      height: 74px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1.5px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .thumb-del {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(15, 23, 42, 0.65);
+      color: #fff;
+      font-size: 0.66rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .pchat-item {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    .pchat-item img {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .pchat-ph {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      background: var(--grad-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+
+    .modal-chat-list {
+      max-height: 300px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface-soft);
+      padding: 12px;
+    }
+
+    .mini-msg {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .mini-msg.own {
+      flex-direction: row-reverse;
+    }
+
+    .mini-ava {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--grad-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+    }
+
+    .mini-bubble {
+      max-width: 78%;
+      padding: 9px 13px;
+      border-radius: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 0.9rem;
+      word-break: break-word;
+    }
+
+    .mini-msg.own .mini-bubble {
+      background: var(--primary-soft);
+      border-color: transparent;
+    }
+
+    .mini-head {
+      display: flex;
+      gap: 8px;
+      align-items: baseline;
+      flex-wrap: wrap;
+      font-size: 0.74rem;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .mini-author {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .mini-actions {
+      display: flex;
+      gap: 4px;
+      margin-top: 5px;
+    }
+
+    .mini-actions button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 0.8rem;
+      opacity: 0.55;
+      padding: 0;
+    }
+
+    .mini-actions button:hover {
+      opacity: 1;
+    }
+
+    .empty-line {
+      color: var(--muted);
+      font-size: 0.88rem;
+      text-align: center;
+      padding: 14px 8px;
+    }
+
+    /* ============ 18. СОЦСЕТЬ ============ */
+    .subtabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 20px;
+      background: var(--surface);
+      padding: 6px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    .subtab {
+      border: none;
+      background: none;
+      padding: 9px 16px;
+      border-radius: 12px;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.87rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .subtab.active {
+      background: var(--grad);
+      color: #fff;
+      box-shadow: 0 6px 14px rgba(29, 78, 216, 0.25);
+    }
+
+    .sub-panel {
+      display: none;
+    }
+
+    .sub-panel.active {
+      display: block;
+    }
+
+    .post-composer-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    .post-card {
+      margin-bottom: 16px;
+    }
+
+    .post-head {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .post-text {
+      font-size: 0.95rem;
+      color: var(--text);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .post-photo {
+      width: 100%;
+      max-height: 420px;
+      object-fit: cover;
+      border-radius: 14px;
+      margin-top: 10px;
+      display: block;
+    }
+
+    .post-foot {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .comment-block {
+      margin-top: 12px;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      display: none;
+    }
+
+    .comment-block.open {
+      display: block;
+    }
+
+    .comment {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 0.88rem;
+    }
+
+    .comment-body {
+      background: var(--surface-soft);
+      border-radius: 12px;
+      padding: 8px 12px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .comment-form input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.88rem;
+      outline: none;
+      margin-top: 4px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .comment-form input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--primary-soft);
+    }
+
+    .people-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+      gap: 14px;
+    }
+
+    .person-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+      padding: 18px 14px;
+    }
+
+    .archive-folder {
+      border: 1.5px dashed var(--border);
+      border-radius: 16px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      background: var(--surface-soft);
+    }
+
+    .archive-toggle {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .archive-list {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      padding: 0 16px 14px;
+    }
+
+    .archive-list.open {
+      display: flex;
+    }
+
+    .dm-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface);
+      margin-bottom: 10px;
+      transition: box-shadow 0.2s;
+    }
+
+    .dm-row:hover {
+      box-shadow: var(--shadow);
+    }
+
+    .channel-head {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .channel-ico {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--grad-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      background-size: cover;
+      background-position: center;
+      flex-shrink: 0;
+    }
+
+    .channel-posts {
+      border-top: 1px solid var(--border);
+      margin-top: 10px;
+      padding-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ch-post-form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .vol-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+      gap: 14px;
+    }
+
+    .vol-card {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .vol-subjects {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .vol-tag {
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+
+    .vol-checks {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 6px;
+    }
+
+    .vol-checks label {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      font-size: 0.88rem;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .ch-emoji {
+      padding: 10px 6px;
+    }
+
+    @media (max-width: 640px) {
+      .subtabs {
+        width: 100%;
+      }
+
+      .subtab {
+        flex: 1;
+        padding: 9px 8px;
+        font-size: 0.8rem;
+      }
+
+      .market-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .people-grid,
+      .vol-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mini-bubble {
+        max-width: 88%;
+      }
+    }
+
     /* ============ 14. АДАПТИВНОСТЬ ============ */
     @media (max-width: 960px) {
       .header-inner {
@@ -1993,16 +2689,25 @@
       <div class="section-title">
         <div class="section-icon">🛍️</div>
         <div>
-          <h2>Барахолка</h2>
-          <p>Объявления учеников: учебники, канцелярия, электроника и находки</p>
+          <h2 data-editable="market-title">Барахолка Лицея №37</h2>
+          <p data-editable="market-desc">Объявления учеников: учебники, канцелярия, электроника, одежда и находки</p>
         </div>
       </div>
-      <div class="card stub-card">
-        <div class="stub-icon">🛍️</div>
-        <h3>Школьная барахолка</h3>
-        <p>Скоро здесь можно будет подавать объявления, искать нужные вещи и писать продавцам напрямую.</p>
-        <span class="coming-badge"><span class="dot"></span>Наполняется на Шаге 3</span>
+
+      <div class="market-toolbar">
+        <input type="text" class="search-input" id="market-search" placeholder="🔍 Поиск по названию и описанию...">
+        <div class="cat-filters" id="cat-filters">
+          <button type="button" class="cat-btn active" data-cat="all">Все</button>
+          <button type="button" class="cat-btn" data-cat="books">📚 Учебники и пособия</button>
+          <button type="button" class="cat-btn" data-cat="office">✏️ Канцелярия</button>
+          <button type="button" class="cat-btn" data-cat="tech">💻 Электроника</button>
+          <button type="button" class="cat-btn" data-cat="sport">👕 Одежда и спорт</button>
+          <button type="button" class="cat-btn" data-cat="lost">🆘 Бюро находок</button>
+        </div>
+        <button class="btn btn-primary" id="new-listing-btn">➕ Подать объявление</button>
       </div>
+
+      <div class="grid" id="market-grid"></div>
     </section>
 
     <!-- ВКЛАДКА 4: СОЦСЕТЬ -->
@@ -2010,15 +2715,79 @@
       <div class="section-title">
         <div class="section-icon">💬</div>
         <div>
-          <h2>Соцсеть</h2>
-          <p>Лента лицея: посты, достижения и события</p>
+          <h2 data-editable="social-title">Соцсеть Лицея №37</h2>
+          <p data-editable="social-desc">Лента, личные сообщения, каналы и банк взаимопомощи</p>
         </div>
       </div>
-      <div class="card stub-card">
-        <div class="stub-icon">💬</div>
-        <h3>Лента Лицея №37</h3>
-        <p>Скоро здесь появится общая лента: создавай посты, делись победами и комментируй новости лицея.</p>
-        <span class="coming-badge"><span class="dot"></span>Наполняется на Шаге 3</span>
+
+      <div class="subtabs" id="social-subtabs">
+        <button type="button" class="subtab active" data-sub="feed">📰 Лента</button>
+        <button type="button" class="subtab" data-sub="dms">✉️ Сообщения</button>
+        <button type="button" class="subtab" data-sub="channels">📢 Каналы</button>
+        <button type="button" class="subtab" data-sub="help">🤝 Взаимопомощь</button>
+      </div>
+
+      <div class="sub-panel active" id="sub-feed">
+        <div class="card post-card" id="composer-card" style="display:none;">
+          <textarea id="post-text" class="textarea-field" placeholder="Что нового в жизни Лицея №37?" maxlength="2000"></textarea>
+          <input type="file" id="post-photo" accept="image/*" hidden>
+          <div class="thumb-row" id="post-photo-preview" style="margin-top:10px;"></div>
+          <div class="post-composer-actions">
+            <button type="button" class="btn btn-ghost btn-sm" id="post-photo-btn">🖼️ Фото</button>
+            <button type="button" class="btn btn-primary btn-sm" id="post-submit">🚀 Опубликовать</button>
+          </div>
+        </div>
+        <div class="card stub-card" id="feed-guest-box" style="display:none; margin-bottom:16px;">
+          <div class="stub-icon">📰</div>
+          <h3>Лента Лицея №37</h3>
+          <p>Войди, чтобы публиковать посты, ставить лайки и комментировать. А пока — просто читай ленту ниже.</p>
+        </div>
+        <div id="feed-list"></div>
+
+        <div class="section-title" style="margin-top:36px;">
+          <div class="section-icon">🔎</div>
+          <div>
+            <h2>Найти одноклассников и учителей</h2>
+            <p>Поиск по имени и классу (1–11 и буквы А–Д)</p>
+          </div>
+        </div>
+        <input type="text" class="search-input" id="people-search" placeholder="🔍 Имя или класс, например: Артём или 9Б" style="width:100%; margin-bottom:14px;">
+        <div class="people-grid" id="people-grid"></div>
+      </div>
+
+      <div class="sub-panel" id="sub-dms">
+        <div class="archive-folder">
+          <button type="button" class="archive-toggle" id="archive-toggle"><span>📥 Архив чатов (<span id="archive-count">0</span>)</span><span id="archive-arrow">▸</span></button>
+          <div class="archive-list" id="archive-list"></div>
+        </div>
+        <div id="dm-list"></div>
+      </div>
+
+      <div class="sub-panel" id="sub-channels">
+        <div style="display:flex; justify-content:flex-end; margin-bottom:16px;">
+          <button class="btn btn-primary" id="new-channel-btn">➕ Создать канал / сообщество</button>
+        </div>
+        <div class="grid" id="channels-grid"></div>
+      </div>
+
+      <div class="sub-panel" id="sub-help">
+        <div class="cat-filters" id="vol-filter" style="margin-bottom:18px;">
+          <button type="button" class="cat-btn active" data-vol="all">Все предметы</button>
+          <button type="button" class="cat-btn" data-vol="Математика">📐 Математика</button>
+          <button type="button" class="cat-btn" data-vol="Физика">⚛️ Физика</button>
+          <button type="button" class="cat-btn" data-vol="Python/Информатика">🐍 Python/Информатика</button>
+          <button type="button" class="cat-btn" data-vol="Русский язык">📖 Русский язык</button>
+          <button type="button" class="cat-btn" data-vol="Английский">🇬🇧 Английский</button>
+          <button type="button" class="cat-btn" data-vol="Химия">🧪 Химия</button>
+        </div>
+        <div class="vol-grid" id="vol-grid"></div>
+        <div class="card" id="vol-join-card" style="margin-top:20px; display:none;">
+          <h3 class="info-title">🤝 Стать волонтёром банка взаимопомощи</h3>
+          <p class="info-desc">Отметь предметы, по которым готов помогать другим ученикам.</p>
+          <div class="vol-checks" id="vol-checks"></div>
+          <input type="text" class="search-input" id="vol-note" placeholder="Коротко о себе (необязательно)" style="width:100%; margin-top:12px;">
+          <button class="btn btn-primary btn-block" id="vol-join-btn" style="margin-top:12px;">🤝 Помогать одноклассникам</button>
+        </div>
       </div>
     </section>
 
@@ -2176,6 +2945,121 @@
           <input type="text" id="apply-contact" placeholder="Как с тобой связаться?" maxlength="64" required>
         </div>
         <button type="submit" class="btn btn-primary btn-block">Отправить заявку</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-listing" aria-modal="true" role="dialog">
+    <div class="modal-content">
+      <button class="modal-close" data-close-modal="modal-listing">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">🛍️</div>
+        <h3>Новое объявление</h3>
+        <p>Барахолка Лицея №37</p>
+      </div>
+      <div class="form-error" id="listing-error"></div>
+      <form id="listing-form">
+        <div class="field">
+          <label for="li-title">Название</label>
+          <input type="text" id="li-title" placeholder="Например: Учебник алгебры, 9 класс" maxlength="64" required>
+        </div>
+        <div class="field">
+          <label for="li-cat">Категория</label>
+          <select id="li-cat">
+            <option value="books">📚 Учебники и пособия</option>
+            <option value="office">✏️ Канцелярия</option>
+            <option value="tech">💻 Электроника</option>
+            <option value="sport">👕 Одежда и спорт</option>
+            <option value="lost">🆘 Бюро находок</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Цена</label>
+          <div class="field-row">
+            <button type="button" class="deal-btn active" data-deal="price">₽ Цена</button>
+            <button type="button" class="deal-btn" data-deal="free">🎁 Бесплатно</button>
+            <button type="button" class="deal-btn" data-deal="trade">🔄 Обмен</button>
+          </div>
+          <input type="number" id="li-price" min="0" placeholder="Цена в рублях" style="margin-top:8px;">
+        </div>
+        <div class="field">
+          <label for="li-desc">Описание</label>
+          <textarea id="li-desc" class="textarea-field" maxlength="500" placeholder="Состояние, комплектация, где встретиться..."></textarea>
+        </div>
+        <div class="field">
+          <label>Фотографии (до 4)</label>
+          <input type="file" id="li-photos" accept="image/*" multiple hidden>
+          <button type="button" class="btn btn-outline btn-sm" id="li-photos-btn">🖼️ Выбрать фото</button>
+          <div class="thumb-row" id="li-thumbs" style="margin-top:10px;"></div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">🛍️ Опубликовать объявление</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-pchat" aria-modal="true" role="dialog">
+    <div class="modal-content">
+      <button class="modal-close" data-close-modal="modal-pchat">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">💬</div>
+        <h3>Чат по товару</h3>
+        <p>Обсуждение объявления с продавцом и покупателями</p>
+      </div>
+      <div id="pchat-item"></div>
+      <div class="chat-list modal-chat-list" id="pchat-list"></div>
+      <div class="chat-form">
+        <textarea id="pchat-input" rows="1" placeholder="Сообщение... (Enter — отправить)"></textarea>
+        <button class="btn btn-primary" id="pchat-send">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-dm" aria-modal="true" role="dialog">
+    <div class="modal-content">
+      <button class="modal-close" data-close-modal="modal-dm">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">✉️</div>
+        <h3>Личные сообщения</h3>
+        <p id="dm-with"></p>
+      </div>
+      <div class="chat-list modal-chat-list" id="dm-list-modal"></div>
+      <div class="chat-form">
+        <textarea id="dm-input" rows="1" placeholder="Сообщение... (Enter — отправить)"></textarea>
+        <button class="btn btn-primary" id="dm-send">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-channel" aria-modal="true" role="dialog">
+    <div class="modal-content">
+      <button class="modal-close" data-close-modal="modal-channel">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">📢</div>
+        <h3>Создать канал / сообщество</h3>
+        <p>Каналы и сообщества Лицея №37</p>
+      </div>
+      <div class="form-error" id="channel-error"></div>
+      <form id="channel-form">
+        <div class="field">
+          <label for="ch-name">Название</label>
+          <input type="text" id="ch-name" placeholder="Например: Олимпиадный клуб 37" maxlength="48" required>
+        </div>
+        <div class="field">
+          <label for="ch-desc">Описание</label>
+          <textarea id="ch-desc" class="textarea-field" maxlength="300" placeholder="О чём этот канал или сообщество?"></textarea>
+        </div>
+        <div class="field">
+          <label>Иконка</label>
+          <div class="beast-picker" id="ch-emoji-grid" style="grid-template-columns:repeat(8, 1fr);"></div>
+        </div>
+        <div class="field">
+          <label>Режим</label>
+          <div class="field-row">
+            <button type="button" class="deal-btn active" data-mode="channel">📢 Канал — посты делает создатель и админы</button>
+            <button type="button" class="deal-btn" data-mode="community">👥 Сообщество — посты может делать каждый подписчик</button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">🚀 Создать</button>
       </form>
     </div>
   </div>
@@ -2367,6 +3251,8 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
       if (name === 'profile') renderProfileTab();
       if (name === 'class') renderClassTab();
+      if (name === 'market') renderMarket();
+      if (name === 'social') renderSocial();
     }
 
     document.getElementById('main-nav').addEventListener('click', function (e) {
@@ -2676,6 +3562,8 @@
       const user = getCurrentUser();
       renderCapsuleAuthorArea();
       updateLikeCounter();
+      if (panels.market.classList.contains('active')) renderMarket();
+      if (panels.social.classList.contains('active')) renderSocial();
 
       if (!user) {
         area.innerHTML =
@@ -3348,6 +4236,1092 @@
       if (panels.home.classList.contains('active')) renderCapsules();
     }, 30000);
 
+    /* ============ ШАГ 3: БАРАХОЛКА И СОЦСЕТЬ ============ */
+
+    const MARKET_CATS = {
+      books: '📚 Учебники и пособия',
+      office: '✏️ Канцелярия',
+      tech: '💻 Электроника',
+      sport: '👕 Одежда и спорт',
+      lost: '🆘 Бюро находок'
+    };
+
+    const VOL_SUBJECTS = ['Математика', 'Физика', 'Python/Информатика', 'Русский язык', 'Английский', 'Химия'];
+
+    const CHANNEL_EMOJIS = ['📢', '🎓', '⚽', '🎨', '🎮', '📚', '🎵', '🔬'];
+
+    function compressImage(file, maxSide, quality) {
+      return new Promise(function (resolve, reject) {
+        const reader = new FileReader();
+        reader.onload = function () {
+          const img = new Image();
+          img.onload = function () {
+            const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+            const w = Math.max(1, Math.round(img.width * scale));
+            const h = Math.max(1, Math.round(img.height * scale));
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.onerror = reject;
+          img.src = reader.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function getUserById(id) {
+      return getUsers().find(function (u) { return u.id === id; }) || null;
+    }
+
+    function msgAvatarHtml(avatar, cls) {
+      if (avatar && avatar.type === 'image' && avatar.value) {
+        return '<div class="' + cls + '" style="background-image:url(' + avatar.value + ');"></div>';
+      }
+      return '<div class="' + cls + '">' + esc(avatar && avatar.value ? avatar.value : '🙂') + '</div>';
+    }
+
+    /* ---- БАРАХОЛКА ---- */
+
+    let marketCat = 'all';
+    let marketQuery = '';
+    let listingPhotos = [];
+    let listingDeal = 'price';
+    let openListingId = null;
+    const galleryIndex = {};
+
+    function renderMarket() {
+      const grid = document.getElementById('market-grid');
+      if (!grid) return;
+      const user = getCurrentUser();
+      const q = marketQuery.trim().toLowerCase();
+      const items = getList('listings')
+        .filter(function (l) { return l.active !== false; })
+        .filter(function (l) { return marketCat === 'all' || l.cat === marketCat; })
+        .filter(function (l) {
+          if (!q) return true;
+          return (l.title || '').toLowerCase().indexOf(q) !== -1 || (l.desc || '').toLowerCase().indexOf(q) !== -1;
+        })
+        .sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+      if (!items.length) {
+        grid.innerHTML = '<div class="card stub-card" style="grid-column:1/-1;"><div class="stub-icon">🛍️</div><h3>Объявлений пока нет</h3><p>Стань первым продавцом — нажми «➕ Подать объявление»!</p></div>';
+        return;
+      }
+      grid.innerHTML = items.map(function (l) {
+        const photos = Array.isArray(l.photos) ? l.photos : [];
+        const idx = Math.min(galleryIndex[l.id] || 0, Math.max(0, photos.length - 1));
+        const mine = user && l.sellerId === user.id;
+        const admin = user && user.isAdmin;
+        let photoHtml;
+        if (!photos.length) {
+          photoHtml = '<div class="listing-photo">' + (l.cat === 'lost' ? '🆘' : '📦') + '</div>';
+        } else {
+          photoHtml = '<div class="listing-photo">' +
+            '<img src="' + photos[idx] + '" alt="' + esc(l.title) + '">' +
+            (photos.length > 1
+              ? '<button type="button" class="gal-btn prev" data-gal="' + esc(l.id) + '|prev">‹</button>' +
+                '<button type="button" class="gal-btn next" data-gal="' + esc(l.id) + '|next">›</button>' +
+                '<div class="gal-dots">' + photos.map(function (_, d) {
+                  return '<button type="button" class="gal-dot' + (d === idx ? ' active' : '') + '" data-gal="' + esc(l.id) + '|' + d + '"></button>';
+                }).join('') + '</div>'
+              : '') +
+          '</div>';
+        }
+        let priceHtml;
+        if (l.deal === 'free') priceHtml = '<span class="badge-free">🎁 Бесплатно</span>';
+        else if (l.deal === 'trade') priceHtml = '<span class="badge-trade">🔄 Обмен</span>';
+        else priceHtml = '<span class="listing-price">' + Number(l.price || 0).toLocaleString('ru-RU') + ' ₽</span>';
+        return '<div class="card listing-card">' +
+          photoHtml +
+          '<div class="listing-body">' +
+            '<div class="listing-top">' + priceHtml + '<span class="seller-chip">' + esc(MARKET_CATS[l.cat] || l.cat) + '</span></div>' +
+            '<h3 class="listing-title">' + esc(l.title) + '</h3>' +
+            (l.desc ? '<p class="listing-desc">' + esc(l.desc) + '</p>' : '') +
+            '<div class="listing-meta">' +
+              '<span class="seller-chip">🎒 ' + esc(l.sellerClassId || '') + ' · ' + esc(l.sellerName || '') + '</span>' +
+              '<span>' + fmtDateTime(l.createdAt) + '</span>' +
+            '</div>' +
+            '<div class="listing-actions">' +
+              '<button type="button" class="btn btn-outline btn-sm" data-pchat="' + esc(l.id) + '">💬 Написать продавцу</button>' +
+              ((mine || admin) ? '<button type="button" class="btn btn-danger btn-sm" data-listing-del="' + esc(l.id) + '">🗑️ Снять с продажи</button>' : '') +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    document.getElementById('market-search').addEventListener('input', function () {
+      marketQuery = this.value;
+      renderMarket();
+    });
+
+    document.getElementById('cat-filters').addEventListener('click', function (e) {
+      const btn = e.target.closest('.cat-btn');
+      if (!btn) return;
+      marketCat = btn.dataset.cat;
+      document.querySelectorAll('#cat-filters .cat-btn').forEach(function (b) { b.classList.toggle('active', b === btn); });
+      renderMarket();
+    });
+
+    document.getElementById('market-grid').addEventListener('click', function (e) {
+      const gal = e.target.closest('[data-gal]');
+      if (gal) {
+        const sep = gal.dataset.gal.lastIndexOf('|');
+        const id = gal.dataset.gal.slice(0, sep);
+        const val = gal.dataset.gal.slice(sep + 1);
+        const item = getList('listings').find(function (l) { return l.id === id; });
+        const photos = item && Array.isArray(item.photos) ? item.photos : [];
+        if (!photos.length) return;
+        const cur = galleryIndex[id] || 0;
+        let next;
+        if (val === 'prev') next = (cur - 1 + photos.length) % photos.length;
+        else if (val === 'next') next = (cur + 1) % photos.length;
+        else next = Math.min(Number(val), photos.length - 1);
+        galleryIndex[id] = next;
+        const box = gal.closest('.listing-photo');
+        box.querySelector('img').src = photos[next];
+        box.querySelectorAll('.gal-dot').forEach(function (d, i) { d.classList.toggle('active', i === next); });
+        return;
+      }
+      const pchatBtn = e.target.closest('[data-pchat]');
+      if (pchatBtn) { openProductChat(pchatBtn.dataset.pchat); return; }
+      const delBtn = e.target.closest('[data-listing-del]');
+      if (delBtn) {
+        const user = getCurrentUser();
+        if (!user) return;
+        const list = getList('listings');
+        const item = list.find(function (l) { return l.id === delBtn.dataset.listingDel; });
+        if (!item) return;
+        if (item.sellerId !== user.id && !user.isAdmin) { toast('Снять с продажи может только автор объявления или админ.', 'error'); return; }
+        if (!confirm('Снять объявление «' + item.title + '» с продажи?')) return;
+        list.splice(list.indexOf(item), 1);
+        dbSave('listings', list);
+        renderMarket();
+        toast('Объявление снято с продажи.', 'info');
+      }
+    });
+
+    function setDealMode(mode) {
+      listingDeal = mode;
+      document.querySelectorAll('#listing-form .deal-btn').forEach(function (b) { b.classList.toggle('active', b.dataset.deal === mode); });
+      document.getElementById('li-price').style.display = mode === 'price' ? '' : 'none';
+    }
+
+    document.querySelectorAll('#listing-form .deal-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () { setDealMode(btn.dataset.deal); });
+    });
+
+    document.getElementById('new-listing-btn').addEventListener('click', function () {
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); toast('Войди, чтобы подать объявление.', 'info'); return; }
+      listingPhotos = [];
+      renderListingThumbs();
+      document.getElementById('listing-form').reset();
+      setDealMode('price');
+      showFormError('listing-error', '');
+      openModal('modal-listing');
+    });
+
+    document.getElementById('li-photos-btn').addEventListener('click', function () {
+      document.getElementById('li-photos').click();
+    });
+
+    document.getElementById('li-photos').addEventListener('change', async function () {
+      const files = Array.from(this.files || []);
+      const room = 4 - listingPhotos.length;
+      this.value = '';
+      if (room <= 0) { toast('Можно приложить максимум 4 фотографии.', 'error'); return; }
+      if (files.length > room) toast('Загружены первые ' + room + ' фото — максимум 4.', 'info');
+      for (const f of files.slice(0, room)) {
+        try { listingPhotos.push(await compressImage(f, 500, 0.7)); }
+        catch (err) { toast('Не удалось обработать одно из фото.', 'error'); }
+      }
+      renderListingThumbs();
+    });
+
+    function renderListingThumbs() {
+      const wrap = document.getElementById('li-thumbs');
+      if (!wrap) return;
+      wrap.innerHTML = listingPhotos.map(function (src, i) {
+        return '<div class="thumb"><img src="' + src + '" alt=""><button type="button" class="thumb-del" data-thumb-del="' + i + '">✕</button></div>';
+      }).join('');
+    }
+
+    document.getElementById('li-thumbs').addEventListener('click', function (e) {
+      const btn = e.target.closest('[data-thumb-del]');
+      if (!btn) return;
+      listingPhotos.splice(Number(btn.dataset.thumbDel), 1);
+      renderListingThumbs();
+    });
+
+    document.getElementById('listing-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); return; }
+      const title = document.getElementById('li-title').value.trim();
+      const cat = document.getElementById('li-cat').value;
+      const desc = document.getElementById('li-desc').value.trim();
+      const price = Number(document.getElementById('li-price').value);
+      if (title.length < 3) { showFormError('listing-error', 'Введи название (минимум 3 символа).'); return; }
+      if (listingDeal === 'price' && (!price || price <= 0)) { showFormError('listing-error', 'Укажи цену в рублях или выбери «Бесплатно» / «Обмен».'); return; }
+      const list = getList('listings');
+      const item = {
+        id: makeId('li'), sellerId: user.id, sellerName: user.name,
+        sellerClassId: classIdOf(user.grade, user.letter),
+        title: title, cat: cat, deal: listingDeal,
+        price: listingDeal === 'price' ? price : null,
+        desc: desc, photos: listingPhotos.slice(),
+        active: true, createdAt: Date.now()
+      };
+      list.push(item);
+      dbSave('listings', list);
+      closeModal('modal-listing');
+      galleryIndex[item.id] = 0;
+      renderMarket();
+      toast('🛍️ Объявление опубликовано на Барахолке!', 'success');
+    });
+
+    function openProductChat(listingId) {
+      const item = getList('listings').find(function (l) { return l.id === listingId; });
+      if (!item) return;
+      openListingId = listingId;
+      const photos = Array.isArray(item.photos) && item.photos.length ? item.photos : [];
+      const priceHtml = item.deal === 'free'
+        ? '<span class="badge-free">🎁 Бесплатно</span>'
+        : item.deal === 'trade'
+          ? '<span class="badge-trade">🔄 Обмен</span>'
+          : '<span class="listing-price">' + Number(item.price || 0).toLocaleString('ru-RU') + ' ₽</span>';
+      document.getElementById('pchat-item').innerHTML =
+        '<div class="pchat-item">' +
+          (photos.length ? '<img src="' + photos[0] + '" alt="">' : '<div class="pchat-ph">' + (item.cat === 'lost' ? '🆘' : '📦') + '</div>') +
+          '<div style="min-width:0;">' +
+            '<div style="font-weight:700; margin-bottom:4px;">' + esc(item.title) + '</div>' +
+            '<div style="margin-bottom:4px;">' + priceHtml + '</div>' +
+            '<div class="field-hint">Продавец: ' + esc(item.sellerName || '') + ' · ' + esc(item.sellerClassId || '') + '</div>' +
+          '</div>' +
+        '</div>';
+      renderProductChat();
+      openModal('modal-pchat');
+    }
+
+    function renderProductChat() {
+      const wrap = document.getElementById('pchat-list');
+      if (!wrap || !openListingId) return;
+      const user = getCurrentUser();
+      const messages = getList('pchat')
+        .filter(function (m) { return m.listingId === openListingId; })
+        .sort(function (a, b) { return (a.ts || 0) - (b.ts || 0); })
+        .slice(-60);
+      wrap.innerHTML = messages.length
+        ? messages.map(function (m) {
+            const mine = user && m.userId === user.id;
+            return '<div class="mini-msg' + (mine ? ' own' : '') + '">' +
+              msgAvatarHtml(m.avatar, 'mini-ava') +
+              '<div class="mini-bubble">' +
+                '<div class="mini-head"><span class="mini-author">' + esc(m.name) + '</span><span>' + fmtDateTime(m.ts) + (m.edited ? ' · изменено' : '') + '</span></div>' +
+                '<div>' + esc(m.text) + '</div>' +
+                (mine ? '<div class="mini-actions"><button type="button" data-pchat-edit="' + esc(m.id) + '">✏️</button><button type="button" data-pchat-del="' + esc(m.id) + '">🗑️</button></div>' : '') +
+              '</div>' +
+            '</div>';
+          }).join('')
+        : '<p class="empty-line">Сообщений пока нет — задай вопрос продавцу!</p>';
+      wrap.scrollTop = wrap.scrollHeight;
+    }
+
+    function sendProductChat() {
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); toast('Войди, чтобы написать продавцу.', 'info'); return; }
+      const input = document.getElementById('pchat-input');
+      const text = input.value.trim();
+      if (!text || !openListingId) return;
+      const list = getList('pchat');
+      list.push({ id: makeId('pcm'), listingId: openListingId, userId: user.id, name: user.name, avatar: user.avatar, text: text, ts: Date.now(), edited: false });
+      dbSave('pchat', list);
+      input.value = '';
+      renderProductChat();
+    }
+
+    document.getElementById('pchat-send').addEventListener('click', sendProductChat);
+    document.getElementById('pchat-input').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendProductChat(); }
+    });
+
+    document.getElementById('pchat-list').addEventListener('click', function (e) {
+      const user = getCurrentUser();
+      if (!user) return;
+      const editBtn = e.target.closest('[data-pchat-edit]');
+      const delBtn = e.target.closest('[data-pchat-del]');
+      if (!editBtn && !delBtn) return;
+      const list = getList('pchat');
+      const id = editBtn ? editBtn.dataset.pchatEdit : delBtn.dataset.pchatDel;
+      const msg = list.find(function (m) { return m.id === id && m.userId === user.id; });
+      if (!msg) return;
+      if (editBtn) {
+        const newText = prompt('Редактировать сообщение:', msg.text);
+        if (newText === null) return;
+        const trimmed = newText.trim();
+        if (!trimmed) { toast('Сообщение не может быть пустым.', 'error'); return; }
+        msg.text = trimmed;
+        msg.edited = true;
+        dbSave('pchat', list);
+        renderProductChat();
+      } else {
+        if (!confirm('Удалить это сообщение?')) return;
+        list.splice(list.indexOf(msg), 1);
+        dbSave('pchat', list);
+        renderProductChat();
+      }
+    });
+
+    /* ---- ЛИЧНЫЕ СООБЩЕНИЯ (ЛС) ---- */
+
+    let currentDmPartner = null;
+    let archiveOpen = false;
+
+    function dmKey(a, b) { return [a, b].sort().join('|'); }
+
+    function getArchived(userId) {
+      const map = dbLoad('dmArchive', {});
+      const arr = map && typeof map === 'object' && !Array.isArray(map) ? map[userId] : null;
+      return Array.isArray(arr) ? arr : [];
+    }
+
+    function setArchived(userId, arr) {
+      const map = dbLoad('dmArchive', {});
+      if (!map || typeof map !== 'object' || Array.isArray(map)) return;
+      map[userId] = arr;
+      dbSave('dmArchive', map);
+    }
+
+    function openDm(partnerId) {
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); toast('Войди, чтобы отправлять личные сообщения.', 'info'); return; }
+      if (partnerId === user.id) { toast('Нельзя написать самому себе 🙂', 'info'); return; }
+      const pu = getUserById(partnerId);
+      if (!pu) { toast('Пользователь не найден.', 'error'); return; }
+      currentDmPartner = partnerId;
+      document.getElementById('dm-with').innerHTML = esc(pu.name) + ' <span class="user-class">' + esc(classIdOf(pu.grade, pu.letter)) + '</span>';
+      renderDmMessages();
+      openModal('modal-dm');
+    }
+
+    function renderDmMessages() {
+      const user = getCurrentUser();
+      const wrap = document.getElementById('dm-list-modal');
+      if (!wrap || !currentDmPartner || !user) return;
+      const key = dmKey(user.id, currentDmPartner);
+      const messages = getList('dms')
+        .filter(function (m) { return m.key === key; })
+        .sort(function (a, b) { return (a.ts || 0) - (b.ts || 0); })
+        .slice(-80);
+      wrap.innerHTML = messages.length
+        ? messages.map(function (m) {
+            const mine = m.from === user.id;
+            return '<div class="mini-msg' + (mine ? ' own' : '') + '">' +
+              msgAvatarHtml(m.avatar, 'mini-ava') +
+              '<div class="mini-bubble">' +
+                '<div class="mini-head"><span class="mini-author">' + esc(m.name) + '</span><span>' + fmtDateTime(m.ts) + (m.edited ? ' · изменено' : '') + '</span></div>' +
+                '<div>' + esc(m.text) + '</div>' +
+                (mine ? '<div class="mini-actions"><button type="button" data-dmmsg-edit="' + esc(m.id) + '">✏️</button><button type="button" data-dmmsg-del="' + esc(m.id) + '">🗑️</button></div>' : '') +
+              '</div>' +
+            '</div>';
+          }).join('')
+        : '<p class="empty-line">Начни диалог — напиши первое сообщение!</p>';
+      wrap.scrollTop = wrap.scrollHeight;
+    }
+
+    function sendDm() {
+      const user = getCurrentUser();
+      if (!user || !currentDmPartner) return;
+      const input = document.getElementById('dm-input');
+      const text = input.value.trim();
+      if (!text) return;
+      const list = getList('dms');
+      list.push({ id: makeId('dm'), key: dmKey(user.id, currentDmPartner), from: user.id, name: user.name, avatar: user.avatar, text: text, ts: Date.now(), edited: false });
+      dbSave('dms', list);
+      input.value = '';
+      renderDmMessages();
+    }
+
+    document.getElementById('dm-send').addEventListener('click', sendDm);
+    document.getElementById('dm-input').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendDm(); }
+    });
+
+    document.getElementById('dm-list-modal').addEventListener('click', function (e) {
+      const user = getCurrentUser();
+      if (!user) return;
+      const editBtn = e.target.closest('[data-dmmsg-edit]');
+      const delBtn = e.target.closest('[data-dmmsg-del]');
+      if (!editBtn && !delBtn) return;
+      const list = getList('dms');
+      const id = editBtn ? editBtn.dataset.dmmsgEdit : delBtn.dataset.dmmsgDel;
+      const msg = list.find(function (m) { return m.id === id && m.from === user.id; });
+      if (!msg) return;
+      if (editBtn) {
+        const newText = prompt('Редактировать сообщение:', msg.text);
+        if (newText === null) return;
+        const trimmed = newText.trim();
+        if (!trimmed) { toast('Сообщение не может быть пустым.', 'error'); return; }
+        msg.text = trimmed;
+        msg.edited = true;
+        dbSave('dms', list);
+        renderDmMessages();
+      } else {
+        if (!confirm('Удалить это сообщение?')) return;
+        list.splice(list.indexOf(msg), 1);
+        dbSave('dms', list);
+        renderDmMessages();
+      }
+    });
+
+    function renderDms() {
+      const user = getCurrentUser();
+      const listWrap = document.getElementById('dm-list');
+      const archWrap = document.getElementById('archive-list');
+      const countEl = document.getElementById('archive-count');
+      if (!listWrap || !archWrap || !countEl) return;
+      if (!user) {
+        listWrap.innerHTML = '<div class="card stub-card"><div class="stub-icon">✉️</div><h3>Личные сообщения</h3><p>Войди, чтобы общаться с учениками и учителями Лицея №37.</p></div>';
+        archWrap.innerHTML = '';
+        countEl.textContent = '0';
+        return;
+      }
+      const archived = getArchived(user.id);
+      const all = getList('dms');
+      const dialogs = {};
+      all.forEach(function (m) {
+        if (m.from !== user.id) {
+          const ids = (m.key || '').split('|');
+          if (ids.indexOf(user.id) === -1) return;
+        }
+        const ids2 = (m.key || '').split('|');
+        const partner = ids2[0] === user.id ? ids2[1] : ids2[0];
+        if (!dialogs[partner] || (dialogs[partner].ts || 0) < (m.ts || 0)) dialogs[partner] = m;
+      });
+      const partners = Object.keys(dialogs);
+      const active = partners.filter(function (p) { return archived.indexOf(p) === -1; })
+        .sort(function (a, b) { return (dialogs[b].ts || 0) - (dialogs[a].ts || 0); });
+      const inArchive = partners.filter(function (p) { return archived.indexOf(p) !== -1; })
+        .sort(function (a, b) { return (dialogs[b].ts || 0) - (dialogs[a].ts || 0); });
+      countEl.textContent = String(inArchive.length);
+      listWrap.innerHTML = active.length
+        ? active.map(function (partnerId) {
+            const last = dialogs[partnerId];
+            const pu = getUserById(partnerId);
+            const fromMe = last.from === user.id;
+            return '<div class="dm-row">' +
+              msgAvatarHtml(pu ? pu.avatar : null, 'mini-ava') +
+              '<div style="min-width:0; flex:1;">' +
+                '<div style="font-weight:700;">' + esc(pu ? pu.name : 'Пользователь') + (pu ? ' <span class="user-class">' + esc(classIdOf(pu.grade, pu.letter)) + '</span>' : '') + '</div>' +
+                '<div class="field-hint" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + (fromMe ? 'Ты: ' : '') + esc(last.text) + '</div>' +
+              '</div>' +
+              '<button type="button" class="btn btn-outline btn-sm" data-dm-open="' + esc(partnerId) + '">Открыть</button>' +
+              '<button type="button" class="btn btn-ghost btn-sm" data-dm-archive="' + esc(partnerId) + '" title="В архив">📥</button>' +
+            '</div>';
+          }).join('')
+        : '<div class="card stub-card"><div class="stub-icon">✉️</div><h3>Диалогов пока нет</h3><p>Найди одноклассника через поиск в Ленте, напиши волонтёру или продавцу на Барахолке.</p></div>';
+      archWrap.innerHTML = inArchive.length
+        ? inArchive.map(function (partnerId) {
+            const pu = getUserById(partnerId);
+            return '<div class="dm-row">' +
+              msgAvatarHtml(pu ? pu.avatar : null, 'mini-ava') +
+              '<div style="min-width:0; flex:1; font-weight:600;">' + esc(pu ? pu.name : 'Пользователь') + '</div>' +
+              '<button type="button" class="btn btn-ghost btn-sm" data-dm-unarchive="' + esc(partnerId) + '">📤 Вернуть из архива</button>' +
+            '</div>';
+          }).join('')
+        : '<p class="empty-line">Архив пуст.</p>';
+    }
+
+    document.getElementById('archive-toggle').addEventListener('click', function () {
+      archiveOpen = !archiveOpen;
+      document.getElementById('archive-list').classList.toggle('open', archiveOpen);
+      document.getElementById('archive-arrow').textContent = archiveOpen ? '▾' : '▸';
+    });
+
+    document.getElementById('dm-list').addEventListener('click', function (e) {
+      const user = getCurrentUser();
+      if (!user) return;
+      const openBtn = e.target.closest('[data-dm-open]');
+      if (openBtn) { openDm(openBtn.dataset.dmOpen); return; }
+      const archBtn = e.target.closest('[data-dm-archive]');
+      if (archBtn) {
+        const archived = getArchived(user.id);
+        if (archived.indexOf(archBtn.dataset.dmArchive) === -1) archived.push(archBtn.dataset.dmArchive);
+        setArchived(user.id, archived);
+        renderDms();
+        toast('Чат перемещён в архив 📥', 'info');
+      }
+    });
+
+    document.getElementById('archive-list').addEventListener('click', function (e) {
+      const user = getCurrentUser();
+      if (!user) return;
+      const btn = e.target.closest('[data-dm-unarchive]');
+      if (!btn) return;
+      const archived = getArchived(user.id);
+      const idx = archived.indexOf(btn.dataset.dmUnarchive);
+      if (idx !== -1) archived.splice(idx, 1);
+      setArchived(user.id, archived);
+      renderDms();
+      toast('Чат возвращён из архива 📤', 'info');
+    });
+
+    /* ---- СОЦСЕТЬ: подвкладки ---- */
+
+    let socialSub = 'feed';
+    let openPostComments = {};
+    let postPhoto = null;
+    let peopleQuery = '';
+    let channelDraftEmoji = '📢';
+    let volFilter = 'all';
+
+    function setSocialSub(sub) {
+      socialSub = sub;
+      document.querySelectorAll('#social-subtabs .subtab').forEach(function (b) { b.classList.toggle('active', b.dataset.sub === sub); });
+      document.querySelectorAll('#tab-social .sub-panel').forEach(function (p) { p.classList.toggle('active', p.id === 'sub-' + sub); });
+      renderSocial();
+    }
+
+    document.getElementById('social-subtabs').addEventListener('click', function (e) {
+      const btn = e.target.closest('.subtab');
+      if (btn) setSocialSub(btn.dataset.sub);
+    });
+
+    function renderSocial() {
+      if (socialSub === 'feed') { renderFeed(); renderPeople(); }
+      else if (socialSub === 'dms') renderDms();
+      else if (socialSub === 'channels') renderChannels();
+      else renderVolunteers();
+    }
+
+    /* ---- Лента постов ---- */
+
+    function renderFeed() {
+      const user = getCurrentUser();
+      const composer = document.getElementById('composer-card');
+      const guestBox = document.getElementById('feed-guest-box');
+      if (composer) composer.style.display = user ? 'block' : 'none';
+      if (guestBox) guestBox.style.display = user ? 'none' : 'block';
+      const wrap = document.getElementById('feed-list');
+      if (!wrap) return;
+      const posts = getList('posts').slice().sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); }).slice(0, 50);
+      if (!posts.length) {
+        wrap.innerHTML = '<div class="card stub-card"><div class="stub-icon">📰</div><h3>Лента пока пуста</h3><p>Опубликуй первый пост о жизни Лицея №37!</p></div>';
+        return;
+      }
+      wrap.innerHTML = posts.map(function (p) {
+        const mine = user && p.userId === user.id;
+        const liked = user && (p.likes || []).indexOf(user.id) !== -1;
+        const comments = Array.isArray(p.comments) ? p.comments : [];
+        const open = !!openPostComments[p.id];
+        return '<div class="card post-card">' +
+          '<div class="post-head">' +
+            avatarHtml(p.avatar) +
+            '<div style="min-width:0;">' +
+              '<div style="font-weight:700;">' + esc(p.name) + ' <span class="user-class">' + esc(p.classId || '') + '</span></div>' +
+              '<div class="field-hint">' + fmtDateTime(p.ts) + (p.edited ? ' · (изменено)' : '') + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="post-text">' + esc(p.text) + '</div>' +
+          (p.photo ? '<img class="post-photo" src="' + p.photo + '" alt="">' : '') +
+          '<div class="post-foot">' +
+            '<button type="button" class="btn btn-ghost btn-sm" data-post-like="' + esc(p.id) + '">' + (liked ? '❤️' : '🤍') + ' ' + (p.likes || []).length + '</button>' +
+            '<button type="button" class="btn btn-ghost btn-sm" data-post-comments="' + esc(p.id) + '">💬 ' + comments.length + '</button>' +
+            (mine
+              ? '<button type="button" class="btn btn-ghost btn-sm" data-post-edit="' + esc(p.id) + '">✏️ Изменить</button>' +
+                '<button type="button" class="btn btn-ghost btn-sm" data-post-del="' + esc(p.id) + '">🗑️ Удалить</button>'
+              : '') +
+          '</div>' +
+          '<div class="comment-block' + (open ? ' open' : '') + '">' +
+            (comments.length
+              ? comments.map(function (c) {
+                  const mineC = user && c.userId === user.id;
+                  return '<div class="comment">' +
+                    avatarHtml(c.avatar) +
+                    '<div class="comment-body">' +
+                      '<div class="mini-head"><span class="mini-author">' + esc(c.name) + '</span><span>' + fmtDateTime(c.ts) + '</span></div>' +
+                      '<div>' + esc(c.text) + '</div>' +
+                      (mineC ? '<div class="mini-actions"><button type="button" data-comment-del="' + esc(p.id) + '|' + esc(c.id) + '">🗑️ Удалить</button></div>' : '') +
+                    '</div>' +
+                  '</div>';
+                }).join('')
+              : '<p class="empty-line">Комментариев пока нет.</p>') +
+            (user
+              ? '<div class="comment-form"><input type="text" data-comment-input="' + esc(p.id) + '" placeholder="Комментарий... (Enter — отправить)" maxlength="300"></div>'
+              : '') +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    document.getElementById('feed-list').addEventListener('click', function (e) {
+      const user = getCurrentUser();
+      const likeBtn = e.target.closest('[data-post-like]');
+      if (likeBtn) {
+        if (!user) { openModal('modal-login'); toast('Войди, чтобы ставить лайки.', 'info'); return; }
+        const posts = getList('posts');
+        const p = posts.find(function (x) { return x.id === likeBtn.dataset.postLike; });
+        if (!p) return;
+        p.likes = p.likes || [];
+        const idx = p.likes.indexOf(user.id);
+        if (idx !== -1) p.likes.splice(idx, 1); else p.likes.push(user.id);
+        dbSave('posts', posts);
+        renderFeed();
+        return;
+      }
+      const comBtn = e.target.closest('[data-post-comments]');
+      if (comBtn) {
+        openPostComments[comBtn.dataset.postComments] = !openPostComments[comBtn.dataset.postComments];
+        renderFeed();
+        return;
+      }
+      const editBtn = e.target.closest('[data-post-edit]');
+      if (editBtn) {
+        if (!user) return;
+        const posts = getList('posts');
+        const p = posts.find(function (x) { return x.id === editBtn.dataset.postEdit && x.userId === user.id; });
+        if (!p) return;
+        const newText = prompt('Редактировать текст поста:', p.text);
+        if (newText === null) return;
+        const trimmed = newText.trim();
+        if (!trimmed) { toast('Текст поста не может быть пустым.', 'error'); return; }
+        p.text = trimmed;
+        p.edited = true;
+        dbSave('posts', posts);
+        renderFeed();
+        toast('Пост обновлён — добавлена пометка (изменено).', 'success');
+        return;
+      }
+      const delBtn = e.target.closest('[data-post-del]');
+      if (delBtn) {
+        if (!user) return;
+        const posts = getList('posts');
+        const p = posts.find(function (x) { return x.id === delBtn.dataset.postDel && x.userId === user.id; });
+        if (!p) return;
+        if (!confirm('Удалить пост безвозвратно?')) return;
+        posts.splice(posts.indexOf(p), 1);
+        dbSave('posts', posts);
+        renderFeed();
+        toast('Пост удалён.', 'info');
+        return;
+      }
+      const comDelBtn = e.target.closest('[data-comment-del]');
+      if (comDelBtn) {
+        if (!user) return;
+        const sep = comDelBtn.dataset.commentDel.lastIndexOf('|');
+        const postId = comDelBtn.dataset.commentDel.slice(0, sep);
+        const commentId = comDelBtn.dataset.commentDel.slice(sep + 1);
+        const posts = getList('posts');
+        const p = posts.find(function (x) { return x.id === postId; });
+        if (!p || !Array.isArray(p.comments)) return;
+        const c = p.comments.find(function (x) { return x.id === commentId && x.userId === user.id; });
+        if (!c) return;
+        p.comments.splice(p.comments.indexOf(c), 1);
+        dbSave('posts', posts);
+        renderFeed();
+      }
+    });
+
+    document.getElementById('feed-list').addEventListener('keydown', function (e) {
+      const input = e.target.closest('[data-comment-input]');
+      if (!input || e.key !== 'Enter') return;
+      e.preventDefault();
+      const user = getCurrentUser();
+      if (!user) return;
+      const text = input.value.trim();
+      if (!text) return;
+      const posts = getList('posts');
+      const p = posts.find(function (x) { return x.id === input.dataset.commentInput; });
+      if (!p) return;
+      p.comments = p.comments || [];
+      p.comments.push({ id: makeId('cmt'), userId: user.id, name: user.name, avatar: user.avatar, text: text, ts: Date.now() });
+      dbSave('posts', posts);
+      openPostComments[p.id] = true;
+      renderFeed();
+    });
+
+    document.getElementById('post-photo-btn').addEventListener('click', function () {
+      document.getElementById('post-photo').click();
+    });
+
+    document.getElementById('post-photo').addEventListener('change', async function () {
+      const f = (this.files || [])[0];
+      this.value = '';
+      if (!f) return;
+      try { postPhoto = await compressImage(f, 900, 0.72); }
+      catch (err) { toast('Не удалось обработать фото.', 'error'); }
+      renderPostPreview();
+    });
+
+    function renderPostPreview() {
+      const wrap = document.getElementById('post-photo-preview');
+      if (!wrap) return;
+      wrap.innerHTML = postPhoto
+        ? '<div class="thumb"><img src="' + postPhoto + '" alt=""><button type="button" class="thumb-del" id="post-photo-del">✕</button></div>'
+        : '';
+    }
+
+    document.getElementById('post-photo-preview').addEventListener('click', function (e) {
+      if (e.target.closest('#post-photo-del')) {
+        postPhoto = null;
+        renderPostPreview();
+      }
+    });
+
+    document.getElementById('post-submit').addEventListener('click', function () {
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); toast('Войди, чтобы публиковать посты.', 'info'); return; }
+      const input = document.getElementById('post-text');
+      const text = input.value.trim();
+      if (text.length < 3) { toast('Напиши текст поста (минимум 3 символа).', 'error'); return; }
+      const posts = getList('posts');
+      posts.push({
+        id: makeId('post'), userId: user.id, name: user.name,
+        classId: classIdOf(user.grade, user.letter), avatar: user.avatar,
+        text: text, photo: postPhoto, likes: [], comments: [],
+        ts: Date.now(), edited: false
+      });
+      dbSave('posts', posts);
+      input.value = '';
+      postPhoto = null;
+      renderPostPreview();
+      renderFeed();
+      toast('🚀 Пост опубликован в ленте!', 'success');
+    });
+
+    /* ---- Поиск людей ---- */
+
+    document.getElementById('people-search').addEventListener('input', function () {
+      peopleQuery = this.value;
+      renderPeople();
+    });
+
+    function renderPeople() {
+      const wrap = document.getElementById('people-grid');
+      if (!wrap) return;
+      const user = getCurrentUser();
+      const q = peopleQuery.trim().toLowerCase();
+      let users = getUsers().slice();
+      if (q) {
+        users = users.filter(function (u) {
+          const cls = classIdOf(u.grade, u.letter).toLowerCase();
+          return (u.name || '').toLowerCase().indexOf(q) !== -1 || cls.indexOf(q) !== -1;
+        });
+      }
+      users = users.sort(function (a, b) { return classIdOf(a.grade, a.letter).localeCompare(classIdOf(b.grade, b.letter), 'ru'); }).slice(0, 24);
+      if (!users.length) {
+        wrap.innerHTML = '<p class="empty-line">Никого не найдено. Попробуй другой запрос.</p>';
+        return;
+      }
+      wrap.innerHTML = users.map(function (u) {
+        const self = user && u.id === user.id;
+        const st = statusFor(u.points || 0);
+        return '<div class="card person-card">' +
+          avatarHtml(u.avatar) +
+          '<div style="font-weight:700;">' + esc(u.name) + '</div>' +
+          '<span class="user-class">' + esc(classIdOf(u.grade, u.letter)) + '</span>' +
+          '<span class="field-hint">' + st.icon + ' ' + esc(st.title) + ' · 💎 ' + Number(u.points || 0) + '</span>' +
+          (self
+            ? '<span class="field-hint">Это ты 🙂</span>'
+            : '<button type="button" class="btn btn-outline btn-sm" data-dm-open="' + esc(u.id) + '">💬 Написать в ЛС</button>') +
+        '</div>';
+      }).join('');
+    }
+
+    /* ---- Каналы и сообщества ---- */
+
+    function renderChannels() {
+      const wrap = document.getElementById('channels-grid');
+      if (!wrap) return;
+      const user = getCurrentUser();
+      const channels = getList('channels').slice().sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+      if (!channels.length) {
+        wrap.innerHTML = '<div class="card stub-card" style="grid-column:1/-1;"><div class="stub-icon">📢</div><h3>Каналов пока нет</h3><p>Создай первый канал или сообщество Лицея №37!</p></div>';
+        return;
+      }
+      wrap.innerHTML = channels.map(function (ch) {
+        const icon = ch.icon && ch.icon.type === 'image' && ch.icon.value
+          ? '<div class="channel-ico" style="background-image:url(' + ch.icon.value + ');"></div>'
+          : '<div class="channel-ico">' + esc((ch.icon && ch.icon.value) || '📢') + '</div>';
+        const subscribed = user && (ch.subs || []).indexOf(user.id) !== -1;
+        return '<div class="card channel-card">' +
+          '<div class="channel-head">' + icon +
+            '<div style="min-width:0;">' +
+              '<div style="font-weight:800; font-size:1.02rem;">' + esc(ch.name) + '</div>' +
+              '<div class="field-hint">' + (ch.mode === 'channel' ? '📢 Канал' : '👥 Сообщество') + ' · 👤 ' + (ch.subs || []).length + ' подписчиков · автор: ' + esc(ch.ownerName || '') + '</div>' +
+            '</div>' +
+          '</div>' +
+          (ch.desc ? '<p class="info-desc">' + esc(ch.desc) + '</p>' : '') +
+          '<div class="post-foot">' +
+            '<button type="button" class="btn btn-outline btn-sm" data-ch-sub="' + esc(ch.id) + '">' + (subscribed ? '✅ Отписаться' : '➕ Подписаться') + '</button>' +
+            '<button type="button" class="btn btn-ghost btn-sm" data-ch-open="' + esc(ch.id) + '">📰 Лента канала</button>' +
+          '</div>' +
+          '<div class="channel-posts" id="ch-posts-' + esc(ch.id) + '" style="display:none;"></div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function renderChannelFeed(chId) {
+      const panel = document.getElementById('ch-posts-' + chId);
+      const user = getCurrentUser();
+      const ch = getList('channels').find(function (x) { return x.id === chId; });
+      if (!panel || !ch) return;
+      const canPost = user && (ch.ownerId === user.id || user.isAdmin || (ch.mode === 'community' && (ch.subs || []).indexOf(user.id) !== -1));
+      const posts = (ch.posts || []).slice().sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
+      panel.innerHTML =
+        (canPost
+          ? '<div class="ch-post-form"><textarea class="textarea-field" rows="2" maxlength="800" placeholder="Новая публикация в канал..." data-ch-input="' + esc(chId) + '"></textarea><button type="button" class="btn btn-primary btn-sm" data-ch-post="' + esc(chId) + '">🚀 Опубликовать</button></div>'
+          : (!user ? '<p class="empty-line">Войди, чтобы публиковать записи.</p>' : '')) +
+        (posts.length
+          ? posts.map(function (p) {
+              const canManage = user && (p.userId === user.id || user.isAdmin || ch.ownerId === user.id);
+              return '<div class="comment">' +
+                avatarHtml(p.avatar) +
+                '<div class="comment-body">' +
+                  '<div class="mini-head"><span class="mini-author">' + esc(p.name) + '</span><span>' + fmtDateTime(p.ts) + (p.edited ? ' · изменено' : '') + '</span></div>' +
+                  '<div>' + esc(p.text) + '</div>' +
+                  (canManage ? '<div class="mini-actions"><button type="button" data-chp-edit="' + esc(chId) + '|' + esc(p.id) + '">✏️</button><button type="button" data-chp-del="' + esc(chId) + '|' + esc(p.id) + '">🗑️</button></div>' : '') +
+                '</div>' +
+              '</div>';
+            }).join('')
+          : '<p class="empty-line">Публикаций пока нет.</p>');
+    }
+
+    document.getElementById('channels-grid').addEventListener('click', function (e) {
+      const user = getCurrentUser();
+      const subBtn = e.target.closest('[data-ch-sub]');
+      if (subBtn) {
+        if (!user) { openModal('modal-login'); toast('Войди, чтобы подписываться на каналы.', 'info'); return; }
+        const list = getList('channels');
+        const ch = list.find(function (x) { return x.id === subBtn.dataset.chSub; });
+        if (!ch) return;
+        ch.subs = ch.subs || [];
+        const idx = ch.subs.indexOf(user.id);
+        if (idx !== -1) { ch.subs.splice(idx, 1); toast('Вы отписались от канала.', 'info'); }
+        else { ch.subs.push(user.id); toast('Вы подписались! 🔔', 'success'); }
+        dbSave('channels', list);
+        renderChannels();
+        return;
+      }
+      const openBtn = e.target.closest('[data-ch-open]');
+      if (openBtn) {
+        const panel = document.getElementById('ch-posts-' + openBtn.dataset.chOpen);
+        if (!panel) return;
+        const show = panel.style.display === 'none';
+        panel.style.display = show ? 'block' : 'none';
+        if (show) renderChannelFeed(openBtn.dataset.chOpen);
+        return;
+      }
+      const postBtn = e.target.closest('[data-ch-post]');
+      if (postBtn) {
+        if (!user) { openModal('modal-login'); return; }
+        const chId = postBtn.dataset.chPost;
+        const list = getList('channels');
+        const ch = list.find(function (x) { return x.id === chId; });
+        if (!ch) return;
+        if (ch.ownerId !== user.id && !user.isAdmin && !(ch.mode === 'community' && (ch.subs || []).indexOf(user.id) !== -1)) {
+          toast('Публиковать может только создатель канала и админы.', 'error');
+          return;
+        }
+        const input = document.querySelector('[data-ch-input="' + chId + '"]');
+        const text = input ? input.value.trim() : '';
+        if (text.length < 3) { toast('Напиши текст публикации (минимум 3 символа).', 'error'); return; }
+        ch.posts = ch.posts || [];
+        ch.posts.push({ id: makeId('chp'), userId: user.id, name: user.name, avatar: user.avatar, text: text, ts: Date.now(), edited: false });
+        dbSave('channels', list);
+        renderChannelFeed(chId);
+        toast('🚀 Публикация отправлена в канал!', 'success');
+        return;
+      }
+      const chpEdit = e.target.closest('[data-chp-edit]');
+      if (chpEdit) {
+        if (!user) return;
+        const sep = chpEdit.dataset.chpEdit.lastIndexOf('|');
+        const chId = chpEdit.dataset.chpEdit.slice(0, sep);
+        const postId = chpEdit.dataset.chpEdit.slice(sep + 1);
+        const list = getList('channels');
+        const ch = list.find(function (x) { return x.id === chId; });
+        const p = ch && (ch.posts || []).find(function (x) { return x.id === postId; });
+        if (!p || !(p.userId === user.id || user.isAdmin || ch.ownerId === user.id)) return;
+        const newText = prompt('Редактировать публикацию:', p.text);
+        if (newText === null) return;
+        const trimmed = newText.trim();
+        if (!trimmed) { toast('Текст не может быть пустым.', 'error'); return; }
+        p.text = trimmed;
+        p.edited = true;
+        dbSave('channels', list);
+        renderChannelFeed(chId);
+        return;
+      }
+      const chpDel = e.target.closest('[data-chp-del]');
+      if (chpDel) {
+        if (!user) return;
+        const sep = chpDel.dataset.chpDel.lastIndexOf('|');
+        const chId = chpDel.dataset.chpDel.slice(0, sep);
+        const postId = chpDel.dataset.chpDel.slice(sep + 1);
+        const list = getList('channels');
+        const ch = list.find(function (x) { return x.id === chId; });
+        const p = ch && (ch.posts || []).find(function (x) { return x.id === postId; });
+        if (!p || !(p.userId === user.id || user.isAdmin || ch.ownerId === user.id)) return;
+        if (!confirm('Удалить публикацию?')) return;
+        ch.posts.splice(ch.posts.indexOf(p), 1);
+        dbSave('channels', list);
+        renderChannelFeed(chId);
+      }
+    });
+
+    function renderChannelEmoji() {
+      const wrap = document.getElementById('ch-emoji-grid');
+      if (!wrap) return;
+      wrap.innerHTML = CHANNEL_EMOJIS.map(function (em) {
+        return '<button type="button" class="beast-option ch-emoji' + (em === channelDraftEmoji ? ' selected' : '') + '" data-emoji="' + em + '"><span class="beast-emoji">' + em + '</span></button>';
+      }).join('');
+    }
+
+    document.getElementById('ch-emoji-grid').addEventListener('click', function (e) {
+      const btn = e.target.closest('[data-emoji]');
+      if (!btn) return;
+      channelDraftEmoji = btn.dataset.emoji;
+      renderChannelEmoji();
+    });
+
+    function setChannelMode(mode) {
+      document.querySelectorAll('#channel-form .deal-btn').forEach(function (b) { b.classList.toggle('active', b.dataset.mode === mode); });
+    }
+
+    document.querySelectorAll('#channel-form .deal-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () { setChannelMode(btn.dataset.mode); });
+    });
+
+    document.getElementById('new-channel-btn').addEventListener('click', function () {
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); toast('Войди, чтобы создать канал.', 'info'); return; }
+      channelDraftEmoji = '📢';
+      renderChannelEmoji();
+      setChannelMode('channel');
+      document.getElementById('channel-form').reset();
+      showFormError('channel-error', '');
+      openModal('modal-channel');
+    });
+
+    document.getElementById('channel-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); return; }
+      const name = document.getElementById('ch-name').value.trim();
+      const desc = document.getElementById('ch-desc').value.trim();
+      const modeBtn = document.querySelector('#channel-form .deal-btn.active');
+      const mode = modeBtn ? modeBtn.dataset.mode : 'channel';
+      if (name.length < 3) { showFormError('channel-error', 'Введи название (минимум 3 символа).'); return; }
+      const list = getList('channels');
+      if (list.some(function (c) { return (c.name || '').toLowerCase() === name.toLowerCase(); })) {
+        showFormError('channel-error', 'Канал или сообщество с таким названием уже существует.');
+        return;
+      }
+      list.push({
+        id: makeId('ch'), name: name, desc: desc,
+        icon: { type: 'emoji', value: channelDraftEmoji },
+        mode: mode, ownerId: user.id, ownerName: user.name,
+        subs: [user.id], posts: [], createdAt: Date.now()
+      });
+      dbSave('channels', list);
+      closeModal('modal-channel');
+      renderChannels();
+      toast(mode === 'channel' ? '📢 Канал создан! Ты автоматически подписан.' : '👥 Сообщество создано! Ты автоматически подписан.', 'success');
+    });
+
+    /* ---- Банк взаимопомощи ---- */
+
+    function renderVolunteerChecks() {
+      const wrap = document.getElementById('vol-checks');
+      if (!wrap) return;
+      wrap.innerHTML = VOL_SUBJECTS.map(function (s) {
+        return '<label><input type="checkbox" value="' + esc(s) + '"> ' + esc(s) + '</label>';
+      }).join('');
+    }
+
+    document.getElementById('vol-filter').addEventListener('click', function (e) {
+      const btn = e.target.closest('.cat-btn');
+      if (!btn) return;
+      volFilter = btn.dataset.vol;
+      document.querySelectorAll('#vol-filter .cat-btn').forEach(function (b) { b.classList.toggle('active', b === btn); });
+      renderVolunteers();
+    });
+
+    function renderVolunteers() {
+      const user = getCurrentUser();
+      const joinCard = document.getElementById('vol-join-card');
+      if (joinCard) joinCard.style.display = user ? 'block' : 'none';
+      const wrap = document.getElementById('vol-grid');
+      if (!wrap) return;
+      let vols = getList('volunteers');
+      if (volFilter !== 'all') vols = vols.filter(function (v) { return (v.subjects || []).indexOf(volFilter) !== -1; });
+      vols = vols.slice().sort(function (a, b) { return (a.name || '').localeCompare(b.name || '', 'ru'); });
+      if (!vols.length) {
+        wrap.innerHTML = '<div class="card stub-card" style="grid-column:1/-1;"><div class="stub-icon">🤝</div><h3>Волонтёров пока нет</h3><p>Стань первым — выбери предметы, в которых силён, и помогай одноклассникам!</p></div>';
+        return;
+      }
+      wrap.innerHTML = vols.map(function (v) {
+        const self = user && v.userId === user.id;
+        return '<div class="card vol-card">' +
+          '<div class="post-head" style="margin-bottom:6px;">' + avatarHtml(v.avatar) +
+            '<div style="min-width:0;"><div style="font-weight:700;">' + esc(v.name) + '</div><span class="user-class">' + esc(v.classId || '') + '</span></div>' +
+          '</div>' +
+          '<div class="vol-subjects">' + (v.subjects || []).map(function (s) { return '<span class="vol-tag">' + esc(s) + '</span>'; }).join('') + '</div>' +
+          (v.note ? '<p class="info-desc">' + esc(v.note) + '</p>' : '') +
+          '<div class="post-foot">' +
+            (self
+              ? '<button type="button" class="btn btn-ghost btn-sm" data-vol-quit="' + esc(v.id) + '">Выйти из волонтёров</button>'
+              : '<button type="button" class="btn btn-outline btn-sm" data-vol-ask="' + esc(v.userId) + '">💬 Попросить помощи</button>') +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    document.getElementById('vol-grid').addEventListener('click', function (e) {
+      const user = getCurrentUser();
+      const askBtn = e.target.closest('[data-vol-ask]');
+      if (askBtn) { openDm(askBtn.dataset.volAsk); return; }
+      const quitBtn = e.target.closest('[data-vol-quit]');
+      if (quitBtn) {
+        if (!user) return;
+        const list = getList('volunteers');
+        const v = list.find(function (x) { return x.id === quitBtn.dataset.volQuit && x.userId === user.id; });
+        if (!v) return;
+        if (!confirm('Перестать быть волонтёром банка взаимопомощи?')) return;
+        list.splice(list.indexOf(v), 1);
+        dbSave('volunteers', list);
+        renderVolunteers();
+        toast('Ты больше не в банке взаимопомощи.', 'info');
+      }
+    });
+
+    document.getElementById('vol-join-btn').addEventListener('click', function () {
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); toast('Войди, чтобы стать волонтёром.', 'info'); return; }
+      const subjects = Array.prototype.map.call(document.querySelectorAll('#vol-checks input:checked'), function (i) { return i.value; });
+      if (!subjects.length) { toast('Выбери хотя бы один предмет.', 'error'); return; }
+      const list = getList('volunteers');
+      const existing = list.find(function (v) { return v.userId === user.id; });
+      const entry = {
+        id: existing ? existing.id : makeId('vol'),
+        userId: user.id, name: user.name,
+        classId: classIdOf(user.grade, user.letter),
+        avatar: user.avatar, subjects: subjects,
+        note: document.getElementById('vol-note').value.trim(),
+        createdAt: Date.now()
+      };
+      if (existing) list.splice(list.indexOf(existing), 1, entry);
+      else list.push(entry);
+      dbSave('volunteers', list);
+      renderVolunteers();
+      toast('🤝 Ты в банке взаимопомощи! Спасибо, что помогаешь!', 'success');
+    });
+
     /* ============ ЗАПУСК ============ */
     async function boot() {
       fillClassSelects();
@@ -3381,6 +5355,9 @@
       renderCapsules();
       updateLikeCounter();
       setIdeaMode('open');
+      renderMarket();
+      renderVolunteerChecks();
+      renderSocial();
     }
 
     boot();
