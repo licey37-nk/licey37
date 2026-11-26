@@ -3378,6 +3378,7 @@
         <div style="display:flex; justify-content:flex-end; margin-bottom:16px;">
           <button class="btn btn-primary" id="new-channel-btn">➕ Создать канал / сообщество</button>
         </div>
+        <input type="text" class="search-input" id="channel-search" placeholder="🔍 Поиск каналов и сообществ..." style="width:100%; margin-bottom:14px;">
         <div class="grid" id="channels-grid"></div>
       </div>
 
@@ -4474,7 +4475,7 @@
         e.preventDefault();
         showFormError('register-error', null);
 
-        const name = document.getElementById('reg-name').value.trim().replace(/\s+/g, ' ');
+        const name = capitalizeName(document.getElementById('reg-name').value);
         const grade = document.getElementById('reg-grade').value;
         const letter = document.getElementById('reg-letter').value;
         const password = document.getElementById('reg-password').value;
@@ -4562,7 +4563,7 @@
         e.preventDefault();
         showFormError('login-error', null);
 
-        const name = document.getElementById('login-name').value.trim().replace(/\s+/g, ' ');
+        const name = capitalizeName(document.getElementById('login-name').value);
         const password = document.getElementById('login-password').value;
 
         if (!name || !password) {
@@ -4900,7 +4901,7 @@
       const users = getUsers();
       const u = users.find(function (x) { return x.id === cur.id; });
       if (!u) return;
-      const name = document.getElementById('pf-name').value.trim();
+      const name = capitalizeName(document.getElementById('pf-name').value);
       const grade = document.getElementById('pf-grade').value;
       const letter = document.getElementById('pf-letter').value;
       const about = document.getElementById('pf-about').value.trim();
@@ -5022,6 +5023,45 @@
       return Array.isArray(data) ? data : [];
     }
 
+    function normText(s) {
+      return String(s || '').toLowerCase().replace(/ё/g, 'е').replace(/\s+/g, ' ').trim();
+    }
+    function levenshtein(a, b) {
+      if (a === b) return 0;
+      if (!a.length) return b.length;
+      if (!b.length) return a.length;
+      let prev = new Array(b.length + 1);
+      let cur = new Array(b.length + 1);
+      for (let j = 0; j <= b.length; j++) prev[j] = j;
+      for (let i = 1; i <= a.length; i++) {
+        cur[0] = i;
+        for (let j = 1; j <= b.length; j++) {
+          const cost = a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1;
+          cur[j] = Math.min(cur[j - 1] + 1, prev[j] + 1, prev[j - 1] + cost);
+        }
+        for (let j = 0; j <= b.length; j++) prev[j] = cur[j];
+      }
+      return prev[b.length];
+    }
+    function fuzzyMatch(query, text) {
+      const q = normText(query);
+      const t = normText(text);
+      if (!q || !t) return false;
+      if (t.indexOf(q) !== -1) return true;
+      if (q.length < 3) return false;
+      const threshold = q.length >= 5 ? 2 : 1;
+      if (levenshtein(q, t) <= threshold) return true;
+      const words = t.split(/[\s-]+/);
+      for (let i = 0; i < words.length; i++) {
+        if (!words[i]) continue;
+        if (levenshtein(q, words[i]) <= threshold) return true;
+      }
+      return false;
+    }
+    function capitalizeName(s) {
+      return String(s || '').trim().replace(/\s+/g, ' ').toLowerCase()
+        .replace(/(^|[\s-])([а-яёa-z])/g, function (m, p1, p2) { return p1 + p2.toUpperCase(); });
+    }
     function makeId(prefix) {
       return prefix + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
     }
@@ -6474,6 +6514,7 @@
     let openPostComments = {};
     let postPhoto = null;
     let peopleQuery = '';
+    let channelQuery = '';
     let channelDraftEmoji = '📢';
     let volFilter = 'all';
 
@@ -6724,7 +6765,7 @@
       if (q) {
         users = users.filter(function (u) {
           const cls = classIdOf(u.grade, u.letter).toLowerCase();
-          return (u.name || '').toLowerCase().indexOf(q) !== -1 || cls.indexOf(q) !== -1;
+          return fuzzyMatch(q, u.name) || cls.indexOf(q) !== -1;
         });
       }
       users = users.sort(function (a, b) { return classIdOf(a.grade, a.letter).localeCompare(classIdOf(b.grade, b.letter), 'ru'); }).slice(0, 24);
@@ -6753,8 +6794,14 @@
       const wrap = document.getElementById('channels-grid');
       if (!wrap) return;
       const user = getCurrentUser();
-      const channels = getList('channels').slice().sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+      const q = channelQuery.trim();
+      let channels = getList('channels').slice().sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+      if (q) channels = channels.filter(function (ch) { return fuzzyMatch(q, ch.name) || fuzzyMatch(q, ch.ownerName); });
       if (!channels.length) {
+        if (q) {
+          wrap.innerHTML = '<p class="empty-line">🔍 По запросу «' + esc(q) + '» ничего не найдено.</p>';
+          return;
+        }
         wrap.innerHTML = '<div class="card stub-card" style="grid-column:1/-1;"><div class="stub-icon">📢</div><h3>Каналов пока нет</h3><p>Создай первый канал или сообщество Лицея №37!</p></div>';
         return;
       }
@@ -6807,6 +6854,12 @@
     }
 
     try {
+  document.getElementById('channel-search').addEventListener('input', function (e) {
+    channelQuery = e.target.value;
+    renderChannels();
+  });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+try {
   document.getElementById('channels-grid').addEventListener('click', function (e) {
         const user = getCurrentUser();
         const subBtn = e.target.closest('[data-ch-sub]');
@@ -7899,7 +7952,7 @@
     function renderAdminRights(filter) {
       const body = document.getElementById('admin-tools-body');
       const f = String(filter || '').toLowerCase();
-      const users = getUsers().filter(function (u) { return !f || u.name.toLowerCase().indexOf(f) !== -1 || classIdOf(u.grade, u.letter).toLowerCase().indexOf(f) !== -1; });
+      const users = getUsers().filter(function (u) { return !f || fuzzyMatch(f, u.name) || classIdOf(u.grade, u.letter).toLowerCase().indexOf(f) !== -1; });
       let html = '<input type="text" id="adm-rights-search" class="input-field" placeholder="🔍 Поиск по имени или классу…" value="' + esc(filter || '') + '" style="margin-bottom:12px;">';
       if (!users.length) html += '<p class="info-desc">Ученики не найдены.</p>';
       users.forEach(function (u) {
@@ -8783,27 +8836,26 @@
       const res = [];
       getUsers().forEach(function (u) {
         if (res.length >= 20) return;
-        const label = (String(u.name || '') + ' ' + classIdOf(u.grade, u.letter)).toLowerCase();
-        if (label.indexOf(query) !== -1) {
+        const cls = classIdOf(u.grade, u.letter);
+        if (fuzzyMatch(query, u.name) || normText(cls).indexOf(query) !== -1) {
           res.push({ ico: '👤', title: u.name, sub: 'Ученик · ' + classIdOf(u.grade, u.letter), act: function () { setTab('social'); openDm(u.id); } });
         }
       });
       getList('listings').forEach(function (l) {
         if (res.length >= 20) return;
-        if (String(l.title || '').toLowerCase().indexOf(query) !== -1) {
+        if (fuzzyMatch(query, l.title)) {
           res.push({ ico: '🛍️', title: l.title, sub: 'Барахолка · объявление', act: function () { setTab('market'); } });
         }
       });
       getList('posts').forEach(function (p) {
         if (res.length >= 20) return;
-        if (String(p.text || '').toLowerCase().indexOf(query) !== -1) {
+        if (fuzzyMatch(query, p.text)) {
           res.push({ ico: '📰', title: String(p.text || '').slice(0, 60) + (String(p.text || '').length > 60 ? '…' : ''), sub: 'Пост в Соцсети', act: function () { setTab('social'); setSocialSub('feed'); } });
         }
       });
       getList('channels').forEach(function (c) {
         if (res.length >= 20) return;
-        const label = (String(c.name || '') + ' ' + String(c.desc || '')).toLowerCase();
-        if (label.indexOf(query) !== -1) {
+        if (fuzzyMatch(query, c.name) || fuzzyMatch(query, c.desc)) {
           res.push({ ico: '📢', title: c.name, sub: (c.mode === 'community' ? 'Сообщество · ' : 'Канал · ') + (c.subs || []).length + ' подписчиков', act: function () { setTab('social'); setSocialSub('channels'); } });
         }
       });
