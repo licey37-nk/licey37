@@ -3010,6 +3010,37 @@
       #top-ticker[data-ticker-marquee="true"] #top-ticker-text { animation: none; padding-left: 0; }
     }
 
+    /* ---- 34. ДИЗАЙН-ПОЛИРОВКА ---- */
+    body {
+      background:
+        radial-gradient(1100px 480px at 88% -8%, rgba(5, 150, 105, 0.10), transparent 60%),
+        radial-gradient(900px 420px at -12% 18%, rgba(29, 78, 216, 0.12), transparent 55%),
+        var(--bg);
+      background-attachment: fixed;
+    }
+    .section-icon { box-shadow: 0 10px 24px rgba(29, 78, 216, 0.16); }
+    .card:hover { border-color: rgba(29, 78, 216, 0.22); }
+    .listing-card:hover, .person-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg), var(--glow); }
+    .search-input:focus, .input-field:focus, .textarea-field:focus, select:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.14);
+      outline: none;
+    }
+    .modal-content {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      box-shadow: 0 30px 80px rgba(15, 23, 42, 0.28);
+    }
+    ::selection { background: rgba(29, 78, 216, 0.18); }
+    .empty-line {
+      padding: 26px 18px;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      color: var(--muted);
+    }
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 3px solid rgba(59, 130, 246, 0.4);
+      outline-offset: 2px;
+    }
   </style>
 </head>
 <body class="theme-light">
@@ -3314,6 +3345,7 @@
           <button type="button" class="cat-btn" data-cat="tech">💻 Электроника</button>
           <button type="button" class="cat-btn" data-cat="sport">👕 Одежда и спорт</button>
           <button type="button" class="cat-btn" data-cat="lost">🆘 Бюро находок</button>
+          <button type="button" class="cat-btn" data-cat="other">🎲 Другое</button>
         </div>
         <button class="btn btn-primary" id="new-listing-btn">➕ Подать объявление</button>
       </div>
@@ -3626,7 +3658,9 @@
             <option value="tech">💻 Электроника</option>
             <option value="sport">👕 Одежда и спорт</option>
             <option value="lost">🆘 Бюро находок</option>
+            <option value="other">🎲 Другое</option>
           </select>
+          <input type="text" id="li-cat-other" placeholder="Напиши свою категорию, например: Настольные игры" maxlength="24" style="display:none; margin-top:8px;">
         </div>
         <div class="field">
           <label>Цена</label>
@@ -5968,7 +6002,8 @@
       office: '✏️ Канцелярия',
       tech: '💻 Электроника',
       sport: '👕 Одежда и спорт',
-      lost: '🆘 Бюро находок'
+      lost: '🆘 Бюро находок',
+      other: '🎲 Другое'
     };
 
     const VOL_SUBJECTS = ['Математика', 'Физика', 'Python/Информатика', 'Русский язык', 'Английский', 'Химия'];
@@ -6062,7 +6097,7 @@
         return '<div class="card listing-card">' +
           photoHtml +
           '<div class="listing-body">' +
-            '<div class="listing-top">' + priceHtml + '<span class="seller-chip">' + esc(MARKET_CATS[l.cat] || l.cat) + '</span></div>' +
+            '<div class="listing-top">' + priceHtml + '<span class="seller-chip">' + esc(l.cat === 'other' ? '🎲 ' + (l.catCustom || 'Другое') : (MARKET_CATS[l.cat] || l.cat)) + '</span></div>' +
             '<h3 class="listing-title">' + esc(l.title) + '</h3>' +
             (l.desc ? '<p class="listing-desc">' + esc(l.desc) + '</p>' : '') +
             '<div class="listing-meta">' +
@@ -6205,15 +6240,17 @@
         if (!user) { openModal('modal-login'); return; }
         const title = document.getElementById('li-title').value.trim();
         const cat = document.getElementById('li-cat').value;
+        const catCustom = cat === 'other' ? document.getElementById('li-cat-other').value.trim().slice(0, 24) : '';
         const desc = document.getElementById('li-desc').value.trim();
         const price = Number(document.getElementById('li-price').value);
         if (title.length < 3) { showFormError('listing-error', 'Введи название (минимум 3 символа).'); return; }
+        if (cat === 'other' && !catCustom) { showFormError('listing-error', 'Напиши название своей категории или выбери одну из списка.'); return; }
         if (listingDeal === 'price' && (!price || price <= 0)) { showFormError('listing-error', 'Укажи цену в рублях или выбери «Бесплатно» / «Обмен».'); return; }
         const list = getList('listings');
         const item = {
           id: makeId('li'), sellerId: user.id, sellerName: user.name,
           sellerClassId: classIdOf(user.grade, user.letter),
-          title: title, cat: cat, deal: listingDeal,
+          title: title, cat: cat, catCustom: catCustom, deal: listingDeal,
           price: listingDeal === 'price' ? price : null,
           desc: desc, photos: listingPhotos.slice(),
           active: true, createdAt: Date.now()
@@ -6224,6 +6261,13 @@
         galleryIndex[item.id] = 0;
         renderMarket();
         toast('🛍️ Объявление опубликовано на Барахолке!', 'success');
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('li-cat').addEventListener('change', function () {
+        const other = document.getElementById('li-cat-other');
+        if (other) other.style.display = this.value === 'other' ? 'block' : 'none';
       });
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
@@ -6778,6 +6822,13 @@
   document.getElementById('people-search').addEventListener('input', function () {
         peopleQuery = this.value;
         renderPeople();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('people-grid').addEventListener('click', function (e) {
+        const dmBtn = e.target.closest('[data-dm-open]');
+        if (dmBtn) { openDm(dmBtn.dataset.dmOpen); }
       });
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
