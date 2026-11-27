@@ -10,20 +10,61 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    /* ============ DOMAIN SHIELD: портал живёт только на официальных доменах ============ */
+    /* ============ 🛡️ L37 ANTI-COPY & DOMAIN SHIELD v2 — защита авторских прав МБОУ «Лицей №37» ============ */
     (function () {
+      var _x37 = function (a) {
+        var s = '', i;
+        for (i = 0; i < a.length; i++) s += String.fromCharCode(a[i] ^ 0x37);
+        return s;
+      };
+      var _D_MAIN = _x37([91,94,84,82,78,4,0,26,89,92,25,80,94,67,95,66,85,25,94,88]);
+      var _D_LOCAL = _x37([91,88,84,86,91,95,88,68,67]);
+      var _D_LOOP = _x37([6,5,0,25,7,25,7,25,6]);
+      var _D_URL = _x37([95,67,67,71,68,13,24,24,91,94,84,82,78,4,0,26,89,92,25,80,94,67,95,66,85,25,94,88,24]);
+      var _S_NAME = _x37([68,66,71,86,85,86,68,82]);
+      var _S_HOST = _x37([68,66,71,86,85,86,68,82,25,84,88]);
       var shieldOk37 = false;
       try {
         var h = String(location.hostname || '').toLowerCase();
-        shieldOk37 = (h === 'licey37-nk.github.io' || h === 'localhost' || h === '127.0.0.1');
+        shieldOk37 = (h === _D_MAIN || h === _D_LOCAL || h === _D_LOOP);
       } catch (eH37) { shieldOk37 = true; }
       if (!shieldOk37) {
         try {
           window.__lp37Blocked37 = true;
+          try { window[_S_NAME] = undefined; } catch (eS37) {}
+          try { delete window[_S_NAME]; } catch (eDl37) {}
+          try {
+            Object.defineProperty(window, _S_NAME, {
+              get: function () { return undefined; },
+              set: function () {},
+              configurable: false
+            });
+          } catch (eP37) {}
+          try {
+            var _of37 = window.fetch;
+            if (typeof _of37 === 'function') {
+              window.fetch = function () {
+                try {
+                  var _u37 = String((arguments[0] && arguments[0].url) || arguments[0] || '');
+                  if (_u37.indexOf(_S_HOST) !== -1) return Promise.reject(new Error('L37 SHIELD'));
+                } catch (eF37) {}
+                return _of37.apply(window, arguments);
+              };
+            }
+          } catch (eFe37) {}
+          try {
+            var _xo37 = XMLHttpRequest.prototype.open;
+            XMLHttpRequest.prototype.open = function () {
+              try {
+                if (String(arguments[1] || '').indexOf(_S_HOST) !== -1) throw new Error('L37 SHIELD');
+              } catch (eXh37) {}
+              return _xo37.apply(this, arguments);
+            };
+          } catch (eXo37) {}
           if (window.stop) window.stop();
-          document.documentElement.innerHTML = '<body style="margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0b1020;color:#fff;font-family:Arial,sans-serif;text-align:center;padding:20px;"><div><div style="font-size:56px;">🛡️</div><h1>Лицей №37</h1><p style="opacity:.85;">Портал работает только на официальном домене:<br><b style="color:#7dd3fc;">licey37-nk.github.io</b></p></div></body>';
-        } catch (eB37) { try { location.href = 'https://licey37-nk.github.io/'; } catch (eR37) {} }
-        throw new Error('DOMAIN SHIELD: чужой домен');
+          document.documentElement.innerHTML = '<body style="margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0b1020;color:#fff;font-family:Arial,sans-serif;text-align:center;padding:24px;"><div><div style="font-size:60px;">🛡️</div><h1 style="margin:10px 0 6px;">МБОУ «Лицей №37»</h1><p style="opacity:.9;max-width:560px;line-height:1.6;">⚠️ <b>Защита авторских прав.</b> Портал МБОУ «Лицей №37» (г. Нижнекамск) работает исключительно на официальном домене:<br><b style="color:#7dd3fc;">' + _D_MAIN + '</b><br>Копирование портала, размещение его на сторонних доменах и вмешательство в его работу запрещены.</p></div></body>';
+        } catch (eB37) { try { location.href = _D_URL; } catch (eR37) {} }
+        throw new Error('L37 SHIELD: чужой домен — защита авторских прав МБОУ «Лицей №37»');
       }
       try {
         var isEditable37 = function (t) {
@@ -46,6 +87,31 @@
           } catch (eC37) {}
         });
       } catch (eG37) {}
+      try {
+        var _dtOpen37 = false;
+        var _dtWarn37 = function () {
+          try { console.clear(); } catch (eCc37) {}
+          try {
+            console.log('%c🛡️ ЛИЦЕЙ №37 — ОХРАННЫЙ КОД', 'font-size:20px;font-weight:bold;color:#ef4444;');
+            console.log('%cВмешательство в работу портала МБОУ «Лицей №37» запрещено. Изменение кода, данных и служебных функций портала недопустимо.', 'font-size:13px;color:#fbbf24;');
+          } catch (eW37) {}
+        };
+        setInterval(function () {
+          try {
+            var _dw37 = (window.outerWidth || 0) - (window.innerWidth || 0);
+            var _dh37 = (window.outerHeight || 0) - (window.innerHeight || 0);
+            var _isOpen37 = (_dw37 > 160 || _dh37 > 160);
+            if (_isOpen37 && !_dtOpen37) {
+              _dtOpen37 = true;
+              _dtWarn37();
+            } else if (_isOpen37) {
+              try { console.clear(); } catch (eCc37) {}
+            } else {
+              _dtOpen37 = false;
+            }
+          } catch (eDt37) {}
+        }, 1200);
+      } catch (eGd37) {}
     })();
   </script>
   <style>
