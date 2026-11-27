@@ -3569,6 +3569,25 @@
       animation: fabPop37 0.25s ease;
     }
     #adm-widget-fab:active { transform: scale(0.96); }
+    /* --- L37 free floating blocks (Live Edit) --- */
+    .l37-fblock37 { position: fixed; z-index: 99999; background: #ffffff; border: 2px solid #38bdf8; border-radius: 16px; box-shadow: 0 24px 60px rgba(15, 23, 42, 0.35); display: flex; flex-direction: column; overflow: hidden; min-width: 150px; min-height: 100px; animation: l37SheetUp37 0.28s cubic-bezier(0.22, 1, 0.36, 1); }
+    .l37-fblock37-handle { display: flex; align-items: center; gap: 6px; padding: 7px 10px; background: linear-gradient(135deg, #1d4ed8, #38bdf8); color: #fff; font-size: 13px; font-weight: 700; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; white-space: nowrap; }
+    .l37-fblock37-handle:active { cursor: grabbing; }
+    .l37-fblock37-handle .l37-fb-sp37 { flex: 1; min-width: 0; }
+    .l37-fblock37-handle button { background: rgba(255, 255, 255, 0.18); border: none; color: #fff; border-radius: 8px; padding: 3px 8px; font-size: 13px; cursor: pointer; }
+    .l37-fblock37-body { flex: 1; min-height: 0; overflow: auto; padding: 10px 12px; outline: none; }
+    .l37-fblock37-body:empty::before { content: attr(data-l37-fb-placeholder); color: #94a3b8; }
+    .l37-fblock37-set { border-top: 1px solid rgba(15, 23, 42, 0.08); padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; background: #f8fafc; max-height: 200px; overflow: auto; }
+    .l37-fblock37-set .l37-fb-chips37 { display: flex; flex-wrap: wrap; gap: 4px; }
+    .l37-fblock37-set .wg-color { width: 18px; height: 18px; }
+    .l37-fblock37-resize { position: absolute; right: 0; bottom: 0; width: 26px; height: 26px; display: flex; align-items: flex-end; justify-content: flex-end; padding: 2px 5px; font-size: 15px; color: #1d4ed8; cursor: nwse-resize; touch-action: none; user-select: none; -webkit-user-select: none; background: linear-gradient(135deg, transparent 55%, rgba(56, 189, 248, 0.25) 55%); }
+    .text-widget-free37 { position: fixed; z-index: 60; display: flex; flex-direction: column; overflow: auto; max-width: calc(100vw - 8px); }
+    .text-widget-free37 .tw-free-content37 { min-width: 0; }
+    .tw-free-handle37 { display: none; align-items: center; gap: 6px; padding: 5px 8px; background: linear-gradient(135deg, #1d4ed8, #38bdf8); color: #fff; font-size: 12px; font-weight: 700; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; border-radius: 10px 10px 0 0; white-space: nowrap; }
+    .tw-free-handle37 .l37-fb-sp37 { flex: 1; min-width: 0; }
+    .tw-free-handle37 button { background: rgba(255, 255, 255, 0.18); border: none; color: #fff; border-radius: 6px; padding: 2px 7px; font-size: 12px; cursor: pointer; }
+    body.live-edit-on .text-widget-free37 { border: 2px dashed #38bdf8; border-radius: 10px; }
+    body.live-edit-on .tw-free-handle37 { display: flex; }
     @keyframes fabPop37 { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: none;} }
     .adm-badge-red {
       display: inline-block; min-width: 18px; padding: 1px 6px; margin-left: 4px;
@@ -5099,7 +5118,7 @@
   </div>
 
   <div id="widget-zone-float"></div>
-  <button id="adm-widget-fab" style="display:none;">➕ Добавить текстовый блок</button>
+  <button id="adm-widget-fab" style="display:none;">➕ Добавить блок / скрипт</button>
 
   <!-- МОДАЛКА: ЖАЛОБА -->
   <div class="modal" id="modal-report" aria-modal="true" role="dialog">
@@ -11982,6 +12001,7 @@ try {
     }
 
     function mountWidgetEl(w) {
+      if (w && (w.place === 'free' || w.fx)) return mountFreeWidgetEl37(w);
       const zones = { banner: 'widget-zone-banner', header: 'widget-zone-header', schedule: 'widget-zone-schedule', float: 'widget-zone-float' };
       const zone = document.getElementById(zones[w.place] || 'widget-zone-banner');
       if (!zone) return null;
@@ -12001,7 +12021,7 @@ try {
     }
 
     function renderTextWidgets() {
-      const ids = ['widget-zone-banner', 'widget-zone-header', 'widget-zone-schedule', 'widget-zone-float'];
+      const ids = ['widget-zone-banner', 'widget-zone-header', 'widget-zone-schedule', 'widget-zone-float', 'widget-zone-free37'];
       ids.forEach(function (id) {
         const z = document.getElementById(id);
         if (z) z.innerHTML = '';
@@ -13968,7 +13988,8 @@ try {
           return;
         }
         if (b.id === 'adm-live-edit-btn') { setLiveEdit(!liveEditOn); return; }
-        if (b.id === 'adm-widget-btn' || b.id === 'adm-widget-fab') { openWidgetEditor(null); return; }
+        if (b.id === 'adm-widget-btn') { openWidgetEditor(null); return; }
+        if (b.id === 'adm-widget-fab') { try { l37OpenFreeBlock37(null); } catch (eFab37) { openWidgetEditor(null); } return; }
         if (b.id === 'adm-diag-btn') { l37DiagOpenReport37(); return; }
         if (b.id === 'adm-reset-tests-btn') { adminTestReset37(); return; }
         if (b.id === 'adm-exit-btn') { setAdminActive(false); toast('🚪 Ты вышел из админки.', 'info'); return; }
@@ -18441,6 +18462,292 @@ try {
       bindDmPeople37();
       renderDmPeople37();
     } catch (eDpInit37) { try { console.error('dm-people init:', eDpInit37); } catch (e2) {} }
+
+    /* ============================================================
+       L37 FREE FLOATING BLOCKS v1 (Живое редактирование):
+       свободный блок появляется по центру экрана, перетаскивается
+       пальцем/мышкой за ручку ☿, растягивается за уголок ↘,
+       сохраняется в облако Supabase (custom_text_widgets) и виден всем.
+       ============================================================ */
+    function l37ClampN37(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+    function l37FreeZone37() {
+      let zone = document.getElementById('widget-zone-free37');
+      if (!zone) {
+        zone = document.createElement('div');
+        zone.id = 'widget-zone-free37';
+        document.body.appendChild(zone);
+      }
+      return zone;
+    }
+
+    function l37FreeGeom37(w) {
+      const vw = window.innerWidth || 1280, vh = window.innerHeight || 800;
+      const width = l37ClampN37(Number(w.w) || 320, 150, Math.max(150, vw - 12));
+      const height = l37ClampN37(Number(w.h) || 170, 100, Math.max(100, vh - 12));
+      const left = l37ClampN37(Number(w.x) || Math.round((vw - width) / 2), 4, Math.max(4, vw - 60));
+      const top = l37ClampN37(Number(w.y) || Math.round((vh - height) / 2), 4, Math.max(4, vh - 50));
+      return { left: left, top: top, width: width, height: height };
+    }
+
+    function l37BindDrag37(source, el, getStart, onEnd, isResize) {
+      if (!source) return;
+      source.addEventListener('mousedown', function (e37) { l37DragDown37(e37, el, getStart, onEnd, isResize); });
+      source.addEventListener('touchstart', function (e37) { l37DragDown37(e37, el, getStart, onEnd, isResize); }, { passive: false });
+    }
+
+    function l37DragDown37(e37, el, getStart, onEnd, isResize) {
+      if (e37.target && e37.target.closest && e37.target.closest('button')) return;
+      e37.preventDefault();
+      e37.stopPropagation();
+      const pt37 = e37.touches ? e37.touches[0] : e37;
+      const st = getStart();
+      const sx = pt37.clientX, sy = pt37.clientY;
+      function mv(ev) {
+        const p = ev.touches ? ev.touches[0] : ev;
+        const vw = window.innerWidth || 1280, vh = window.innerHeight || 800;
+        if (isResize) {
+          el.style.width = l37ClampN37(st.x + (p.clientX - sx), 150, Math.max(150, vw - 8)) + 'px';
+          el.style.height = l37ClampN37(st.y + (p.clientY - sy), 100, Math.max(100, vh - 8)) + 'px';
+        } else {
+          el.style.left = l37ClampN37(st.x + (p.clientX - sx), 4, Math.max(4, vw - 60)) + 'px';
+          el.style.top = l37ClampN37(st.y + (p.clientY - sy), 4, Math.max(4, vh - 40)) + 'px';
+        }
+        if (ev.cancelable) ev.preventDefault();
+      }
+      function up() {
+        document.removeEventListener('mousemove', mv, true);
+        document.removeEventListener('mouseup', up, true);
+        document.removeEventListener('touchmove', mv, true);
+        document.removeEventListener('touchend', up, true);
+        if (onEnd) {
+          if (isResize) onEnd(parseFloat(el.style.width) || 300, parseFloat(el.style.height) || 170);
+          else onEnd(parseFloat(el.style.left) || 0, parseFloat(el.style.top) || 0);
+        }
+      }
+      document.addEventListener('mousemove', mv, true);
+      document.addEventListener('mouseup', up, true);
+      document.addEventListener('touchmove', mv, true);
+      document.addEventListener('touchend', up, true);
+    }
+
+    function l37SaveFreeGeom37(id, patch) {
+      if (!id) return;
+      const widgets = getWidgets();
+      const idx = widgets.findIndex(function (x) { return x.id === id; });
+      if (idx === -1) return;
+      widgets[idx] = Object.assign({}, widgets[idx], patch);
+      dbSave('custom_text_widgets', widgets);
+      renderTextWidgets();
+    }
+
+    function l37DeleteFreeBlock37(id) {
+      const widgets = getWidgets();
+      const before = widgets.slice();
+      const rest = widgets.filter(function (x) { return x.id !== id; });
+      dbSave('custom_text_widgets', rest);
+      adminLogAction('widget', 'Удалён свободный блок', { kind: 'widgets', before: before });
+      renderTextWidgets();
+      toast('🗑️ Свободный блок удалён.', 'info');
+    }
+
+    function l37FreeHandle37(el) {
+      const h = document.createElement('div');
+      h.className = 'tw-free-handle37';
+      h.innerHTML = '<span>⠇ Перетащить</span><span class="l37-fb-sp37"></span>' +
+        '<button type="button" data-twf-edit="1" title="Редактировать">✏️</button>' +
+        '<button type="button" data-twf-del="1" title="Удалить">🗑️</button>';
+      return h;
+    }
+
+    function l37DecorateFreeBlock37(el, w, content) {
+      const handle = l37FreeHandle37(el);
+      el.appendChild(handle);
+      l37BindDrag37(handle, el, function () {
+        return { x: parseFloat(el.style.left) || 0, y: parseFloat(el.style.top) || 0 };
+      }, function (nx, ny) {
+        l37SaveFreeGeom37(w.id, { x: Math.round(nx), y: Math.round(ny) });
+      });
+      const rz = document.createElement('div');
+      rz.className = 'l37-fblock37-resize';
+      rz.textContent = '↘';
+      el.appendChild(rz);
+      l37BindDrag37(rz, el, function () {
+        return { x: parseFloat(el.style.width) || 300, y: parseFloat(el.style.height) || 170 };
+      }, function (nw, nh) {
+        l37SaveFreeGeom37(w.id, { w: Math.round(nw), h: Math.round(nh) });
+      }, true);
+      handle.addEventListener('click', function (e37) {
+        const b37 = e37.target.closest ? e37.target.closest('button') : null;
+        if (!b37) return;
+        e37.preventDefault();
+        e37.stopPropagation();
+        if (b37.getAttribute('data-twf-del')) {
+          if (window.confirm('Удалить этот свободный блок с сайта?')) l37DeleteFreeBlock37(w.id);
+        } else if (b37.getAttribute('data-twf-edit')) {
+          l37OpenFreeBlock37(w);
+        }
+      });
+    }
+
+    function mountFreeWidgetEl37(w) {
+      const zone = l37FreeZone37();
+      const g = l37FreeGeom37(w);
+      const el = document.createElement('div');
+      el.className = 'text-widget-free37';
+      el.setAttribute('data-widget-id', w.id);
+      el.setAttribute('style', 'left:' + g.left + 'px;top:' + g.top + 'px;width:' + g.width + 'px;height:' + g.height + 'px;background:' + (w.style === 'plate' ? (w.bg || '#ffffff') : 'transparent') + ';');
+      const content = document.createElement('div');
+      content.className = 'tw-free-content37';
+      content.setAttribute('style', widgetCssFor(w));
+      content.textContent = w.text || '';
+      el.appendChild(content);
+      zone.appendChild(el);
+      l37DecorateFreeBlock37(el, w, content);
+      if (w.script && typeof w.script === 'string' && w.script.trim()) {
+        try {
+          const fn = new Function('el', w.script);
+          fn(content);
+        } catch (errF37) { try { console.error('Ошибка скрипта свободного блока:', errF37); } catch (eF37) {} }
+      }
+      return el;
+    }
+
+    let l37FbState37 = null;
+
+    function l37FbApply37() {
+      const t = document.getElementById('l37-fb-text37');
+      if (!t || !l37FbState37) return;
+      t.setAttribute('style', widgetCssFor({ style: l37FbState37.style, color: l37FbState37.color, bg: l37FbState37.bg, size: l37FbState37.size }));
+    }
+
+    function l37FbChipRow37(boxId, colors, cur, attr) {
+      const box = document.getElementById(boxId);
+      if (!box) return;
+      box.innerHTML = colors.map(function (c) {
+        return '<button type="button" class="wg-color' + (c === cur ? ' selected' : '') + '" data-' + attr + '="' + c + '" style="background:' + c + ';" title="' + c + '"></button>';
+      }).join('');
+    }
+
+    function l37OpenFreeBlock37(existing) {
+      if (document.getElementById('l37-fblock-active37')) return;
+      const vw = window.innerWidth || 1280, vh = window.innerHeight || 800;
+      const width = l37ClampN37(Number(existing && existing.w) || 340, 150, Math.max(150, vw - 24));
+      const height = l37ClampN37(Number(existing && existing.h) || 320, 100, Math.max(100, vh - 24));
+      const left = l37ClampN37(Number(existing && existing.x) || Math.round((vw - width) / 2), 4, Math.max(4, vw - 60));
+      const top = l37ClampN37(Number(existing && existing.y) || Math.round((vh - height) / 2), 4, Math.max(4, vh - 50));
+      l37FbState37 = {
+        id: existing ? existing.id : null,
+        style: existing ? existing.style || 'plate' : 'plate',
+        color: existing ? existing.color || '#1d4ed8' : '#1d4ed8',
+        bg: existing ? existing.bg || '#ffffff' : '#ffffff',
+        size: Number(existing && existing.size) || 22
+      };
+      const el = document.createElement('div');
+      el.id = 'l37-fblock-active37';
+      el.className = 'l37-fblock37';
+      el.setAttribute('style', 'left:' + left + 'px;top:' + top + 'px;width:' + width + 'px;height:' + height + 'px;');
+      el.innerHTML =
+        '<div class="l37-fblock37-handle" id="l37-fb-drag37"><span>⠇ Перетащить</span><span class="l37-fb-sp37"></span>' +
+        (existing ? '<button type="button" id="l37-fb-del37">🗑️</button>' : '') +
+        '<button type="button" id="l37-fb-close37">✖</button></div>' +
+        '<div class="l37-fblock37-body" id="l37-fb-text37" contenteditable="true" data-l37-fb-placeholder="Текст блока — просто начни печатать...">' + esc(existing ? existing.text || '' : '✨ Новый блок — отредактируй меня') + '</div>' +
+        '<div class="l37-fblock37-set">' +
+          '<div class="field-row" id="l37-fb-styles37"></div>' +
+          '<label style="font-size:12px; font-weight:700;">Размер шрифта: <b id="l37-fb-sizeval37">' + l37FbState37.size + 'px</b></label>' +
+          '<input id="l37-fb-size37" type="range" min="12" max="64" value="' + l37FbState37.size + '" style="width:100%;">' +
+          '<details><summary style="cursor:pointer; font-size:12px; font-weight:700;">🎨 Цвет текста и фон (палитра)</summary>' +
+            '<div class="l37-fb-chips37" id="l37-fb-tcolors37"></div>' +
+            '<div class="l37-fb-chips37" id="l37-fb-bcolors37" style="margin-top:4px;"></div>' +
+          '</details>' +
+          '<details><summary style="cursor:pointer; font-size:12px; font-weight:700;">⚡ Скрипт по клику (необязательно)</summary>' +
+            '<textarea id="l37-fb-script37" rows="3" placeholder="el.addEventListener(\'click\', function(){ toast(\'Привет!\'); });">' + esc(existing ? existing.script || '' : '') + '</textarea>' +
+          '</details>' +
+          '<button class="btn btn-primary btn-block" id="l37-fb-save37">💾 Сохранить на сайте</button>' +
+        '</div>' +
+        '<div class="l37-fblock37-resize" id="l37-fb-rz37">↘</div>';
+      document.body.appendChild(el);
+      const stBox = document.getElementById('l37-fb-styles37');
+      if (stBox) {
+        stBox.innerHTML = WIDGET_STYLES.map(function (s) {
+          return '<button type="button" class="btn btn-sm ' + (l37FbState37.style === s.id ? 'btn-primary' : 'btn-ghost') + '" data-l37-fb-style="' + s.id + '">' + s.label + '</button>';
+        }).join('');
+      }
+      l37FbChipRow37('l37-fb-tcolors37', WIDGET_COLORS, l37FbState37.color, 'l37-fb-tc');
+      l37FbChipRow37('l37-fb-bcolors37', ['#ffffff'].concat(WIDGET_COLORS), l37FbState37.bg, 'l37-fb-bc');
+      l37FbApply37();
+      l37BindDrag37(document.getElementById('l37-fb-drag37'), el, function () {
+        return { x: parseFloat(el.style.left) || 40, y: parseFloat(el.style.top) || 40 };
+      }, null);
+      l37BindDrag37(document.getElementById('l37-fb-rz37'), el, function () {
+        return { x: parseFloat(el.style.width) || 340, y: parseFloat(el.style.height) || 320 };
+      }, null, true);
+      el.addEventListener('click', function (e37) {
+        const sc37 = e37.target.closest ? e37.target.closest('[data-l37-fb-style]') : null;
+        if (sc37) { l37FbState37.style = sc37.getAttribute('data-l37-fb-style'); l37OpenFreeBlock37RefreshStyles(stBox); l37FbApply37(); return; }
+        const tc37 = e37.target.closest ? e37.target.closest('[data-l37-fb-tc]') : null;
+        if (tc37) { l37FbState37.color = tc37.getAttribute('data-l37-fb-tc'); l37FbChipRow37('l37-fb-tcolors37', WIDGET_COLORS, l37FbState37.color, 'l37-fb-tc'); l37FbApply37(); return; }
+        const bc37 = e37.target.closest ? e37.target.closest('[data-l37-fb-bc]') : null;
+        if (bc37) { l37FbState37.bg = bc37.getAttribute('data-l37-fb-bc'); l37FbChipRow37('l37-fb-bcolors37', ['#ffffff'].concat(WIDGET_COLORS), l37FbState37.bg, 'l37-fb-bc'); l37FbApply37(); return; }
+        if (e37.target.id === 'l37-fb-close37') { el.remove(); l37FbState37 = null; return; }
+        if (e37.target.id === 'l37-fb-del37' && l37FbState37 && l37FbState37.id) {
+          if (window.confirm('Удалить этот свободный блок с сайта?')) { l37DeleteFreeBlock37(l37FbState37.id); el.remove(); l37FbState37 = null; }
+          return;
+        }
+        if (e37.target.id === 'l37-fb-save37') l37FbSave37();
+      });
+      const sizeInp = document.getElementById('l37-fb-size37');
+      if (sizeInp) sizeInp.addEventListener('input', function () {
+        if (!l37FbState37) return;
+        l37FbState37.size = Number(sizeInp.value) || 22;
+        const sv = document.getElementById('l37-fb-sizeval37');
+        if (sv) sv.textContent = l37FbState37.size + 'px';
+        l37FbApply37();
+      });
+    }
+
+    function l37OpenFreeBlock37RefreshStyles(stBox) {
+      if (!stBox) return;
+      stBox.innerHTML = WIDGET_STYLES.map(function (s) {
+        return '<button type="button" class="btn btn-sm ' + (l37FbState37 && l37FbState37.style === s.id ? 'btn-primary' : 'btn-ghost') + '" data-l37-fb-style="' + s.id + '">' + s.label + '</button>';
+      }).join('');
+    }
+
+    function l37FbSave37() {
+      const t = document.getElementById('l37-fb-text37');
+      const scriptEl = document.getElementById('l37-fb-script37');
+      const el = document.getElementById('l37-fblock-active37');
+      if (!t || !el || !l37FbState37) return;
+      const text = (t.innerText || t.textContent || '').trim();
+      if (!text) { toast('Введи текст блока — он появится на сайте.', 'error'); return; }
+      const widgets = getWidgets();
+      const before = widgets.slice();
+      const draft = Object.assign({}, l37FbState37, {
+        text: text,
+        place: 'free',
+        fx: true,
+        script: scriptEl ? scriptEl.value : '',
+        x: Math.round(parseFloat(el.style.left) || 40),
+        y: Math.round(parseFloat(el.style.top) || 40),
+        w: Math.round(parseFloat(el.style.width) || 340),
+        h: Math.round(parseFloat(el.style.height) || 320)
+      });
+      const isNew = !draft.id;
+      if (draft.id) {
+        const idx = widgets.findIndex(function (x) { return x.id === draft.id; });
+        if (idx !== -1) widgets[idx] = Object.assign({}, widgets[idx], draft);
+      } else {
+        draft.id = makeId('wg');
+        draft.ts = Date.now();
+        widgets.push(draft);
+      }
+      dbSave('custom_text_widgets', widgets);
+      adminLogAction('widget', isNew ? 'Создан свободный блок на сайте' : 'Изменён свободный блок', { kind: 'widgets', before: before });
+      renderTextWidgets();
+      el.remove();
+      l37FbState37 = null;
+      toast('💾 Блок сохранён и виден всем посетителям сайта!', 'success');
+    }
 
     window.__lp37Ready = true;
 
