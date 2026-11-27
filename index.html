@@ -3381,11 +3381,26 @@
     .dm-menu-btn:active { transform: scale(0.92); }
     .dm-menu-pop {
       position: absolute; top: calc(100% + 6px); right: 0; z-index: 9600; min-width: 236px;
-      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
-      box-shadow: 0 18px 48px rgba(2, 6, 23, 0.28); padding: 6px; display: flex; flex-direction: column; gap: 2px;
-      animation: dmMenuPop37 0.16s ease;
+      background: #ffffff; border: 1px solid rgba(15, 23, 42, 0.14); border-radius: 16px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.24); padding: 6px; display: flex; flex-direction: column; gap: 2px;
+      animation: dmMenuPop37 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+      overflow: hidden;
+    }
+    @media (prefers-color-scheme: dark) {
+      .dm-menu-pop { background: #161b26; border-color: rgba(255, 255, 255, 0.12); }
     }
     @keyframes dmMenuPop37 { from { opacity: 0; transform: translateY(-6px) scale(0.97); } to { opacity: 1; transform: none; } }
+    .emoji-picker { background: #ffffff; border: 1px solid rgba(15, 23, 42, 0.14) !important; box-shadow: 0 18px 45px rgba(15, 23, 42, 0.24) !important; }
+    @media (prefers-color-scheme: dark) {
+      .emoji-picker { background: #161b26; }
+    }
+
+    /* ---- Полировка «IT-продукт 2030»: единая премиальная плавность и чёткий контраст ---- */
+    button, .btn, .card, .modal-content, .dm-row, .tab-btn, input, textarea, select {
+      transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .dm-menu-item, .dm-menu-btn, .dm-back-btn, .bottom-nav button, .to-top-btn { transition-duration: 0.22s; }
+    .dm-menu-item { color: var(--text); opacity: 1; }
     .dm-menu-item {
       display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
       background: none; border: none; color: var(--text); font-size: 0.9rem; font-weight: 600;
@@ -5140,6 +5155,7 @@
         <button data-adm="broadcast">📢 Рассылка</button>
         <button id="adm-all-tools-btn">☰ Все инструменты Админа</button>
         <button id="adm-diag-btn" title="Отчёт о состоянии облачной синхронизации Supabase">🩺 Диагностика</button>
+        <button id="adm-reset-tests-btn" title="Сброс тестовых данных с сохранением снимка в Журнале (можно отменить)">🧹 Сброс тестов</button>
       </div>
       <div class="adm-extra">
         <button data-adm="users">👥 Пользователи</button>
@@ -6061,9 +6077,9 @@
           if (document.visibilityState === 'visible') { chatSyncTick(); liveSyncTick(); startRealtime(); }
         });
       } catch (e) {}
-      startRealtime();
-      liveSyncTick();
-      startDmSync();
+      try { startRealtime(); } catch (eSr37) { try { console.error('Синхронизация: канал Realtime не запущен —', eSr37); } catch (eSr237) {} }
+      try { liveSyncTick(); } catch (eSl37) { /* тихо */ }
+      try { startDmSync(); } catch (eSd37) { /* тихо */ }
       try { startDmFastSync37(); } catch (eFt37) { /* тихо */ }
     }
 
@@ -8717,7 +8733,7 @@
         return;
       }
       if (!text && !dmPendingPhoto) return;
-      if (text && !antispamCheck('dm', text)) return;
+      if (text && String(text).length > 1500) { toast('✂️ Слишком длинно — максимум 1 500 символов.', 'error'); return; }
       const arr = getDmMsgs(user.id, currentDmPartner);
       const newMsg37 = {
         id: makeId('dm'), key: dmKey(user.id, currentDmPartner), from: user.id, name: user.name, avatar: user.avatar,
@@ -9374,26 +9390,50 @@
     }
 
     let dmFastTimer37 = null;
+    let dmFastSig37 = '';
+    function l37DmFeedSig37() {
+      try {
+        const user = getCurrentUser();
+        if (!user || !currentDmPartner) return '';
+        const arr = getDmMsgs(user.id, currentDmPartner);
+        return arr.map(function (m37) {
+          return (m37 && m37.id ? m37.id : '') + ':' + (m37 && m37.read ? 1 : 0) + ':' + (m37 && m37.text ? String(m37.text).length : 0) + ':' + (m37 && m37.edited ? 1 : 0) + ':' + (m37 && Array.isArray(m37.deletedFor) ? m37.deletedFor.length : 0);
+        }).join(',') + '#' + arr.length;
+      } catch (eSg37) { return ''; }
+    }
     function startDmFastSync37() {
       if (dmFastTimer37) return;
       dmFastTimer37 = setInterval(function () {
         try {
           if (document.visibilityState !== 'visible' || !sb37) return;
           const dmModal = document.getElementById('modal-dm');
-          if (!(dmModal && dmModal.classList.contains('open') && currentDmPartner)) return;
+          if (!(dmModal && dmModal.classList.contains('open') && currentDmPartner)) { dmFastSig37 = ''; return; }
           const user = getCurrentUser();
           if (!user) return;
-          const ck = dmCloudKey(user.id, currentDmPartner);
-          const keys = [ck, 'dm_index'];
+          const a37 = String(user.id || '').trim().toLowerCase();
+          const b37 = String(currentDmPartner || '').trim().toLowerCase();
+          const ck = dmCloudKey(a37, b37);
+          const ckRev37 = 'dm__' + b37 + '_' + a37;
+          const keys = [ck, ckRev37, 'dm_index'];
           const before = dmSyncSnapshot(keys);
           pullKeys(keys).then(function () {
-            if (dmSyncSnapshot(keys) !== before) {
+            try {
+              const altArr37 = readLs(ckRev37);
+              if (Array.isArray(altArr37) && altArr37.length) {
+                const uni37 = mergeLists(getDmMsgs(user.id, currentDmPartner), altArr37);
+                writeLs(ck, uni37);
+                writeLs(ckRev37, []);
+              }
+            } catch (eUn37) { /* тихо */ }
+            const sig37 = l37DmFeedSig37();
+            if (sig37 !== dmFastSig37 || dmSyncSnapshot(keys) !== before) {
+              dmFastSig37 = sig37;
               try { renderActiveChatMessages(); } catch (eRa37) {}
               try { renderDms(); } catch (eRd37) {}
             }
           }).catch(function () {});
         } catch (eFt37) { /* тихо */ }
-      }, 800);
+      }, 500);
     }
 
     function startDmSync() {
@@ -13144,6 +13184,31 @@ try {
         updateAuthUI();
         try { renderProfileTab(); } catch (eUd37) {}
         try { refreshChatViews(); } catch (eUd237) {}
+      } else if (u.kind === 'test_reset') {
+        ['users', 'posts', 'listings'].forEach(function (tk37) {
+          try { writeLs(tk37 + '_del', []); } catch (eTc37) { /* тихо */ }
+          l37ForceCloudSet37(tk37 + '_del', []);
+        });
+        dbSave('users', u.users);
+        dbSave('posts', u.posts);
+        dbSave('listings', u.listings);
+        dbSave('dms', u.dms);
+        dbSave('dm_index', u.dmIndex);
+        dbSave('reaction', u.reaction);
+        dbSave('pets', u.pets);
+        Object.keys(u.dmCloud || {}).forEach(function (k) {
+          try { writeLs(k, u.dmCloud[k] || []); } catch (eWc37) { /* тихо */ }
+          l37ForceCloudSet37(k, u.dmCloud[k] || []);
+        });
+        updateAuthUI();
+        try { renderProfileTab(); } catch (eUr1) { /* тихо */ }
+        try { renderFeed(); } catch (eUr2) { /* тихо */ }
+        try { renderShop(); } catch (eUr3) { /* тихо */ }
+        try { renderDms(); } catch (eUr4) { /* тихо */ }
+        try { renderReactionRecords(); } catch (eUr5) { /* тихо */ }
+        try { renderPetTop(); } catch (eUr6) { /* тихо */ }
+        try { renderClassTab(); } catch (eUr7) { /* тихо */ }
+        try { refreshChatViews(); } catch (eUr8) { /* тихо */ }
       } else if (u.kind === 'widgets') {
         dbSave('custom_text_widgets', u.before || []);
         renderTextWidgets();
@@ -13696,6 +13761,7 @@ try {
         if (b.id === 'adm-live-edit-btn') { setLiveEdit(!liveEditOn); return; }
         if (b.id === 'adm-widget-btn' || b.id === 'adm-widget-fab') { openWidgetEditor(null); return; }
         if (b.id === 'adm-diag-btn') { l37DiagOpenReport37(); return; }
+        if (b.id === 'adm-reset-tests-btn') { adminTestReset37(); return; }
         if (b.id === 'adm-exit-btn') { setAdminActive(false); toast('🚪 Ты вышел из админки.', 'info'); return; }
         const t = b.getAttribute('data-adm');
         if (t === 'tables') openAdminTables('applications');
@@ -15887,6 +15953,90 @@ try {
     window.renderAdminDirector = renderAdminDirector;
 
     /* ---- 👥 Пользователи: удаление аккаунта и всех его данных ---- */
+    function l37ForceCloudSet37(key, payload) {
+      try {
+        return Promise.resolve(cloudSaveMerged(key, function () { return payload; })).catch(function () {});
+      } catch (eFc37) { return null; }
+    }
+
+    function adminTestReset37() {
+      if (!isFullAdmin37()) { toast('🧹 Сброс тестов может выполнить только Главный Админ.', 'error'); return; }
+      if (!confirm('🧹 Сброс всех тестовых данных?\n\nБудут удалены: тестовые аккаунты (кроме Главного Админа), все чаты dm__, посты и комментарии Соцсети, объявления Лицей-Маркета, игровые рекорды (Топ-1…Топ-10), балансы ⚡ Квантов и очки классов (1А–11Д).\n\nСайт, настройки, ИИ и аккаунт Супер-Админа не пострадают. Полный снимок сохранится в Журнале Админки — можно вернуть всё кнопкой «↩️ Отменить».')) return;
+      if (!confirm('Второе подтверждение: удаляем ученические данные и обнуляем очки классов. Продолжить?')) return;
+      const users = getUsers();
+      const keep = users.filter(function (u) { return u.isAdmin; });
+      if (!keep.length) { toast('Внутренняя ошибка: Главный Админ не найден.', 'error'); return; }
+      const removedUsers = users.filter(function (u) { return !u.isAdmin && u.id; });
+      const dmIndex = dbLoad('dm_index', {});
+      const dmKeys37 = [];
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.indexOf(LS_PREFIX + 'dm__') === 0) {
+            const kk = k.slice(LS_PREFIX.length);
+            if (dmKeys37.indexOf(kk) === -1) dmKeys37.push(kk);
+          }
+        }
+      } catch (eLs37) { /* тихо */ }
+      Object.keys(dmIndex).forEach(function (uid) {
+        (Array.isArray(dmIndex[uid]) ? dmIndex[uid] : []).forEach(function (k) { if (dmKeys37.indexOf(k) === -1) dmKeys37.push(k); });
+      });
+      const dmCloudSnap37 = {};
+      dmKeys37.forEach(function (k) { dmCloudSnap37[k] = dbLoad(k, []); });
+      const pets = getPetsMap();
+      const snapshot = {
+        kind: 'test_reset',
+        users: JSON.parse(JSON.stringify(users)),
+        posts: getList('posts'),
+        listings: getList('listings'),
+        dms: getList('dms'),
+        dmIndex: dmIndex,
+        dmCloud: dmCloudSnap37,
+        reaction: getList('reaction'),
+        pets: pets,
+        when: new Date().toLocaleString('ru-RU')
+      };
+      const restUsers = keep.map(function (u) { const c = Object.assign({}, u); c.points = 0; return c; });
+      const petsReset = {};
+      Object.keys(pets).forEach(function (cid) {
+        const p = Object.assign({}, pets[cid]);
+        p.level = 1; p.xp = 0; p.hunger = 100; p.fun = 100;
+        petsReset[cid] = p;
+      });
+      const postIds37 = getList('posts').map(function (p) { return p && p.id; }).filter(Boolean);
+      const listingIds37 = getList('listings').map(function (l) { return l && l.id; }).filter(Boolean);
+      try { l37TombAdd37('users', removedUsers.map(function (u) { return u.id; })); } catch (eTb60) { /* тихо */ }
+      try { l37TombAdd37('posts', postIds37); } catch (eTb61) { /* тихо */ }
+      try { l37TombAdd37('listings', listingIds37); } catch (eTb62) { /* тихо */ }
+      dbSave('users', restUsers);
+      dbSave('posts', []);
+      dbSave('listings', []);
+      writeLs('dms', []);
+      dbSave('dms', []);
+      writeLs('dm_index', {});
+      dbSave('dm_index', {});
+      writeLs('reaction', []);
+      dbSave('reaction', []);
+      writeLs('pets', petsReset);
+      dbSave('pets', petsReset);
+      dmKeys37.forEach(function (k) {
+        writeLs(k, []);
+        l37ForceCloudSet37(k, []);
+      });
+      adminLogAction('users', '🧹 Сброс тестовых данных (' + snapshot.when + '): удалено аккаунтов — ' + removedUsers.length + ', чатов — ' + dmKeys37.length + ', постов — ' + postIds37.length + ', объявлений — ' + listingIds37.length + '. Восстановить всё: кнопка «↩️ Отменить» под этой записью.', snapshot);
+      updateAuthUI();
+      try { renderProfileTab(); } catch (eRr1) { /* тихо */ }
+      try { renderFeed(); } catch (eRr2) { /* тихо */ }
+      try { renderShop(); } catch (eRr3) { /* тихо */ }
+      try { renderDms(); } catch (eRr4) { /* тихо */ }
+      try { renderReactionRecords(); } catch (eRr5) { /* тихо */ }
+      try { renderPetTop(); } catch (eRr6) { /* тихо */ }
+      try { renderClassTab(); } catch (eRr7) { /* тихо */ }
+      try { refreshChatViews(); } catch (eRr8) { /* тихо */ }
+      if (adminToolsMode === 'users' && typeof renderAdminUsers === 'function') renderAdminUsers('');
+      toast('🧹 Тестовые данные сброшены. Восстановление — в Журнале Админки (↩️ Отменить).', 'success');
+    }
+
     function admUserAction37(userId, action, extra) {
       const me = getCurrentUser();
       if (!me || !me.isAdmin) { toast('Только Главный Админ может управлять аккаунтами.', 'error'); return; }
