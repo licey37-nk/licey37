@@ -2368,6 +2368,10 @@
       box-shadow: var(--shadow);
     }
 
+    .dm-row[data-dm-row] { cursor: pointer; user-select: none; }
+    .dm-row[data-dm-row]:hover { box-shadow: var(--shadow); border-color: rgba(5, 150, 105, 0.35); }
+    .dm-row[data-dm-row]:active { transform: scale(0.985); background: color-mix(in srgb, #059669 8%, var(--surface)); }
+
     .channel-head {
       display: flex;
       gap: 12px;
@@ -3856,6 +3860,15 @@
       body { padding-bottom: 64px; }
       .dm-scroll-down { bottom: 100px; }
     }
+    @media (max-width: 768px) {
+      .bottom-nav { display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: space-around; align-items: center; gap: 4px; width: 100%; padding: 6px 4px calc(6px + env(safe-area-inset-bottom)); }
+      .bottom-nav button { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 5px 2px; font-size: 1.15rem; line-height: 1.1; }
+      .bottom-nav button small { font-size: 0.56rem; font-weight: 600; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      body { padding-bottom: 84px; }
+      #ai-fab { bottom: calc(84px + env(safe-area-inset-bottom) + 10px); right: 14px; width: 56px; height: 56px; }
+      .to-top-btn { bottom: calc(84px + env(safe-area-inset-bottom) + 78px); right: 14px; }
+      .dm-scroll-down { bottom: calc(84px + env(safe-area-inset-bottom) + 10px); }
+    }
 
     /* ---- Тосты новых сообщений ---- */
     .msg-toast {
@@ -5073,6 +5086,7 @@
         <button id="adm-widget-btn" style="display:none;">➕ Блок</button>
         <button data-adm="broadcast">📢 Рассылка</button>
         <button id="adm-all-tools-btn">☰ Все инструменты Админа</button>
+        <button id="adm-diag-btn" title="Отчёт о состоянии облачной синхронизации Supabase">🩺 Диагностика</button>
       </div>
       <div class="adm-extra">
         <button data-adm="users">👥 Пользователи</button>
@@ -5500,31 +5514,21 @@
 
     function l37DiagFail37(op, key, err) {
       try {
-        const d = l37DiagHuman37(err);
-        const sig37 = op + '|' + key + '|' + d.code + '|' + d.msg;
-        l37DiagEnsure37();
-        if (l37DiagPill37El) l37DiagPill37El.style.display = 'none';
-        if (l37DiagBanner37El.style.display === 'block' && l37DiagLastSig37 === sig37) return;
-        l37DiagLastSig37 = sig37;
-        l37DiagBanner37El.innerHTML = '<b>🛑 СБОЙ ОБЛАКА SUPABASE — ' + esc(op) + '</b> · таблица <b>' + TABLE + '</b> · ключ «<b>' + esc(String(key)) + '</b>»<br>'
-          + 'Причина сбоя: код <b>' + esc(d.code) + '</b> — ' + esc(d.msg) + '<br>'
-          + '<span style="opacity:.92;">Что делать: ' + esc(d.human) + '</span>'
-          + '<span id="l37-diag-close" style="position:absolute;top:6px;right:10px;cursor:pointer;font:700 16px/1 Arial;">✕</span>';
-        l37DiagBanner37El.style.display = 'block';
-        const x37 = document.getElementById('l37-diag-close');
-        if (x37) x37.addEventListener('click', function () { l37DiagBanner37El.style.display = 'none'; });
+        l37DiagState37.db = 'fail';
+        l37DiagState37.lastDbErr = err;
+        l37DiagLog37('fail', op, key, err);
         if (!l37DiagRecheckTimer37) l37DiagRecheckTimer37 = setTimeout(function () { l37DiagRecheckTimer37 = null; try { l37DiagRun37(); } catch (eR37) {} }, 60000);
         try { console.error('L37 DIAG [' + op + ' · ' + key + ']', err); } catch (eC37) {}
+        try { if (document.getElementById('l37-diag-report')) l37DiagRenderReport37(); } catch (eRp37) {}
       } catch (eDf37) {}
     }
 
     function l37DiagOk37(what, label) {
       try {
-        l37DiagEnsure37();
-        if (l37DiagBanner37El.style.display === 'block') return;
-        l37DiagPill37El.textContent = label || '🟢 Облако OK';
-        l37DiagPill37El.title = 'Последняя успешная операция: ' + what + ' · ' + new Date().toLocaleTimeString('ru-RU');
-        l37DiagPill37El.style.display = 'block';
+        l37DiagState37.db = 'ok';
+        l37DiagState37.lastOkTs = Date.now();
+        l37DiagLog37('ok', label || what || 'облако', '—', null);
+        try { if (document.getElementById('l37-diag-report')) l37DiagRenderReport37(); } catch (eRp37) {}
       } catch (eDo37) {}
     }
 
@@ -5720,6 +5724,83 @@
 
     function readLs(key) {
       try { return JSON.parse(localStorage.getItem(LS_PREFIX + key)); } catch (e) { return null; }
+    }
+
+    /* Журнал диагностики облака: результаты самопроверки видны ТОЛЬКО
+       Супер-Админу по кнопке «🩺 Диагностика» в админ-панели — у обычных
+       учеников и учителей никаких баннеров и плашек на экране нет. */
+    const l37DiagJournal37 = [];
+    const l37DiagState37 = { db: 'unknown', realtime: 'unknown', lastRunTs: 0, lastOkTs: 0, lastDbErr: null, lastRtErr: null };
+
+    function l37DiagLog37(level, op, key, err) {
+      try {
+        const d = err ? l37DiagHuman37(err) : { code: '—', msg: '', human: '' };
+        l37DiagJournal37.push({ ts: Date.now(), level: level, op: op, key: key, code: d.code, msg: d.msg, human: d.human });
+        if (l37DiagJournal37.length > 50) l37DiagJournal37.splice(0, l37DiagJournal37.length - 50);
+      } catch (eLj37) {}
+    }
+
+    function l37DiagRenderReport37() {
+      try {
+        const body37 = document.getElementById('l37-diag-report-body');
+        if (!body37) return;
+        const okIco37 = function (s) { return s === 'ok' ? '✅' : (s === 'fail' ? '❌' : '⏳ ещё не проверялось'); };
+        const st37 = l37DiagState37;
+        let html37 = '<div style="font:700 15px/1.4 Arial,sans-serif;margin-bottom:10px;">🩺 Диагностика облака Supabase · таблица ' + esc(TABLE) + '</div>';
+        html37 += '<div style="font:600 13px/1.7 Arial,sans-serif;">'
+          + 'Запись (UPSERT): ' + okIco37(st37.db) + '<br>'
+          + 'Чтение (SELECT): ' + okIco37(st37.db) + '<br>'
+          + 'Realtime (Broadcast): ' + okIco37(st37.realtime) + '<br>'
+          + 'Последняя проверка: ' + (st37.lastRunTs ? new Date(st37.lastRunTs).toLocaleTimeString('ru-RU') : '—')
+          + (st37.lastOkTs ? ' · последняя успешная: ' + new Date(st37.lastOkTs).toLocaleTimeString('ru-RU') : '')
+          + '</div>';
+        if (st37.lastDbErr) {
+          const d37 = l37DiagHuman37(st37.lastDbErr);
+          html37 += '<div style="background:#dc2626;color:#fff;border-radius:10px;padding:10px 12px;margin:10px 0;font:600 12px/1.6 Arial,sans-serif;">🛑 Последняя ошибка записи/чтения: код <b>' + esc(d37.code) + '</b> — ' + esc(d37.msg) + '<br>Что делать: ' + esc(d37.human) + '</div>';
+        }
+        if (st37.lastRtErr) {
+          html37 += '<div style="background:#f59e0b22;border:1px solid #f59e0b;border-radius:10px;padding:10px 12px;margin:10px 0;font:600 12px/1.6 Arial,sans-serif;">⚠️ Realtime: ' + esc(String(st37.lastRtErr.message || st37.lastRtErr)) + ' — доставку сообщений ведёт HTTP-сверка каждые 1,5 сек, данные не теряются.</div>';
+        }
+        html37 += '<div style="font:700 13px/1.4 Arial,sans-serif;margin:10px 0 4px;">Журнал событий (' + l37DiagJournal37.length + '):</div>';
+        html37 += '<div style="max-height:260px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;padding:8px 10px;font:12px/1.6 monospace;">';
+        html37 += l37DiagJournal37.length
+          ? l37DiagJournal37.slice().reverse().map(function (e37) {
+              const ico37 = e37.level === 'fail' ? '🔴' : '🟢';
+              return '<div>' + ico37 + ' ' + new Date(e37.ts).toLocaleTimeString('ru-RU') + ' · ' + esc(e37.op) + ' · «' + esc(String(e37.key)) + '»' + (e37.msg ? ' · ' + esc(e37.code) + ' — ' + esc(e37.msg.slice(0, 120)) : '') + '</div>';
+            }).join('')
+          : 'Событий пока нет — облако работает без ошибок.';
+        html37 += '</div>';
+        body37.innerHTML = html37;
+      } catch (eRr37) {}
+    }
+
+    function l37DiagOpenReport37() {
+      try {
+        let ov37 = document.getElementById('l37-diag-report');
+        if (!ov37) {
+          ov37 = document.createElement('div');
+          ov37.id = 'l37-diag-report';
+          ov37.style.cssText = 'position:fixed;inset:0;z-index:100000;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:16px;';
+          ov37.innerHTML = '<div style="background:var(--card,#fff);color:var(--text,#1e293b);border-radius:18px;max-width:560px;width:100%;max-height:86vh;overflow-y:auto;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.35);">'
+            + '<div id="l37-diag-report-body"></div>'
+            + '<div style="display:flex;gap:8px;margin-top:12px;flex-wrap:nowrap;">'
+            + '<button id="l37-diag-rerun" style="flex:1;border:none;border-radius:10px;padding:10px 12px;font:700 13px Arial,sans-serif;cursor:pointer;background:#1d4ed8;color:#fff;">🔄 Проверить сейчас</button>'
+            + '<button id="l37-diag-close" style="flex:1;border:none;border-radius:10px;padding:10px 12px;font:700 13px Arial,sans-serif;cursor:pointer;background:#e2e8f0;color:#0f172a;">Закрыть</button>'
+            + '</div></div>';
+          (document.body || document.documentElement).appendChild(ov37);
+          ov37.addEventListener('click', function (e37) {
+            try {
+              if (e37.target === ov37 || e37.target.id === 'l37-diag-close') { ov37.remove(); return; }
+              if (e37.target.id === 'l37-diag-rerun') {
+                const bb37 = document.getElementById('l37-diag-report-body');
+                if (bb37) bb37.innerHTML = '<div style="font:600 13px Arial,sans-serif;">⏳ Идёт сквозная проверка UPSERT → SELECT → Realtime…</div>';
+                Promise.resolve(l37DiagRun37()).then(function () { l37DiagRenderReport37(); }).catch(function (eRun37) { l37DiagRenderReport37(); });
+              }
+            } catch (eOv37) {}
+          });
+        }
+        l37DiagRenderReport37();
+      } catch (eOr37) {}
     }
 
     /* Единая универсальная распаковка ответов Supabase: колонка value (text/jsonb)
@@ -5930,6 +6011,7 @@
       startRealtime();
       liveSyncTick();
       startDmSync();
+      try { startDmFastSync37(); } catch (eFt37) { /* тихо */ }
     }
 
     /* ============ ПОЛЬЗОВАТЕЛИ И СЕССИЯ ============ */
@@ -8747,6 +8829,8 @@
         }
       } catch (eMr37) {}
       updateDmHeaderStatus();
+      const nearBottom37 = wrap.scrollHeight - wrap.scrollTop - wrap.clientHeight < 160;
+      const savedTop37 = wrap.scrollTop;
       const messages = visibleDmMsgs(user.id, currentDmPartner).slice(-80);
       let lastDayKey37 = '';
       wrap.innerHTML = messages.length
@@ -8776,7 +8860,8 @@
             '</div>';
           }).join('')
         : '<p class="empty-line">Начни диалог — напиши первое сообщение!</p>';
-      wrap.scrollTop = wrap.scrollHeight;
+      if (nearBottom37) wrap.scrollTop = wrap.scrollHeight;
+      else wrap.scrollTop = savedTop37;
     }
 
     function renderDms() {
@@ -8818,7 +8903,7 @@
             const last = dialogs[partnerId];
             const pu = getUserById(partnerId);
             const fromMe = last.from === user.id;
-            return '<div class="dm-row">' +
+            return '<div class="dm-row" data-dm-row="' + esc(partnerId) + '">' +
               msgAvatarHtml(pu ? pu.avatar : null, 'mini-ava') +
               '<div style="min-width:0; flex:1;">' +
                 '<div style="font-weight:700;">' + esc(pu ? pu.name : 'Пользователь') + (pu ? ' <span class="user-class">' + esc(classIdOf(pu.grade, pu.letter)) + '</span>' : '') + '</div>' +
@@ -9191,6 +9276,29 @@
         const dmModal = document.getElementById('modal-dm');
         if (dmModal && dmModal.classList.contains('open') && currentDmPartner) renderDmMessages();
       } catch (eRac37) {}
+    }
+
+    let dmFastTimer37 = null;
+    function startDmFastSync37() {
+      if (dmFastTimer37) return;
+      dmFastTimer37 = setInterval(function () {
+        try {
+          if (document.visibilityState !== 'visible' || !sb37) return;
+          const dmModal = document.getElementById('modal-dm');
+          if (!(dmModal && dmModal.classList.contains('open') && currentDmPartner)) return;
+          const user = getCurrentUser();
+          if (!user) return;
+          const ck = dmCloudKey(user.id, currentDmPartner);
+          const keys = [ck, 'dm_index'];
+          const before = dmSyncSnapshot(keys);
+          pullKeys(keys).then(function () {
+            if (dmSyncSnapshot(keys) !== before) {
+              try { renderActiveChatMessages(); } catch (eRa37) {}
+              try { renderDms(); } catch (eRd37) {}
+            }
+          }).catch(function () {});
+        } catch (eFt37) { /* тихо */ }
+      }, 800);
     }
 
     function startDmSync() {
@@ -9656,8 +9764,6 @@
   document.getElementById('dm-list').addEventListener('click', function (e) {
         const user = getCurrentUser();
         if (!user) return;
-        const openBtn = e.target.closest('[data-dm-open]');
-        if (openBtn) { openDm(openBtn.dataset.dmOpen); return; }
         const archBtn = e.target.closest('[data-dm-archive]');
         if (archBtn) {
           const archived = getArchived(user.id);
@@ -9665,7 +9771,10 @@
           setArchived(user.id, archived);
           renderDms();
           toast('Чат перемещён в архив 📥', 'info');
+          return;
         }
+        const openBtn = e.target.closest('[data-dm-open]') || e.target.closest('[data-dm-row]');
+        if (openBtn) { openDm(openBtn.dataset.dmOpen || openBtn.dataset.dmRow); return; }
       });
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
@@ -13456,6 +13565,7 @@ try {
         }
         if (b.id === 'adm-live-edit-btn') { setLiveEdit(!liveEditOn); return; }
         if (b.id === 'adm-widget-btn' || b.id === 'adm-widget-fab') { openWidgetEditor(null); return; }
+        if (b.id === 'adm-diag-btn') { l37DiagOpenReport37(); return; }
         if (b.id === 'adm-exit-btn') { setAdminActive(false); toast('🚪 Ты вышел из админки.', 'info'); return; }
         const t = b.getAttribute('data-adm');
         if (t === 'tables') openAdminTables('applications');
