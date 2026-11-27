@@ -21165,6 +21165,9 @@ try {
         '<div class="l37-csel-list37" id="l37-csel-list37"></div>' +
         '</div>';
       document.body.appendChild(ov);
+      const savedScrollY = window.scrollY || window.pageYOffset || 0;
+      try { document.body.classList.add('l37-csel-lock37'); } catch (eLock37) { /* тихо */ }
+      ov.addEventListener('touchmove', function (eTm37) { if (eTm37.target === ov) eTm37.preventDefault(); }, { passive: false });
       const list = ov.querySelector('#l37-csel-list37');
       function renderList(q) {
         const qq = normText(q || '');
@@ -21179,10 +21182,10 @@ try {
             '</button>';
         }).join('');
         const act = list.querySelector('.l37-csel-opt37.active');
-        if (act && act.scrollIntoView) { try { act.scrollIntoView({ block: 'center' }); } catch (eS37) { /* тихо */ } }
+          if (act) { try { const lr37 = list.getBoundingClientRect(), ar37 = act.getBoundingClientRect(); list.scrollTop += (ar37.top + ar37.height / 2) - (lr37.top + lr37.height / 2); } catch (eS37) { /* тихо */ } }
       }
       renderList('');
-      function close37() { try { ov.remove(); } catch (eC37) { /* тихо */ } try { document.removeEventListener('keydown', onKey37); } catch (eK37) { /* тихо */ } }
+      function close37() { try { ov.remove(); } catch (eC37) { /* тихо */ } try { document.removeEventListener('keydown', onKey37); } catch (eK37) { /* тихо */ } try { document.body.classList.remove('l37-csel-lock37'); } catch (eU37) { /* тихо */ } try { window.scrollTo(0, savedScrollY); } catch (eR37) { /* тихо */ } }
       function onKey37(e) { if (e && e.key === 'Escape') { e.preventDefault(); close37(); } }
       ov.addEventListener('click', function (e) { if (e.target === ov) close37(); });
       const x37 = ov.querySelector('#l37-csel-x37');
@@ -21191,7 +21194,7 @@ try {
       const q37 = ov.querySelector('#l37-csel-q37');
       if (q37) {
         q37.addEventListener('input', function () { renderList(q37.value); });
-        setTimeout(function () { try { q37.focus(); } catch (eF37) { /* тихо */ } }, 60);
+        setTimeout(function () { try { q37.focus({ preventScroll: true }); } catch (eF37) { try { q37.focus(); } catch (eF237) { /* тихо */ } } }, 60);
       }
       list.addEventListener('click', function (e) {
         const btn = e.target.closest('[data-csel-v]');
@@ -21254,7 +21257,8 @@ try {
           '.l37-csel-trg-val37 { font-size:15px; font-weight:800; color:#0f172a; letter-spacing:-0.02em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }' +
           '.l37-csel-trg-cat37 { font-size:11px; font-weight:700; color:#64748b; }' +
           '.l37-csel-trg-arrow37 { font-size:14px; color:#6366f1; transition:transform .22s cubic-bezier(0.22,1,0.36,1); }' +
-          '.l37-csel-ov37 { position:fixed; inset:0; z-index:2147483000; background:rgba(15,23,42,0.45); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); display:flex; align-items:flex-end; justify-content:center; animation:l37CselFade37 .18s ease; }' +
+          '.l37-csel-ov37 { position:fixed; inset:0; width:100vw; height:100dvh; z-index:2147483000; background:rgba(15,23,42,0.45); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); display:flex; align-items:flex-end; justify-content:center; animation:l37CselFade37 .18s ease; }' +
+          '.l37-csel-lock37 { overflow:hidden !important; }' +
           '.l37-csel-sheet37 { width:100%; max-height:82dvh; background:#fff; border-radius:24px 24px 0 0; box-shadow:0 -18px 60px rgba(15,23,42,0.35); display:flex; flex-direction:column; padding:10px 16px calc(16px + env(safe-area-inset-bottom)); animation:l37CselUp37 .32s cubic-bezier(0.22,1,0.36,1); }' +
           '@keyframes l37CselFade37 { from { opacity:0; } to { opacity:1; } }' +
           '@keyframes l37CselUp37 { from { transform:translateY(60px); opacity:0; } to { transform:translateY(0); opacity:1; } }' +
@@ -21269,7 +21273,7 @@ try {
           '.l37-csel-search37 { margin-bottom:10px; }' +
           '.l37-csel-search37 input { width:100%; box-sizing:border-box; padding:11px 14px; font-size:16px; border-radius:12px; border:1.5px solid rgba(15,23,42,0.14); background:#f8fafc; font-family:inherit; outline:none; }' +
           '.l37-csel-search37 input:focus { border-color:#6366f1; background:#fff; }' +
-          '.l37-csel-list37 { overflow-y:auto; -webkit-overflow-scrolling:touch; display:flex; flex-direction:column; gap:8px; padding-bottom:6px; }' +
+          '.l37-csel-list37 { overflow-y:auto; -webkit-overflow-scrolling:touch; display:flex; flex-direction:column; gap:8px; padding-bottom:6px; max-height:68dvh; overscroll-behavior:contain; min-height:0; }' +
           '.l37-csel-opt37 { display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:11px 12px; border-radius:14px; border:1.5px solid rgba(15,23,42,0.10); background:#fff; cursor:pointer; font-family:inherit; transition:border-color .15s, background .15s, transform .12s; }' +
           '.l37-csel-opt37:active { transform:scale(0.985); }' +
           '.l37-csel-opt37.active { border-color:#6366f1; background:#eef2ff; }' +
