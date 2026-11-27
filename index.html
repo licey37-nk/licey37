@@ -3373,6 +3373,32 @@
       transition: transform 0.15s, opacity 0.15s;
     }
     .dm-back-btn:active { transform: scale(0.96); }
+    .dm-menu-btn {
+      width: 38px; height: 38px; border-radius: 50%; border: none; flex-shrink: 0;
+      background: var(--primary-soft); color: var(--primary); font-size: 1.35rem; font-weight: 700;
+      line-height: 1; cursor: pointer; transition: transform 0.15s, background 0.15s;
+    }
+    .dm-menu-btn:active { transform: scale(0.92); }
+    .dm-menu-pop {
+      position: absolute; top: calc(100% + 6px); right: 0; z-index: 9600; min-width: 236px;
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      box-shadow: 0 18px 48px rgba(2, 6, 23, 0.28); padding: 6px; display: flex; flex-direction: column; gap: 2px;
+      animation: dmMenuPop37 0.16s ease;
+    }
+    @keyframes dmMenuPop37 { from { opacity: 0; transform: translateY(-6px) scale(0.97); } to { opacity: 1; transform: none; } }
+    .dm-menu-item {
+      display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
+      background: none; border: none; color: var(--text); font-size: 0.9rem; font-weight: 600;
+      padding: 11px 12px; border-radius: 11px; cursor: pointer; white-space: nowrap;
+    }
+    .dm-menu-item:hover { background: var(--primary-soft); }
+    .dm-menu-item:active { transform: scale(0.98); }
+    .dm-menu-danger { color: #dc2626; }
+    .dm-menu-danger:hover { background: rgba(220, 38, 38, 0.1); }
+    .dm-head-row { position: relative; }
+    .dm-head-actions .dm-legacy-head-btn { display: none !important; }
+    .dm-head-actions #dm-search-btn { display: none !important; }
+    .dm-mood-inline { color: var(--muted); font-size: 0.78rem; white-space: nowrap; }
     .dm-head-row {
       display: flex;
       align-items: center;
@@ -3868,6 +3894,25 @@
       #ai-fab { bottom: calc(84px + env(safe-area-inset-bottom) + 10px); right: 14px; width: 56px; height: 56px; }
       .to-top-btn { bottom: calc(84px + env(safe-area-inset-bottom) + 78px); right: 14px; }
       .dm-scroll-down { bottom: calc(84px + env(safe-area-inset-bottom) + 10px); }
+    }
+    #modal-dm.dm-full .chat-form {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 9510;
+      margin: 0; border-radius: 0; border-top: 1px solid var(--border);
+      padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+      box-shadow: 0 -6px 24px rgba(2, 6, 23, 0.12);
+    }
+    #modal-dm.dm-full .chat-form #dm-input { flex: 1; min-width: 0; width: auto; font-size: 16px; }
+    #modal-dm.dm-full .modal-chat-list { padding-bottom: 88px; }
+    body.l37-dm-open37 .bottom-nav { display: none !important; }
+    body.l37-dm-open37 .to-top-btn { display: none !important; }
+    body.l37-dm-open37 #ai-fab { display: none !important; }
+    @media (max-width: 768px) {
+      html, body { overflow-x: hidden; max-width: 100vw; }
+      .modal-content { max-width: 94vw; }
+      .card { border-radius: 18px; }
+      img { max-width: 100%; }
+      .admin-row-actions { flex-wrap: wrap; }
+      .admin-row { gap: 8px; }
     }
 
     /* ---- Тосты новых сообщений ---- */
@@ -4831,15 +4876,23 @@
   <div class="modal" id="modal-dm" aria-modal="true" role="dialog">
     <div class="modal-content">
       <div class="modal-head dm-head-row">
-        <button type="button" class="dm-back-btn" id="dm-back-btn">← Назад</button>
+        <button type="button" class="dm-back-btn" id="dm-back-btn" title="Назад" aria-label="Назад">←</button>
         <div class="dm-head-ava" id="dm-head-ava"></div>
         <div class="dm-head-info">
           <h3 id="dm-head-name">Личные сообщения</h3>
           <p id="dm-with"></p>
         </div>
         <div class="dm-head-actions">
-          <button type="button" class="btn btn-ghost btn-sm" id="dm-block-btn">🚫</button>
-          <button type="button" class="btn btn-ghost btn-sm" id="dm-delete-btn" title="Удалить чат">🗑️</button>
+          <button type="button" class="btn btn-ghost btn-sm dm-legacy-head-btn" id="dm-block-btn">🚫</button>
+          <button type="button" class="btn btn-ghost btn-sm dm-legacy-head-btn" id="dm-delete-btn" title="Удалить чат">🗑️</button>
+          <button type="button" class="dm-menu-btn" id="dm-menu-btn" title="Действия с чатом" aria-label="Действия с чатом">⋮</button>
+          <div class="dm-menu-pop" id="dm-menu-pop" style="display:none;">
+            <button type="button" class="dm-menu-item" id="dm-menu-profile">👤 Открыть профиль</button>
+            <button type="button" class="dm-menu-item" id="dm-menu-search">🔍 Поиск по сообщениям</button>
+            <button type="button" class="dm-menu-item" id="dm-menu-block">🚫 Заблокировать</button>
+            <button type="button" class="dm-menu-item" id="dm-menu-clear">🧹 Очистить историю</button>
+            <button type="button" class="dm-menu-item dm-menu-danger" id="dm-menu-delete">🗑️ Удалить чат</button>
+          </div>
         </div>
       </div>
       <div class="form-error" id="dm-blocked-note" style="display:none;">Вы заблокировали этого пользователя — нажмите «✅ Разблокировать», чтобы продолжить общение.</div>
@@ -6584,6 +6637,11 @@
 
           if (!user) {
             showFormError('login-error', 'Ученик с таким именем не найден. Проверь написание или зарегистрируйся.');
+            return;
+          }
+
+          if (user.suspended37) {
+            showFormError('login-error', '🚫 Этот аккаунт заблокирован Администрацией Лицея №37. Обратись к Админу портала.');
             return;
           }
 
@@ -8529,8 +8587,7 @@
       } catch (eHd37) {}
       const withEl = document.getElementById('dm-with');
       if (withEl) {
-        withEl.innerHTML = '<span class="dm-name-line">' + esc(pu.name) + userVerifiedSpan(pu) + ' <span class="user-class">' + esc(classIdOf(pu.grade, pu.letter)) + '</span></span>' +
-          (pu.mood ? '<span class="dm-mood">🎵 ' + esc(pu.mood) + '</span>' : '') +
+        withEl.innerHTML = '<span class="dm-name-line">' + userVerifiedSpan(pu) + ' <span class="user-class">' + esc(classIdOf(pu.grade, pu.letter)) + '</span>' + (pu.mood ? ' <span class="dm-mood-inline">🎵 ' + esc(pu.mood) + '</span>' : '') + '</span>' +
           '<span class="dm-status" id="dm-status-line">' + dmStatusLine(pu) + '</span>' +
           '<span class="dm-typing" id="dm-typing" style="display:none;">✍️ печатает...</span>';
       }
@@ -8541,6 +8598,13 @@
       renderDmPlate();
       renderDmMessages();
       openModal('modal-dm');
+      try { startDmFastSync37(); } catch (eFs37) { /* тихо */ }
+      try {
+        if (sb37) {
+          const ckKick37 = dmCloudKey(user.id, partnerId);
+          pullKeys([ckKick37]).then(function () { try { renderActiveChatMessages(); } catch (eRa37) {} }).catch(function () {});
+        }
+      } catch (eKk37) { /* тихо */ }
     }
 
 
@@ -8563,6 +8627,37 @@
       if (note) note.style.display = blocked ? 'block' : 'none';
       if (input) input.disabled = blocked;
       if (send) send.disabled = blocked;
+      try { updateDmMenu37(); } catch (eUc37) { /* тихо */ }
+    }
+
+    function updateDmMenu37() {
+      try {
+        const mb = document.getElementById('dm-menu-block');
+        if (mb && currentDmPartner) mb.textContent = isUserBlocked(currentDmPartner) ? '✅ Разблокировать' : '🚫 Заблокировать';
+      } catch (eUm37) { /* тихо */ }
+    }
+
+    function toggleDmMenu37(force) {
+      try {
+        const pop = document.getElementById('dm-menu-pop');
+        if (!pop) return;
+        const show = force !== undefined ? force : pop.style.display === 'none';
+        pop.style.display = show ? 'flex' : 'none';
+        if (show) updateDmMenu37();
+      } catch (eTm37) { /* тихо */ }
+    }
+
+    function clearDmHistory37() {
+      const user = getCurrentUser();
+      if (!user || !currentDmPartner) return;
+      if (!confirm('Очистить всю историю сообщений в этом чате?')) return;
+      const key = dmKey(user.id, currentDmPartner);
+      dbSave('dms', getList('dms').filter(function (m) { return m && m.key !== key; }));
+      dbSave(dmCloudKey(user.id, currentDmPartner), []);
+      renderDmMessages();
+      renderDms();
+      toggleDmMenu37(false);
+      toast('🧹 История чата очищена.', 'success');
     }
 
     function toggleBlockUser(partnerId) {
@@ -8675,7 +8770,7 @@
     let lp37OnlineMap = {};
     let bcastTickerTimer = null;
 
-    function dmCloudKey(a, b) { return 'dm__' + [String(a), String(b)].map(function (s37) { return s37.toLowerCase(); }).sort().join('_'); }
+    function dmCloudKey(a, b) { return 'dm__' + [String(a || '').trim().toLowerCase(), String(b || '').trim().toLowerCase()].sort().join('_'); }
 
     function knownDmCloudKeys() {
       const out = [];
@@ -9610,6 +9705,25 @@
   document.addEventListener('click', function (e) {
         const back = e.target.closest('#dm-back-btn');
         if (back) { closeDmFull(); return; }
+        const mbtn = e.target.closest('#dm-menu-btn');
+        if (mbtn) { toggleDmMenu37(); return; }
+        const mp = e.target.closest('#dm-menu-pop');
+        if (mp) {
+          const act = e.target.closest('.dm-menu-item');
+          if (act) {
+            toggleDmMenu37(false);
+            if (act.id === 'dm-menu-profile' && currentDmPartner) {
+              const anchor37 = document.getElementById('dm-menu-btn');
+              setTimeout(function () { try { openMiniProfileCard37(currentDmPartner, anchor37); } catch (eOp37) {} }, 60);
+            }
+            else if (act.id === 'dm-menu-search') { const sbBtn37 = document.getElementById('dm-search-btn'); if (sbBtn37) sbBtn37.click(); }
+            else if (act.id === 'dm-menu-block' && currentDmPartner) { toggleBlockUser(currentDmPartner); }
+            else if (act.id === 'dm-menu-clear') { clearDmHistory37(); }
+            else if (act.id === 'dm-menu-delete' && currentDmPartner) { deleteDmChat(currentDmPartner); }
+          }
+          return;
+        }
+        toggleDmMenu37(false);
         const dmClose = e.target.closest('[data-close-modal="modal-dm"]');
         if (dmClose) {
           const mdm = document.getElementById('modal-dm');
@@ -12177,6 +12291,12 @@ try {
   document.addEventListener('click', function (e) {
         const wid = e.target.closest('[data-widget-id]');
         if (wid && (adminActive || (getCurrentUser() || {}).isAdmin)) { openWidgetEditor(wid.getAttribute('data-widget-id')); return; }
+        const pu37 = e.target.closest('[data-pts-u37]');
+        if (pu37) { const pp37 = pu37.getAttribute('data-pts-u37').split('|'); admUserAction37(pp37[0], 'points', pp37[1]); return; }
+        const su37 = e.target.closest('[data-susp-u37]');
+        if (su37) { admUserAction37(su37.getAttribute('data-susp-u37'), 'suspend'); return; }
+        const vu37 = e.target.closest('[data-vu37]');
+        if (vu37) { admUserAction37(vu37.getAttribute('data-vu37'), 'verify'); return; }
         const pq = e.target.closest('[data-pts-quick]');
         if (pq) {
           const parts = pq.getAttribute('data-pts-quick').split('|');
@@ -13214,7 +13334,17 @@ try {
       if (mode === 'backup') renderAdminBackup();
       if (mode === 'complaints' && typeof renderAdminComplaints === 'function') renderAdminComplaints();
       if (mode === 'director' && typeof renderAdminDirector === 'function') renderAdminDirector();
-      if (mode === 'users' && typeof renderAdminUsers === 'function') renderAdminUsers('');
+      if (mode === 'users' && typeof renderAdminUsers === 'function') {
+        renderAdminUsers('');
+        try {
+          if (sb37) refreshUsersFromCloud().then(function (cloudUsers) {
+            if (!Array.isArray(cloudUsers) || !cloudUsers.length) return;
+            const before = JSON.stringify(getUsers());
+            writeLs('users', l37TombFilter37('users', l37MergeCollection37('users', getUsers(), cloudUsers)));
+            if (JSON.stringify(getUsers()) !== before && adminToolsMode === 'users') renderAdminUsers(document.getElementById('adm-users-search') ? document.getElementById('adm-users-search').value : '');
+          }).catch(function () {});
+        } catch (eAu37) { /* тихо */ }
+      }
     }
 
     function renderAdminClassReset() {
@@ -13571,6 +13701,7 @@ try {
         if (t === 'tables') openAdminTables('applications');
         if (t === 'log') openAdminTool('log');
         if (t === 'rights') openAdminTool('rights');
+        if (t === 'users') openAdminTool('users');
         if (t === 'scripts') toggleAdminDrawer(true);
         if (t === 'rewards') openAdminTool('rewards');
         if (t === 'verified') openAdminTool('verified');
@@ -15756,6 +15887,29 @@ try {
     window.renderAdminDirector = renderAdminDirector;
 
     /* ---- 👥 Пользователи: удаление аккаунта и всех его данных ---- */
+    function admUserAction37(userId, action, extra) {
+      const me = getCurrentUser();
+      if (!me || !me.isAdmin) { toast('Только Главный Админ может управлять аккаунтами.', 'error'); return; }
+      const users = getUsers();
+      const u = users.find(function (x) { return x.id === userId; });
+      if (!u) return;
+      if (u.isAdmin && action !== 'points') { toast('Главного Админа изменять нельзя.', 'error'); return; }
+      if (action === 'points') {
+        adminGivePoints(userId, Number(extra) || 0, 'Начисление админом');
+      } else if (action === 'verify') {
+        if (!hasGlobalNode(me, 'verify')) { toast('Галочки выдаёт только владелец узла «☑️ Верификация».', 'error'); return; }
+        u.verified = !u.verified;
+        saveUsers(users);
+        toast((u.verified ? '☑️ ' : 'Галочка снята: ') + u.name, 'success');
+      } else if (action === 'suspend') {
+        u.suspended37 = !u.suspended37;
+        saveUsers(users);
+        try { adminLogAction('users', (u.suspended37 ? '🚫 Заблокирован аккаунт: ' : '✅ Разблокирован аккаунт: ') + u.name, null); } catch (eAl37) { /* тихо */ }
+        toast((u.suspended37 ? '🚫 Аккаунт заблокирован: ' : '✅ Аккаунт разблокирован: ') + u.name, u.suspended37 ? 'error' : 'success');
+      }
+      if (adminToolsMode === 'users') renderAdminUsers(document.getElementById('adm-users-search') ? document.getElementById('adm-users-search').value : '');
+    }
+
     function renderAdminUsers(filter) {
       const body = document.getElementById('admin-tools-body');
       if (!body) return;
@@ -15781,7 +15935,12 @@ try {
         const cls = classIdOf(u.grade, u.letter);
         const st = u.isAdmin ? '👑 Главный Админ' : esc(displayStatus(u));
         html += '<div class="admin-row"><div class="admin-row-main"><b>' + esc(u.name) + userVerifiedSpan(u) + roleBadges37(u, cls) + '</b><small>' + role + (cls ? ' · ' + esc(cls) + ' класс' : '') + ' · ' + qfmt37(u.points || 0) + ' · ' + st + '</small></div>' +
-          '<div class="admin-row-actions">' + (u.isAdmin ? '' : '<button class="btn btn-ghost btn-sm" data-del-user="' + esc(u.id) + '">🗑️ Удалить пользователя</button>') + '</div></div>';
+          '<div class="admin-row-actions">' + (u.isAdmin ? '' :
+            '<button class="btn btn-ghost btn-sm" data-pts-u37="' + esc(u.id) + '|10" title="Выдать 10 Квантов">⚡+10</button>' +
+            '<button class="btn btn-ghost btn-sm" data-pts-u37="' + esc(u.id) + '|50" title="Выдать 50 Квантов">⚡+50</button>' +
+            '<button class="btn ' + (u.suspended37 ? 'btn-primary' : 'btn-ghost') + ' btn-sm" data-susp-u37="' + esc(u.id) + '">' + (u.suspended37 ? '✅ Разблокировать' : '🚫 Блок') + '</button>' +
+            '<button class="btn btn-ghost btn-sm" data-vu37="' + esc(u.id) + '">' + (u.verified ? '☑ Снять' : '☑ Галочка') + '</button>' +
+            '<button class="btn btn-ghost btn-sm" data-del-user="' + esc(u.id) + '">🗑️ Удалить аккаунт</button>') + '</div></div>';
       });
       body.innerHTML = html;
       const si = document.getElementById('adm-users-search');
@@ -17615,6 +17774,15 @@ try {
 
     try { purgeDemoAccounts37(); } catch (e37) {}
     try { ensureDmExtras37(); } catch (e37) {}
+    try {
+      const dmObs37 = document.getElementById('modal-dm');
+      if (dmObs37 && typeof MutationObserver !== 'undefined') {
+        new MutationObserver(function () {
+          const open37 = dmObs37.classList.contains('open') && dmObs37.classList.contains('dm-full');
+          try { document.body.classList.toggle('l37-dm-open37', open37); } catch (eBo37) { /* тихо */ }
+        }).observe(dmObs37, { attributes: true, attributeFilter: ['class'] });
+      }
+    } catch (eMo37) { try { console.error("Инициализация модуля:", eMo37); } catch (eMo237) {} }
     try { ensureLessonIndicator37(); } catch (e37) {}
     try { ensureBottomNav37(); } catch (e37) {}
     try { ensureToTop37(); } catch (e37) {}
