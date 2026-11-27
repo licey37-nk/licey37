@@ -5285,6 +5285,7 @@
         <button id="adm-all-tools-btn">☰ Все инструменты Админа</button>
         <button id="adm-diag-btn" title="Отчёт о состоянии облачной синхронизации Supabase">🩺 Диагностика</button>
         <button id="adm-reset-tests-btn" title="Сброс тестовых данных с сохранением снимка в Журнале (можно отменить)">🧹 Сброс тестов</button>
+        <button id="adm-about-btn" title="Презентация портала для руководства школы">🚀 О портале</button>
       </div>
       <div class="adm-extra">
         <button data-adm="users">👥 Пользователи</button>
@@ -5536,7 +5537,7 @@
        из Supabase, объединяем по уникальному id без потерь и только
        потом делаем UPSERT с повтором через 1 сек при сетевом сбое.
        ============================================================ */
-    const MERGE_COLLECTION_KEYS37 = ['users', 'posts', 'listings', 'channels', 'complaints'];
+    const MERGE_COLLECTION_KEYS37 = ['users', 'posts', 'listings', 'channels', 'complaints', 'quant_txs'];
 
     function l37ItemFreshness37(it) {
       if (!it || typeof it !== 'object') return 0;
@@ -6768,6 +6769,8 @@
             user.verified = true;
           }
 
+          user.registeredAt = Date.now();
+          try { if (typeof l37GenPayCode37 === 'function') user.payCode = l37GenPayCode37(users); } catch (ePcR37) { /* тихо */ }
           users.push(user);
           saveUsers(users);
           try { if (typeof l37SyncSend === 'function') l37SyncSend('user_registered', { uid: user.id, name: user.name, ts: Date.now() }); } catch (eUr37) {}
@@ -14347,6 +14350,7 @@ try {
         if (b.id === 'adm-widget-fab') { try { l37OpenFreeBlock37(null); } catch (eFab37) { openWidgetEditor(null); } return; }
         if (b.id === 'adm-diag-btn') { l37DiagOpenReport37(); return; }
         if (b.id === 'adm-reset-tests-btn') { adminTestReset37(); return; }
+        if (b.id === 'adm-about-btn') { l37OpenAbout37(); return; }
         if (b.id === 'adm-exit-btn') { setAdminActive(false); toast('🚪 Ты вышел из админки.', 'info'); return; }
         const t = b.getAttribute('data-adm');
         if (t === 'tables') openAdminTables('applications');
@@ -17813,6 +17817,7 @@ try {
       renderProfileBase37();
       try { ensureTicket37(); } catch (eT37) {}
       try { ensureDndCard37(); } catch (eD37) {}
+      try { if (typeof l37EnsureProfileEco37 === 'function') l37EnsureProfileEco37(); } catch (eEco37) { /* тихо */ }
     };
 
     const toggleNotifBase37 = toggleNotifPanel37;
@@ -20234,6 +20239,736 @@ try {
         window.l37LockReportForm37 = l37LockReportForm37;
       }
     } catch (eExpPe37) {}
+
+    /* ==== L37 PASSPORT & QUANT-PAY v1 (Request 21): модуль вставляется ниже ==== */
+    
+    /* ============================================================
+       🪪 L37 PASSPORT & QUANT-PAY v1 (Request 21)
+       Модуль 1: СБП-переводы ⚡ Квантов по коду L37-XXXX / @нику
+       Модуль 2: Цифровой паспорт лицеиста с настоящим QR-кодом
+       Модуль 3: 🚀 О портале (Супер-Админка)
+       Существующие движки не изменяются — только новые функции.
+       ============================================================ */
+    const L37_PAY_AB37 = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    function l37GenPayCode37(users) {
+      const used = {};
+      (users || getUsers()).forEach(function (u) { if (u && u.payCode) used[String(u.payCode).toUpperCase()] = 1; });
+      let code = '';
+      do {
+        code = 'L37-';
+        for (let i = 0; i < 4; i++) code += L37_PAY_AB37[Math.floor(Math.random() * L37_PAY_AB37.length)];
+      } while (used[code]);
+      return code;
+    }
+    let l37PayCodesDone37 = false;
+    function l37EnsurePayCodes37() {
+      try {
+        const users = getUsers();
+        let changed = false;
+        const used = {};
+        users.forEach(function (u) { if (u && u.payCode) used[String(u.payCode).toUpperCase()] = 1; });
+        users.forEach(function (u) {
+          if (!u) return;
+          if (!u.payCode) { u.payCode = l37GenPayCode37(null); used[u.payCode] = 1; changed = true; }
+          if (!u.registeredAt) { u.registeredAt = u.createdAt ? (Date.parse(u.createdAt) || Date.now()) : Date.now(); changed = true; }
+        });
+        l37PayCodesDone37 = true;
+        if (changed) { saveUsers(users); try { instantSend('row', { key: 'users' }); } catch (eIs37) { /* тихо */ } }
+        return changed;
+      } catch (ePc37) { return false; }
+    }
+    function l37FindUserByAddress37(addr) {
+      try {
+        const s = String(addr || '').trim();
+        if (!s) return null;
+        const users = getUsers();
+        const up = s.replace(/[\s-]+/g, '').toUpperCase();
+        if (up.indexOf('L37') === 0 && up.length >= 7) {
+          const code = 'L37-' + up.slice(3);
+          const f = users.find(function (u) { return String(u.payCode || '').toUpperCase() === code; });
+          if (f) return f;
+          return null;
+        }
+        if (/^[A-Z0-9]{4}$/.test(up)) {
+          const fc = users.find(function (u) { return String(u.payCode || '').toUpperCase() === 'L37-' + up; });
+          if (fc) return fc;
+        }
+        if (s.charAt(0) === '@') {
+          const q = normText(s.slice(1));
+          return users.find(function (u) { return normText(u.name) === q; }) || null;
+        }
+        const byId = users.find(function (u) { return u.id === s; });
+        if (byId) return byId;
+        const q2 = normText(s);
+        return users.find(function (u) { return normText(u.name) === q2; }) || null;
+      } catch (eFa37) { return null; }
+    }
+
+    /* ---- Настоящий QR-энкодер (чистый JS, офлайн; byte-mode, ECC M, версии 1–6) ---- */
+    const L37_GF_EXP37 = (function () {
+      const e = new Array(512); const lg = new Array(256); let x = 1;
+      for (let i = 0; i < 255; i++) { e[i] = x; lg[x] = i; x <<= 1; if (x & 0x100) x ^= 0x11d; }
+      for (let i = 255; i < 512; i++) e[i] = e[i - 255];
+      e.log = lg;
+      return e;
+    })();
+    function l37QrMul37(a, b) { return (a && b) ? L37_GF_EXP37[L37_GF_EXP37.log[a] + L37_GF_EXP37.log[b]] : 0; }
+    function l37QrRsEc37(data, n) {
+      let g = [1];
+      for (let i = 0; i < n; i++) {
+        const ng = new Array(g.length + 1);
+        for (let j = 0; j < g.length + 1; j++) {
+          const a = j < g.length ? g[j] : 0;
+          const b = j > 0 ? l37QrMul37(g[j - 1], L37_GF_EXP37[i]) : 0;
+          ng[j] = a ^ b;
+        }
+        g = ng;
+      }
+      const res = data.concat(new Array(n).fill(0));
+      for (let i = 0; i < data.length; i++) {
+        const f = res[i];
+        if (!f) continue;
+        for (let j = 1; j < g.length; j++) res[i + j] ^= l37QrMul37(g[j], f);
+      }
+      return res.slice(data.length);
+    }
+    function l37QrBytes37(text) {
+      try { if (typeof TextEncoder !== 'undefined') return Array.prototype.slice.call(new TextEncoder().encode(String(text))); } catch (eTe37) { /* тихо */ }
+      const s = unescape(encodeURIComponent(String(text)));
+      const out = [];
+      for (let i = 0; i < s.length; i++) out.push(s.charCodeAt(i) & 0xff);
+      return out;
+    }
+    function l37QrFmtBits37(mask) {
+      let rem = mask << 10;
+      for (let i = 14; i >= 10; i--) if ((rem >> i) & 1) rem ^= 0x537 << (i - 10);
+      return (((mask << 10) | rem) ^ 0x5412) & 0x7fff;
+    }
+    function l37QrSetFormat37(mm, size, mask) {
+      const bits = l37QrFmtBits37(mask);
+      for (let i = 0; i < 15; i++) {
+        const mod = ((bits >> i) & 1) === 1 ? 1 : 0;
+        if (i < 6) mm[i][8] = mod;
+        else if (i < 8) mm[i + 1][8] = mod;
+        else mm[size - 15 + i][8] = mod;
+        if (i < 8) mm[8][size - 1 - i] = mod;
+        else if (i === 8) mm[8][7] = mod;
+        else mm[8][14 - i] = mod;
+      }
+      mm[size - 8][8] = 1;
+    }
+    function l37QrPenalty37(mm) {
+      const size = mm.length;
+      let p = 0, dark = 0;
+      for (let r = 0; r < size; r++) {
+        let run = 1;
+        for (let c = 1; c <= size; c++) {
+          const v = c < size ? mm[r][c] : null;
+          const pv = mm[r][c - 1];
+          if (v === pv) run++;
+          else { if (run >= 5) p += 3 + (run - 5); run = 1; }
+          if (pv === 1) dark++;
+        }
+      }
+      for (let c = 0; c < size; c++) {
+        let run = 1;
+        for (let r = 1; r <= size; r++) {
+          const v = r < size ? mm[r][c] : null;
+          const pv = mm[r - 1][c];
+          if (v === pv) run++;
+          else { if (run >= 5) p += 3 + (run - 5); run = 1; }
+        }
+      }
+      for (let r = 0; r < size - 1; r++) for (let c = 0; c < size - 1; c++) {
+        const b = mm[r][c];
+        if (mm[r][c + 1] === b && mm[r + 1][c] === b && mm[r + 1][c + 1] === b) p += 3;
+      }
+      const pat1 = [1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0];
+      const pat2 = [0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1];
+      for (let i = 0; i < size; i++) for (let j = 0; j + 11 <= size; j++) {
+        let ok1 = true, ok2 = true, ok3 = true, ok4 = true;
+        for (let k = 0; k < 11; k++) {
+          if (mm[i][j + k] !== pat1[k]) ok1 = false;
+          if (mm[i][j + k] !== pat2[k]) ok2 = false;
+          if (mm[j + k][i] !== pat1[k]) ok3 = false;
+          if (mm[j + k][i] !== pat2[k]) ok4 = false;
+        }
+        if (ok1 || ok2 || ok3 || ok4) p += 40;
+      }
+      p += 10 * Math.floor(Math.abs((dark * 100) / (size * size) - 50) / 5);
+      return p;
+    }
+
+    function l37QrMatrix37(text) {
+      try {
+        const msg = l37QrBytes37(text);
+        const DATA = [16, 28, 44, 64, 86, 108], ECC = [10, 16, 26, 18, 24, 16], BLK = [1, 1, 1, 2, 2, 4], CAPB = [14, 26, 42, 62, 84, 106];
+        let ver = -1;
+        for (let i = 0; i < 6; i++) if (msg.length <= CAPB[i]) { ver = i; break; }
+        if (ver < 0) return null;
+        const nd = DATA[ver], nec = ECC[ver], nblk = BLK[ver], size = 17 + 4 * (ver + 1);
+        const bits = [];
+        const push = function (val, n) { for (let i = n - 1; i >= 0; i--) bits.push((val >>> i) & 1); };
+        push(4, 4);
+        push(msg.length, 8);
+        msg.forEach(function (b) { push(b, 8); });
+        const cap = nd * 8;
+        push(0, Math.min(4, cap - bits.length));
+        while (bits.length % 8 !== 0) bits.push(0);
+        let pi = 0;
+        while (bits.length < cap) { push((pi++ % 2) ? 0x11 : 0xEC, 8); }
+        const dataCW = [];
+        for (let i = 0; i < nd; i++) { let b = 0; for (let j = 0; j < 8; j++) b = (b << 1) | bits[i * 8 + j]; dataCW.push(b); }
+        const per = nd / nblk;
+        const blocks = [], ecBlocks = [];
+        for (let b = 0; b < nblk; b++) {
+          const chunk = dataCW.slice(b * per, (b + 1) * per);
+          blocks.push(chunk);
+          ecBlocks.push(l37QrRsEc37(chunk, Math.floor(nec / nblk)));
+        }
+        const seq = [];
+        for (let i = 0; i < per; i++) for (let b = 0; b < nblk; b++) seq.push(blocks[b][i]);
+        for (let i = 0; i < nec; i++) for (let b = 0; b < nblk; b++) seq.push(ecBlocks[b][i]);
+        const m = [];
+        for (let r = 0; r < size; r++) m.push(new Array(size).fill(null));
+        const setFinder = function (r0, c0) {
+          for (let r = -1; r <= 7; r++) for (let c = -1; c <= 7; c++) {
+            const rr = r0 + r, cc = c0 + c;
+            if (rr < 0 || rr >= size || cc < 0 || cc >= size) continue;
+            m[rr][cc] = (r >= 0 && r <= 6 && c >= 0 && c <= 6)
+              ? ((r === 0 || r === 6 || c === 0 || c === 6 || (r >= 2 && r <= 4 && c >= 2 && c <= 4)) ? 1 : 0)
+              : 0;
+          }
+        };
+        setFinder(0, 0); setFinder(0, size - 7); setFinder(size - 7, 0);
+        for (let i = 8; i < size - 8; i++) {
+          const v = i % 2 === 0 ? 1 : 0;
+          if (m[6][i] === null) m[6][i] = v;
+          if (m[i][6] === null) m[i][6] = v;
+        }
+        const AL = [[], [6, 18], [6, 22], [6, 26], [6, 30], [6, 34]][ver];
+        AL.forEach(function (r) {
+          AL.forEach(function (c) {
+            if (m[r][c] !== null) return;
+            for (let dr = -2; dr <= 2; dr++) for (let dc = -2; dc <= 2; dc++) {
+              m[r + dr][c + dc] = (Math.max(Math.abs(dr), Math.abs(dc)) !== 1) ? 1 : 0;
+            }
+          });
+        });
+        for (let i = 0; i <= 8; i++) {
+          if (i !== 6) { if (m[i][8] === null) m[i][8] = 0; if (m[8][i] === null) m[8][i] = 0; }
+        }
+        for (let i = size - 8; i < size; i++) {
+          if (m[i][8] === null) m[i][8] = 0;
+          if (m[8][i] === null) m[8][i] = 0;
+        }
+        const MASKS = [
+          function (r, c) { return (r + c) % 2 === 0; },
+          function (r, c) { return r % 2 === 0; },
+          function (r, c) { return c % 3 === 0; },
+          function (r, c) { return (r + c) % 3 === 0; },
+          function (r, c) { return (Math.floor(r / 2) + Math.floor(c / 3)) % 2 === 0; },
+          function (r, c) { return ((r * c) % 2) + ((r * c) % 3) === 0; },
+          function (r, c) { return (((r * c) % 2) + ((r * c) % 3)) % 2 === 0; },
+          function (r, c) { return (((r * c) % 3) + ((r + c) % 2)) % 2 === 0; }
+        ];
+        let bestM = null, bestPen = Infinity;
+        for (let mask = 0; mask < 8; mask++) {
+          const mm = [];
+          for (let r = 0; r < size; r++) mm.push(m[r].slice());
+          const mfn = MASKS[mask];
+          let inc = -1, row = size - 1, bitIndex = 7, byteIndex = 0;
+          for (let col = size - 1; col > 0; col -= 2) {
+            if (col === 6) col--;
+            while (true) {
+              for (let c = 0; c < 2; c++) {
+                if (mm[row][col - c] === null) {
+                  let dark = false;
+                  if (byteIndex < seq.length) dark = (((seq[byteIndex] >>> bitIndex) & 1) === 1);
+                  if (mfn(row, col - c)) dark = !dark;
+                  mm[row][col - c] = dark ? 1 : 0;
+                  bitIndex--;
+                  if (bitIndex === -1) { byteIndex++; bitIndex = 7; }
+                }
+              }
+              row += inc;
+              if (row < 0 || row >= size) { row -= inc; inc = -inc; break; }
+            }
+          }
+          l37QrSetFormat37(mm, size, mask);
+          const pen = l37QrPenalty37(mm);
+          if (pen < bestPen) { bestPen = pen; bestM = mm; }
+        }
+        return bestM;
+      } catch (eQm37) { return null; }
+    }
+    function l37QrDraw37(canvas, text) {
+      try {
+        const mm = l37QrMatrix37(text);
+        if (!mm || !canvas) return false;
+        const size = mm.length, q = 4;
+        const scale = Math.max(2, Math.floor(220 / (size + 2 * q)));
+        const px = (size + 2 * q) * scale;
+        canvas.width = px; canvas.height = px;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return false;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, px, px);
+        ctx.fillStyle = '#0f172a';
+        for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) {
+          if (mm[r][c] === 1) ctx.fillRect((c + q) * scale, (r + q) * scale, scale, scale);
+        }
+        return true;
+      } catch (eQd37) { return false; }
+    }
+
+    /* ---- Модуль 1: форма перевода (СБП Лицея №37) ---- */
+    function l37Overlay37(id, inner, z) {
+      const old = document.getElementById(id);
+      if (old) old.remove();
+      const ov = document.createElement('div');
+      ov.id = id;
+      ov.style.cssText = 'position:fixed; inset:0; z-index:' + (z || 2147482000) + '; background:rgba(8,12,24,0.66); display:flex; align-items:center; justify-content:center; padding:14px; overflow:auto;';
+      ov.innerHTML = inner;
+      document.body.appendChild(ov);
+      return ov;
+    }
+    function l37TxWhoLine37(u) {
+      if (!u) return '<span style="color:#b91c1c;">🤷 Получатель не найден — проверь код или @ник.</span>';
+      return 'Получатель: <b>' + esc(u.name) + '</b> · ' + esc(classIdOf(u.grade, u.letter) || 'учитель/сотрудник') + ' · баланс ' + qfmt37(u.points);
+    }
+    function l37OpenTransfer37(prefill) {
+      try {
+        const user = getCurrentUser();
+        if (!user) { openModal('modal-login'); return; }
+        l37EnsurePayCodes37();
+        const me = getUserById(user.id) || user;
+        l37Overlay37('l37-tx-ov37',
+          '<div style="background:#fff; color:#0f172a; max-width:420px; width:100%; border-radius:20px; padding:20px; box-shadow:0 24px 60px rgba(0,0,0,0.4); font-size:14px;">' +
+            '<h3 style="margin:0 0 4px; font-size:18px;">⚡ Перевести Кванты лицеисту</h3>' +
+            '<p class="field-hint" style="margin:0 0 12px;">Мгновенно и без комиссии — СБП Лицея №37. Твой код: <b>' + esc(me.payCode || '—') + '</b></p>' +
+            '<label style="display:block; margin-bottom:8px; font-weight:600;">Код получателя (например, L37-4829 или @ник)' +
+              '<input type="text" id="tx-addr37" placeholder="L37-4829 или @Иван" value="' + esc(prefill || '') + '" style="width:100%; box-sizing:border-box; font-size:16px; padding:10px 12px; border-radius:12px; border:1px solid #cbd5e1; margin-top:4px;"></label>' +
+            '<div id="tx-who37" class="field-hint" style="margin:0 0 8px; min-height:16px;"></div>' +
+            '<label style="display:block; margin-bottom:8px; font-weight:600;">Сумма в ⚡ Квантах' +
+              '<input type="number" id="tx-amount37" min="1" step="1" placeholder="10" style="width:100%; box-sizing:border-box; font-size:16px; padding:10px 12px; border-radius:12px; border:1px solid #cbd5e1; margin-top:4px;"></label>' +
+            '<div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;">' +
+              '<button type="button" class="btn btn-outline btn-sm" data-tx-add="10">+10 ⚡</button>' +
+              '<button type="button" class="btn btn-outline btn-sm" data-tx-add="25">+25 ⚡</button>' +
+              '<button type="button" class="btn btn-outline btn-sm" data-tx-add="50">+50 ⚡</button>' +
+              '<button type="button" class="btn btn-outline btn-sm" data-tx-add="100">+100 ⚡</button>' +
+              '<button type="button" class="btn btn-ghost btn-sm" data-tx-max="1">Макс</button></div>' +
+            '<label style="display:block; margin-bottom:12px; font-weight:600;">Комментарий (необязательно, до 60 символов)' +
+              '<input type="text" id="tx-comment37" maxlength="60" placeholder="Спасибо за помощь с алгеброй!" style="width:100%; box-sizing:border-box; font-size:16px; padding:10px 12px; border-radius:12px; border:1px solid #cbd5e1; margin-top:4px;"></label>' +
+            '<button type="button" id="tx-send37" class="btn btn-primary" style="width:100%;">🚀 Перевести сейчас</button>' +
+            '<button type="button" id="tx-close37" class="btn btn-ghost btn-sm" style="width:100%; margin-top:8px;">✖ Отмена</button>' +
+          '</div>', 2147482100);
+        const addr = document.getElementById('tx-addr37');
+        if (addr) {
+          addr.addEventListener('input', l37TxLookup37);
+          if (prefill) l37TxLookup37();
+        }
+        const amt = document.getElementById('tx-amount37');
+        if (amt) setTimeout(function () { try { amt.focus(); } catch (eF37) { /* тихо */ } }, 150);
+      } catch (eOt37) { /* тихо */ }
+    }
+    function l37TxLookup37() {
+      try {
+        const el = document.getElementById('tx-who37');
+        if (!el) return;
+        const u = l37FindUserByAddress37((document.getElementById('tx-addr37') || {}).value);
+        el.innerHTML = l37TxWhoLine37(u);
+      } catch (eLk37) { /* тихо */ }
+    }
+    function l37TxSubmit37() {
+      try {
+        const user = getCurrentUser();
+        if (!user) { openModal('modal-login'); return; }
+        const addr = ((document.getElementById('tx-addr37') || {}).value) || '';
+        const amount = Math.floor(Number(((document.getElementById('tx-amount37') || {}).value)) || 0);
+        const comment = String(((document.getElementById('tx-comment37') || {}).value) || '').trim().slice(0, 60);
+        const recv = l37FindUserByAddress37(addr);
+        if (!recv) { toast('🤷 Получатель не найден — проверь код L37-XXXX или @ник.', 'error'); return; }
+        if (recv.id === user.id) { toast('😅 Себе переводить не нужно — Кванты уже твои!', 'info'); return; }
+        if (!Number.isFinite(amount) || amount < 1) { toast('⚠️ Сумма должна быть целым числом от 1 ⚡.', 'error'); return; }
+        const users = getUsers();
+        const sender = users.find(function (u) { return u.id === user.id; });
+        const rec = users.find(function (u) { return u.id === recv.id; });
+        if (!sender || !rec) { toast('Данные аккаунта не найдены — обнови страницу.', 'error'); return; }
+        if (Number(sender.points || 0) < amount) { toast('⚡ Не хватает Квантов: баланс ' + qfmt37(sender.points) + '.', 'error'); return; }
+        qLedgerPush37(sender, -amount, 'transfer_out', '⇆ Перевод по коду для ' + rec.name + (comment ? ' · ' + comment : ''));
+        qLedgerPush37(rec, amount, 'transfer_in', '🎁 Перевод по коду от ' + sender.name + (comment ? ' · ' + comment : ''));
+        sender.points = Number(sender.points || 0) - amount;
+        rec.points = Number(rec.points || 0) + amount;
+        const txs = getList('quant_txs');
+        txs.push({ id: makeId('tx'), fromId: sender.id, fromName: sender.name, toId: rec.id, toName: rec.name, amount: amount, comment: comment, ts: Date.now() });
+        dbSave('quant_txs', txs.slice(-500));
+        saveUsers(users);
+        try { instantSend('row', { key: 'users' }); } catch (eIs37) { /* тихо */ }
+        try { instantSend('row', { key: 'quant_txs' }); } catch (eIs237) { /* тихо */ }
+        pushNotif37(rec.id, { text: '⚡ Тебе перевели ' + amount + ' Квантов от ' + sender.name + (comment ? ': «' + comment + '»' : '') + '!', type: 'points', go: 'profile' });
+        try { if (typeof updateNotifBell37 === 'function') updateNotifBell37(); } catch (eUb37) { /* тихо */ }
+        const ov = document.getElementById('l37-tx-ov37');
+        if (ov) ov.remove();
+        l37ShowReceipt37(sender, rec, amount, comment);
+        l37RenderTxHistory37();
+        try { renderProfileTab(); } catch (eR37) { /* тихо */ }
+        try { updateAuthUI(); } catch (eUa37) { /* тихо */ }
+      } catch (eTs37) { toast('Не удалось перевести Кванты.', 'error'); }
+    }
+
+    function l37PaySound37() {
+      try {
+        const AC37 = window.AudioContext || window.webkitAudioContext;
+        if (!AC37) return;
+        if (!l37AudioCtx37) l37AudioCtx37 = new AC37();
+        const ctx = l37AudioCtx37;
+        if (ctx.state === 'suspended' && ctx.resume) ctx.resume().catch(function () { /* тихо */ });
+        const t0 = ctx.currentTime;
+        [[659.25, 0, 0.2], [880, 0.13, 0.26]].forEach(function (p) {
+          const o = ctx.createOscillator(), g = ctx.createGain();
+          o.type = 'sine';
+          o.frequency.value = p[0];
+          g.gain.setValueAtTime(0, t0 + p[1]);
+          g.gain.linearRampToValueAtTime(0.06, t0 + p[1] + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.0001, t0 + p[1] + p[2]);
+          o.connect(g); g.connect(ctx.destination);
+          o.start(t0 + p[1]); o.stop(t0 + p[1] + p[2] + 0.05);
+        });
+      } catch (eS37) { /* тихо */ }
+    }
+    function l37ShowReceipt37(sender, rec, amount, comment) {
+      try {
+        const word = (amount % 10 === 1 && amount % 100 !== 11) ? 'Квант' : 'Квантов';
+        l37Overlay37('l37-receipt37',
+          '<div style="background:#fff; color:#0f172a; max-width:380px; width:100%; border-radius:20px; padding:22px; box-shadow:0 24px 60px rgba(0,0,0,0.4); font-size:14px; text-align:center;">' +
+            '<div style="width:64px; height:64px; margin:0 auto 10px; border-radius:50%; background:linear-gradient(135deg,#10b981,#059669); display:flex; align-items:center; justify-content:center; font-size:32px; color:#fff;">✓</div>' +
+            '<h3 style="margin:0 0 4px; font-size:18px;">Перевод выполнен!</h3>' +
+            '<p class="field-hint" style="margin:0 0 10px;">МБОУ «Лицей №37» · СБП Лицея</p>' +
+            '<div style="font-size:26px; font-weight:800; margin-bottom:6px;">⚡ ' + amount + ' ' + word + '</div>' +
+            '<p style="margin:2px 0;">Кому: <b>' + esc(rec.name) + '</b> · ' + esc(classIdOf(rec.grade, rec.letter) || 'учитель') + '</p>' +
+            '<p class="field-hint" style="margin:2px 0;">Код получателя: ' + esc(rec.payCode || '—') + '</p>' +
+            (comment ? '<p style="margin:6px 0; font-style:italic;">«' + esc(comment) + '»</p>' : '') +
+            '<p class="field-hint" style="margin:8px 0 14px;">' + esc(fmtDateTime(Date.now())) + '</p>' +
+            '<button type="button" id="l37-receipt-done37" class="btn btn-primary" style="width:100%;">Готово</button>' +
+          '</div>', 2147482400);
+        l37PaySound37();
+      } catch (eSr37) { /* тихо */ }
+    }
+    function l37RenderTxHistory37() {
+      try {
+        const el = document.getElementById('pf-tx-history-list37');
+        if (!el) return;
+        const user = getCurrentUser();
+        if (!user) { el.innerHTML = ''; return; }
+        const txs = getList('quant_txs')
+          .filter(function (t) { return t && (t.fromId === user.id || t.toId === user.id); })
+          .sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); })
+          .slice(0, 15);
+        el.innerHTML = txs.length
+          ? txs.map(function (t) {
+              const out = t.fromId === user.id;
+              const other = out ? (t.toName || t.toId) : (t.fromName || t.fromId);
+              return '<div class="friend-req-row">' +
+                '<div style="min-width:0; flex:1;"><b>' + (out ? '⬆️ ' : '⬇️ ') + esc(other) + '</b>' +
+                '<div class="field-hint">' + esc(fmtAgo37(t.ts)) + (t.comment ? ' · ' + esc(t.comment) : '') + '</div></div>' +
+                '<b style="color:' + (out ? '#b91c1c' : '#047857') + '; white-space:nowrap;">' + (out ? '−' : '+') + Number(t.amount || 0) + ' ⚡</b></div>';
+            }).join('')
+          : '<p class="empty-line">Переводов пока не было — отправь первый! 🚀</p>';
+      } catch (eH37) { /* тихо */ }
+    }
+    function l37EnsureProfileEco37() {
+      try {
+        const box = document.getElementById('profile-box');
+        const user = getCurrentUser();
+        if (!box || !user) return;
+        const old = document.getElementById('pf-eco-card37');
+        if (old) old.remove();
+        l37EnsurePayCodes37();
+        const me = getUserById(user.id) || user;
+        const card = document.createElement('div');
+        card.id = 'pf-eco-card37';
+        card.className = 'card';
+        card.style.marginTop = '16px';
+        card.innerHTML =
+          '<h3 class="info-title">🪪 Цифровой паспорт лицеиста</h3>' +
+          '<div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">' +
+            '<button type="button" class="btn btn-primary" id="pf-passport-btn37">🪪 Мой цифровой паспорт' +
+              ' <span style="display:inline-block; padding:2px 8px; border-radius:999px; background:linear-gradient(90deg,#6366f1,#a855f7,#6366f1); background-size:200% 100%; animation:l37badge37 2.8s linear infinite; color:#fff; font-weight:800;">' + esc(me.payCode || 'L37-····') + '</span></button>' +
+            '<button type="button" class="btn btn-outline" id="pf-transfer-btn37">⚡ Перевести Кванты</button>' +
+          '</div>' +
+          '<p class="field-hint" style="margin:8px 0 0;">Покажи QR паспорта — и тебе моментально переведут ⚡ Кванты по коду <b>' + esc(me.payCode || '') + '</b>.</p>' +
+          '<details id="pf-tx-history37" style="margin-top:10px;"><summary style="cursor:pointer; font-weight:700;">📜 История переводов Квантов</summary><div id="pf-tx-history-list37" style="margin-top:8px;"></div></details>';
+        if (box.children.length > 2) box.insertBefore(card, box.children[2]);
+        else box.appendChild(card);
+        l37RenderTxHistory37();
+      } catch (eEc37) { /* тихо */ }
+    }
+
+    /* ---- Модуль 2: Цифровой паспорт ---- */
+    function l37Serial37(u) {
+      try {
+        let h = 5381;
+        const s = String(u.id || '');
+        for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+        const a = Math.abs(h), b = Math.abs(h >> 7), c = Math.abs(h >> 14), d = Math.abs(h >> 21);
+        return '№ L37-2026-' + L37_PAY_AB37[a % 32] + L37_PAY_AB37[b % 32] + L37_PAY_AB37[c % 32] + L37_PAY_AB37[d % 32];
+      } catch (eSl37) { return '№ L37-2026-████'; }
+    }
+    function l37ProfileUrl37(u) {
+      let base = 'https://' + ['licey37-nk', 'github.io'].join('.') + '/licey37/';
+      try {
+        if (location && location.origin && String(location.origin).indexOf('http') === 0) base = location.origin + location.pathname;
+      } catch (eU37) { /* тихо */ }
+      return base.replace(/\/?$/, '/') + '?user=' + encodeURIComponent(u.id || u.name || '');
+    }
+    function l37ClassPlace37(u) {
+      try {
+        const cid = classIdOf(u.grade, u.letter);
+        if (!cid) return '—';
+        const same = getUsers().filter(function (x) { return classIdOf(x.grade, x.letter) === cid; });
+        const sorted = same.slice().sort(function (a, b) { return Number(b.points || 0) - Number(a.points || 0); });
+        const place = sorted.findIndex(function (x) { return x.id === u.id; }) + 1;
+        return place + ' из ' + same.length;
+      } catch (eCp37) { return '—'; }
+    }
+    function l37OpenPassport37() {
+      try {
+        const user = getCurrentUser();
+        if (!user) { openModal('modal-login'); return; }
+        l37EnsurePayCodes37();
+        const me = getUserById(user.id) || user;
+        const online = (lp37OnlineMap && lp37OnlineMap[me.id]) ? '🟢 В сети' : (lastSeenOf(me.id) ? '🕓 был(а) недавно' : '⚪ не в сети');
+        const friends = (friendsData37()[me.id] || {}).friends || [];
+        const posts = getList('posts').filter(function (p) { return p && p.userId === me.id; }).length;
+        const url = l37ProfileUrl37(me);
+        l37Overlay37('l37-pass-ov37',
+          '<div style="position:relative; background:linear-gradient(150deg,#eef2ff,#fdf4ff 55%,#ecfeff); color:#0f172a; max-width:420px; width:100%; border-radius:22px; padding:20px; box-shadow:0 24px 60px rgba(0,0,0,0.45); font-size:14px; overflow:hidden; border:1px solid rgba(99,102,241,0.25);">' +
+            '<div class="l37holo37"></div>' +
+            '<div style="position:relative;">' +
+              '<div style="display:flex; align-items:center; gap:8px;">' +
+                '<span style="font-size:22px;">🏛️</span>' +
+                '<div style="min-width:0;"><b style="font-size:13px; letter-spacing:0.4px;">МБОУ «ЛИЦЕЙ №37» г. НИЖНЕКАМСКА</b>' +
+                '<div class="field-hint" style="font-size:11px;">ОФИЦИАЛЬНЫЙ ЦИФРОВОЙ ПАСПОРТ ЛИЦЕИСТА</div></div>' +
+              '</div>' +
+              '<div class="field-hint" style="margin-top:2px; font-size:11px; font-weight:700; color:#4f46e5;">' + esc(l37Serial37(me)) + '</div>' +
+              '<div style="display:flex; gap:12px; margin-top:12px; align-items:center;">' +
+                avatarHtml(me.avatar, 'mini-ava ava-ring ' + itagRing37(me)) +
+                '<div style="min-width:0; flex:1;">' +
+                  '<div style="font-size:18px; font-weight:800;">' + esc(me.name) + userVerifiedSpan(me) + '</div>' +
+                  '<div>' + roleBadges37(me, classIdOf(me.grade, me.letter)) + ' <span class="user-class">' + esc(classIdOf(me.grade, me.letter) || 'сотрудник') + '</span></div>' +
+                  '<div class="field-hint">@' + esc(String(me.name || '').replace(/\s+/g, '')) + ' · ' + online + '</div>' +
+                  '<div class="field-hint">Дата регистрации: ' + esc(fmtDateTime(Number(me.registeredAt || Date.now()))) + '</div>' +
+                '</div></div>' +
+              '<div style="margin:12px 0 6px; padding:10px 12px; border-radius:14px; background:#fff; border:1px dashed #6366f1; display:flex; align-items:center; justify-content:space-between; gap:8px;">' +
+                '<div style="min-width:0;"><div class="field-hint" style="margin:0;">Код для перевода Квантов</div>' +
+                '<b style="font-size:19px; letter-spacing:1.5px;">' + esc(me.payCode || '—') + '</b></div>' +
+                '<button type="button" class="btn btn-outline btn-sm" id="l37-pc-copy37">📋 Скопировать код</button></div>' +
+              '<div class="l37pass-grid37" style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:6px; margin-bottom:12px;">' +
+                '<div style="background:#fff; border-radius:12px; padding:8px; text-align:center;"><div class="field-hint" style="margin:0;">⚡ Баланс</div><b>' + Number(me.points || 0) + '</b></div>' +
+                '<div style="background:#fff; border-radius:12px; padding:8px; text-align:center;"><div class="field-hint" style="margin:0;">🤝 Друзья</div><b>' + friends.length + '</b></div>' +
+                '<div style="background:#fff; border-radius:12px; padding:8px; text-align:center;"><div class="field-hint" style="margin:0;">📝 Посты</div><b>' + posts + '</b></div>' +
+                '<div style="background:#fff; border-radius:12px; padding:8px; text-align:center;"><div class="field-hint" style="margin:0;">🏆 Класс</div><b>' + esc(l37ClassPlace37(me)) + '</b></div></div>' +
+              '<div style="background:#fff; border-radius:16px; padding:14px; text-align:center;">' +
+                '<canvas id="l37-qr-canvas37" width="220" height="220" style="max-width:100%;"></canvas>' +
+                '<div class="field-hint" style="margin-top:6px;">Наведи камеру телефона — откроется профиль</div>' +
+                '<button type="button" class="btn btn-outline btn-sm" id="l37-qr-share37" style="margin-top:6px;">🔗 Поделиться ссылкой на профиль</button></div>' +
+              '<button type="button" id="l37-pass-close37" class="btn btn-ghost btn-sm" style="width:100%; margin-top:10px;">✖ Закрыть</button>' +
+            '</div></div>', 2147482300);
+        const cv = document.getElementById('l37-qr-canvas37');
+        if (cv) l37QrDraw37(cv, url);
+      } catch (eOp37) { /* тихо */ }
+    }
+
+    function l37CopyFallback37(text) {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = String(text || '');
+        ta.style.cssText = 'position:fixed; left:-9999px; top:0; opacity:0;';
+        document.body.appendChild(ta);
+        ta.focus(); ta.select();
+        let ok = false;
+        try { ok = document.execCommand('copy'); } catch (eX37) { ok = false; }
+        ta.remove();
+        return ok;
+      } catch (eCf37) { return false; }
+    }
+    function l37CopyText37(text, msg) {
+      try {
+        const done = function () { toast(msg || 'Скопировано ✓', 'success'); };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(String(text || '')).then(done).catch(function () {
+            if (l37CopyFallback37(text)) done(); else toast('Не удалось скопировать — выдели и скопируй вручную.', 'error');
+          });
+          return;
+        }
+        if (l37CopyFallback37(text)) done(); else toast('Не удалось скопировать — выдели и скопируй вручную.', 'error');
+      } catch (eC37) { /* тихо */ }
+    }
+
+    /* ---- Модуль 3: 🚀 О портале (презентация для руководства) ---- */
+    function l37OpenAbout37() {
+      try {
+        const eng = [
+          ['☁️', 'Облачная синхронизация', 'Cloud-First Atomic Merge на Supabase: ни один аккаунт, пост, товар или сообщение не затирается — слияние по уникальному id и Realtime-канал l37-instant-sync.'],
+          ['💬', 'Мессенджер 400 мс', 'Единый chatKey по отсортированным ID собеседников, сверка диалога каждые 400 мс, системные уведомления в шторку (sw.js), исчезающие сообщения и галочки прочтения ✓✓.'],
+          ['🔐', 'Приватность и модерация', '11 настроек приватности, друзья и заявки, пароль-замок 4–8 символов с контрольным вопросом, кнопки «Пожаловаться» и Центр жалоб в Админке.'],
+          ['⚡', 'Экономика «Кванты» и Лицей-Маркет', 'Журнал транзакций с защищёнными подписями, мгновенные переводы по персональному коду L37-XXXX (СБП Лицея), витрина товаров с бронированием.'],
+          ['🐾', 'Талисманы классов 1А–11Д', 'Живой питомец у каждого класса: кормление, игры, рейтинг классов и сон после 22:00 МСК со плавной анимацией.'],
+          ['🔌', 'Узлы и провода', 'Визуальный редактор прав доступа: 200+ узлов на канвасе, выделение пальцем, свободные плавающие блоки с сохранением в облако.'],
+          ['🤖', 'ИИ-Наставник 37', 'Neural Engine v3.7: полный смысловой разбор всего запроса, потоковая загрузка базы знаний b1.txt–b100.txt и автономная работа без внешних сервисов.']
+        ];
+        const users = getUsers();
+        const posts = getList('posts');
+        let dialogs = 0;
+        try {
+          const seen = {};
+          Object.keys(dbLoad('dm_index', {}) || {}).forEach(function (k) { if (String(k).indexOf('dm_') === 0) seen[k] = 1; });
+          getList('dms').forEach(function (m) { if (m && m.key) seen[m.key] = 1; });
+          dialogs = Object.keys(seen).length;
+        } catch (eDm37) { dialogs = 0; }
+        const listings = getList('listings').length;
+        l37Overlay37('l37-about-ov37',
+          '<div style="background:#fff; color:#0f172a; max-width:520px; width:100%; max-height:86vh; overflow:auto; border-radius:22px; padding:22px; box-shadow:0 24px 60px rgba(0,0,0,0.4); font-size:14px;">' +
+            '<div style="text-align:center; margin-bottom:8px; font-size:40px;">🚀</div>' +
+            '<h3 style="margin:0 0 2px; font-size:20px; text-align:center;">Портал МБОУ «Лицей №37»</h3>' +
+            '<p class="field-hint" style="margin:0 0 14px; text-align:center;">7 собственных программных движков · г. Нижнекамск</p>' +
+            '<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:14px;">' +
+              '<div style="background:#eef2ff; border-radius:14px; padding:10px; text-align:center;"><div class="field-hint" style="margin:0;">👤 Учеников и учителей</div><b style="font-size:20px;">' + Number(users.length || 0) + '</b></div>' +
+              '<div style="background:#ecfdf5; border-radius:14px; padding:10px; text-align:center;"><div class="field-hint" style="margin:0;">📝 Постов</div><b style="font-size:20px;">' + Number(posts.length || 0) + '</b></div>' +
+              '<div style="background:#fef9c3; border-radius:14px; padding:10px; text-align:center;"><div class="field-hint" style="margin:0;">💬 Диалогов</div><b style="font-size:20px;">' + Number(dialogs || 0) + '</b></div>' +
+              '<div style="background:#fdf2f8; border-radius:14px; padding:10px; text-align:center; grid-column:span 3;"><div class="field-hint" style="margin:0;">🛍 Товаров в Лицей-Маркете</div><b style="font-size:20px;">' + Number(listings || 0) + '</b></div>' +
+            '</div>' +
+            eng.map(function (p, i) {
+              return '<div style="display:flex; gap:10px; padding:10px 0; border-top:1px solid #e2e8f0; align-items:flex-start;">' +
+                '<span style="font-size:22px; line-height:1;">' + p[0] + '</span>' +
+                '<div style="min-width:0;"><b>' + (i + 1) + '. ' + esc(p[1]) + '</b>' +
+                '<div class="field-hint">' + esc(p[2]) + '</div></div></div>';
+            }).join('') +
+            '<p class="field-hint" style="margin:12px 0;">Готова к подключению официальная база знаний школы (b1.txt–b100.txt) для «ИИ-Наставника 37» и действует Domain Shield — запуск портала разрешён только на официальном домене Лицея.</p>' +
+            '<button type="button" id="l37-about-close37" class="btn btn-primary" style="width:100%;">✖ Закрыть</button>' +
+          '</div>', 2147482500);
+      } catch (eAb37) { /* тихо */ }
+    }
+
+    /* ---- Роутинг ?user= и панель быстрых действий ---- */
+    function l37ShowQrActions37(target) {
+      try {
+        const old = document.getElementById('l37-qr-actions37');
+        if (old) old.remove();
+        const addr = target.payCode || target.id || '';
+        const sh = document.createElement('div');
+        sh.id = 'l37-qr-actions37';
+        sh.style.cssText = 'position:fixed; left:0; right:0; bottom:0; z-index:2147481000; background:#fff; color:#0f172a; border-radius:18px 18px 0 0; box-shadow:0 -12px 40px rgba(15,23,42,0.25); padding:14px 14px calc(14px + env(safe-area-inset-bottom));';
+        sh.innerHTML =
+          '<div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">' + avatarHtml(target.avatar, 'mini-ava ava-ring ' + itagRing37(target)) +
+          '<div style="min-width:0; flex:1;"><b>' + esc(target.name) + '</b>' +
+          '<div class="field-hint">' + esc(classIdOf(target.grade, target.letter) || 'сотрудник') + ' · код ' + esc(target.payCode || '—') + '</div></div></div>' +
+          '<button type="button" class="btn btn-primary" data-qr-tx="' + esc(addr) + '" data-uid="' + esc(target.id) + '" style="width:100%; margin-bottom:6px;">⚡ Перевести Кванты</button>' +
+          '<button type="button" class="btn btn-outline" data-qr-dm="1" data-uid="' + esc(target.id) + '" style="width:100%; margin-bottom:6px;">💬 Написать сообщение</button>' +
+          '<button type="button" class="btn btn-outline" data-qr-friend="1" data-uid="' + esc(target.id) + '" style="width:100%; margin-bottom:6px;">➕ Добавить в друзья</button>' +
+          '<button type="button" class="btn btn-ghost btn-sm" id="l37-qr-actions-close37" style="width:100%;">✖ Скрыть</button>';
+        document.body.appendChild(sh);
+      } catch (eQa37) { /* тихо */ }
+    }
+    function l37RouteUserParam37() {
+      try {
+        let uid = '';
+        try { uid = new URLSearchParams(location.search).get('user') || ''; } catch (eU37) { uid = ''; }
+        uid = String(uid || '').trim();
+        if (!uid) return;
+        const open37 = function () {
+          try {
+            const users = getUsers();
+            let target = users.find(function (u) { return u && u.id === uid; });
+            if (!target) { const q = normText(uid); target = users.find(function (u) { return normText(u.name) === q; }); }
+            if (!target) {
+              const up = uid.replace(/[\s-]+/g, '').toUpperCase();
+              const code = (up.indexOf('L37') === 0 && up.length >= 7) ? 'L37-' + up.slice(3) : (/^[A-Z0-9]{4}$/.test(up) ? 'L37-' + up : '');
+              if (code) target = users.find(function (u) { return String(u.payCode || '').toUpperCase() === code; });
+            }
+            if (!target) return;
+            closeMiniProfileCard37();
+            openMiniProfileCard37(target.id, null);
+            const me = getCurrentUser();
+            if (me && me.id === target.id) return;
+            l37ShowQrActions37(target);
+          } catch (eO37) { /* тихо */ }
+        };
+        try { refreshUsersFromCloud().then(open37).catch(open37); } catch (eR37) { open37(); }
+      } catch (eRt37) { /* тихо */ }
+    }
+
+    /* ---- Делегированные обработчики и инициализация ---- */
+    document.addEventListener('click', function (e) {
+      try {
+        const t = e.target;
+        if (!t || !t.closest) return;
+        const cl = function (id) { const el = document.getElementById(id); if (el) el.remove(); };
+        if (t.closest('#pf-passport-btn37')) { l37OpenPassport37(); return; }
+        if (t.closest('#pf-transfer-btn37')) { l37OpenTransfer37(''); return; }
+        if (t.closest('#tx-send37')) { l37TxSubmit37(); return; }
+        if (t.closest('#tx-close37') || t.closest('#l37-receipt-done37') || t.closest('#l37-pass-close37') || t.closest('#l37-about-close37')) {
+          ['l37-tx-ov37', 'l37-receipt37', 'l37-pass-ov37', 'l37-about-ov37'].forEach(cl);
+          return;
+        }
+        const chip = t.closest('[data-tx-add]');
+        if (chip) { const amt = document.getElementById('tx-amount37'); if (amt) amt.value = Number(amt.value || 0) + Number(chip.getAttribute('data-tx-add') || 0); return; }
+        const mx = t.closest('[data-tx-max]');
+        if (mx) { const me = getCurrentUser(); const amt = document.getElementById('tx-amount37'); if (amt && me) amt.value = Math.max(0, Math.floor(Number(me.points || 0))); return; }
+        if (t.closest('#l37-pc-copy37')) {
+          const me = getUserById((getCurrentUser() || {}).id);
+          if (me && me.payCode) l37CopyText37(me.payCode, 'Код ' + me.payCode + ' скопирован ✓');
+          return;
+        }
+        if (t.closest('#l37-qr-share37')) {
+          const me = getUserById((getCurrentUser() || {}).id);
+          if (!me) return;
+          const url = l37ProfileUrl37(me);
+          if (navigator.share) { navigator.share({ title: 'Профиль в Лицее №37', url: url }).catch(function () { /* тихо */ }); }
+          else l37CopyText37(url, 'Ссылка на профиль скопирована ✓');
+          return;
+        }
+        const qtx = t.closest('[data-qr-tx]');
+        if (qtx) { cl('l37-qr-actions37'); l37OpenTransfer37(qtx.getAttribute('data-qr-tx') || ''); return; }
+        const qdm = t.closest('[data-qr-dm]');
+        if (qdm) { const uid = qdm.getAttribute('data-uid') || ''; cl('l37-qr-actions37'); closeMiniProfileCard37(); openDm(uid); return; }
+        const qfr = t.closest('[data-qr-friend]');
+        if (qfr) { const uid = qfr.getAttribute('data-uid') || ''; cl('l37-qr-actions37'); handleFriendAction37('add', uid); return; }
+        if (t.closest('#l37-qr-actions-close37')) { cl('l37-qr-actions37'); return; }
+      } catch (ePp37) { /* тихо */ }
+    });
+
+    try {
+      if (!document.getElementById('l37-pass-css37')) {
+        const st37 = document.createElement('style');
+        st37.id = 'l37-pass-css37';
+        st37.textContent = '@keyframes holoShimmer37 { 0% { transform: translateX(-130%) rotate(10deg); } 100% { transform: translateX(260%) rotate(10deg); } }' +
+          '@keyframes l37badge37 { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }' +
+          '.l37holo37 { position:absolute; inset:0; pointer-events:none; overflow:hidden; border-radius:22px; z-index:1; }' +
+          '.l37holo37::after { content:""; position:absolute; top:-40%; left:0; width:45%; height:180%; background:linear-gradient(105deg, rgba(255,255,255,0) 20%, rgba(255,255,255,0.45) 48%, rgba(255,255,255,0) 76%); animation:holoShimmer37 3.2s cubic-bezier(0.22,1,0.36,1) infinite; }' +
+          '@media (max-width:768px) { .l37pass-grid37 { grid-template-columns:1fr 1fr !important; } }';
+        (document.head || document.documentElement).appendChild(st37);
+      }
+    } catch (eCss37) { /* тихо */ }
+    setTimeout(function () { try { l37EnsurePayCodes37(); } catch (eI137) { /* тихо */ } }, 1800);
+    setTimeout(function () { try { l37RouteUserParam37(); } catch (eI237) { /* тихо */ } }, 2600);
+
+    window.l37GenPayCode37 = l37GenPayCode37;
+    window.l37EnsurePayCodes37 = l37EnsurePayCodes37;
+    window.l37FindUserByAddress37 = l37FindUserByAddress37;
+    window.l37OpenTransfer37 = l37OpenTransfer37;
+    window.l37TxLookup37 = l37TxLookup37;
+    window.l37TxSubmit37 = l37TxSubmit37;
+    window.l37ShowReceipt37 = l37ShowReceipt37;
+    window.l37RenderTxHistory37 = l37RenderTxHistory37;
+    window.l37EnsureProfileEco37 = l37EnsureProfileEco37;
+    window.l37OpenPassport37 = l37OpenPassport37;
+    window.l37OpenAbout37 = l37OpenAbout37;
+    window.l37QrMatrix37 = l37QrMatrix37;
+    window.l37QrDraw37 = l37QrDraw37;
+    window.l37ProfileUrl37 = l37ProfileUrl37;
+    window.l37RouteUserParam37 = l37RouteUserParam37;
 
     window.__lp37Ready = true;
 
