@@ -14234,6 +14234,7 @@ try {
       if (/дождь|rain/.test(low)) return '🌧️ Дождь';
       if (/heart|сердц/.test(low)) return '💖 Сердечки';
       if (kind === 'css') return '🎨 Оформление #' + (getList('customScripts').length + 1);
+      if (kind === 'html') return '🎨 HTML-блок #' + (getList('customScripts').length + 1);
       return '⚡ Скрипт #' + (getList('customScripts').length + 1);
     }
 
@@ -14245,7 +14246,7 @@ try {
       wrap.innerHTML = scripts.slice().reverse().map(function (s) {
         return '<div class="script-item">' +
           '<b>' + esc(s.name) + (s.active ? ' 🟢' : ' ⚪') + '</b>' +
-          '<small class="info-desc">' + (s.kind === 'css' ? 'CSS' : 'JS') + ' · ' + fmtDateTime(s.ts) + '</small>' +
+          '<small class="info-desc">' + (s.kind === 'css' ? 'CSS' : (s.kind === 'html' ? 'HTML' : 'JS')) + ' · ' + fmtDateTime(s.ts) + '</small>' +
           '<div class="admin-row-actions">' +
             (s.active
               ? '<button class="btn btn-ghost btn-sm" data-script-stop="' + esc(s.id) + '">⏹ Остановить</button>'
@@ -14283,6 +14284,28 @@ try {
         st.textContent = s.code;
         document.head.appendChild(st);
         rt.nodes.push(st);
+      } else if (s.kind === 'html') {
+        const styleChunks = [];
+        const scriptChunks = [];
+        const markup = String(s.code || '')
+          .replace(/<style[^>]*>([\s\S]*?)<\/style>/gi, function (m, inner) { styleChunks.push(inner); return ''; })
+          .replace(/<script[^>]*>([\s\S]*?)<\/script>/gi, function (m, inner) { scriptChunks.push(inner); return ''; });
+        if (styleChunks.length) {
+          const stH = document.createElement('style');
+          stH.setAttribute('data-cust-script', id);
+          stH.textContent = styleChunks.join('\n');
+          document.head.appendChild(stH);
+          rt.nodes.push(stH);
+        }
+        const host = document.createElement('div');
+        host.setAttribute('data-cust-script', id);
+        host.style.cssText = 'position:fixed;left:16px;bottom:96px;z-index:60;max-width:calc(100vw - 24px);max-height:60dvh;overflow:auto;';
+        host.innerHTML = markup;
+        document.body.appendChild(host);
+        rt.nodes.push(host);
+        scriptChunks.forEach(function (jsChunk) {
+          try { new Function(jsChunk).call(window); } catch (e) { toast('⚠️ Ошибка скрипта блока: ' + e.message, 'error'); }
+        });
       } else {
         const added = [];
         try {
@@ -14370,7 +14393,7 @@ try {
           return;
         }
         if (b.id === 'adm-live-edit-btn') { setLiveEdit(!liveEditOn); return; }
-        if (b.id === 'adm-widget-btn') { openWidgetEditor(null); return; }
+        if (b.id === 'adm-widget-btn') { try { l37OpenFreeBlock37(null); } catch (eFb237) { openWidgetEditor(null); } return; }
         if (b.id === 'adm-widget-fab') { try { l37OpenFreeBlock37(null); } catch (eFab37) { openWidgetEditor(null); } return; }
         if (b.id === 'adm-diag-btn') { l37DiagOpenReport37(); return; }
         if (b.id === 'adm-reset-tests-btn') { adminTestReset37(); return; }

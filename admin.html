@@ -142,10 +142,9 @@ console.log('Переводов Квантов:', QUANT_TXS.length);</textarea>
     </section>
 
     <section class="tab" id="sec-hcv">
-      <div class="tool-head"><h2>🎨 Конструктор виджетов HTML/CSS</h2><button class="hbtn" id="hc-copy">📋 Скопировать код</button></div>
-      <p class="hint">Живое превью обновляется при вводе. Готовый код можно вставить в «Живое редактирование» → «➕ Блок» на портале.</p>
-      <textarea id="hc-html" rows="6" spellcheck="false"></textarea>
-      <textarea id="hc-css" rows="6" spellcheck="false" style="margin-top:8px;"></textarea>
+      <div class="tool-head"><h2>🎨 Конструктор виджетов HTML/CSS</h2><button class="hbtn" id="hc-publish">🚀 Опубликовать на сайт</button><button class="hbtn" id="hc-copy">📋 Скопировать код</button></div>
+      <p class="hint">Единое окно редактора: вставляй цельный код (&lt;style&gt;, HTML и &lt;script&gt; вместе) — превью ниже. «🚀 Опубликовать» → Библиотека скриптов портала → «▶️ Включить»; «📋 Скопировать» — для «➕ Блок».</p>
+      <textarea id="hc-code" rows="14" spellcheck="false" style="width:100%;"></textarea>
       <div id="hcv" style="margin-top:10px;"><iframe id="hc-frame" title="Превью виджета" sandbox="allow-same-origin"></iframe></div>
     </section>
 
@@ -532,28 +531,51 @@ console.log('Переводов Квантов:', QUANT_TXS.length);</textarea>
   });
 
   /* ==== 🎨 HTML/CSS конструктор ==== */
-  var HC_HTML_D = '<div class="widget">\n  <h3>⚡ До встречи в Лице!</h3>\n  <p>Кванты начисляются за активность</p>\n</div>';
-  var HC_CSS_D = '.widget { font-family: sans-serif; padding: 18px; border-radius: 16px;\n  background: linear-gradient(135deg, #4f8cff, #6d5cff); color: #fff; }\n.widget h3 { margin: 0 0 6px; }';
-  document.getElementById('hc-html').value = HC_HTML_D;
-  document.getElementById('hc-css').value = HC_CSS_D;
+  var HC_D = '<style>\n.widget { font-family: sans-serif; padding: 18px; border-radius: 16px;\n  background: linear-gradient(135deg, #4f8cff, #6d5cff); color: #fff; }\n.widget h3 { margin: 0 0 6px; }\n</style>\n\n<div class="widget">\n  <h3>⚡ До встречи в Лице!</h3>\n  <p>Кванты начисляются за активность</p>\n</div>\n\n<script>\n  // JS-часть выполнится на портале после публикации\n  console.log("Виджет Лицея №37 готов!");\n<\/script>';
+  document.getElementById('hc-code').value = HC_D;
   var hcTimer = null;
   function hcUpdate() {
     clearTimeout(hcTimer);
     hcTimer = setTimeout(function () {
       document.getElementById('hc-frame').srcdoc =
-        '<!doctype html><html><head><meta charset="utf-8"><style>' + document.getElementById('hc-css').value + '</style></head><body>' +
-        document.getElementById('hc-html').value + '</body></html>';
+        '<!doctype html><html><head><meta charset="utf-8"></head><body>' +
+        document.getElementById('hc-code').value + '</body></html>';
     }, 250);
   }
-  document.getElementById('hc-html').addEventListener('input', hcUpdate);
-  document.getElementById('hc-css').addEventListener('input', hcUpdate);
+  document.getElementById('hc-code').addEventListener('input', hcUpdate);
   hcUpdate();
   document.getElementById('hc-copy').addEventListener('click', function () {
-    var code = document.getElementById('hc-html').value + '\n<style>\n' + document.getElementById('hc-css').value + '\n</style>';
+    var code = document.getElementById('hc-code').value;
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code);
     this.textContent = '✅ Скопировано';
     var b = this;
     setTimeout(function () { b.textContent = '📋 Скопировать код'; }, 1600);
+  });
+  document.getElementById('hc-publish').addEventListener('click', function () {
+    var b = this;
+    var code = document.getElementById('hc-code').value.trim();
+    if (code.length < 5) {
+      b.textContent = '⚠️ Вставь код';
+      setTimeout(function () { b.textContent = '🚀 Опубликовать на сайт'; }, 1600);
+      return;
+    }
+    var arr = Array.isArray(DB.customScripts) ? DB.customScripts.slice() : [];
+    arr.push({
+      id: 'scr' + Date.now().toString(36),
+      name: '🎨 HTML-блок от ' + new Date().toLocaleDateString('ru-RU'),
+      kind: 'html',
+      code: code,
+      active: false,
+      ts: Date.now()
+    });
+    b.textContent = '⏳ Публикую…';
+    upsertKey('customScripts', arr).then(function () {
+      b.textContent = '✅ Опубликовано! Портал → Библиотека скриптов → ▶️';
+      setTimeout(function () { b.textContent = '🚀 Опубликовать на сайт'; }, 3000);
+    }).catch(function (e) {
+      b.textContent = '⚠️ ' + (e && e.message ? e.message : 'ошибка сети');
+      setTimeout(function () { b.textContent = '🚀 Опубликовать на сайт'; }, 3000);
+    });
   });
 
   /* ==== 🧬 JSON-инспектор ==== */
