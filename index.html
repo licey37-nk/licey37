@@ -3,12 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Портал МБОУ «Лицей №37» г. Нижнекамска: класс, барахолка, соцсеть, игры Первых и профиль ученика.">
+  <meta name="description" content="Портал МБОУ «Лицей №37» г. Нижнекамска: класс, лицей-маркет, соцсеть, игры Первых и профиль ученика.">
   <title>МБОУ «Лицей №37» г. Нижнекамск</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    /* ============ DOMAIN SHIELD: портал живёт только на официальных доменах ============ */
+    (function () {
+      var shieldOk37 = false;
+      try {
+        var h = String(location.hostname || '').toLowerCase();
+        shieldOk37 = (h === 'licey37-nk.github.io' || h === 'localhost' || h === '127.0.0.1');
+      } catch (eH37) { shieldOk37 = true; }
+      if (!shieldOk37) {
+        try {
+          window.__lp37Blocked37 = true;
+          if (window.stop) window.stop();
+          document.documentElement.innerHTML = '<body style="margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0b1020;color:#fff;font-family:Arial,sans-serif;text-align:center;padding:20px;"><div><div style="font-size:56px;">🛡️</div><h1>Лицей №37</h1><p style="opacity:.85;">Портал работает только на официальном домене:<br><b style="color:#7dd3fc;">licey37-nk.github.io</b></p></div></body>';
+        } catch (eB37) { try { location.href = 'https://licey37-nk.github.io/'; } catch (eR37) {} }
+        throw new Error('DOMAIN SHIELD: чужой домен');
+      }
+      try {
+        var isEditable37 = function (t) {
+          if (!t || !t.tagName) return false;
+          var tag = t.tagName.toLowerCase();
+          return tag === 'input' || tag === 'textarea' || tag === 'select' || t.isContentEditable;
+        };
+        document.addEventListener('keydown', function (e) {
+          try {
+            var k = String(e.key || '').toLowerCase();
+            if (e.key === 'F12') { e.preventDefault(); return; }
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && (k === 'i' || k === 'j' || k === 'c')) { e.preventDefault(); return; }
+            if ((e.ctrlKey || e.metaKey) && (k === 'u' || k === 's')) { e.preventDefault(); return; }
+          } catch (eK37) {}
+        }, true);
+        document.addEventListener('contextmenu', function (e) {
+          try {
+            if (isEditable37(e.target)) return;
+            e.preventDefault();
+          } catch (eC37) {}
+        });
+      } catch (eG37) {}
+    })();
+  </script>
   <style>
     /* ============ 1. ПЕРЕМЕННЫЕ И ТЕМЫ ============ */
     :root {
@@ -2743,17 +2782,33 @@
     #adm-collapse-btn {
       font-weight: 800; padding: 4px 10px;
       display: inline-flex; align-items: center; justify-content: center;
-      transition: transform 0.2s;
+      transition: transform 0.2s; flex-shrink: 0;
     }
     #admin-panel.adm-collapsed #adm-collapse-btn { transform: rotate(180deg); }
-    .adm-quick {
+    /* Однострочная панель: никогда не переносится, скроллится пальцем и мышкой */
+    #admin-panel {
+      flex-direction: row; align-items: center; flex-wrap: nowrap; overflow: hidden;
+    }
+    .adm-strip {
       display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0;
-      overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch;
+      flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; white-space: nowrap;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    }
+    .adm-strip::-webkit-scrollbar { display: none; }
+    .adm-strip button { flex-shrink: 0; }
+    .adm-quick {
+      display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+      overflow-x: visible; -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
     }
     .adm-quick::-webkit-scrollbar { display: none; }
-    .adm-extra { display: none; flex-wrap: wrap; gap: 6px; padding: 2px 0 4px; }
+    .adm-extra { display: none; flex-wrap: nowrap; gap: 6px; padding: 0; flex-shrink: 0; }
     #admin-panel:not(.adm-collapsed) .adm-extra { display: flex; }
+    .adm-scroll-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0; min-width: 26px; padding: 4px 7px; font-size: 0.9rem; line-height: 1;
+      user-select: none; touch-action: manipulation;
+    }
     body.admin-mode { padding-top: var(--adm-h, 40px); }
     body.admin-mode header { top: var(--adm-h, 40px); }
     .admin-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
@@ -3972,7 +4027,7 @@
       <nav id="main-nav" aria-label="Основная навигация">
         <button data-tab="home" class="active">🏠 Главная</button>
         <button data-tab="class">🏫 Мой класс</button>
-        <button data-tab="market">🛍️ Барахолка</button>
+        <button data-tab="market">🛍 Лицей-Маркет</button>
         <button data-tab="social">💬 Соцсеть</button>
         <button data-tab="games">🎮 Игровая Лицея 37</button>
         <button data-tab="profile">👤 Профиль</button>
@@ -3995,7 +4050,7 @@
       <div class="hero-banner">
         <div class="hero-badge" data-editable="hero-badge">🎓 Официальный портал учеников</div>
         <h1 data-editable="hero-title">Лицей №37</h1>
-        <p data-editable="hero-subtitle">Цифровая среда для учеников МБОУ «Лицей №37» города Нижнекамска: класс, барахолка, соцсеть, игры Первых и многое другое.</p>
+        <p data-editable="hero-subtitle">Цифровая среда для учеников МБОУ «Лицей №37» города Нижнекамска: класс, лицей-маркет, соцсеть, игры Первых и многое другое.</p>
         <div class="hero-actions">
           <button class="btn btn-white" id="hero-join-btn">🚀 Присоединиться</button>
           <button class="btn btn-transparent" data-tab="class">Узнать больше</button>
@@ -4022,7 +4077,7 @@
         </div>
         <div class="card card-hover feature-card">
           <div class="feature-icon">🛍️</div>
-          <h3>Барахолка</h3>
+          <h3>Лицей-Маркет</h3>
           <p>Учебники, канцелярия, электроника и спортинвентарь — обмен и продажа между учениками.</p>
           <button class="btn btn-outline btn-sm" data-tab="market">Перейти →</button>
         </div>
@@ -4256,7 +4311,7 @@
       <div class="section-title">
         <div class="section-icon">🛍️</div>
         <div>
-          <h2 data-editable="market-title">Барахолка Лицея №37</h2>
+          <h2 data-editable="market-title">Лицей-Маркет Лицея №37</h2>
           <p data-editable="market-desc">Объявления учеников: учебники, канцелярия, электроника, одежда и находки</p>
         </div>
       </div>
@@ -4602,7 +4657,7 @@
       <div class="modal-head">
         <div class="modal-icon">🛍️</div>
         <h3>Новое объявление</h3>
-        <p>Барахолка Лицея №37</p>
+        <p>Лицей-Маркет Лицея №37</p>
       </div>
       <div class="form-error" id="listing-error"></div>
       <form id="listing-form">
@@ -4625,11 +4680,11 @@
         <div class="field">
           <label>Цена</label>
           <div class="field-row">
-            <button type="button" class="deal-btn active" data-deal="price">₽ Цена</button>
+            <button type="button" class="deal-btn active" data-deal="price">⚡ Кванты</button>
             <button type="button" class="deal-btn" data-deal="free">🎁 Бесплатно</button>
             <button type="button" class="deal-btn" data-deal="trade">🔄 Обмен</button>
           </div>
-          <input type="number" id="li-price" min="0" placeholder="Цена в рублях" style="margin-top:8px;">
+          <input type="number" id="li-price" min="0" placeholder="Цена в ⚡ Квантах" style="margin-top:8px;">
         </div>
         <div class="field">
           <label for="li-cond">Состояние вещи</label>
@@ -4788,7 +4843,7 @@
       <div class="modal-head">
         <div class="modal-icon">🔍</div>
         <h3>Быстрый поиск по сайту</h3>
-        <p>Ученики, классы, Барахолка, посты, каналы, 100 правил лицея и база знаний ИИ · Ctrl+K</p>
+        <p>Ученики, классы, Лицей-Маркет, посты, каналы, 100 правил лицея и база знаний ИИ · Ctrl+K</p>
       </div>
       <input type="text" id="global-search-input" class="input-field" placeholder="🔍 Что ищем? Имя, товар, канал, тема…" autocomplete="off">
       <div id="global-search-results" class="gs-results"></div>
@@ -4923,7 +4978,7 @@
       <div class="modal-head">
         <div class="modal-icon">📜</div>
         <h3>Правила сообщества МБОУ «Лицей №37»</h3>
-        <p>100 пунктов · уважение, безопасность, учёба и честная Барахолка</p>
+        <p>100 пунктов · уважение, безопасность, учёба и честный Лицей-Маркет</p>
       </div>
       <p class="field-hint" style="margin:0 0 10px;">Учебно-информационный портал сообщества МБОУ «Лицей №37» г. Нижнекамск. Портал не запрашивает и не хранит номера телефонов, адреса, паспортные данные и электронную почту учащихся.</p>
       <input type="text" class="search-input rules-search" id="rules-search" placeholder="🔍 Поиск по правилам...">
@@ -4944,35 +4999,37 @@
   </div>
 
   <div id="admin-panel" style="display:none;">
-    <div class="adm-main-row">
-      <button id="adm-collapse-btn" title="Свернуть / развернуть панель" type="button">👑 Админка ▾</button>
+    <button id="adm-collapse-btn" title="Свернуть / развернуть панель" type="button">👑 Админка ⌄</button>
+    <button class="adm-scroll-btn" id="adm-scroll-left" title="Прокрутить влево" type="button">‹</button>
+    <div class="adm-strip" id="adm-strip">
       <div class="adm-quick">
         <button id="adm-live-edit-btn">✏️ Живое ред.: ВЫКЛ</button>
         <button id="adm-widget-btn" style="display:none;">➕ Блок</button>
-        <button data-adm="broadcast">📣 Рассылка</button>
+        <button data-adm="broadcast">📢 Рассылка</button>
         <button id="adm-all-tools-btn">☰ Все инструменты Админа</button>
       </div>
+      <div class="adm-extra">
+        <button data-adm="users">👥 Пользователи</button>
+        <button data-adm="points">⚡ Кванты и опыт</button>
+        <button data-adm="wires">🔌 Права (Провода)</button>
+        <button data-adm="rights">👥 Права</button>
+        <button data-adm="tables">📊 Таблицы</button>
+        <button data-adm="log">📜 Журнал</button>
+        <button data-adm="complaints">🚨 Жалобы<span class="adm-badge-red" id="adm-compl-badge" style="display:none;">0</span></button>
+        <button data-adm="scripts">💻 Скрипты</button>
+        <button data-adm="rewards">🎁 Призы</button>
+        <button data-adm="verified">☑️ Галочки</button>
+        <button data-adm="director">🏛 Директор</button>
+        <button data-adm="pets">🐾 Талисманы</button>
+        <button data-adm="classreset">🗑 Класс</button>
+        <button data-adm="ticker">📰 Плашка</button>
+        <button data-adm="analytics">📊 Аналитика</button>
+        <button data-adm="backup">💾 Бэкап</button>
+        <button data-adm="pass">🔑 Пароль</button>
+        <button id="adm-exit-btn">🚪 Выйти</button>
+      </div>
     </div>
-    <div class="adm-extra">
-      <button data-adm="users">👥 Пользователи</button>
-      <button data-adm="points">⚡ Кванты и опыт</button>
-      <button data-adm="wires">🔌 Права (Провода)</button>
-      <button data-adm="rights">👥 Права</button>
-      <button data-adm="tables">📊 Таблицы</button>
-      <button data-adm="log">📜 Журнал</button>
-      <button data-adm="complaints">🚨 Жалобы<span class="adm-badge-red" id="adm-compl-badge" style="display:none;">0</span></button>
-      <button data-adm="scripts">💻 Скрипты</button>
-      <button data-adm="rewards">🎁 Призы</button>
-      <button data-adm="verified">☑️ Галочки</button>
-      <button data-adm="director">🏛️ Директор</button>
-      <button data-adm="pets">🐾 Талисманы</button>
-      <button data-adm="classreset">🗑 Класс</button>
-      <button data-adm="ticker">📰 Плашка</button>
-      <button data-adm="analytics">📊 Аналитика</button>
-      <button data-adm="backup">💾 Бэкап</button>
-      <button data-adm="pass">🔑 Пароль</button>
-      <button id="adm-exit-btn">🚪 Выйти</button>
-    </div>
+    <button class="adm-scroll-btn" id="adm-scroll-right" title="Прокрутить вправо" type="button">›</button>
   </div>
 
   <div class="modal" id="modal-admin-tools" aria-modal="true" role="dialog">
@@ -5195,27 +5252,196 @@
       syncKey(key, data);
     }
 
+    /* ============================================================
+       CLOUD-FIRST ATOMIC MERGE (v3): перед КАЖДОЙ записью коллекции
+       (users, posts, listings, channels, dm__*) читаем свежее значение
+       из Supabase, объединяем по уникальному id без потерь и только
+       потом делаем UPSERT с повтором через 1 сек при сетевом сбое.
+       ============================================================ */
+    const MERGE_COLLECTION_KEYS37 = ['users', 'posts', 'listings', 'channels'];
+
+    function l37ItemFreshness37(it) {
+      if (!it || typeof it !== 'object') return 0;
+      const candidates = ['updatedAt', 'editedAt', 'edited_ts', 'ts', 'createdAt'];
+      for (let i = 0; i < candidates.length; i++) {
+        const v = Number(it[candidates[i]]);
+        if (!isNaN(v) && v > 0) return v;
+      }
+      return 0;
+    }
+
+    function l37CollectionId37(key, it) {
+      if (!it || typeof it !== 'object') return undefined;
+      if (it.id !== undefined && it.id !== null) return it.id;
+      if (key === 'users' && it.nick !== undefined && it.nick !== null) return it.nick;
+      return undefined;
+    }
+
+    /* Объединение облачного и локального массивов по id: НИ ОДИН
+       чужой аккаунт, пост, товар или канал не затирается. Локальные
+       правки выигрывают при равной свежести, массивы-накопители
+       (комментарии, просмотры, история, отзывы) объединяются, а
+       удалённое помнится tombstone-списками <ключ>_del и не воскресает. */
+    function l37TombList37(key) {
+      const a = readLs(key + '_del');
+      return Array.isArray(a) ? a : [];
+    }
+
+    function l37TombFilter37(key, arr) {
+      const tomb = l37TombList37(key);
+      if (!tomb.length || !Array.isArray(arr)) return Array.isArray(arr) ? arr : [];
+      const alive = arr.filter(function (it) { return !it || it.id === undefined || tomb.indexOf(it.id) === -1; });
+      if (key === 'posts') {
+        alive.forEach(function (it) {
+          if (it && Array.isArray(it.comments)) it.comments = it.comments.filter(function (cm) { return !cm || cm.id === undefined || tomb.indexOf(cm.id) === -1; });
+        });
+      }
+      return alive;
+    }
+
+    function l37TombAdd37(key, ids) {
+      try {
+        const cur = l37TombList37(key);
+        const add = (Array.isArray(ids) ? ids : [ids]).filter(function (x) { return x !== undefined && x !== null; });
+        let changed = false;
+        add.forEach(function (id) { if (cur.indexOf(id) === -1) { cur.push(id); changed = true; } });
+        if (!changed) return;
+        if (cur.length > 800) cur.splice(0, cur.length - 800);
+        writeLs(key + '_del', cur);
+        dbSave(key + '_del', cur);
+      } catch (eTb37) {}
+    }
+
+    function l37UnionStrings37(a, b) {
+      const seen = {};
+      const out = [];
+      (Array.isArray(b) ? b : []).concat(Array.isArray(a) ? a : []).forEach(function (x) {
+        const k = typeof x === 'string' ? x : JSON.stringify(x);
+        if (!k || seen[k]) return;
+        seen[k] = true;
+        out.push(x);
+      });
+      return out;
+    }
+
+    function l37UnionField37(l, c, field) {
+      const a = l[field];
+      const b = c[field];
+      if (!Array.isArray(b) || !b.length) return;
+      if (!Array.isArray(a) || !a.length) { l[field] = b.slice(); return; }
+      const seen = {};
+      const out = [];
+      a.concat(b).forEach(function (x) {
+        const k = x && x.id !== undefined ? 'i:' + x.id : 'j:' + JSON.stringify(x);
+        if (!seen[k]) { seen[k] = true; out.push(x); }
+      });
+      l[field] = out;
+    }
+
+    function l37MergeItem37(key, l, c) {
+      if (key === 'users') {
+        Object.keys(c).forEach(function (k) { if (l[k] === undefined) l[k] = c[k]; });
+        l37UnionField37(l, c, 'history');
+        return;
+      }
+      if (key === 'posts') {
+        if (l37ItemFreshness37(c) > l37ItemFreshness37(l)) {
+          Object.keys(c).forEach(function (k) {
+            if (k === 'comments' || k === 'viewedBy' || k === 'views' || k === 'poll') return;
+            l[k] = c[k];
+          });
+        }
+        l37UnionField37(l, c, 'comments');
+        l37UnionField37(l, c, 'viewedBy');
+        try { l.views = Math.max(Number(l.views || 0), Number(c.views || 0)); } catch (eV37) {}
+        return;
+      }
+      if (l37ItemFreshness37(c) > l37ItemFreshness37(l)) {
+        Object.keys(c).forEach(function (k) { l[k] = c[k]; });
+      }
+      l37UnionField37(l, c, 'reviews');
+      l37UnionField37(l, c, 'subs');
+      try { l.views = Math.max(Number(l.views || 0), Number(c.views || 0)); } catch (eV37) {}
+    }
+
+    function l37MergeCollection37(key, localArr, cloudArr) {
+      const tomb37 = l37TombList37(key);
+      const isDead37 = function (it) { return it && it.id !== undefined && tomb37.indexOf(it.id) !== -1; };
+      const out = [];
+      const byKey = {};
+      const cloud = (Array.isArray(cloudArr) ? cloudArr : []).filter(function (it) { return !isDead37(it); });
+      const local = (Array.isArray(localArr) ? localArr : []).filter(function (it) { return !isDead37(it); });
+      cloud.forEach(function (c) {
+        const cid = l37CollectionId37(key, c);
+        if (cid === undefined) { out.push(c); return; }
+        byKey[cid] = c;
+        out.push(c);
+      });
+      local.forEach(function (l) {
+        const lid = l37CollectionId37(key, l);
+        if (lid === undefined) { out.push(l); return; }
+        const c = byKey[lid];
+        if (!c) { byKey[lid] = l; out.push(l); return; }
+        l37MergeItem37(key, l, c);
+        const idx = out.indexOf(c);
+        if (idx !== -1) out[idx] = l;
+        byKey[lid] = l;
+      });
+      return out;
+    }
+
     async function syncKey(key, data) {
       if (!sb37) return;
+      let payload = data;
+      const isDmList37 = typeof key === 'string' && key.indexOf('dm__') === 0 && Array.isArray(data);
+      const isCollection37 = MERGE_COLLECTION_KEYS37.indexOf(key) !== -1 && Array.isArray(data);
+      const isDelList37 = typeof key === 'string' && /_del$/.test(key) && Array.isArray(data);
+      if (isDelList37) {
+        try {
+          const fresh = await sb37.from(TABLE).select('value').eq('key', key).maybeSingle();
+          if (!fresh.error && fresh.data && Array.isArray(fresh.data.value)) {
+            payload = l37UnionStrings37(data, fresh.data.value);
+            try { writeLs(key, payload); } catch (eWl37) {}
+          }
+        } catch (eM37) { /* пишем как есть */ }
+      }
+      if (isDmList37 || isCollection37) {
+        try {
+          const fresh = await sb37.from(TABLE).select('value').eq('key', key).maybeSingle();
+          if (!fresh.error && fresh.data && Array.isArray(fresh.data.value)) {
+            payload = isDmList37
+              ? mergeLists(data, fresh.data.value).sort(function (x, y) { return (x.ts || 0) - (y.ts || 0); })
+              : l37TombFilter37(key, l37MergeCollection37(key, data, fresh.data.value));
+            try { writeLs(key, payload); } catch (eWl37) {}
+          }
+        } catch (eM37) { /* пишем как есть */ }
+      }
+      if (isCollection37) payload = l37TombFilter37(key, payload);
+      const broadcast37 = function () {
+        try { instantSend('row', { key: key }); } catch (eI37) {}
+        try {
+          if (key === 'users' && typeof l37SyncSend === 'function') l37SyncSend('users_changed', { ts: Date.now() });
+          if (key === 'listings' && typeof l37SyncSend === 'function') l37SyncSend('market_changed', { ts: Date.now() });
+          if (key === 'posts' && (typeof l37PostPullGuard37 === 'undefined' || !l37PostPullGuard37) && typeof l37SyncSend === 'function') l37SyncSend('new_post', { key: key, ts: Date.now() });
+        } catch (eNp38) {}
+      };
       try {
-        let payload = data;
-        if (typeof key === 'string' && key.indexOf('dm__') === 0 && Array.isArray(data)) {
-          try {
-            const fresh = await sb37.from(TABLE).select('value').eq('key', key).maybeSingle();
-            if (!fresh.error && fresh.data && Array.isArray(fresh.data.value)) {
-              payload = mergeLists(data, fresh.data.value).sort(function (x, y) { return (x.ts || 0) - (y.ts || 0); });
-              try { writeLs(key, payload); } catch (eWl37) {}
-            }
-          } catch (eM37) { /* пишем как есть */ }
-        }
         const answer = await sb37
           .from(TABLE)
           .upsert({ key: key, value: payload }, { onConflict: 'key' });
         if (answer.error) throw answer.error;
-        try { instantSend('row', { key: key }); } catch (eI37) {}
-        try { if (key === 'posts' && (typeof l37PostPullGuard37 === 'undefined' || !l37PostPullGuard37) && typeof l37SyncSend === 'function') l37SyncSend('new_post', { key: key, ts: Date.now() }); } catch (eNp38) {}
+        broadcast37();
       } catch (e) {
-        console.warn('syncKey: облако недоступно, работаем локально —', key, e && e.message);
+        try { await new Promise(function (r37) { setTimeout(r37, 1000); }); } catch (eW37) {}
+        try {
+          const answer2 = await sb37
+            .from(TABLE)
+            .upsert({ key: key, value: payload }, { onConflict: 'key' });
+          if (answer2.error) throw answer2.error;
+          broadcast37();
+        } catch (e2) {
+          console.warn('syncKey: облако недоступно даже после повтора, работаем локально —', key, e2 && e2.message);
+        }
       }
     }
 
@@ -5271,7 +5497,11 @@
       const local = readLs(key);
       let merged = cloudData;
       if (Array.isArray(cloudData)) {
-        if (Array.isArray(local) && local.length) {
+        if (/_del$/.test(key)) {
+          merged = l37UnionStrings37(local, cloudData);
+        } else if (MERGE_COLLECTION_KEYS37.indexOf(key) !== -1) {
+          merged = l37TombFilter37(key, l37MergeCollection37(key, local, cloudData));
+        } else if (Array.isArray(local) && local.length) {
           merged = mergeLists(local, cloudData);
         }
       } else if (cloudData && typeof cloudData === 'object' && local && typeof local === 'object' && !Array.isArray(local)) {
@@ -5973,6 +6203,7 @@
 
           users.push(user);
           saveUsers(users);
+          try { if (typeof l37SyncSend === 'function') l37SyncSend('user_registered', { uid: user.id, name: user.name, ts: Date.now() }); } catch (eUr37) {}
           setSessionUserId(user.id);
           closeModal('modal-register');
           resetRegisterForm();
@@ -6214,7 +6445,7 @@
         '<div class="card" style="margin-top:20px;">' +
           '<h3 class="info-title">🔖 Мои закладки</h3>' +
           '<div id="pf-bookmarks"></div>' +
-          '<h3 class="info-title" style="margin-top:18px;">🛒 Мои покупки на Барахолке</h3>' +
+          '<h3 class="info-title" style="margin-top:18px;">🛒 Мои покупки в Лицей-Маркете</h3>' +
           '<p class="field-hint">Только покупатель может оставить продавцу отзв 1–5 ★.</p>' +
           '<div id="pf-purchases"></div>' +
         '</div>' +
@@ -6423,6 +6654,7 @@
       const users = getUsers();
       const idx = users.findIndex(function (x) { return x.id === user.id; });
       if (idx !== -1) users.splice(idx, 1);
+      try { l37TombAdd37('users', user.id); } catch (eTb43) {}
       saveUsers(users);
       dbSave('volunteers', getList('volunteers').filter(function (v) { return v.userId !== user.id; }));
       setSessionUserId(null);
@@ -7554,7 +7786,7 @@
         let priceHtml;
         if (l.deal === 'free') priceHtml = '<span class="badge-free">🎁 Бесплатно</span>';
         else if (l.deal === 'trade') priceHtml = '<span class="badge-trade">🔄 Обмен</span>';
-        else priceHtml = '<span class="listing-price">' + Number(l.price || 0).toLocaleString('ru-RU') + ' ₽</span>';
+        else priceHtml = '<span class="listing-price">' + qfmt37(Number(l.price || 0)) + '</span>';
         return '<div class="card listing-card" style="position:relative;">' +
           '<button type="button" class="fav-btn' + (user && userFavs.indexOf(l.id) !== -1 ? ' on' : '') + '" data-listing-fav="' + esc(l.id) + '" title="В избранное">' + (user && userFavs.indexOf(l.id) !== -1 ? '❤️' : '🤍') + '</button>' +
           photoHtml +
@@ -7776,7 +8008,7 @@
         closeModal('modal-listing');
         galleryIndex[item.id] = 0;
         renderMarket();
-        toast('🛍️ Объявление опубликовано на Барахолке!', 'success');
+        toast('🛍️ Объявление опубликовано в Лицей-Маркете!', 'success');
       });
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
@@ -7811,7 +8043,7 @@
         ? '<span class="badge-free">🎁 Бесплатно</span>'
         : item.deal === 'trade'
           ? '<span class="badge-trade">🔄 Обмен</span>'
-          : '<span class="listing-price">' + Number(item.price || 0).toLocaleString('ru-RU') + ' ₽</span>';
+          : '<span class="listing-price">' + qfmt37(Number(item.price || 0)) + '</span>';
       document.getElementById('pchat-item').innerHTML =
         '<div class="pchat-item">' +
           (photos.length ? '<img src="' + photos[0] + '" alt="">' : '<div class="pchat-ph">' + (item.cat === 'lost' ? '🆘' : '📦') + '</div>') +
@@ -7924,6 +8156,23 @@
     function openDm(partnerId) {
       const user = getCurrentUser();
       if (!user) { openModal('modal-login'); toast('Войди, чтобы отправлять личные сообщения.', 'info'); return; }
+      try {
+        if (sb37) refreshUsersFromCloud().then(function (cloudUsers) {
+          if (!Array.isArray(cloudUsers) || !cloudUsers.length) return;
+          const before = JSON.stringify(getUsers());
+          writeLs('users', l37TombFilter37('users', l37MergeCollection37('users', getUsers(), cloudUsers)));
+          if (JSON.stringify(getUsers()) !== before) {
+            const fresh = getUserById(partnerId);
+            if (fresh) {
+              const avaEl = document.getElementById('dm-head-ava');
+              const nameEl = document.getElementById('dm-head-name');
+              if (avaEl) avaEl.innerHTML = msgAvatarHtml(fresh.avatar, 'mini-ava');
+              if (nameEl) nameEl.textContent = fresh.name;
+              try { updateDmHeaderStatus(); } catch (eUh37) {}
+            }
+          }
+        }).catch(function () {});
+      } catch (eOd37) {}
       if (partnerId === user.id) { toast('Нельзя написать самому себе 🙂', 'info'); return; }
       const pu = getUserById(partnerId);
       if (!pu) { toast('Пользователь не найден.', 'error'); return; }
@@ -8046,7 +8295,7 @@
       saveDmMsgs(user.id, currentDmPartner, arr);
       instantSend('msg', { chatKey: dmCloudKey(user.id, currentDmPartner), msg: newMsg37 });
       instantSend('row', { key: dmCloudKey(user.id, currentDmPartner) });
-      try { if (typeof l37SyncSend === 'function') l37SyncSend('new_dm', { chatKey: dmCloudKey(user.id, currentDmPartner), msg: newMsg37, ts: Date.now() }); } catch (eNdS37) {}
+      try { if (typeof l37SyncSend === 'function') l37SyncSend('new_dm', { chatKey: dmCloudKey(user.id, currentDmPartner), msg: newMsg37, from: user.id, to: currentDmPartner, ts: Date.now() }); } catch (eNdS37) {}
       input.value = '';
       try { clearDmDraft37(user.id, currentDmPartner); } catch (eCd37) {}
       clearDmCompose();
@@ -8323,7 +8572,7 @@
               '<button type="button" class="btn btn-ghost btn-sm" data-dm-archive="' + esc(partnerId) + '" title="В архив">📥</button>' +
             '</div>';
           }).join('')
-        : '<div class="card stub-card"><div class="stub-icon">✉️</div><h3>Диалогов пока нет</h3><p>Найди одноклассника через поиск в Ленте, напиши волонтёру или продавцу на Барахолке.</p></div>';
+        : '<div class="card stub-card"><div class="stub-icon">✉️</div><h3>Диалогов пока нет</h3><p>Найди одноклассника через поиск в Ленте, напиши волонтёру или продавцу в Лицей-Маркете.</p></div>';
       archWrap.innerHTML = inArchive.length
         ? inArchive.map(function (partnerId) {
             const pu = getUserById(partnerId);
@@ -8766,6 +9015,12 @@
         if (!user || !p || !p.msg || p.msg.from === user.id) return;
         const added = l37MergeIncomingDm37(p);
         if (!added) return;
+        try {
+          if (typeof registerDmIndex === 'function') {
+            const senderId = p.from || p.msg.from;
+            if (senderId && senderId !== user.id) registerDmIndex(senderId, user.id, p.chatKey);
+          }
+        } catch (eRi38) {}
         if (l37IsChatOpen37(user, p.chatKey)) {
           try { renderActiveChatMessages(); } catch (eRa37) {}
           try { l37SyncSend('chat_read', { chatKey: p.chatKey, reader: user.id, ts: Date.now() }); } catch (eCr37) {}
@@ -8821,6 +9076,28 @@
       } catch (eCa37) {}
     }
 
+    /* Свежий список пользователей: чтобы каждый новый аккаунт был виден
+       в поиске людей, мессенджере и входе с любого устройства */
+    function l37HandleUsersChanged37() {
+      try {
+        if (!sb37) return;
+        pullKeys(['users']).then(function () {
+          try { if (typeof renderPeople === 'function') renderPeople(); } catch (eRp37) {}
+          try { if (typeof updateStats === 'function') updateStats(); } catch (eUs37) {}
+        }).catch(function () {});
+      } catch (eUc37) {}
+    }
+
+    /* Свежие объявления Лицей-Маркета: синхронизация в реальном времени */
+    function l37HandleMarketChanged37() {
+      try {
+        if (!sb37) return;
+        pullKeys(['listings']).then(function () {
+          try { if (panels && panels.market && panels.market.classList.contains('active')) renderMarket(); } catch (eRm37) {}
+        }).catch(function () {});
+      } catch (eMc37) {}
+    }
+
     /* Свежие посты и комментарии соцсети */
     function l37HandleNewPost37() {
       try {
@@ -8841,6 +9118,9 @@
         l37SyncChannel.on('broadcast', { event: 'chat_read' }, function (m) { l37HandleChatRead37(m && m.payload); });
         l37SyncChannel.on('broadcast', { event: 'chat_action' }, function (m) { l37HandleChatAction37(m && m.payload); });
         l37SyncChannel.on('broadcast', { event: 'new_post' }, function (m) { l37HandleNewPost37(); });
+        l37SyncChannel.on('broadcast', { event: 'users_changed' }, function (m) { l37HandleUsersChanged37(); });
+        l37SyncChannel.on('broadcast', { event: 'user_registered' }, function (m) { l37HandleUsersChanged37(); });
+        l37SyncChannel.on('broadcast', { event: 'market_changed' }, function (m) { l37HandleMarketChanged37(); });
         l37SyncChannel.subscribe(function (status) {
           try {
             if (status === 'SUBSCRIBED') { l37SyncReady = true; }
@@ -9366,6 +9646,7 @@
           if (!confirm('Удалить пост безвозвратно?')) return;
           const adminSnapD = p.userId !== user.id && canModerateAll(user) ? { kind: 'list', key: 'posts', before: posts.slice() } : null;
           posts.splice(posts.indexOf(p), 1);
+          try { l37TombAdd37('posts', p.id); } catch (eTb40) {}
           dbSave('posts', posts);
           if (adminSnapD) adminLogAction('moderation', '🗑️ Админ удалил пост', adminSnapD);
           renderFeed();
@@ -9385,6 +9666,7 @@
           if (!c) return;
           const adminSnapC = c.userId !== user.id && canModerateAll(user) ? { kind: 'list', key: 'posts', before: posts.slice() } : null;
           p.comments.splice(p.comments.indexOf(c), 1);
+          try { l37TombAdd37('posts', c.id); } catch (eTb41) {}
           dbSave('posts', posts);
           if (adminSnapC) adminLogAction('moderation', '🗑️ Админ удалил комментарий', adminSnapC);
           renderFeed();
@@ -9480,6 +9762,14 @@
   document.getElementById('people-search').addEventListener('input', function () {
         peopleQuery = this.value;
         renderPeople();
+        try {
+          if (sb37) refreshUsersFromCloud().then(function (cloudUsers) {
+            if (!Array.isArray(cloudUsers) || !cloudUsers.length) return;
+            const before = JSON.stringify(getUsers());
+            writeLs('users', l37TombFilter37('users', l37MergeCollection37('users', getUsers(), cloudUsers)));
+            if (JSON.stringify(getUsers()) !== before) renderPeople();
+          }).catch(function () {});
+        } catch (ePs37) {}
       });
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
@@ -9745,6 +10035,7 @@ try {
           const c = p.comments.find(function (x) { return x.id === cmtId && x.userId === user.id; });
           if (!c) return;
           p.comments.splice(p.comments.indexOf(c), 1);
+          try { l37TombAdd37('channels', c.id); } catch (eTb44) {}
           chCmtOpen[postId] = true;
           dbSave('channels', list);
           renderChannelFeed(chId);
@@ -9794,6 +10085,7 @@ try {
           if (!p || !(p.userId === user.id || chCanDelete(user, ch))) return;
           if (!confirm('Удалить публикацию?')) return;
           ch.posts.splice(ch.posts.indexOf(p), 1);
+          try { l37TombAdd37('channels', p.id); } catch (eTb45) {}
           dbSave('channels', list);
           renderChannelFeed(chId);
         }
@@ -9894,7 +10186,7 @@ try {
         { id: 'cc_group', label: '👥 Групповые чаты классов', impl: ['moderation'] },
         { id: 'cc_copystar', label: '📋 Копирование текста сообщений', impl: ['moderation'] }
       ] },
-      { id: 'bazaar', name: '🛍️ Барахолка и сделки', nodes: [
+      { id: 'bazaar', name: '🛍 Лицей-Маркет и сделки', nodes: [
         { id: 'bb_create', label: '🛍️ Публикация объявлений', impl: ['moderation'] },
         { id: 'bb_edit_own', label: '✏️ Редактирование своих объявлений', impl: ['moderation'] },
         { id: 'bb_edit_any', label: '✏️ Редактирование любых объявлений', impl: ['moderation'] },
@@ -10058,7 +10350,7 @@ try {
       { id: 'mod', name: '🛡️ Жалобы, логи и модерация', nodes: [
         { id: 'tables', label: '📊 Таблицы заявок и идей' },
         { id: 'log', label: '📜 Журнал действий и отмена правок' },
-        { id: 'moderation', label: '🛡️ Полная модерация Барахолки и Соцсети' },
+        { id: 'moderation', label: '🛡️ Полная модерация Лицей-Маркета и Соцсети' },
         { id: 'md_reports', label: '🚨 Вкладка «Жалобы»', impl: ['moderation'] },
         { id: 'md_report_reply', label: '💬 Ответ на жалобу ученику', impl: ['moderation'] },
         { id: 'md_report_del', label: '🗑️ Удаление нарушающего контента', impl: ['moderation'] },
@@ -11388,7 +11680,7 @@ try {
       const metrics = [
         { id: 'activity', label: 'Активность учеников' },
         { id: 'content', label: 'Новые посты и сообщения' },
-        { id: 'listings', label: 'Объявления Барахолки' }
+        { id: 'listings', label: 'Объявления Лицей-Маркета' }
       ];
       const periods = [
         { id: 'today', label: 'Сегодня' },
@@ -13602,10 +13894,18 @@ try {
       gsActions = [];
       const query = String(q || '').trim().toLowerCase();
       if (query.length < 2) {
-        box.innerHTML = '<div class="field-hint">Введите минимум 2 символа — ищем по ученикам, классам, объявлениям Барахолки, постам, каналам, 100 правилам лицея и базе знаний ИИ-Наставника.</div>';
+        box.innerHTML = '<div class="field-hint">Введите минимум 2 символа — ищем по ученикам, классам, объявлениям Лицей-Маркета, постам, каналам, 100 правилам лицея и базе знаний ИИ-Наставника.</div>';
         return;
       }
       const res = [];
+      try {
+        if (sb37) refreshUsersFromCloud().then(function (cloudUsers) {
+          if (!Array.isArray(cloudUsers) || !cloudUsers.length) return;
+          const before = localStorage.getItem(LS_PREFIX + 'users') || '';
+          writeLs('users', l37TombFilter37('users', l37MergeCollection37('users', getUsers(), cloudUsers)));
+          if ((localStorage.getItem(LS_PREFIX + 'users') || '') !== before) globalSearch(q);
+        }).catch(function () {});
+      } catch (eGs37) {}
       getUsers().forEach(function (u) {
         if (res.length >= 20) return;
         const cls = classIdOf(u.grade, u.letter);
@@ -13631,7 +13931,7 @@ try {
       getList('listings').forEach(function (l) {
         if (res.length >= 20) return;
         if (fuzzyMatch(query, l.title)) {
-          res.push({ ico: '🛍️', title: l.title, sub: 'Барахолка · объявление', act: function () { setTab('market'); } });
+          res.push({ ico: '🛍️', title: l.title, sub: 'Лицей-Маркет · объявление', act: function () { setTab('market'); } });
         }
       });
       getList('posts').forEach(function (p) {
@@ -14111,7 +14411,7 @@ try {
       if (!target || !target.id) return;
       reportTarget37 = { kind: target.kind, id: target.id };
       const hint = document.getElementById('report-target-hint');
-      if (hint) hint.textContent = target.kind === 'listing' ? 'Жалоба на объявление Барахолки' : 'Жалоба на пост в Соцсети';
+      if (hint) hint.textContent = target.kind === 'listing' ? 'Жалоба на объявление Лицей-Маркета' : 'Жалоба на пост в Соцсети';
       const sel = document.getElementById('report-reason');
       if (sel) sel.value = 'spam';
       const other = document.getElementById('report-reason-other');
@@ -14196,7 +14496,7 @@ try {
           : '');
     }
 
-    /* ---- Барахолка: просмотры, состояние, место, избранное, покупка, отзывы ---- */
+    /* ---- Лицей-Маркет: просмотры, состояние, место, избранное, покупка, отзывы ---- */
     function viewsOf(l) {
       if (!l) return 0;
       return Number(l.views || 0) + (Array.isArray(l.viewedBy) ? l.viewedBy.length : 0);
@@ -14475,7 +14775,7 @@ try {
       [1, 25, 'Уважение и культура общения'],
       [26, 50, 'Безопасность и защита данных'],
       [51, 70, 'Учёба и академическая честность'],
-      [71, 85, 'Честная Барахолка и Бюро находок'],
+      [71, 85, 'Честный Лицей-Маркет и Бюро находок'],
       [86, 100, 'Каналы, сообщества, питомцы и ответственность']
     ];
     const RULES37 = [
@@ -14509,7 +14809,7 @@ try {
       'Запрещено публиковать чужие адреса, телефоны и личные данные: за это контент удаляется немедленно, а аккаунт нарушителя блокируется администрацией.',
       'Не переходи по подозрительным ссылкам из чатов и постов.',
       'Если кто-то выпрашивает твой пароль — сообщи администрации: взлом и использование чужих аккаунтов запрещены и ведут к удалению аккаунта нарушителя.',
-      'Скачивай файлы из Барахолки и чатов только после проверки.',
+      'Скачивай файлы из Лицей-Маркета и чатов только после проверки.',
       'Запрещены фото и видео с драками и опасными ситуациями: такой контент удаляется, а виновники приглашаются на разговор с администрацией лицея.',
       'Не встречайся с незнакомцами по контактам из интернета.',
       'Об угрозе или шантаже в чатах немедленно сообщай администрации: скриншоты помогают быстрее разобраться, а сообщение можно отправить анонимно.',
@@ -14543,22 +14843,22 @@ try {
       'Не сливай ответы викторин «Игровой Лицея 37» заранее: честная игра интереснее, а за слив результатов победитель лишается Квантов раунда.',
       'Учись планировать время: дедлайн — не за ночь до сдачи.',
       'Вместо просьбы «решите за меня» задавай конкретный вопрос: так тебе быстрее помогут, а волонтёры видят, что ты стараешься понять сам.',
-      'Библиотека и учебники из Барахолки возвращай вовремя.',
+      'Библиотека и учебники из Лицей-Маркета возвращай вовремя.',
       'Продавая учебники, честно указывай предмет и класс: покупатель должен знать, что книга подходит его программе и есть в школьном списке.',
       'Олимпиады и конкурсы анонсируй через раздел Мероприятия.',
       'Подавай заявки на мероприятия честно: одно имя, настоящий класс и реальный контакт — фейковые заявки проверяются и мешают другим ученикам.',
       'Не забывай благодарить волонтёров, которые помогли с учёбой.',
       'За постоянное списание ученик теряет право на награды и звания портала: честные Кванты ценнее накруток и являются основой репутации в лицее.',
-      'Продавай на Барахолке только свои вещи по честной цене.',
-      'Запрещена продажа опасных и запрещённых предметов: объявление удаляется немедленно, а продавец получает блокировку Барахолки.',
+      'Продавай в Лицей-Маркете только свои вещи по честной цене.',
+      'Запрещена продажа опасных и запрещённых предметов: объявление удаляется немедленно, а продавец получает блокировку Лицей-Маркета.',
       'Фотографии товара должны быть настоящими, а не картинками из интернета.',
-      'Продавец на Барахолке обязан указывать реальное состояние вещи и прикладывать настоящие фотографии без обмана покупателей.',
+      'Продавец в Лицей-Маркете обязан указывать реальное состояние вещи и прикладывать настоящие фотографии без обмана покупателей.',
       'Указывай честное состояние: новое, хорошее или с дефектами.',
       'Назначай место встречи только на территории лицея: холл, столовая, библиотека или спортзал — и передавайте вещи при других учениках.',
       'Обман покупателя — самая строгая причина для бана.',
       'Деньги передавайте лично из рук в руки: портал не проводит платежи и не восстанавливает переводы, совершённые без личной встречи.',
       'Кнопку «🛒 Купить» нажимай только с настоящим намерением.',
-      'Если нажал «Купить» — свяжись с продавцом в течение двух дней, иначе бронь снимается, а ложные покупки закрывают доступ к Барахолке.',
+      'Если нажал «Купить» — свяжись с продавцом в течение двух дней, иначе бронь снимается, а ложные покупки закрывают доступ к Лицей-Маркете.',
       'Отзыв оставляй только после реальной покупки у продавца.',
       'Отзывы должны быть честными и по делу: отзывы без реальной покупки удаляются, а оскорбления в отзывах обсуждаются администрацией.',
       'Кнопку «Пожаловаться» используй только по настоящей причине.',
@@ -14699,14 +14999,14 @@ try {
       const user = getCurrentUser();
       const arr = user ? getPurchases37().filter(function (p) { return p.buyerId === user.id; }) : [];
       if (!user || !arr.length) {
-        box.innerHTML = '<p class="info-desc">Покупок пока нет — жми «🛒 Купить» на Барахолке. После покупки можно оценить продавца!</p>';
+        box.innerHTML = '<p class="info-desc">Покупок пока нет — жми «🛒 Купить» в Лицей-Маркете. После покупки можно оценить продавца!</p>';
         return;
       }
       box.innerHTML = arr.slice().reverse().map(function (p) {
         const reviewed = getReviews37().find(function (r) { return r.sellerId === p.sellerId && r.buyerId === user.id; });
         return '<div class="review-row"><div style="flex:1; min-width:0;">' +
           '<b>' + esc(p.title || 'Товар') + '</b> · ' + esc(p.sellerName || '') +
-          '<div style="opacity:.85;">' + esc(fmtDateTime(p.ts)) + ' · ' + (Number(p.price) > 0 ? Number(p.price) + ' ₽' : 'даром/обмен') + '</div></div>' +
+          '<div style="opacity:.85;">' + esc(fmtDateTime(p.ts)) + ' · ' + (Number(p.price) > 0 ? qfmt37(Number(p.price)) : 'даром/обмен') + '</div></div>' +
           (reviewed
             ? '<span class="seller-rating">★ ' + reviewed.stars + '/5</span>'
             : '<button type="button" class="btn btn-primary btn-sm" data-review-open="' + esc(p.sellerId) + '">⭐ Оставить отзыв</button>') +
@@ -15105,7 +15405,7 @@ try {
         });
       }
       html += '<div class="admin-row"><div class="admin-row-main"><b>🧹 Очистка тестовых аккаунтов</b><small>Удаляет ВСЕ аккаунты, кроме Главного Админа, вместе с их постами, объявлениями, заявками и чатами. Сайт, настройки Админки, расписание звонков, талисманы, скрипты, виджеты и база знаний полностью сохраняются.</small></div><div class="admin-row-actions"><button class="btn btn-ghost btn-sm" id="adm-cleanup-users">🧹 Очистить все тестовые аккаунты</button></div></div>';
-      html += '<p class="info-desc">Полное удаление аккаунта: пользователь, его посты и комментарии, объявления Барахолки, заявки и личные сообщения. Действие можно отменить в 📜 Журнале.</p>';
+      html += '<p class="info-desc">Полное удаление аккаунта: пользователь, его посты и комментарии, объявления Лицей-Маркета, заявки и личные сообщения. Действие можно отменить в 📜 Журнале.</p>';
       html += '<input type="text" id="adm-users-search" class="input-field" placeholder="🔍 Поиск по имени или классу…" value="' + esc(filter || '') + '" style="margin-bottom:12px;">';
       if (!users.length) html += '<p class="empty-line">Пользователи не найдены.</p>';
       users.forEach(function (u) {
@@ -15161,13 +15461,17 @@ try {
         if (uid === u.id) return;
         newIdx[uid] = (dmIndex[uid] || []).filter(function (k) { return String(k).indexOf(u.id) === -1; });
       });
+      try { l37TombAdd37('posts', posts.filter(function (p) { return p && p.userId === u.id && p.id; }).map(function (p) { return p.id; })); } catch (eTb48) {}
+      try { l37TombAdd37('users', [u.id]); } catch (eTb49) {}
       dbSave('posts', newPosts);
+      try { l37TombAdd37('listings', listings.filter(function (l) { return l && l.sellerId === u.id && l.id; }).map(function (l) { return l.id; })); } catch (eTb50) {}
       dbSave('listings', newListings);
       dbSave('applications', newApps);
       dbSave('dms', newDms);
       dbSave('dm_index', newIdx);
       dmCloudKeys.forEach(function (k) { if (String(k).indexOf(u.id) !== -1) dbSave(k, []); });
       const rest = users.filter(function (x) { return x.id !== u.id; });
+      try { l37TombAdd37('users', u.id); } catch (eTb42) {}
       saveUsers(rest);
       adminLogAction('users', '🗑️ Удалён пользователь: ' + u.name + ' (' + (classIdOf(u.grade, u.letter) || 'без класса') + ')', { kind: 'user_delete', before: before });
       if (getSessionUserId() === u.id) {
@@ -15184,6 +15488,7 @@ try {
       const users = getUsers();
       const keep = users.filter(function (u) { return u.isAdmin; });
       const removed = users.filter(function (u) { return !u.isAdmin; });
+      try { l37TombAdd37('users', removed.map(function (u) { return u.id; })); } catch (eTb47) {}
       if (!removed.length) { toast('Тестовых аккаунтов нет — очищать нечего.', 'info'); return; }
       if (!keep.length) { toast('Внутренняя ошибка: Главный Админ не найден.', 'error'); return; }
       if (!confirm('Удалить все аккаунты, кроме Главного Админа? Будет удалено: ' + removed.length + ' шт. Сайт, настройки, талисманы, скрипты и виджеты сохранятся.')) return;
@@ -15240,7 +15545,9 @@ try {
         }
         if (ids[ch.ownerId] && keep.length) ch.ownerId = keep[0].id;
       });
+      try { l37TombAdd37('posts', posts.filter(function (p) { return p && ids[p.userId] && p.id; }).map(function (p) { return p.id; })); } catch (eTb52) {}
       dbSave('posts', newPosts);
+      try { l37TombAdd37('listings', listings.filter(function (l) { return l && ids[l.sellerId] && l.id; }).map(function (l) { return l.id; })); } catch (eTb51) {}
       dbSave('listings', newListings);
       dbSave('applications', newApps);
       dbSave('dms', newDms);
@@ -15407,7 +15714,7 @@ try {
         const nav = document.createElement('nav');
         nav.id = 'bottom-nav37';
         nav.className = 'bottom-nav';
-        const tabs = [['home', '🏠', 'Главная'], ['class', '🏫', 'Класс'], ['market', '🛍️', 'Барахолка'], ['social', '💬', 'Соцсеть'], ['games', '🎮', 'Игры'], ['profile', '👤', 'Профиль']];
+        const tabs = [['home', '🏠', 'Главная'], ['class', '🏫', 'Класс'], ['market', '🛍️', 'Лицей-Маркет'], ['social', '💬', 'Соцсеть'], ['games', '🎮', 'Игры'], ['profile', '👤', 'Профиль']];
         tabs.forEach(function (t) {
           const b = document.createElement('button');
           b.type = 'button';
@@ -15668,7 +15975,10 @@ try {
           return nm.indexOf('демо') === 0 || nm.indexOf('тест') === 0 || nm.indexOf('test') === 0;
         };
         const kept = users.filter(function (u) { return !isDemo37(u); });
-        if (kept.length !== users.length) saveUsers(kept);
+        if (kept.length !== users.length) {
+          try { l37TombAdd37('users', users.filter(function (u) { return isDemo37(u) && u && u.id; }).map(function (u) { return u.id; })); } catch (eTb46) {}
+          saveUsers(kept);
+        }
       } catch (ePd39) {}
     }
     function ensureDmExtras37() {
@@ -15848,7 +16158,7 @@ try {
               '<button type="button" class="btn btn-ghost btn-sm" data-dm-archive="' + esc(partnerId) + '" title="В архив">📥</button>' +
             '</div>';
           }).join('')
-        : '<div class="card stub-card"><div class="stub-icon">✉️</div><h3>' + (dmFilter37 === 'unread' ? 'Непрочитанных нет' : dmFilter37 === 'pinned' ? 'Закреплённых диалогов нет' : 'Диалогов пока нет') + '</h3><p>Найди одноклассника через поиск в Ленте, напиши волонтёру или продавцу на Барахолке.</p></div>';
+        : '<div class="card stub-card"><div class="stub-icon">✉️</div><h3>' + (dmFilter37 === 'unread' ? 'Непрочитанных нет' : dmFilter37 === 'pinned' ? 'Закреплённых диалогов нет' : 'Диалогов пока нет') + '</h3><p>Найди одноклассника через поиск в Ленте, напиши волонтёру или продавцу в Лицей-Маркете.</p></div>';
       archWrap.innerHTML = archShown.length
         ? archShown.map(function (partnerId) {
             const pu = getUserById(partnerId);
@@ -16463,7 +16773,7 @@ try {
     function aiNav37(text) {
       try {
         const t = String(text || '').toLowerCase();
-        if (/барахолк|продам|куплю|объявлен/.test(t)) return '[[tab:market|🛍️ Перейти в Барахолку]]\n';
+        if (/барахолк|лицей-маркет|лимаркет|продам|куплю|объявлен/.test(t)) return '[[tab:market|🛍️ Перейти в Лицей-Маркет]]\n';
         if (/звонк|расписан/.test(t)) return '[[tab:home|⏰ Открыть расписание звонков]]\n';
         if (/питом|талисман|мой класс/.test(t)) return '[[tab:class|🐾 Мой класс]]\n';
         if (/викторин|игр/.test(t)) return '[[tab:games|🎮 Игровая Лицея 37]]\n';
@@ -16897,6 +17207,43 @@ try {
       } catch (errAI37) { try { console.error('Инициализация модуля:', errAI37); } catch (eI37) {} }
     })();
 
+
+    /* ---- Однострочная Супер-Админка: стрелки, скролл колёсиком и перетаскивание мышью ---- */
+    try {
+      (function () {
+        const panel = document.getElementById('admin-panel');
+        if (!panel || panel.dataset.admScrollBound37) return;
+        panel.dataset.admScrollBound37 = '1';
+        const strip = document.getElementById('adm-strip');
+        const scrollBy37 = function (dx) {
+          if (strip) try { strip.scrollBy({ left: dx, behavior: 'smooth' }); } catch (eSb37) { strip.scrollLeft += dx; }
+        };
+        const left = document.getElementById('adm-scroll-left');
+        const right = document.getElementById('adm-scroll-right');
+        if (left) left.addEventListener('click', function (e) { e.stopPropagation(); scrollBy37(-180); });
+        if (right) right.addEventListener('click', function (e) { e.stopPropagation(); scrollBy37(180); });
+        if (!strip) return;
+        strip.addEventListener('wheel', function (e) {
+          try {
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { strip.scrollLeft += e.deltaY; e.preventDefault(); }
+          } catch (eW37) {}
+        }, { passive: false });
+        let drag37 = false, startX37 = 0, startLeft37 = 0, moved37 = false;
+        strip.addEventListener('mousedown', function (e) {
+          drag37 = true; moved37 = false; startX37 = e.pageX; startLeft37 = strip.scrollLeft;
+        });
+        window.addEventListener('mousemove', function (e) {
+          if (!drag37) return;
+          const dx = e.pageX - startX37;
+          if (Math.abs(dx) > 4) moved37 = true;
+          strip.scrollLeft = startLeft37 - dx;
+        });
+        window.addEventListener('mouseup', function () { drag37 = false; });
+        strip.addEventListener('click', function (e) {
+          if (moved37) { e.preventDefault(); e.stopPropagation(); moved37 = false; }
+        }, true);
+      })();
+    } catch (eAdmScr37) { try { console.error(eAdmScr37); } catch (e2) {} }
 
     try { purgeDemoAccounts37(); } catch (e37) {}
     try { ensureDmExtras37(); } catch (e37) {}
