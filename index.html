@@ -4718,6 +4718,17 @@
         <div id="quiz-result" style="display:none;"></div>
       </div>
 
+      <div class="card" style="margin-bottom:20px; border:1.5px solid rgba(99,102,241,0.35);">
+        <h3 class="info-title">💻 Код-песочница Лицеиста · Python, C++, JS</h3>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
+          <span class="l37-sb-tag37">Информатика</span>
+          <span class="l37-sb-tag37">ЕГЭ / ОГЭ</span>
+          <span class="l37-sb-tag37">Олимпиады ВсОШ</span>
+        </div>
+        <p class="info-desc">Тренажёр программирования Лицея №37: 🐍 Python 3 (автономный Pyodide прямо в браузере), ⚙️ C++17 для олимпиадных задач и ⚡ JavaScript с замером времени выполнения. Песочница полностью изолирована и работает без доступа к данным портала.</p>
+        <button class="btn btn-primary" id="sandbox-open-btn">🚀 Запустить песочницу</button>
+      </div>
+
       <div class="card" style="margin-bottom:20px;">
         <h3 class="info-title" data-editable="reaction-title">⚡ Мини-тренажёр скорости реакции — «Поймай импульс Лицея 37»</h3>
         <p class="info-desc">Нажми на зону, приготовься, а когда она загорится зелёным — кликай как можно быстрее! Замер в миллисекундах, за школьный рекорд — +15 ⚡ Квантов.</p>
@@ -5290,6 +5301,7 @@
         <button id="adm-all-tools-btn">☰ Все инструменты Админа</button>
         <button id="adm-diag-btn" title="Отчёт о состоянии облачной синхронизации Supabase">🩺 Диагностика</button>
         <button id="adm-reset-tests-btn" title="Сброс тестовых данных с сохранением снимка в Журнале (можно отменить)">🧹 Сброс тестов</button>
+        <button id="adm-maint-btn" title="Режим технических работ: мгновенно закрыть/открыть портал для всех учеников и учителей">🚧 Тех. работы: ВЫКЛ</button>
         <button id="adm-about-btn" title="Презентация портала для руководства школы">🚀 О портале</button>
         <button id="adm-studio-btn" title="Профессиональная IT-студия администратора (открывается в новой вкладке admin.html)">🖥️ Профессиональная студия</button>
       </div>
@@ -13516,6 +13528,7 @@ try {
       renderProfileTab();
 
       await pullAll();
+      try { if (typeof l37MaintCheck37 === 'function') l37MaintCheck37(); } catch (eMt37) { /* тихо */ }
 
       const users = getUsers();
       const sessionUserId = getSessionUserId();
@@ -14361,6 +14374,7 @@ try {
         if (b.id === 'adm-widget-fab') { try { l37OpenFreeBlock37(null); } catch (eFab37) { openWidgetEditor(null); } return; }
         if (b.id === 'adm-diag-btn') { l37DiagOpenReport37(); return; }
         if (b.id === 'adm-reset-tests-btn') { adminTestReset37(); return; }
+        if (b.id === 'adm-maint-btn') { l37MaintToggle37(); return; }
         if (b.id === 'adm-about-btn') { l37OpenAbout37(); return; }
         if (b.id === 'adm-studio-btn') { try { window.open('admin.html', '_blank'); } catch (eSt37) { /* тихо */ } return; }
         if (b.id === 'adm-exit-btn') { setAdminActive(false); toast('🚪 Ты вышел из админки.', 'info'); return; }
@@ -20957,6 +20971,444 @@ try {
       } catch (eRt37) { /* тихо */ }
     }
 
+    /* ============================================================
+       REQUEST 23 · МОДУЛЬ 1: ДИЗАЙНЕРСКИЕ КАСТОМНЫЕ ОКНА ВЫБОРА
+       (L37 CUSTOM SELECT · bottom sheet на телефоне / модалка на ПК)
+       ============================================================ */
+    const L37_CSEL_META37 = {
+      'reg-grade': { cat: 'Класс', title: 'Цифра класса (1–11)' },
+      'reg-letter': { cat: 'Класс', title: 'Буква класса (А–Д)' },
+      'reg-hr-grade': { cat: 'Классное руководство', title: 'Цифра класса (1–11)' },
+      'reg-hr-letter': { cat: 'Классное руководство', title: 'Буква класса (А–Д)' },
+      'pf-grade': { cat: 'Профиль', title: 'Цифра класса (1–11)' },
+      'pf-letter': { cat: 'Профиль', title: 'Буква класса (А–Д)' },
+      'cap-grade': { cat: 'Капсула времени', title: 'Цифра класса (1–11)' },
+      'cap-letter': { cat: 'Капсула времени', title: 'Буква класса (А–Д)' },
+      'view-grade': { cat: 'Класс', title: 'Цифра класса (1–11)' },
+      'view-letter': { cat: 'Класс', title: 'Буква класса (А–Д)' },
+      'apply-grade': { cat: 'Мероприятие', title: 'Цифра класса (1–11)' },
+      'apply-letter': { cat: 'Мероприятие', title: 'Буква класса (А–Д)' },
+      'adm-pet-grade': { cat: 'Талисман класса', title: 'Цифра класса (1–11)' },
+      'adm-pet-letter': { cat: 'Талисман класса', title: 'Буква класса (А–Д)' },
+      'adm-pet-beast': { cat: 'Талисман класса', title: 'Вид талисмана' },
+      'adm-cr-grade': { cat: 'Классы', title: 'Цифра класса (1–11)' },
+      'adm-cr-letter': { cat: 'Классы', title: 'Буква класса (А–Д)' },
+      'hw-subject': { cat: 'Расписание', title: 'Учебный предмет' },
+      'gc-target': { cat: 'Получатель', title: 'Кому отправить' },
+      'comp-to': { cat: 'Открытка', title: 'Кому отправить' },
+      'market-sort': { cat: 'Лицей-Маркет', title: 'Сортировка объявлений' },
+      'li-cat': { cat: 'Лицей-Маркет', title: 'Категория товара' },
+      'li-cond': { cat: 'Лицей-Маркет', title: 'Состояние товара' },
+      'li-place': { cat: 'Лицей-Маркет', title: 'Место встречи в Лице №37' },
+      'report-reason': { cat: 'Жалоба', title: 'Причина жалобы' },
+      'script-kind': { cat: 'Библиотека скриптов', title: 'Тип скрипта' },
+      'chm-cat': { cat: 'Каналы', title: 'Тема / категория' },
+      'chm-transfer-select': { cat: 'Каналы', title: 'Передать права подписчику' },
+      'adm-pts-user': { cat: 'Кванты и опыт', title: 'Получатель Квантов' }
+    };
+    const L37_CSEL_SUBS37 = {
+      'market-sort': {
+        'new': 'Свежие объявления вверху списка',
+        'cheap': 'Сначала самые доступные товары',
+        'free': 'То, что отдают даром или за обмен',
+        'popular': 'Больше всего просмотров у учеников'
+      },
+      'li-cond': {
+        'new': 'Абсолютно новое, без следов использования',
+        'likenew': 'Идеальное состояние без следов использования',
+        'good': 'Есть незначительные следы носки/учёбы',
+        'worn': 'Заметные следы использования, всё работает',
+        'other': 'Опиши состояние своими словами'
+      },
+      'li-cat': {
+        'books': 'Учебники, тетради, справочники и пособия',
+        'office': 'Пеналы, ручки и канцелярские принадлежности',
+        'tech': 'Наушники, калькуляторы и гаджеты',
+        'sport': 'Спортивная форма, кроссовки, инвентарь',
+        'lost': 'Найденные вещи ждут своих хозяев',
+        'other': 'Всё остальное для лицеистов'
+      },
+      'li-place': {
+        'hall': 'Холл 1 этажа у охраны — удобно до и после уроков',
+        'canteen': 'Возле столовой на большой перемене',
+        'library': 'Библиотека Лицея №37, тихая зона',
+        'physics': '2 этаж, у кабинета физики',
+        'gym': 'Спортзал, вход со стороны раздевалок',
+        'other': 'Укажи своё место встречи'
+      },
+      'report-reason': {
+        'spam': 'Пост или товар не несут пользы',
+        'forbidden': 'Запрещённые порталом предметы',
+        'fraud': 'Попытка обмануть ученика',
+        'insult': 'Грубость или оскорбления',
+        'other': 'Опиши причину своими словами'
+      },
+      'script-kind': {
+        'js': 'Скрипты JavaScript для страницы',
+        'css': 'Стили оформления интерфейса'
+      },
+      'hw-subject': {},
+      'adm-pet-beast': {}
+    };
+    const L37_CSEL_COLORS37 = ['sky', 'indigo', 'emerald', 'amber', 'coral'];
+    function l37CselEscA37(v) { return esc(String(v === undefined || v === null ? '' : v)).replace(/"/g, '&quot;'); }
+    function l37CselStage37(v) {
+      const n = parseInt(v, 10);
+      if (n >= 1 && n <= 4) return 'Начальная школа (1–4 классы)';
+      if (n >= 5 && n <= 9) return 'Основная школа (5–9 классы)';
+      if (n >= 10) return 'Старшая школа (10–11 классы)';
+      return 'Класс Лицея №37';
+    }
+    function l37CselColor37(sel, i) {
+      if (/-grade$/.test(sel.id)) { const n = parseInt(sel.options[i] ? sel.options[i].value : '', 10); if (n >= 1 && n <= 4) return 'emerald'; if (n >= 5 && n <= 9) return 'sky'; if (n >= 10) return 'indigo'; return 'sky'; }
+      if (/-letter$/.test(sel.id)) return 'indigo';
+      return L37_CSEL_COLORS37[i % L37_CSEL_COLORS37.length];
+    }
+    function l37CselBuildOptions37(sel) {
+      const out = [];
+      for (let i = 0; i < sel.options.length; i++) {
+        const opt = sel.options[i];
+        const raw = opt.textContent || '';
+        const em = raw.match(/^[ \t]*((?:[\u{1F000}-\u{1FAFF}]|[\u{2600}-\u{27BF}]|[\u{2B00}-\u{2BFF}]|[\u{FE0F}]|[\u{200D}]|[\u{2190}-\u{21FF}]|[\u{2B05}-\u{2B07}])+)/u);
+        let icon = em ? em[1] : '';
+        let label = icon ? raw.slice(raw.indexOf(icon) + icon.length).trim() : raw.trim();
+        let subtitle = '';
+        const subs = L37_CSEL_SUBS37[sel.id];
+        if (/-grade$/.test(sel.id)) { icon = opt.value || '🎓'; subtitle = opt.value ? l37CselStage37(opt.value) : 'Не выбрано'; }
+        else if (/-letter$/.test(sel.id)) { icon = opt.value || '🔤'; subtitle = opt.value ? ('Классная буква «' + opt.value + '»') : 'Не выбрано'; }
+        else if (subs && subs[opt.value]) subtitle = subs[opt.value];
+        else if (sel.id === 'gc-target' || sel.id === 'comp-to' || sel.id === 'adm-pts-user' || sel.id === 'chm-transfer-select') { icon = icon || '👤'; const pm = label.match(/\(([^)]+)\)\s*$/); if (pm) { subtitle = 'Класс/статус: ' + pm[1]; label = label.replace(/\([^)]*\)\s*$/, '').trim(); } else subtitle = 'Пользователь Лицея №37'; }
+        else if (sel.id === 'hw-subject') { icon = icon || '📚'; subtitle = 'Учебный предмет Лицея №37'; }
+        else if (sel.id === 'adm-pet-beast') { icon = icon || '🐾'; subtitle = 'Талисман класса'; }
+        else if (!icon) { icon = '✨'; }
+        else { const pm2 = label.match(/\(([^)]+)\)\s*$/); if (pm2) subtitle = pm2[1]; }
+        if (!label && !opt.value) label = opt.text || '— не выбрано —';
+        out.push({ value: opt.value, label: label, subtitle: subtitle, icon: icon, color: l37CselColor37(sel, i) });
+      }
+      return out;
+    }
+    function l37CselSelLabel37(sel) {
+      const m = L37_CSEL_META37[sel.id];
+      if (m && m.title) return m.title;
+      try {
+        const f = sel.closest('.field');
+        const lb = f && f.querySelector('label');
+        if (lb && lb.textContent.trim()) return lb.textContent.trim();
+      } catch (eL37) { /* тихо */ }
+      return (m && m.cat) || 'Выбери пункт';
+    }
+    function l37CselFindOpt37(sel, val) {
+      const opts = l37CselBuildOptions37(sel);
+      for (let i = 0; i < opts.length; i++) { if (String(opts[i].value) === String(val)) return opts[i]; }
+      return null;
+    }
+    function l37CselTriggerSync37(sel) {
+      const trg = sel._l37Trg37;
+      if (!trg) return;
+      const o = l37CselFindOpt37(sel, sel.value);
+      const ic = trg.querySelector('.l37-csel-trg-ic37');
+      const val = trg.querySelector('.l37-csel-trg-val37');
+      const cat = trg.querySelector('.l37-csel-trg-cat37');
+      const m = L37_CSEL_META37[sel.id];
+      if (ic) ic.textContent = (o && o.icon) || '✨';
+      if (val) { val.textContent = (o && o.label) || (o ? '— выбери —' : '— выбери —'); val.style.opacity = (o && o.label) ? '1' : '0.55'; }
+      if (cat) cat.textContent = (m && m.cat) || 'Выбор';
+    }
+    function openCustomSelect37(cfg) {
+      cfg = cfg || {};
+      try { const old = document.getElementById('l37-csel-ov37'); if (old) old.remove(); } catch (e0) { /* тихо */ }
+      const opts = Array.isArray(cfg.options) ? cfg.options : [];
+      const cur = cfg.value === undefined || cfg.value === null ? '' : String(cfg.value);
+      const ov = document.createElement('div');
+      ov.id = 'l37-csel-ov37';
+      ov.innerHTML = '<div class="l37-csel-sheet37" role="dialog" aria-modal="true">' +
+        '<div class="l37-csel-grip37"></div>' +
+        '<div class="l37-csel-head37"><div class="l37-csel-head-ic37">' + esc(cfg.icon || '✨') + '</div>' +
+        '<div class="l37-csel-head-txt37"><div class="l37-csel-title37">' + esc(cfg.title || 'Выбери пункт') + '</div>' +
+        (cfg.category ? '<div class="l37-csel-cat37">' + esc(cfg.category) + '</div>' : '') + '</div>' +
+        '<button type="button" class="l37-csel-x37" id="l37-csel-x37" aria-label="Закрыть">✕</button></div>' +
+        (opts.length > 7 ? '<div class="l37-csel-search37"><input type="text" id="l37-csel-q37" placeholder="' + l37CselEscA37(cfg.searchPlaceholder || '🔍 Найти класс или пункт (например, 8А)...') + '" autocomplete="off"></div>' : '') +
+        '<div class="l37-csel-list37" id="l37-csel-list37"></div>' +
+        '</div>';
+      document.body.appendChild(ov);
+      const list = ov.querySelector('#l37-csel-list37');
+      function renderList(q) {
+        const qq = normText(q || '');
+        const shown = opts.filter(function (o) { return !qq || normText((o.label || '') + ' ' + (o.subtitle || '')).indexOf(qq) !== -1; });
+        if (!shown.length) { list.innerHTML = '<div class="l37-csel-empty37">Ничего не найдено — попробуй иначе 🙌</div>'; return; }
+        list.innerHTML = shown.map(function (o) {
+          const active = String(o.value) === cur;
+          return '<button type="button" class="l37-csel-opt37' + (active ? ' active' : '') + '" data-csel-v="' + l37CselEscA37(o.value) + '">' +
+            '<span class="l37-csel-badge37" data-color="' + esc(o.color || 'sky') + '">' + esc(o.icon || '✨') + '</span>' +
+            '<span class="l37-csel-opt-txt37"><b>' + esc(o.label || '') + '</b>' + (o.subtitle ? '<small>' + esc(o.subtitle) + '</small>' : '') + '</span>' +
+            '<span class="l37-csel-check37' + (active ? ' on' : '') + '" data-color="' + esc(o.color || 'sky') + '">✓</span>' +
+            '</button>';
+        }).join('');
+        const act = list.querySelector('.l37-csel-opt37.active');
+        if (act && act.scrollIntoView) { try { act.scrollIntoView({ block: 'center' }); } catch (eS37) { /* тихо */ } }
+      }
+      renderList('');
+      function close37() { try { ov.remove(); } catch (eC37) { /* тихо */ } try { document.removeEventListener('keydown', onKey37); } catch (eK37) { /* тихо */ } }
+      function onKey37(e) { if (e && e.key === 'Escape') { e.preventDefault(); close37(); } }
+      ov.addEventListener('click', function (e) { if (e.target === ov) close37(); });
+      const x37 = ov.querySelector('#l37-csel-x37');
+      if (x37) x37.addEventListener('click', close37);
+      document.addEventListener('keydown', onKey37);
+      const q37 = ov.querySelector('#l37-csel-q37');
+      if (q37) {
+        q37.addEventListener('input', function () { renderList(q37.value); });
+        setTimeout(function () { try { q37.focus(); } catch (eF37) { /* тихо */ } }, 60);
+      }
+      list.addEventListener('click', function (e) {
+        const btn = e.target.closest('[data-csel-v]');
+        if (!btn) return;
+        const v = btn.getAttribute('data-csel-v');
+        close37();
+        if (typeof cfg.onSelect === 'function') cfg.onSelect(v);
+      });
+      return ov;
+    }
+    function l37EnhanceSelect37(sel) {
+      if (!sel || sel._l37Csel37) return;
+      try { if (sel.closest('#l37-csel-ov37')) return; } catch (eX37) { /* тихо */ }
+      sel._l37Csel37 = true;
+      sel.classList.add('l37-csel-native37');
+      const trg = document.createElement('button');
+      trg.type = 'button';
+      trg.className = 'l37-csel-trigger37';
+      trg.innerHTML = '<span class="l37-csel-trg-ic37">✨</span><span class="l37-csel-trg-main37"><b class="l37-csel-trg-val37">— выбери —</b><small class="l37-csel-trg-cat37">Выбор</small></span><span class="l37-csel-trg-arrow37">▾</span>';
+      if (sel.parentNode) sel.parentNode.insertBefore(trg, sel.nextSibling);
+      sel._l37Trg37 = trg;
+      trg.addEventListener('click', function () {
+        try {
+          openCustomSelect37({
+            title: l37CselSelLabel37(sel),
+            category: (L37_CSEL_META37[sel.id] || {}).cat || '',
+            icon: (l37CselFindOpt37(sel, sel.value) || {}).icon || '✨',
+            options: l37CselBuildOptions37(sel),
+            value: sel.value,
+            searchPlaceholder: '🔍 Найти класс или пункт (например, 8А)...',
+            onSelect: function (v) {
+              sel.value = v;
+              try { sel.dispatchEvent(new Event('change', { bubbles: true })); } catch (eEv37) { try { sel.dispatchEvent(new Event('change')); } catch (eEv237) { /* тихо */ } }
+              l37CselTriggerSync37(sel);
+            }
+          });
+        } catch (eO37) { /* тихо */ }
+      });
+      sel.addEventListener('change', function () { try { l37CselTriggerSync37(sel); } catch (eS37) { /* тихо */ } });
+      try { l37CselTriggerSync37(sel); } catch (eS237) { /* тихо */ }
+    }
+    function l37EnhanceAllSelects37() {
+      try {
+        const sels = document.querySelectorAll('select');
+        for (let i = 0; i < sels.length; i++) l37EnhanceSelect37(sels[i]);
+      } catch (eA37) { /* тихо */ }
+    }
+    function l37InjectCselCss37() {
+      try {
+        if (document.getElementById('l37-csel-css37')) return;
+        const st = document.createElement('style');
+        st.id = 'l37-csel-css37';
+        st.textContent =
+          '.l37-csel-native37 { display:none !important; }' +
+          '.l37-csel-trigger37 { display:flex; align-items:center; gap:10px; width:100%; text-align:left; padding:10px 14px; border-radius:14px; border:1.5px solid rgba(15,23,42,0.16); background:#fff; cursor:pointer; box-shadow:0 2px 8px rgba(15,23,42,0.06); transition:border-color .18s, box-shadow .18s, transform .12s; font-family:inherit; }' +
+          '.l37-csel-trigger37:active { transform:scale(0.985); }' +
+          '.l37-csel-trigger37:hover { border-color:#6366f1; box-shadow:0 6px 16px rgba(99,102,241,0.16); }' +
+          '.l37-csel-trg-ic37 { width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:800; color:#fff; background:linear-gradient(135deg,#0ea5e9,#6366f1); flex-shrink:0; }' +
+          '.l37-csel-trg-main37 { display:flex; flex-direction:column; min-width:0; flex:1; }' +
+          '.l37-csel-trg-val37 { font-size:15px; font-weight:800; color:#0f172a; letter-spacing:-0.02em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }' +
+          '.l37-csel-trg-cat37 { font-size:11px; font-weight:700; color:#64748b; }' +
+          '.l37-csel-trg-arrow37 { font-size:14px; color:#6366f1; transition:transform .22s cubic-bezier(0.22,1,0.36,1); }' +
+          '.l37-csel-ov37 { position:fixed; inset:0; z-index:2147483000; background:rgba(15,23,42,0.45); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); display:flex; align-items:flex-end; justify-content:center; animation:l37CselFade37 .18s ease; }' +
+          '.l37-csel-sheet37 { width:100%; max-height:82dvh; background:#fff; border-radius:24px 24px 0 0; box-shadow:0 -18px 60px rgba(15,23,42,0.35); display:flex; flex-direction:column; padding:10px 16px calc(16px + env(safe-area-inset-bottom)); animation:l37CselUp37 .32s cubic-bezier(0.22,1,0.36,1); }' +
+          '@keyframes l37CselFade37 { from { opacity:0; } to { opacity:1; } }' +
+          '@keyframes l37CselUp37 { from { transform:translateY(60px); opacity:0; } to { transform:translateY(0); opacity:1; } }' +
+          '@keyframes l37CselPop37 { from { transform:translateY(14px) scale(0.97); opacity:0; } to { transform:translateY(0) scale(1); opacity:1; } }' +
+          '.l37-csel-grip37 { width:42px; height:5px; border-radius:99px; background:rgba(15,23,42,0.18); margin:2px auto 10px; flex-shrink:0; }' +
+          '.l37-csel-head37 { display:flex; align-items:center; gap:10px; padding-bottom:10px; }' +
+          '.l37-csel-head-txt37 { min-width:0; }' +
+          '.l37-csel-head-ic37 { width:38px; height:38px; border-radius:12px; background:linear-gradient(135deg,#0ea5e9,#6366f1); color:#fff; font-size:18px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }' +
+          '.l37-csel-title37 { font-size:17px; font-weight:800; letter-spacing:-0.02em; color:#0f172a; }' +
+          '.l37-csel-cat37 { font-size:12px; font-weight:700; color:#6366f1; }' +
+          '.l37-csel-x37 { margin-left:auto; width:34px; height:34px; border-radius:50%; border:1px solid rgba(15,23,42,0.12); background:#f1f5f9; color:#334155; font-size:15px; cursor:pointer; flex-shrink:0; }' +
+          '.l37-csel-search37 { margin-bottom:10px; }' +
+          '.l37-csel-search37 input { width:100%; box-sizing:border-box; padding:11px 14px; font-size:16px; border-radius:12px; border:1.5px solid rgba(15,23,42,0.14); background:#f8fafc; font-family:inherit; outline:none; }' +
+          '.l37-csel-search37 input:focus { border-color:#6366f1; background:#fff; }' +
+          '.l37-csel-list37 { overflow-y:auto; -webkit-overflow-scrolling:touch; display:flex; flex-direction:column; gap:8px; padding-bottom:6px; }' +
+          '.l37-csel-opt37 { display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:11px 12px; border-radius:14px; border:1.5px solid rgba(15,23,42,0.10); background:#fff; cursor:pointer; font-family:inherit; transition:border-color .15s, background .15s, transform .12s; }' +
+          '.l37-csel-opt37:active { transform:scale(0.985); }' +
+          '.l37-csel-opt37.active { border-color:#6366f1; background:#eef2ff; }' +
+          '.l37-csel-badge37 { width:38px; height:38px; border-radius:11px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; font-weight:800; flex-shrink:0; }' +
+          '.l37-csel-badge37[data-color="sky"] { background:linear-gradient(135deg,#0ea5e9,#0284c7); }' +
+          '.l37-csel-badge37[data-color="indigo"] { background:linear-gradient(135deg,#6366f1,#4f46e5); }' +
+          '.l37-csel-badge37[data-color="emerald"] { background:linear-gradient(135deg,#10b981,#059669); }' +
+          '.l37-csel-badge37[data-color="amber"] { background:linear-gradient(135deg,#f59e0b,#d97706); }' +
+          '.l37-csel-badge37[data-color="coral"] { background:linear-gradient(135deg,#f43f5e,#e11d48); }' +
+          '.l37-csel-opt-txt37 { display:flex; flex-direction:column; min-width:0; flex:1; }' +
+          '.l37-csel-opt-txt37 b { font-size:16px; font-weight:800; color:#0f172a; letter-spacing:-0.02em; }' +
+          '.l37-csel-opt-txt37 small { font-size:12px; color:#64748b; font-weight:600; margin-top:2px; }' +
+          '.l37-csel-check37 { width:24px; height:24px; border-radius:50%; border:2px solid rgba(15,23,42,0.18); color:transparent; font-size:13px; font-weight:900; display:flex; align-items:center; justify-content:center; flex-shrink:0; }' +
+          '.l37-csel-check37.on { border-color:transparent; color:#fff; }' +
+          '.l37-csel-check37.on[data-color="sky"] { background:#0ea5e9; }' +
+          '.l37-csel-check37.on[data-color="indigo"] { background:#6366f1; }' +
+          '.l37-csel-check37.on[data-color="emerald"] { background:#10b981; }' +
+          '.l37-csel-check37.on[data-color="amber"] { background:#f59e0b; }' +
+          '.l37-csel-check37.on[data-color="coral"] { background:#f43f5e; }' +
+          '.l37-csel-empty37 { padding:22px; text-align:center; color:#64748b; font-weight:700; }' +
+          '@media (max-width:768px) { .l37-csel-ov37 { align-items:flex-end; } }' +
+          '@media (min-width:769px) { .l37-csel-ov37 { align-items:center; } .l37-csel-sheet37 { max-width:520px; width:calc(100% - 40px); border-radius:22px; padding:16px 18px 18px; animation:l37CselPop37 .26s cubic-bezier(0.22,1,0.36,1); box-shadow:0 30px 80px rgba(15,23,42,0.35); } .l37-csel-grip37 { display:none; } }' +
+          '.info-title, .section-title h2, .modal-head h3, .card h3, .card h4 { font-weight:800; letter-spacing:-0.02em; }' +
+          '.btn, .cat-btn, .deal-btn, .field > label, .field-label { font-weight:700; }' +
+          '.info-title, .reaction-result, #reaction-records, #quiz-counter, .quiz-q, .adm-badge-red, #l37-tx-ov37, #l37-pass-ov37, #l37-about-ov37, .l37-csel-trg-val37, .l37-csel-opt-txt37 b { font-variant-numeric:tabular-nums; }' +
+          'body.theme-light .card, body.theme-light .modal-content { border-color:rgba(15,23,42,0.16); }' +
+          'body.theme-neon .card, body.theme-tatar .card, body.theme-neon .modal-content, body.theme-tatar .modal-content { border-color:rgba(148,163,184,0.30); }' +
+          '.l37-sb-tag37 { padding:5px 11px; border-radius:99px; background:#eef2ff; color:#4f46e5; font-size:12px; font-weight:800; letter-spacing:-0.01em; }' +
+          'body.theme-neon .l37-sb-tag37, body.theme-tatar .l37-sb-tag37 { background:rgba(99,102,241,0.16); color:#a5b4fc; }';
+        (document.head || document.documentElement).appendChild(st);
+      } catch (eCss37) { /* тихо */ }
+    }
+    function l37InitCustomSelects37() {
+      l37InjectCselCss37();
+      l37EnhanceAllSelects37();
+      let moSched37 = false;
+      try {
+        const mo37 = new MutationObserver(function () {
+          if (moSched37) return;
+          moSched37 = true;
+          setTimeout(function () { moSched37 = false; try { l37EnhanceAllSelects37(); } catch (eM37) { /* тихо */ } }, 80);
+        });
+        mo37.observe(document.body, { childList: true, subtree: true });
+      } catch (eMo37) { /* тихо */ }
+      setInterval(function () { try { l37EnhanceAllSelects37(); } catch (eI37) { /* тихо */ } }, 900);
+      document.addEventListener('submit', function (e) {
+        try {
+          const f = e.target;
+          if (!f || !f.querySelectorAll) return;
+          const req37 = f.querySelectorAll('select.l37-csel-native37[required]');
+          for (let i = 0; i < req37.length; i++) {
+            if (!req37[i].value) {
+              e.preventDefault();
+              e.stopPropagation();
+              toast('Выбери значение: «' + l37CselSelLabel37(req37[i]) + '» 👇', 'info');
+              const trg = req37[i]._l37Trg37;
+              if (trg) trg.click();
+              return;
+            }
+          }
+        } catch (eSub37) { /* тихо */ }
+      }, true);
+    }
+
+    /* ============================================================
+       REQUEST 23 · МОДУЛЬ 2: «🚧 ТЕХНИЧЕСКИЕ РАБОТЫ» (MAINTENANCE MODE)
+       Состояние: Supabase site_content → ключ maintenance_mode
+       { active, updatedAt, message } · Заглушка только для не-админов.
+       ============================================================ */
+    function l37MaintIsAdmin37() {
+      try { if (sessionStorage.getItem('lp37_admin_full') === '1') return true; } catch (eA37) { /* тихо */ }
+      try { if (localStorage.getItem(LS_PREFIX + 'admin') === '1') return true; } catch (eB37) { /* тихо */ }
+      try { const u37 = getCurrentUser(); if (u37 && u37.isAdmin) return true; } catch (eC37) { /* тихо */ }
+      return false;
+    }
+    function l37MaintGet37() {
+      const st = dbLoad('maintenance_mode', null);
+      return (st && typeof st === 'object') ? st : { active: false, updatedAt: 0, message: '' };
+    }
+    function l37MaintBtnSync37() {
+      try {
+        const b = document.getElementById('adm-maint-btn');
+        if (!b) return;
+        const st = l37MaintGet37();
+        if (st.active) { b.textContent = '🚧 Тех. работы: ВКЛ'; b.classList.add('l37-maint-on37'); }
+        else { b.textContent = '🚧 Тех. работы: ВЫКЛ'; b.classList.remove('l37-maint-on37'); }
+      } catch (eB37) { /* тихо */ }
+    }
+    function l37MaintToggle37() {
+      try {
+        const cur = l37MaintGet37();
+        const next = { active: !cur.active, updatedAt: Date.now(), message: cur.active ? '' : 'Портал обновляется' };
+        dbSave('maintenance_mode', next);
+        l37MaintBtnSync37();
+        l37MaintApply37(next);
+        toast(next.active ? '🚧 Тех. работы ВКЛЮЧЕНЫ — ученики увидят заглушку.' : '✅ Тех. работы выключены — портал открыт для всех.', next.active ? 'error' : 'success');
+      } catch (eT37) { /* тихо */ }
+    }
+    function l37MaintRemoveGate37() {
+      try { const g = document.getElementById('l37-maint-ov37'); if (g) g.remove(); } catch (e37) { /* тихо */ }
+    }
+    function l37MaintApply37(st) {
+      try {
+        const need37 = !!(st && st.active && !l37MaintIsAdmin37());
+        if (!need37) { l37MaintRemoveGate37(); return; }
+        if (document.getElementById('l37-maint-ov37')) return;
+        const ov = document.createElement('div');
+        ov.id = 'l37-maint-ov37';
+        ov.innerHTML = '<div class="l37-maint-gear37 g1">⚙️</div><div class="l37-maint-gear37 g2">⚙️</div><div class="l37-maint-gear37 g3">⚙️</div>' +
+          '<div class="l37-maint-box37"><div class="l37-maint-emb37">🏫</div>' +
+          '<h1>🛠️ Портал МБОУ „Лицей №37“ временно на технических работах</h1>' +
+          '<p>Прямо сейчас мы устанавливаем важное обновление, улучшаем скорость мессенджера и сервисы лицея. Пожалуйста, загляните через пару минут!</p>' +
+          '<button type="button" id="l37-maint-check37">🔄 Проверить, открылся ли портал</button>' +
+          '<div class="l37-maint-adminrow37"><button type="button" id="l37-maint-admin37">🔐 Вход для администратора</button></div>' +
+          '<div id="l37-maint-zone37"></div></div>';
+        document.body.appendChild(ov);
+        ov.querySelector('#l37-maint-check37').addEventListener('click', function () {
+          const btn = ov.querySelector('#l37-maint-check37');
+          if (btn) btn.textContent = '⏳ Проверяем...';
+          l37MaintCheck37().then(function () {
+            const g = document.getElementById('l37-maint-ov37');
+            if (g) { const b2 = g.querySelector('#l37-maint-check37'); if (b2) b2.textContent = '🔄 Проверить, открылся ли портал'; }
+            else toast('✅ Портал снова открыт!', 'success');
+          });
+        });
+        ov.querySelector('#l37-maint-admin37').addEventListener('click', function () {
+          const zone = ov.querySelector('#l37-maint-zone37');
+          if (!zone || zone.querySelector('#l37-maint-pass37')) return;
+          zone.innerHTML = '<div class="l37-maint-login37"><h2>🔐 Вход для администратора</h2>' +
+            '<input type="password" id="l37-maint-pass37" placeholder="Мастер-пароль Супер-Админа" style="font-size:16px;" autocomplete="off">' +
+            '<div style="margin-top:12px;"><button type="button" id="l37-maint-go37">🔓 Войти</button><button type="button" id="l37-maint-back37">← Назад</button></div>' +
+            '<div class="l37-maint-err37" id="l37-maint-err37"></div></div>';
+          const inp = zone.querySelector('#l37-maint-pass37');
+          setTimeout(function () { try { inp.focus(); } catch (eF37) { /* тихо */ } }, 50);
+          function tryLogin37() {
+            const err = zone.querySelector('#l37-maint-err37');
+            const val = (inp.value || '').trim();
+            if (!val) { err.textContent = 'Введите мастер-пароль.'; return; }
+            Promise.resolve(sha256Hex(val)).then(function (h) {
+              if (h === adminPassHash()) {
+                try { sessionStorage.setItem('lp37_admin_full', '1'); } catch (eS37) { /* тихо */ }
+                l37MaintRemoveGate37();
+                toast('👑 Супер-Админ допущен. Не забудь выключить тех. работы в панели!', 'success');
+              } else {
+                err.textContent = '❌ Неверный мастер-пароль.';
+              }
+            }).catch(function () {
+              err.textContent = '❌ Не удалось проверить пароль в этом браузере.';
+            });
+          }
+          zone.querySelector('#l37-maint-go37').addEventListener('click', tryLogin37);
+          inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); tryLogin37(); } });
+          zone.querySelector('#l37-maint-back37').addEventListener('click', function () { zone.innerHTML = ''; });
+        });
+      } catch (eA37) { /* тихо */ }
+    }
+    async function l37MaintCheck37() {
+      let st = null;
+      try { st = await pullKey('maintenance_mode'); } catch (e37) { st = null; }
+      if (!st || typeof st !== 'object') st = l37MaintGet37();
+      l37MaintApply37(st);
+      l37MaintBtnSync37();
+      return st;
+    }
+    window.l37OpenCustomSelect37 = openCustomSelect37;
+    window.l37InitCustomSelects37 = l37InitCustomSelects37;
+    window.l37EnhanceAllSelects37 = l37EnhanceAllSelects37;
+    window.l37MaintCheck37 = l37MaintCheck37;
+    window.l37MaintToggle37 = l37MaintToggle37;
+    window.l37MaintApply37 = l37MaintApply37;
+    window.l37MaintBtnSync37 = l37MaintBtnSync37;
+
+
     /* ---- Делегированные обработчики и инициализация ---- */
     document.addEventListener('click', function (e) {
       try {
@@ -20965,6 +21417,7 @@ try {
         const cl = function (id) { const el = document.getElementById(id); if (el) el.remove(); };
         if (t.closest('#pf-passport-btn37')) { l37OpenPassport37(); return; }
         if (t.closest('#pf-transfer-btn37')) { l37OpenTransfer37(''); return; }
+        if (t.closest('#sandbox-open-btn')) { try { window.open('sandbox.html', '_blank'); } catch (eSb37) { /* тихо */ } return; }
         if (t.closest('#l37-pass-setbirth37')) {
           const ovSb37 = document.getElementById('l37-pass-ov37');
           if (ovSb37) ovSb37.remove();
@@ -21051,6 +21504,10 @@ try {
     try { Promise.resolve(boot()).catch(function (eB37) { try { console.error('boot:', eB37); } catch (e2) {} }); } catch (eB2_37) { try { console.error(eB2_37); } catch (e2) {} }
     try { initAdminSession(); } catch (eA37) { try { console.error(eA37); } catch (e2) {} }
     try { initAiTutor(); } catch (eAI37) { try { console.error(eAI37); } catch (e2) {} }
+    try { l37InitCustomSelects37(); } catch (eCs37) { try { console.error(eCs37); } catch (e2) {} }
+    try { l37MaintBtnSync37(); } catch (eMs37) { /* тихо */ }
+    try { setInterval(function () { try { l37MaintBtnSync37(); } catch (eMs237) { /* тихо */ } }, 2000); } catch (eMs337) { /* тихо */ }
+    try { setInterval(function () { try { l37MaintCheck37(); } catch (eMc37) { /* тихо */ } }, 60000); } catch (eMc237) { /* тихо */ }
   </script>
 </body>
 </html>

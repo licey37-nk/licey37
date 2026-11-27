@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>💻 Код-песочница Лицеиста · МБОУ «Лицей №37»</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+  }
+  .sb-top {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 12px 16px;
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
+  }
+  .sb-logo {
+    width: 38px; height: 38px; border-radius: 11px; flex-shrink: 0;
+    background: linear-gradient(135deg, #0ea5e9, #6366f1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 19px; font-weight: 800; color: #fff;
+  }
+  .sb-titles { min-width: 0; flex: 1; }
+  .sb-titles h1 { font-size: 16.5px; font-weight: 800; letter-spacing: -0.02em; color: #f0f6fc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sb-titles p { font-size: 11.5px; color: #7d8590; font-weight: 600; }
+  .sb-back {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 14px; border-radius: 11px; text-decoration: none;
+    background: #21262d; border: 1px solid #30363d; color: #c9d1d9;
+    font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap;
+  }
+  .sb-back:hover { border-color: #58a6ff; color: #fff; }
+  .sb-langs { display: flex; gap: 8px; padding: 10px 16px 0; flex-wrap: wrap; }
+  .sb-lang-tab {
+    padding: 9px 16px; border-radius: 12px 12px 0 0; cursor: pointer;
+    background: #161b22; border: 1px solid #30363d; border-bottom: none;
+    color: #7d8590; font-size: 13.5px; font-weight: 800; letter-spacing: -0.01em;
+  }
+  .sb-lang-tab.active { color: #fff; background: #0d1117; border-color: #58a6ff; }
+  .sb-lang-tab:not(.active):hover { color: #c9d1d9; }
+  .sb-tmpls { display: flex; gap: 7px; padding: 10px 16px; flex-wrap: wrap; align-items: center; }
+  .sb-tmpls span.lbl { font-size: 11.5px; color: #7d8590; font-weight: 700; margin-right: 2px; }
+  .sb-tmpl {
+    padding: 6px 12px; border-radius: 99px; cursor: pointer;
+    background: #161b22; border: 1px solid #30363d; color: #a5b4fc;
+    font-size: 12px; font-weight: 700; font-family: inherit;
+  }
+  .sb-tmpl.active { background: #1f2a44; border-color: #6366f1; color: #fff; }
+  .sb-main { flex: 1; display: flex; flex-direction: column; padding: 0 16px 14px; gap: 12px; min-height: 0; }
+  .sb-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .sb-btn {
+    padding: 11px 18px; border-radius: 12px; border: none; cursor: pointer;
+    font-size: 14px; font-weight: 800; letter-spacing: -0.01em; font-family: inherit;
+    transition: transform 0.12s ease, filter 0.15s ease;
+  }
+  .sb-btn:active { transform: scale(0.97); }
+  .sb-btn.run { background: linear-gradient(135deg, #10b981, #059669); color: #fff; box-shadow: 0 8px 22px rgba(16,185,129,0.30); }
+  .sb-btn.run:hover { filter: brightness(1.08); }
+  .sb-btn.ghost { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; }
+  .sb-btn.ghost:hover { border-color: #58a6ff; color: #fff; }
+  .sb-btn.init { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #fff; }
+  .sb-btn[disabled] { opacity: 0.55; cursor: wait; }
+  .sb-editor {
+    display: flex; flex: 1; min-height: 220px;
+    background: #161b22; border: 1px solid #30363d; border-radius: 14px; overflow: hidden;
+  }
+  .sb-gutter {
+    padding: 12px 10px; text-align: right; user-select: none;
+    background: #0d1117; color: #484f58; border-right: 1px solid #30363d;
+    font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace;
+    font-size: 13.5px; line-height: 1.6; min-width: 46px; overflow: hidden;
+  }
+  .sb-code {
+    flex: 1; resize: none; border: none; outline: none; background: transparent;
+    color: #e6edf3; padding: 12px 14px;
+    font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace;
+    font-size: 13.5px; line-height: 1.6; tab-size: 4; white-space: pre; overflow: auto;
+  }
+  .sb-term-head { font-size: 12px; font-weight: 800; color: #7d8590; letter-spacing: 0.04em; text-transform: uppercase; }
+  .sb-term {
+    background: #010409; border: 1px solid #30363d; border-radius: 14px;
+    min-height: 130px; max-height: 34dvh; overflow: auto; padding: 12px 14px;
+    font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace;
+    font-size: 13px; line-height: 1.55; white-space: pre-wrap; word-break: break-word;
+  }
+  .sb-line.out { color: #c9d1d9; }
+  .sb-line.err { color: #ff7b72; font-weight: 600; }
+  .sb-line.sys { color: #58a6ff; }
+  .sb-line.ok { color: #3fb950; font-weight: 700; }
+  .sb-foot { padding: 8px 16px calc(10px + env(safe-area-inset-bottom)); text-align: center; font-size: 11.5px; color: #484f58; font-weight: 600; }
+  .sb-spin { display: inline-block; animation: sbRot 1s linear infinite; }
+  @keyframes sbRot { to { transform: rotate(360deg); } }
+  @media (max-width: 768px) {
+    .sb-titles h1 { font-size: 14.5px; }
+    .sb-code, .sb-gutter, .sb-term { font-size: 12.5px; }
+    .sb-btn { padding: 11px 14px; font-size: 13px; }
+    .sb-editor { min-height: 180px; }
+  }
+</style>
+</head>
+<body>
+  <div class="sb-top">
+    <div class="sb-logo">💻</div>
+    <div class="sb-titles">
+      <h1>Код-песочница Лицеиста · МБОУ «Лицей №37»</h1>
+      <p>Изолированная среда: работает только в твоём браузере, данные портала не затрагиваются</p>
+    </div>
+    <a class="sb-back" id="sb-back" href="index.html">← Вернуться в Лицей №37</a>
+  </div>
+
+  <div class="sb-langs" id="sb-langs">
+    <button type="button" class="sb-lang-tab active" data-lang="python">🐍 Python 3</button>
+    <button type="button" class="sb-lang-tab" data-lang="cpp">⚙️ C++17</button>
+    <button type="button" class="sb-lang-tab" data-lang="js">⚡ JavaScript</button>
+  </div>
+
+  <div class="sb-tmpls" id="sb-tmpls">
+    <span class="lbl">Шаблоны:</span>
+    <button type="button" class="sb-tmpl active" data-tmpl="0">Квадратное уравнение</button>
+    <button type="button" class="sb-tmpl" data-tmpl="1">Списки и строки</button>
+    <button type="button" class="sb-tmpl" data-tmpl="2">Типовая задача ЕГЭ</button>
+  </div>
+
+  <div class="sb-main">
+    <div class="sb-actions">
+      <button type="button" class="sb-btn run" id="sb-run">▶️ Запустить</button>
+      <button type="button" class="sb-btn init" id="sb-py-init" style="display:none;">⚙️ Инициализировать Python (~6 МБ)</button>
+      <button type="button" class="sb-btn ghost" id="sb-copy">📋 Скопировать код</button>
+      <button type="button" class="sb-btn ghost" id="sb-clear">🧹 Очистить терминал</button>
+    </div>
+    <div class="sb-editor">
+      <div class="sb-gutter" id="sb-gutter">1</div>
+      <textarea class="sb-code" id="sb-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Редактор кода"></textarea>
+    </div>
+    <div>
+      <div class="sb-term-head">Терминал вывода</div>
+      <div class="sb-term" id="sb-term" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div class="sb-foot">💻 Код-песочница Лицеиста · МБОУ «Лицей №37» г. Нижнекамска · 100% автономный режим, без доступа к базе портала</div>
+<script>
+  /* ============================================================
+     КОД-ПЕСОЧНИЦА ЛИЦЕИСТА · МБОУ «Лицей №37»
+     ЖЕЛЕЗНОЕ ПРАВИЛО: файл полностью автономен — никаких ключей
+     Supabase, никаких обращений к базе site_content и профилям.
+     Единственные внешние вызовы: Pyodide (CDN) и Piston API (C++).
+     ============================================================ */
+  (function () {
+    'use strict';
+
+    var TEMPLATES = {
+      python: [
+        { name: 'Квадратное уравнение', code:
+'# Квадратное уравнение: a*x^2 + b*x + c = 0\nimport math\n\nprint("Решение квадратного уравнения ax^2 + bx + c = 0")\na = float(input("Введи a: ") or 1)\nb = float(input("Введи b: ") or -3)\nc = float(input("Введи c: ") or 2)\n\nif a == 0:\n    print("Это не квадратное уравнение: a = 0")\nelse:\n    d = b * b - 4 * a * c\n    print("Дискриминант D =", d)\n    if d > 0:\n        x1 = (-b + math.sqrt(d)) / (2 * a)\n        x2 = (-b - math.sqrt(d)) / (2 * a)\n        print("Два корня: x1 =", round(x1, 3), " x2 =", round(x2, 3))\n    elif d == 0:\n        print("Один корень: x =", round(-b / (2 * a), 3))\n    else:\n        print("Действительных корней нет (D < 0)")\n' },
+        { name: 'Списки и строки', code:
+'# Обработка списков и строк\nnums = [12, 5, 8, 21, 4, 17, 9, 30, 2]\nprint("Список:", nums)\nprint("Сумма:", sum(nums))\nprint("Максимум:", max(nums), " Минимум:", min(nums))\nprint("Отсортированный:", sorted(nums))\nprint("Чётные:", [n for n in nums if n % 2 == 0])\n\nphrase = "Лицей номер 37 город Нижнекамск"\nwords = phrase.split()\nprint("\\nФраза:", phrase)\nprint("Слов:", len(words))\nprint("Длина самого длинного слова:", len(max(words, key=len)))\nprint("Перевёрнутая:", phrase[::-1])\nprint("Заглавные первые буквы:", " ".join(w.capitalize() for w in words))\n' },
+        { name: 'Типовая задача ЕГЭ', code:
+'# Типовая задача ЕГЭ (информатика)\n# В файле строка: сначала N — количество чисел, затем сами числа.\n# Найти количество чисел, кратных 4, и максимальное из них.\ndata = "8\\n12\\n7\\n4\\n36\\n9\\n16\\n5\\n20"\n\nlines = data.split()\nn = int(lines[0])\nnums = [int(lines[i]) for i in range(1, n + 1)]\n\ncount4 = 0\nbest = None\nfor x in nums:\n    if x % 4 == 0:\n        count4 += 1\n        if best is None or x > best:\n            best = x\n\nprint("Всего чисел:", n)\nprint("Чисел, кратных 4:", count4)\nprint("Максимальное из них:", best)\n' }
+      ],
+      cpp: [
+        { name: 'Олимпиадная задача', code:
+'// Олимпиадный шаблон: C++17\n// Считать N чисел, отсортировать, вывести сумму и медиану.\n#include <iostream>\n#include <vector>\n#include <algorithm>\n\nint main() {\n    std::ios_base::sync_with_stdio(false);\n    std::cin.tie(nullptr);\n\n    int n;\n    std::cin >> n;\n    std::vector<long long> a(n);\n    for (int i = 0; i < n; ++i) std::cin >> a[i];\n\n    std::sort(a.begin(), a.end());\n\n    long long sum = 0;\n    for (long long x : a) sum += x;\n\n    long long median = a[n / 2];\n\n    std::cout << "Сумма: " << sum << "\\n";\n    std::cout << "Медиана: " << median << "\\n";\n    std::cout << "Минимум: " << a.front() << ", максимум: " << a.back() << "\\n";\n    return 0;\n}\n' },
+        { name: 'Ввод-вывод и циклы', code:
+'// Тренировка ввода-вывода и циклов\n#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n    long long fact = 1;\n    for (int i = 2; i <= n; ++i) fact *= i;\n    std::cout << n << "! = " << fact << "\\n";\n\n    for (int i = 1; i <= 5; ++i) {\n        for (int j = 0; j < i; ++j) std::cout << "*";\n        std::cout << "\\n";\n    }\n    return 0;\n}\n' },
+        { name: 'Строки и map', code:
+'// Частотный анализ символов строки\n#include <iostream>\n#include <string>\n#include <map>\n\nint main() {\n    std::string s;\n    std::getline(std::cin, s);\n\n    std::map<char, int> freq;\n    for (char c : s) {\n        if (c != \' \') freq[std::tolower(c)]++;\n    }\n\n    for (auto& p : freq) {\n        std::cout << p.first << " -> " << p.second << "\\n";\n    }\n    return 0;\n}\n' }
+      ],
+      js: [
+        { name: 'console.log и методы массивов', code:
+'// Методы массивов ES2023\nconst nums = [12, 5, 8, 21, 4, 17, 9, 30, 2];\nconsole.log("Исходный:", nums);\nconsole.log("Сумма:", nums.reduce((s, n) => s + n, 0));\nconsole.log("Отсортированный:", [...nums].sort((a, b) => a - b));\nconsole.log("Чётные:", nums.filter(n => n % 2 === 0));\nconsole.log("Последний:", nums.at(-1));\nconsole.log("Найден 21?", nums.find(n => n === 21));\n' },
+        { name: 'Строки и шаблонные литералы', code:
+'// Строки и шаблонные литералы\nconst name = "Лицей №37";\nconst city = "Нижнекамск";\nconst year = 2026;\n\nconsole.log(`${name}, ${city}, ${year} год`);\nconsole.log("Длина:", name.length);\nconsole.log("ВЕРХНИЙ регистр:", name.toUpperCase());\nconsole.log("Содержит 37:", name.includes("37"));\nconsole.log("Повтор:", "⚡".repeat(5));\n' },
+        { name: 'Алгоритм: поиск пары с суммой', code:
+'// Классическая задача: найти пару чисел с заданной суммой\nfunction findPair(arr, target) {\n  const seen = new Map();\n  for (let i = 0; i < arr.length; i++) {\n    const need = target - arr[i];\n    if (seen.has(need)) return [seen.get(need), i];\n    seen.set(arr[i], i);\n  }\n  return null;\n}\n\nconst arr = [2, 7, 11, 15, 3, 6];\nconsole.log("Массив:", arr);\nconsole.log("Пара с суммой 9:", findPair(arr, 9));\nconsole.log("Пара с суммой 18:", findPair(arr, 18));\nconsole.log("Пара с суммой 100:", findPair(arr, 100));\n' }
+      ]
+    };
+
+    var state = { lang: 'python', tmpl: 0, pyodide: null, pyLoading: false };
+    var $ = function (id) { return document.getElementById(id); };
+    var codeEl = $('sb-code'), gutter = $('sb-gutter'), term = $('sb-term');
+
+    var PYODIDE_URL = 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js';
+    var PISTON_URL = 'https://emkc.org/api/v2/piston/execute';
+
+    function escHtml(s) {
+      return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    function tline(kind, text) {
+      var d = document.createElement('div');
+      d.className = 'sb-line ' + kind;
+      d.textContent = text;
+      term.appendChild(d);
+      term.scrollTop = term.scrollHeight;
+    }
+    function sysMsg(t) { tline('sys', t); }
+    function errMsg(t) { tline('err', t); }
+    function outMsg(t) { tline('out', t); }
+    function okMsg(t) { tline('ok', t); }
+
+    function updateGutter() {
+      var n = codeEl.value.split('\n').length;
+      var html = '';
+      for (var i = 1; i <= n; i++) html += i + '\n';
+      gutter.textContent = html;
+      gutter.scrollTop = codeEl.scrollTop;
+    }
+
+    function applyTemplate() {
+      codeEl.value = TEMPLATES[state.lang][state.tmpl].code;
+      updateGutter();
+      term.innerHTML = '';
+      sysMsg('Загружен шаблон: ' + TEMPLATES[state.lang][state.tmpl].name + ' (' + ({ python: 'Python 3', cpp: 'C++17', js: 'JavaScript' })[state.lang] + ')');
+      syncPyBtn();
+    }
+
+    function syncPyBtn() {
+      var b = $('sb-py-init');
+      b.style.display = (state.lang === 'python' && !state.pyodide) ? '' : 'none';
+      b.textContent = state.pyLoading ? '⏳ Python загружается...' : '⚙️ Инициализировать Python (~6 МБ)';
+    }
+
+    function setBusy(on) {
+      $('sb-run').disabled = on;
+      $('sb-run').textContent = on ? '⏳ Выполняется...' : '▶️ Запустить';
+    }
+
+    function loadPyodide37() {
+      if (state.pyodide) return Promise.resolve(state.pyodide);
+      if (state.pyLoading) return Promise.reject(new Error('Python уже загружается, подожди...'));
+      state.pyLoading = true;
+      syncPyBtn();
+      sysMsg('⏳ Загружаю автономный Python (Pyodide ~6 МБ, только первый раз)...');
+      return new Promise(function (resolve, reject) {
+        var s = document.createElement('script');
+        s.src = PYODIDE_URL;
+        s.onload = function () {
+          window.loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/' }).then(function (py) {
+            state.pyodide = py;
+            state.pyLoading = false;
+            syncPyBtn();
+            okMsg('✅ Python 3 готов! Можно запускать код.');
+            resolve(py);
+          }).catch(reject);
+        };
+        s.onerror = function () {
+          state.pyLoading = false;
+          syncPyBtn();
+          reject(new Error('Не удалось загрузить Pyodide — проверь интернет (нужен один раз).'));
+        };
+        document.head.appendChild(s);
+      });
+    }
+
+    function runPython() {
+      setBusy(true);
+      loadPyodide37().then(function (py) {
+        term.innerHTML = '';
+        sysMsg('🐍 Python 3 · запускаю программу...');
+        py.setStdout({ batched: function (s) { outMsg(s); } });
+        py.setStderr({ batched: function (s) { errMsg(s); } });
+        var promptLine = '';
+        py.setStdin({ stdin: function () {
+          if (!promptLine) { promptLine = window.prompt('Ввод для программы (input):') || ''; }
+          var v = promptLine; promptLine = '';
+          outMsg('> ' + v);
+          return v;
+        } });
+        var t0 = performance.now();
+        return py.runPythonAsync(codeEl.value).then(function () {
+          okMsg('✅ Программа завершена за ' + (performance.now() - t0).toFixed(1) + ' мс');
+        });
+      }).catch(function (e) {
+        errMsg('❌ ' + (e && e.message ? e.message : String(e)));
+      }).then(function () { setBusy(false); });
+    }
+
+    function runCpp() {
+      setBusy(true);
+      term.innerHTML = '';
+      sysMsg('⚙️ C++17 · отправляю код в облачный компилятор Piston...');
+      var t0 = performance.now();
+      fetch(PISTON_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          language: 'c++',
+          version: '10.2.0',
+          files: [{ name: 'main.cpp', content: codeEl.value }],
+          stdin: '',
+          compile_timeout: 10000,
+          run_timeout: 5000
+        })
+      }).then(function (r) {
+        if (!r.ok) throw new Error('Piston API ответил: HTTP ' + r.status + ' (проверь интернет или попробуй позже)');
+        return r.json();
+      }).then(function (res) {
+        var comp = res.compile || {};
+        if (comp.code !== 0) {
+          errMsg('❌ Ошибка компиляции C++:');
+          outMsg((comp.stderr || 'неизвестная ошибка компилятора').trim());
+        } else {
+          var run = res.run || {};
+          if (run.stdout) outMsg(String(run.stdout).replace(/\n$/, ''));
+          if (run.stderr) errMsg(String(run.stderr).trim());
+          okMsg('✅ Программа завершена (код выхода ' + (run.code === undefined ? 0 : run.code) + ') за ' + (performance.now() - t0).toFixed(0) + ' мс, включая компиляцию в облаке');
+        }
+      }).catch(function (e) {
+        errMsg('❌ ' + (e && e.message ? e.message : String(e)));
+      }).then(function () { setBusy(false); });
+    }
+
+    function runJs() {
+      setBusy(true);
+      term.innerHTML = '';
+      sysMsg('⚡ JavaScript ES2023 · мгновенный запуск в песочнице...');
+      var t0 = performance.now();
+      var logs = [];
+      var fakeConsole = {
+        log: function () { logs.push(['out', Array.prototype.map.call(arguments, function (a) {
+          return typeof a === 'object' ? JSON.stringify(a) : String(a);
+        }).join(' ')]); },
+        error: function () { logs.push(['err', Array.prototype.map.call(arguments, String).join(' ')]); },
+        warn: function () { logs.push(['err', Array.prototype.map.call(arguments, String).join(' ')]); },
+        info: function () { logs.push(['out', Array.prototype.map.call(arguments, String).join(' ')]); }
+      };
+      try {
+        var fn = new Function('console', codeEl.value);
+        fn(fakeConsole);
+        logs.forEach(function (p) { (p[0] === 'err' ? errMsg : outMsg)(p[1]); });
+        okMsg('✅ Программа завершена за ' + (performance.now() - t0).toFixed(1) + ' мс');
+      } catch (e) {
+        logs.forEach(function (p) { (p[0] === 'err' ? errMsg : outMsg)(p[1]); });
+        errMsg('❌ Ошибка выполнения: ' + (e && e.message ? e.message : String(e)));
+      }
+      setBusy(false);
+    }
+
+    function run() {
+      if (state.lang === 'python') return runPython();
+      if (state.lang === 'cpp') return runCpp();
+      return runJs();
+    }
+
+    $('sb-run').addEventListener('click', run);
+    $('sb-py-init').addEventListener('click', function () { loadPyodide37().catch(function (e) { errMsg('❌ ' + e.message); }); });
+    $('sb-clear').addEventListener('click', function () { term.innerHTML = ''; sysMsg('Терминал очищен.'); });
+    $('sb-copy').addEventListener('click', function () {
+      function fallback() {
+        codeEl.select();
+        try { document.execCommand('copy'); okMsg('📋 Код скопирован.'); } catch (e) { errMsg('Не удалось скопировать.'); }
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(codeEl.value).then(function () { okMsg('📋 Код скопирован в буфер обмена.'); }, fallback);
+      } else fallback();
+    });
+    $('sb-back').addEventListener('click', function () {
+      try { if (history.length > 1) { history.back(); return; } } catch (e) {}
+    });
+    codeEl.addEventListener('input', updateGutter);
+    codeEl.addEventListener('scroll', function () { gutter.scrollTop = codeEl.scrollTop; });
+    codeEl.addEventListener('keydown', function (e) {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        var s = codeEl.selectionStart, en = codeEl.selectionEnd;
+        codeEl.value = codeEl.value.slice(0, s) + '    ' + codeEl.value.slice(en);
+        codeEl.selectionStart = codeEl.selectionEnd = s + 4;
+        updateGutter();
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); run(); }
+    });
+
+    Array.prototype.forEach.call(document.querySelectorAll('.sb-lang-tab'), function (tab) {
+      tab.addEventListener('click', function () {
+        Array.prototype.forEach.call(document.querySelectorAll('.sb-lang-tab'), function (t2) { t2.classList.remove('active'); });
+        tab.classList.add('active');
+        state.lang = tab.getAttribute('data-lang');
+        state.tmpl = 0;
+        rebuildTmplChips();
+        applyTemplate();
+      });
+    });
+
+    function rebuildTmplChips() {
+      var box = $('sb-tmpls');
+      var names = TEMPLATES[state.lang].map(function (t) { return t.name; });
+      var html = '<span class="lbl">Шаблоны:</span>';
+      names.forEach(function (nm, i) {
+        html += '<button type="button" class="sb-tmpl' + (i === state.tmpl ? ' active' : '') + '" data-tmpl="' + i + '">' + escHtml(nm) + '</button>';
+      });
+      box.innerHTML = html;
+      Array.prototype.forEach.call(box.querySelectorAll('.sb-tmpl'), function (chip) {
+        chip.addEventListener('click', function () {
+          state.tmpl = parseInt(chip.getAttribute('data-tmpl'), 10) || 0;
+          Array.prototype.forEach.call(box.querySelectorAll('.sb-tmpl'), function (c2) { c2.classList.remove('active'); });
+          chip.classList.add('active');
+          applyTemplate();
+        });
+      });
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('#sb-tmpls .sb-tmpl'), function (chip) {
+      chip.addEventListener('click', function () {
+        state.tmpl = parseInt(chip.getAttribute('data-tmpl'), 10) || 0;
+        Array.prototype.forEach.call(document.querySelectorAll('#sb-tmpls .sb-tmpl'), function (c2) { c2.classList.remove('active'); });
+        chip.classList.add('active');
+        applyTemplate();
+      });
+    });
+
+    window.__l37sandbox37 = {
+      state: state,
+      templates: TEMPLATES,
+      run: run,
+      applyTemplate: applyTemplate,
+      rebuildTmplChips: rebuildTmplChips,
+      lines: function () { return term.children.length; },
+      termText: function () { return term.textContent; },
+      code: function () { return codeEl.value; }
+    };
+
+    sysMsg('💻 Код-песочница Лицеиста готова. Выбери язык, шаблон — и жми «▶️ Запустить» (или Ctrl+Enter).');
+    applyTemplate();
+  })();
+</script>
+</body>
+</html>
