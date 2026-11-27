@@ -5456,33 +5456,158 @@
       return out;
     }
 
-    async function syncKey(key, data) {
-      if (!sb37) return;
-      let payload = data;
-      const isDmList37 = typeof key === 'string' && key.indexOf('dm__') === 0 && Array.isArray(data);
-      const isCollection37 = MERGE_COLLECTION_KEYS37.indexOf(key) !== -1 && Array.isArray(data);
-      const isDelList37 = typeof key === 'string' && /_del$/.test(key) && Array.isArray(data);
-      if (isDelList37) {
+    /* ============================================================
+       📡 L37 CLOUD DIAGNOSTICS — ни одна ошибка облака не прячется молча.
+       Зелёный индикатор «🟢 Облако OK», когда SELECT+UPSERT+Realtime живы,
+       и ярко-красный баннер сверху с точной причиной (код, таблица, ключ),
+       когда что-то отклоняется. Проверка идёт при загрузке сайта, при
+       каждом сохранении и повторно каждые 60 сек после любого сбоя.
+       ============================================================ */
+    const DIAG_PROBE_KEY37 = 'l37_diag_probe';
+    let l37DiagBanner37El = null;
+    let l37DiagPill37El = null;
+    let l37DiagRecheckTimer37 = null;
+    let l37DiagLastSig37 = '';
+
+    function l37DiagEnsure37() {
+      try {
+        if (!l37DiagPill37El || !l37DiagPill37El.parentNode) {
+          l37DiagPill37El = document.createElement('div');
+          l37DiagPill37El.id = 'l37-diag-pill';
+          l37DiagPill37El.style.cssText = 'position:fixed;top:6px;right:6px;z-index:99998;background:#16a34a;color:#fff;font:600 11px/1.4 Arial,sans-serif;padding:4px 10px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.25);display:none;';
+          (document.body || document.documentElement).appendChild(l37DiagPill37El);
+        }
+        if (!l37DiagBanner37El || !l37DiagBanner37El.parentNode) {
+          l37DiagBanner37El = document.createElement('div');
+          l37DiagBanner37El.id = 'l37-diag-banner';
+          l37DiagBanner37El.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#dc2626;color:#fff;font:600 13px/1.55 Arial,sans-serif;padding:10px 44px 10px 14px;box-shadow:0 2px 12px rgba(0,0,0,.35);display:none;word-break:break-word;';
+          (document.body || document.documentElement).appendChild(l37DiagBanner37El);
+        }
+      } catch (eDe37) {}
+    }
+
+    function l37DiagHuman37(err) {
+      const msg = String((err && (err.message || err.msg)) || err || 'неизвестная ошибка');
+      const code = String((err && (err.code || err.status)) || '');
+      let human = 'Проверь интернет-соединение, таблицу ' + TABLE + ' и консоль браузера.';
+      if (/Invalid API key/i.test(msg) || code === '401') human = 'Supabase отверг ключ проекта: ключ отозван или принадлежит другому проекту. Зайди в Supabase Dashboard → Settings → API Keys, скопируй действующий publishable-ключ и обнови константу SUPABASE_ANON_KEY в index.html.';
+      else if (code === '42501' || /row-level security|permission denied/i.test(msg)) human = 'Запрещено политикой RLS: нужно разрешить SELECT/INSERT/UPDATE для роли anon в таблице ' + TABLE + '.';
+      else if (code === '42P01' || (/does not exist/i.test(msg) && /relation|table/i.test(msg))) human = 'Таблица ' + TABLE + ' не существует: создай её SQL-командой (key text primary key, value jsonb).';
+      else if (/Failed to fetch|NetworkError|network/i.test(msg)) human = 'Нет сети или запрос заблокирован (интернет, блокировщик, расширение браузера).';
+      else if (/JWT|jwt|expired/i.test(msg)) human = 'Ключ проекта просрочен или неверен — выпусти новый в Supabase Dashboard.';
+      return { code: code || '—', msg: msg, human: human };
+    }
+
+    function l37DiagFail37(op, key, err) {
+      try {
+        const d = l37DiagHuman37(err);
+        const sig37 = op + '|' + key + '|' + d.code + '|' + d.msg;
+        l37DiagEnsure37();
+        if (l37DiagPill37El) l37DiagPill37El.style.display = 'none';
+        if (l37DiagBanner37El.style.display === 'block' && l37DiagLastSig37 === sig37) return;
+        l37DiagLastSig37 = sig37;
+        l37DiagBanner37El.innerHTML = '<b>🛑 СБОЙ ОБЛАКА SUPABASE — ' + esc(op) + '</b> · таблица <b>' + TABLE + '</b> · ключ «<b>' + esc(String(key)) + '</b>»<br>'
+          + 'Причина сбоя: код <b>' + esc(d.code) + '</b> — ' + esc(d.msg) + '<br>'
+          + '<span style="opacity:.92;">Что делать: ' + esc(d.human) + '</span>'
+          + '<span id="l37-diag-close" style="position:absolute;top:6px;right:10px;cursor:pointer;font:700 16px/1 Arial;">✕</span>';
+        l37DiagBanner37El.style.display = 'block';
+        const x37 = document.getElementById('l37-diag-close');
+        if (x37) x37.addEventListener('click', function () { l37DiagBanner37El.style.display = 'none'; });
+        if (!l37DiagRecheckTimer37) l37DiagRecheckTimer37 = setTimeout(function () { l37DiagRecheckTimer37 = null; try { l37DiagRun37(); } catch (eR37) {} }, 60000);
+        try { console.error('L37 DIAG [' + op + ' · ' + key + ']', err); } catch (eC37) {}
+      } catch (eDf37) {}
+    }
+
+    function l37DiagOk37(what) {
+      try {
+        l37DiagEnsure37();
+        if (l37DiagBanner37El.style.display === 'block') return;
+        l37DiagPill37El.textContent = '🟢 Облако OK';
+        l37DiagPill37El.title = 'Последняя успешная операция: ' + what + ' · ' + new Date().toLocaleTimeString('ru-RU');
+        l37DiagPill37El.style.display = 'block';
+      } catch (eDo37) {}
+    }
+
+    function l37DiagRealtime37() {
+      return new Promise(function (resolve) {
+        if (!sb37) { resolve({ ok: false, err: { code: 'NO_SDK', message: 'Supabase SDK не загружен (CDN недоступен)' } }); return; }
+        let ch37 = null;
+        let done37 = false;
+        const finish37 = function (res) {
+          if (done37) return;
+          done37 = true;
+          try { if (ch37) sb37.removeChannel(ch37); } catch (eRm37) {}
+          resolve(res);
+        };
         try {
-          const fresh = await sb37.from(TABLE).select('value').eq('key', key).maybeSingle();
-          if (!fresh.error && fresh.data && Array.isArray(fresh.data.value)) {
-            payload = l37UnionStrings37(data, fresh.data.value);
-            try { writeLs(key, payload); } catch (eWl37) {}
-          }
-        } catch (eM37) { /* пишем как есть */ }
+          ch37 = sb37.channel('l37-diag-probe', { config: { broadcast: { self: true } } });
+          const to37 = setTimeout(function () { finish37({ ok: false, err: { code: 'TIMEOUT', message: 'Realtime-канал не подтвердил подписку и эхо-сигнал за 6 сек' } }); }, 6000);
+          ch37
+            .on('broadcast', { event: 'ping' }, function () { clearTimeout(to37); finish37({ ok: true }); })
+            .subscribe(function (status) {
+              try {
+                if (status === 'SUBSCRIBED') { try { ch37.send('ping', { ts: Date.now() }); } catch (eS37) {} }
+                else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') { clearTimeout(to37); finish37({ ok: false, err: { code: String(status), message: 'Realtime: канал вернул статус ' + status } }); }
+              } catch (eSu37) {}
+            });
+        } catch (eRt37) { finish37({ ok: false, err: eRt37 }); }
+      });
+    }
+
+    /* Сквозная самопроверка: UPSERT → SELECT → сверка → Realtime-эхо */
+    async function l37DiagRun37() {
+      if (!sb37) { l37DiagFail37('SUPABASE', TABLE, { code: 'NO_SDK', message: 'Supabase SDK не загрузился (CDN недоступен) — облако отключено, работаем на localStorage.' }); return; }
+      const fails37 = [];
+      try {
+        const probe37 = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+        const up37 = await sb37.from(TABLE).upsert({ key: DIAG_PROBE_KEY37, value: { ts: Date.now(), probe: probe37 } }, { onConflict: 'key' });
+        if (up37.error) throw up37.error;
+        const back37 = await sb37.from(TABLE).select('value').eq('key', DIAG_PROBE_KEY37).maybeSingle();
+        if (back37.error) throw back37.error;
+        const probeVal = back37.data && back37.data.value ? back37.data.value : null;
+        if (!probeVal || probeVal.probe !== probe37) throw { code: 'MISMATCH', message: 'Записанное значение не совпало с прочитанным: записано ' + probe37 + ', прочитано ' + JSON.stringify(probeVal) };
+      } catch (e37) {
+        fails37.push({ op: 'UPSERT+SELECT', key: DIAG_PROBE_KEY37, err: e37 });
       }
-      if (isDmList37 || isCollection37) {
-        try {
-          const fresh = await sb37.from(TABLE).select('value').eq('key', key).maybeSingle();
-          if (!fresh.error && fresh.data && Array.isArray(fresh.data.value)) {
-            payload = isDmList37
-              ? mergeLists(data, fresh.data.value).sort(function (x, y) { return (x.ts || 0) - (y.ts || 0); })
-              : l37TombFilter37(key, l37MergeCollection37(key, data, fresh.data.value));
-            try { writeLs(key, payload); } catch (eWl37) {}
-          }
-        } catch (eM37) { /* пишем как есть */ }
+      const rt37 = await l37DiagRealtime37();
+      if (!rt37.ok) fails37.push({ op: 'REALTIME', key: 'канал l37-diag-probe', err: rt37.err });
+      if (fails37.length) {
+        l37DiagFail37(fails37.map(function (f) { return f.op; }).join(' + '), fails37.map(function (f) { return f.key; }).join(', '), fails37[0].err);
+      } else {
+        l37DiagLastSig37 = '';
+        try { if (l37DiagBanner37El) l37DiagBanner37El.style.display = 'none'; } catch (eH37) {}
+        l37DiagOk37('сквозная проверка UPSERT→SELECT→сверка→Realtime');
       }
-      if (isCollection37) payload = l37TombFilter37(key, payload);
+    }
+
+    /* ============================================================
+       ЕДИНЫЙ КАНАЛ ЗАПИСИ В ОБЛАКО: cloudSaveMerged(key, mergeFn).
+       Любая сохранялка (dbSave → syncKey, saveUsers, saveDmMsgs, посты,
+       Маркет) приходит сюда и ТОЛЬКО здесь происходит запись в Supabase:
+       1) прямой SELECT свежего значения ключа из site_content;
+       2) mergeFn(cloudValue) объединяет облако с новым изменением по id;
+       3) UPSERT с { onConflict: 'key' }, при сбое — повтор через 1 сек;
+       4) после успеха — Broadcast { key }, приёмник делает прямой SELECT
+          этого ключа и перерисовывает экран.
+       ============================================================ */
+    async function cloudSaveMerged(key, mergeFn) {
+      if (!sb37) return null;
+      let cloud = null;
+      try {
+        const fresh = await sb37.from(TABLE).select('value').eq('key', key).maybeSingle();
+        if (fresh.error) throw fresh.error;
+        cloud = fresh.data ? fresh.data.value : null;
+        l37DiagOk37('SELECT ' + key);
+      } catch (eSel) {
+        l37DiagFail37('SELECT', key, eSel);
+      }
+      let payload;
+      try {
+        payload = typeof mergeFn === 'function' ? mergeFn(cloud) : (cloud === null || cloud === undefined ? null : cloud);
+      } catch (eM) {
+        payload = cloud === undefined ? null : cloud;
+        try { console.warn('cloudSaveMerged: ошибка merge —', key, eM); } catch (eMc) {}
+      }
       const broadcast37 = function () {
         try { instantSend('row', { key: key }); } catch (eI37) {}
         try {
@@ -5496,7 +5621,9 @@
           .from(TABLE)
           .upsert({ key: key, value: payload }, { onConflict: 'key' });
         if (answer.error) throw answer.error;
+        l37DiagOk37('UPSERT ' + key);
         broadcast37();
+        return payload;
       } catch (e) {
         try { await new Promise(function (r37) { setTimeout(r37, 1000); }); } catch (eW37) {}
         try {
@@ -5504,11 +5631,39 @@
             .from(TABLE)
             .upsert({ key: key, value: payload }, { onConflict: 'key' });
           if (answer2.error) throw answer2.error;
+          l37DiagOk37('UPSERT ' + key + ' (повтор)');
           broadcast37();
+          return payload;
         } catch (e2) {
-          console.warn('syncKey: облако недоступно даже после повтора, работаем локально —', key, e2 && e2.message);
+          l37DiagFail37('UPSERT', key, e2);
+          try { console.warn('cloudSaveMerged: облако недоступно даже после повтора, работаем локально —', key, e2 && e2.message); } catch (eW2) {}
         }
       }
+      return null;
+    }
+
+    /* Тонкий адаптер: старый syncKey сохраняет прежнюю логику объединения,
+       но саму запись в облако теперь делает ЕДИНСТВЕННАЯ cloudSaveMerged. */
+    async function syncKey(key, data) {
+      if (!sb37) return;
+      const isDmList37 = typeof key === 'string' && key.indexOf('dm__') === 0 && Array.isArray(data);
+      const isCollection37 = MERGE_COLLECTION_KEYS37.indexOf(key) !== -1 && Array.isArray(data);
+      const isDelList37 = typeof key === 'string' && /_del$/.test(key) && Array.isArray(data);
+      await cloudSaveMerged(key, function (cloudValue) {
+        let payload = data;
+        if (isDelList37 && Array.isArray(cloudValue)) {
+          payload = l37UnionStrings37(data, cloudValue);
+          try { writeLs(key, payload); } catch (eWl37) {}
+        }
+        if ((isDmList37 || isCollection37) && Array.isArray(cloudValue)) {
+          payload = isDmList37
+            ? mergeLists(data, cloudValue).sort(function (x, y) { return (x.ts || 0) - (y.ts || 0); })
+            : l37TombFilter37(key, l37MergeCollection37(key, data, cloudValue));
+          try { writeLs(key, payload); } catch (eWl37) {}
+        }
+        if (isCollection37) payload = l37TombFilter37(key, payload);
+        return payload;
+      });
     }
 
     async function pullKey(key) {
@@ -5527,6 +5682,7 @@
           return answer.data.value;
         }
       } catch (e) {
+        l37DiagFail37('SELECT', key, e);
         console.warn('pullKey: облако недоступно, читаем локально —', key, e && e.message);
       }
       return dbLoad(key, null);
@@ -5617,6 +5773,7 @@
           }
         });
       } catch (e) {
+        l37DiagFail37('SELECT', Array.isArray(keys) ? keys.join(',') : 'ALL', e);
         console.warn('pullAll: облако недоступно, работаем на localStorage —', e && e.message);
       }
     }
@@ -5717,6 +5874,7 @@
           .subscribe(function (status) {
             try {
               if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+                try { l37DiagFail37('REALTIME', TABLE, { code: String(status), message: 'Канал postgres_changes вернул статус ' + status }); } catch (eDg37) {}
                 try { sb37.removeChannel(realtimeChannel); } catch (eRm) {}
                 realtimeChannel = null;
                 if (!realtimeRetryTimer) realtimeRetryTimer = setTimeout(function () { realtimeRetryTimer = null; startRealtime(); }, 5000);
@@ -8402,7 +8560,7 @@
     let lp37OnlineMap = {};
     let bcastTickerTimer = null;
 
-    function dmCloudKey(a, b) { return 'dm__' + [a, b].sort().join('_'); }
+    function dmCloudKey(a, b) { return 'dm__' + [String(a), String(b)].map(function (s37) { return s37.toLowerCase(); }).sort().join('_'); }
 
     function knownDmCloudKeys() {
       const out = [];
@@ -8962,7 +9120,7 @@
         instantChannel.subscribe(function (status) {
           try {
             if (status === 'SUBSCRIBED') { instantReady = true; trackPresence(); presenceTick(); }
-            else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') { instantReady = false; }
+            else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') { instantReady = false; try { l37DiagFail37('REALTIME', 'l37-instant', { code: String(status), message: 'Канал l37-instant вернул статус ' + status }); } catch (eDg37) {} }
           } catch (eSub37) {}
         });
       } catch (eSt37) { instantChannel = null; }
@@ -9190,7 +9348,7 @@
         l37SyncChannel.subscribe(function (status) {
           try {
             if (status === 'SUBSCRIBED') { l37SyncReady = true; }
-            else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') { l37SyncReady = false; }
+            else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') { l37SyncReady = false; try { l37DiagFail37('REALTIME', 'l37-instant-sync', { code: String(status), message: 'Канал l37-instant-sync вернул статус ' + status }); } catch (eDg37) {} }
           } catch (eSu37) {}
         });
       } catch (eSl37) { l37SyncChannel = null; l37SyncReady = false; }
@@ -12491,6 +12649,7 @@ try {
       renderSocial();
 
       startLiveSync();
+      try { if (typeof l37DiagRun37 === 'function') l37DiagRun37(); } catch (eDg37) { try { console.error(eDg37); } catch (e2) {} }
     }
 
 
