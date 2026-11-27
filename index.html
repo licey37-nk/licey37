@@ -3693,6 +3693,15 @@
       animation: shimmer37 1.4s infinite;
     }
     @keyframes shimmer37 { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+    .skeleton-line {
+      display: inline-block; height: 1.15em; border-radius: 8px; position: relative;
+      overflow: hidden; background: color-mix(in srgb, var(--text) 12%, transparent); vertical-align: middle;
+    }
+    .skeleton-line::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--text) 8%, transparent), transparent);
+      animation: shimmer37 1.4s infinite;
+    }
 
     .to-top-btn {
       position: fixed; right: 18px; bottom: 96px; width: 44px; height: 44px; border-radius: 50%;
@@ -4055,7 +4064,7 @@
       <div class="grid">
         <div class="card card-hover">
           <h3 class="info-title" data-editable="schedule-title">⏰ Расписание звонков Лицея №37</h3>
-          <div class="bell-timer" id="bell-timer">⏰ Загружаем таймер звонков…</div>
+          <div class="bell-timer" id="bell-timer"><span class="skeleton-line" style="width:210px;"></span></div>
           <table class="bell-table" id="bell-table"></table>
         </div>
 
@@ -4779,7 +4788,7 @@
       <div class="modal-head">
         <div class="modal-icon">🔍</div>
         <h3>Быстрый поиск по сайту</h3>
-        <p>Ученики, Барахолка, посты, каналы и база знаний ИИ · Ctrl+K</p>
+        <p>Ученики, классы, Барахолка, посты, каналы, 100 правил лицея и база знаний ИИ · Ctrl+K</p>
       </div>
       <input type="text" id="global-search-input" class="input-field" placeholder="🔍 Что ищем? Имя, товар, канал, тема…" autocomplete="off">
       <div id="global-search-results" class="gs-results"></div>
@@ -12847,6 +12856,7 @@ try {
     let aiGreeted = false;
     let aiBusy = false;
     let aiUserMsgCount = 0;
+    let aiLoading37 = false;
 
     const AI_HI = ['Привет, {name}! 👋', 'О, приветствую, {name}! ✨', 'Здравствуй, {name}! 🌟', 'Привет-привет, {name}! 😊', 'Рад тебя видеть, {name}! 💫', 'Привет, {name}! Всегда готов помочь! 🤝', 'А вот и {name}! 🙌', 'Добрый день, {name}! ☀️', 'Приветик, {name}! 🍀', 'Хэй, {name}! ⚡', 'Привет, {name}! Какой отличный день, чтобы узнавать новое! 🚀', 'Ооо, {name} на связи! 💙'];
     const AI_LEAD = ['Вот что я знаю:', 'Смотри, получается вот что:', 'У меня есть кое-что интересное:', 'Держи ответ:', 'Рассказываю по порядку:', 'Проверил свою базу знаний — вот результат:', 'Отличный вопрос! Итак:', 'Хм, дай подумать… Вот что нашлось:', 'О, это как раз моя тема!', 'Ура, вопрос по моей специальности!'];
@@ -12869,46 +12879,108 @@ try {
       return String(s).toLowerCase().replace(/[^a-zа-яё0-9\s]/gi, ' ').split(/\s+/).filter(function (w) { return w.length > 2; });
     }
 
-    function aiIndexFile(name, text) {
-      text.split('\n').forEach(function (raw) {
-        let line = raw.trim();
-        while (line.length > 0) {
-          if (line.length <= 300) {
-            if (line.length >= 25) aiKnowledge.push({ s: name, t: line });
-            break;
+    /* 🩺 Врач памяти: лечит строку перед индексацией — режет дубликаты и битые строки */
+    const aiSeenLines37 = new Set();
+    function fmtAiNum37(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+    function aiDoctorJson37(raw) {
+      if (raw.charAt(0) !== '{') return null;
+      try {
+        const o = JSON.parse(raw);
+        if (!o || typeof o !== 'object') return null;
+        const parts = [];
+        ['sub', 'subject', 'gr', 'grade', 'top', 'topic', 'title', 'name', 'q', 'question', 'sum', 'summary', 'text', 'content', 'body', 'full', 'a', 'answer'].forEach(function (k) {
+          const v = o[k];
+          if (typeof v === 'string' && v.trim()) parts.push(v.trim());
+          else if (Array.isArray(v) && v.length && typeof v[0] === 'string') parts.push(v.join(', '));
+        });
+        const t = parts.join('. ').replace(/\s+/g, ' ').trim();
+        return t || null;
+      } catch (eJson37) { return null; }
+    }
+    function aiDoctorLine37(t) {
+      if (t.length < 25 || t.length > 600) return false;
+      if (t.indexOf('\uFFFD') !== -1) return false;
+      const letters = (t.match(/[a-zа-яё]/gi) || []).length;
+      if (letters < 4 || letters / t.length < 0.35) return false;
+      return true;
+    }
+    function aiPushChunk37(name, chunk) {
+      const t = String(chunk).replace(/\s+/g, ' ').trim();
+      if (!t || !aiDoctorLine37(t)) return;
+      const key = t.toLowerCase();
+      if (aiSeenLines37.has(key)) return;
+      aiSeenLines37.add(key);
+      aiKnowledge.push({ s: name, t: t, lt: key });
+    }
+
+    function aiIndexFile(name, text, onDone) {
+      const lines = String(text || '').split('\n');
+      let from = 0;
+      function step37() {
+        const end = Math.min(from + 500, lines.length);
+        for (let i = from; i < end; i++) {
+          let line = String(lines[i] || '').trim();
+          if (!line) continue;
+          const healed = aiDoctorJson37(line);
+          if (healed) line = healed;
+          else if (line.charAt(0) === '{') continue;
+          while (line.length > 0) {
+            if (line.length <= 300) { aiPushChunk37(name, line); break; }
+            let cut = -1;
+            for (let j = 120; j < Math.min(300, line.length); j++) {
+              if ('.!;?'.indexOf(line[j]) !== -1) { cut = j + 1; break; }
+            }
+            if (cut === -1) cut = 200;
+            aiPushChunk37(name, line.slice(0, cut));
+            line = line.slice(cut).trim();
           }
-          let cut = -1;
-          for (let i = 120; i < Math.min(300, line.length); i++) {
-            if ('.!;?'.indexOf(line[i]) !== -1) { cut = i + 1; break; }
-          }
-          if (cut === -1) cut = 200;
-          const chunk = line.slice(0, cut).trim();
-          if (chunk.length >= 25) aiKnowledge.push({ s: name, t: chunk });
-          line = line.slice(cut).trim();
         }
-      });
+        from = end;
+        updateAiStatus();
+        if (from < lines.length) setTimeout(step37, 0);
+        else if (onDone) onDone();
+      }
+      setTimeout(step37, 0);
     }
 
     function updateAiStatus() {
       const el = document.getElementById('ai-status');
-      if (el) el.textContent = '📚 База знаний: ' + aiLoadedFiles + ' из ' + AI_FILES.length + ' файлов · ' + aiKnowledge.length + ' фактов в памяти';
+      if (el) el.textContent = '📚 База знаний: ' + (aiLoading37 ? 'загружаю… ' + aiLoadedFiles : 'загружено ' + aiLoadedFiles) + ' файлов (' + fmtAiNum37(aiKnowledge.length) + ' тем)';
     }
 
     async function aiLoadFiles() {
       if (typeof fetch !== 'function') { updateAiStatus(); return; }
-      const BATCH = 10;
+      aiLoading37 = true;
+      const BATCH = 3;
+      let miss37 = 0;
       for (let i = 0; i < AI_FILES.length; i += BATCH) {
         const batch = AI_FILES.slice(i, i + BATCH);
-        await Promise.all(batch.map(async function (name) {
+        const results = await Promise.all(batch.map(async function (name) {
           try {
             const res = await fetch(encodeURI(name), { cache: 'no-cache' });
-            if (!res.ok) return;
+            if (!res.ok) return { name: name, ok: false };
             const text = await res.text();
-            if (text && text.trim()) { aiIndexFile(name, text); aiLoadedFiles++; }
-          } catch (e) { /* 404 и сбои сети тихо игнорируем */ }
+            if (text && text.trim()) return { name: name, ok: true, text: text };
+            return { name: name, ok: false };
+          } catch (e) { return { name: name, ok: false }; }
         }));
+        for (let r = 0; r < results.length; r++) {
+          const item = results[r];
+          if (!item.ok) {
+            if (/^b\d+\.txt$/.test(item.name)) {
+              miss37++;
+              if (miss37 >= 2) { aiLoading37 = false; updateAiStatus(); return; }
+            }
+            continue;
+          }
+          miss37 = 0;
+          await new Promise(function (resolve) { aiIndexFile(item.name, item.text, resolve); });
+          aiLoadedFiles++;
+          updateAiStatus();
+        }
         updateAiStatus();
       }
+      aiLoading37 = false;
       updateAiStatus();
     }
 
@@ -12917,7 +12989,7 @@ try {
       if (!qw.length) return [];
       const scored = [];
       for (let i = 0; i < aiKnowledge.length; i++) {
-        const t = aiKnowledge[i].t.toLowerCase();
+        const t = aiKnowledge[i].lt || String(aiKnowledge[i].t).toLowerCase();
         let score = 0;
         for (let j = 0; j < qw.length; j++) {
           if (t.indexOf(qw[j]) !== -1) score++;
@@ -13382,7 +13454,7 @@ try {
       gsActions = [];
       const query = String(q || '').trim().toLowerCase();
       if (query.length < 2) {
-        box.innerHTML = '<div class="field-hint">Введите минимум 2 символа — ищем по ученикам, объявлениям Барахолки, постам, каналам и базе знаний ИИ-Наставника.</div>';
+        box.innerHTML = '<div class="field-hint">Введите минимум 2 символа — ищем по ученикам, классам, объявлениям Барахолки, постам, каналам, 100 правилам лицея и базе знаний ИИ-Наставника.</div>';
         return;
       }
       const res = [];
@@ -13392,6 +13464,21 @@ try {
         if (fuzzyMatch(query, u.name) || normText(cls).indexOf(query) !== -1) {
           res.push({ ico: '👤', title: u.name, sub: 'Ученик · ' + classIdOf(u.grade, u.letter), act: function () { setTab('social'); openDm(u.id); } });
         }
+      });
+      const seenClasses37 = {};
+      getUsers().forEach(function (u) {
+        const cls = classIdOf(u.grade, u.letter);
+        if (cls && normText(cls).indexOf(query) !== -1) seenClasses37[cls] = true;
+      });
+      Object.keys(seenClasses37).sort().forEach(function (cls) {
+        if (res.length >= 20) return;
+        res.push({ ico: '🏫', title: 'Класс ' + cls, sub: 'Ученики класса · Соцсеть', act: function () {
+          setTab('social'); setSocialSub('feed');
+          setTimeout(function () {
+            const ps = document.getElementById('people-search');
+            if (ps) { ps.value = cls; ps.dispatchEvent(new Event('input', { bubbles: true })); }
+          }, 150);
+        } });
       });
       getList('listings').forEach(function (l) {
         if (res.length >= 20) return;
@@ -13411,6 +13498,18 @@ try {
           res.push({ ico: '📢', title: c.name, sub: (c.mode === 'community' ? 'Сообщество · ' : 'Канал · ') + (c.subs || []).length + ' подписчиков', act: function () { setTab('social'); setSocialSub('channels'); } });
         }
       });
+      if (typeof RULES37 !== 'undefined') {
+        for (let ri37 = 0; ri37 < RULES37.length; ri37++) {
+          if (res.length >= 20) break;
+          if (fuzzyMatch(query, RULES37[ri37])) {
+            const ruleNum37 = ri37 + 1;
+            res.push({ ico: '📜', title: 'Правило №' + ruleNum37, sub: String(RULES37[ri37]).slice(0, 90) + '…', act: function () {
+              const link37 = document.getElementById('rules-open-link');
+              if (link37) link37.click();
+            } });
+          }
+        }
+      }
       if (typeof aiSearchKnowledge === 'function') {
         aiSearchKnowledge(query, 4).forEach(function (item) {
           if (res.length >= 20) return;
@@ -15698,6 +15797,21 @@ try {
         }
       } catch (eSk37) {}
       renderFeedBase37();
+    };
+
+    const renderMarketBase37 = renderMarket;
+    let marketSkeletonShown37 = false;
+    renderMarket = function () {
+      const grid = document.getElementById('market-grid');
+      try {
+        if (grid && !marketSkeletonShown37 && !grid.children.length) {
+          marketSkeletonShown37 = true;
+          grid.innerHTML = '<div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>';
+          setTimeout(function () { try { renderMarket(); } catch (eM37) {} }, 450);
+          return;
+        }
+      } catch (eSkM37) {}
+      renderMarketBase37();
     };
 
     let peopleClassFilter37 = '';
