@@ -5213,6 +5213,7 @@
           .upsert({ key: key, value: payload }, { onConflict: 'key' });
         if (answer.error) throw answer.error;
         try { instantSend('row', { key: key }); } catch (eI37) {}
+        try { if (key === 'posts' && (typeof l37PostPullGuard37 === 'undefined' || !l37PostPullGuard37) && typeof l37SyncSend === 'function') l37SyncSend('new_post', { key: key, ts: Date.now() }); } catch (eNp38) {}
       } catch (e) {
         console.warn('syncKey: облако недоступно, работаем локально —', key, e && e.message);
       }
@@ -8045,6 +8046,7 @@
       saveDmMsgs(user.id, currentDmPartner, arr);
       instantSend('msg', { chatKey: dmCloudKey(user.id, currentDmPartner), msg: newMsg37 });
       instantSend('row', { key: dmCloudKey(user.id, currentDmPartner) });
+      try { if (typeof l37SyncSend === 'function') l37SyncSend('new_dm', { chatKey: dmCloudKey(user.id, currentDmPartner), msg: newMsg37, ts: Date.now() }); } catch (eNdS37) {}
       input.value = '';
       try { clearDmDraft37(user.id, currentDmPartner); } catch (eCd37) {}
       clearDmCompose();
@@ -8235,6 +8237,7 @@
           let changed37 = false;
           arrAll.forEach(function (m) { if (m.from !== user.id && !m.read) { m.read = true; changed37 = true; } });
           if (changed37) saveDmMsgs(user.id, currentDmPartner, arrAll);
+          if (changed37 && typeof l37SyncSend === 'function') { try { l37SyncSend('chat_read', { chatKey: dmCloudKey(user.id, currentDmPartner), reader: user.id, ts: Date.now() }); } catch (eCrR37) {} }
         }
       } catch (eMr37) {}
       updateDmHeaderStatus();
@@ -8347,6 +8350,7 @@
       if (!user) return;
       saveDmMsgs(user.id, currentDmPartner, arr);
       instantSend('row', { key: dmCloudKey(user.id, currentDmPartner) });
+      try { if (typeof l37SyncSend === 'function') l37SyncSend('chat_action', { chatKey: dmCloudKey(user.id, currentDmPartner), kind: 'update', ts: Date.now() }); } catch (eCaS37) {}
     }
 
     function toggleDmReaction(msgId, emoji) {
@@ -8547,6 +8551,7 @@
       if (now - lastTypingSent < 2000) return;
       lastTypingSent = now;
       instantSend('typing', { from: user.id, to: currentDmPartner, name: user.name });
+      try { if (typeof l37SyncSend === 'function') l37SyncSend('chat_typing', { from: user.id, to: currentDmPartner, name: user.name, ts: now }); } catch (eTyS37) {}
     }
 
     /* ---- Мгновенная доставка: broadcast-канал l37-instant + присутствие ---- */
@@ -8699,10 +8704,150 @@
           pullKeys(keys).then(function () {
             if (dmSyncSnapshot(keys) !== before) { refreshChatViews(); try { renderActiveChatMessages(); } catch (eRa37) {} }
           }).catch(function () {});
+          const pchatModal37 = document.getElementById('modal-pchat');
+          if (pchatModal37 && pchatModal37.classList.contains('open') && typeof openListingId !== 'undefined' && openListingId) {
+            const beforeP37 = localStorage.getItem(LS_PREFIX + 'pchat') || '';
+            pullKeys(['pchat']).then(function () {
+              const afterP37 = localStorage.getItem(LS_PREFIX + 'pchat') || '';
+              if (afterP37 !== beforeP37) { try { renderProductChat(); } catch (ePc37) {} }
+            }).catch(function () {});
+          }
         } else if (tick37 % 3 === 0) {
           dmSyncTick();
         }
-      }, 2000);
+      }, 1500);
+    }
+
+    /* ============================================================
+       L37 INSTANT SYNC ENGINE v2 — единый глобальный канал реального
+       времени 'l37-instant-sync' (broadcast, self: false).
+       События: new_dm, chat_typing, chat_read, chat_action, new_post.
+       Работает В ДОПОЛНЕНИЕ к каналу l37-instant и postgres_changes:
+       ничего из существующего кода не удалено и не заменено.
+       ============================================================ */
+    var l37PostPullGuard37 = false;
+    let l37SyncChannel = null;
+    let l37SyncReady = false;
+
+    function l37SyncSend(event, payload) {
+      try { if (l37SyncChannel && l37SyncReady) l37SyncChannel.send(event, payload); } catch (eLs37) {}
+    }
+
+    function l37IsChatOpen37(user, chatKey) {
+      try {
+        const dmModal = document.getElementById('modal-dm');
+        return !!(dmModal && dmModal.classList.contains('open') && currentDmPartner && user && dmCloudKey(user.id, currentDmPartner) === chatKey);
+      } catch (eOc37) { return false; }
+    }
+
+    /* Дозапись входящего сообщения в локальное хранилище: строго без дублей по msg.id */
+    function l37MergeIncomingDm37(p) {
+      try {
+        if (!p || !p.chatKey || !p.msg || !p.msg.id) return false;
+        const stored = readLs(p.chatKey);
+        const arr = Array.isArray(stored) ? stored : [];
+        if (arr.some(function (m) { return m && m.id === p.msg.id; })) return false;
+        arr.push(p.msg);
+        arr.sort(function (x, y) { return (x.ts || 0) - (y.ts || 0); });
+        if (arr.length > 300) arr.splice(0, arr.length - 300);
+        writeLs(p.chatKey, arr);
+        try {
+          const parts = String(p.chatKey).replace(/^dm__/, '').split('_');
+          if (parts.length === 2 && typeof registerDmIndex === 'function') registerDmIndex(parts[0], parts[1], p.chatKey);
+        } catch (eRi37) {}
+        return true;
+      } catch (eMi37) { return false; }
+    }
+
+    /* Входящее личное сообщение: мгновенная отрисовка + ✓✓ + счётчики + тост */
+    function l37HandleNewDm37(p) {
+      try {
+        const user = getCurrentUser();
+        if (!user || !p || !p.msg || p.msg.from === user.id) return;
+        const added = l37MergeIncomingDm37(p);
+        if (!added) return;
+        if (l37IsChatOpen37(user, p.chatKey)) {
+          try { renderActiveChatMessages(); } catch (eRa37) {}
+          try { l37SyncSend('chat_read', { chatKey: p.chatKey, reader: user.id, ts: Date.now() }); } catch (eCr37) {}
+        } else {
+          try { renderDms(); } catch (eRd37) {}
+          try { if (typeof updateNotifBell37 === 'function') updateNotifBell37(); } catch (eNb37) {}
+          try { if (typeof lp37NewMsgToast === 'function') lp37NewMsgToast(p.chatKey, p.msg); } catch (eT37) {}
+        }
+      } catch (eNd37) {}
+    }
+
+    /* Собеседник прочитал: зажигаем ✓✓ у моих сообщений без сброса ввода */
+    function l37HandleChatRead37(p) {
+      try {
+        const user = getCurrentUser();
+        if (!user || !p || !p.chatKey || !p.reader || p.reader === user.id) return;
+        if (dmCloudKey(user.id, p.reader) !== p.chatKey) return;
+        const arr = readLs(p.chatKey);
+        if (!Array.isArray(arr)) return;
+        let changed37 = false;
+        arr.forEach(function (m) { if (m && m.from === user.id && !m.read) { m.read = true; changed37 = true; } });
+        if (!changed37) return;
+        writeLs(p.chatKey, arr);
+        if (l37IsChatOpen37(user, p.chatKey)) { try { renderDmMessages(); } catch (eRm37) {} }
+        try { if (typeof saveDmMsgs === 'function') saveDmMsgs(user.id, p.reader, arr); } catch (eSv37) {}
+      } catch (eCr37) {}
+    }
+
+    /* Индикатор «печатает...» от собеседника */
+    function l37HandleChatTyping37(p) {
+      try {
+        const user = getCurrentUser();
+        if (!p || !user || p.to !== user.id || p.from !== currentDmPartner) return;
+        const t = document.getElementById('dm-typing');
+        if (!t) return;
+        t.style.display = 'inline';
+        if (typingHideTimer) clearTimeout(typingHideTimer);
+        typingHideTimer = setTimeout(function () { t.style.display = 'none'; }, 3000);
+      } catch (eTy37) {}
+    }
+
+    /* Редактирование / удаление / реакции: подтягиваем свежий диалог и перерисовываем */
+    function l37HandleChatAction37(p) {
+      try {
+        const user = getCurrentUser();
+        if (!p || !p.chatKey || !user) return;
+        const known = knownDmCloudKeys();
+        if (dmCloudKey(user.id, currentDmPartner) !== p.chatKey && known.indexOf(p.chatKey) === -1) return;
+        pullKeys([p.chatKey]).then(function () {
+          try { renderActiveChatMessages(); } catch (eRa37) {}
+          try { renderDms(); } catch (eRd37) {}
+        }).catch(function () {});
+      } catch (eCa37) {}
+    }
+
+    /* Свежие посты и комментарии соцсети */
+    function l37HandleNewPost37() {
+      try {
+        l37PostPullGuard37 = true;
+        pullKeys(['posts']).then(function () {
+          l37PostPullGuard37 = false;
+          try { if (panels && panels.social && panels.social.classList.contains('active')) renderSocial(); } catch (eRs37) {}
+        }).catch(function () { l37PostPullGuard37 = false; });
+      } catch (eNp37) { l37PostPullGuard37 = false; }
+    }
+
+    function startL37Sync() {
+      if (!sb37 || l37SyncChannel) return;
+      try {
+        l37SyncChannel = sb37.channel('l37-instant-sync', { config: { broadcast: { self: false } } });
+        l37SyncChannel.on('broadcast', { event: 'new_dm' }, function (m) { l37HandleNewDm37(m && m.payload); });
+        l37SyncChannel.on('broadcast', { event: 'chat_typing' }, function (m) { l37HandleChatTyping37(m && m.payload); });
+        l37SyncChannel.on('broadcast', { event: 'chat_read' }, function (m) { l37HandleChatRead37(m && m.payload); });
+        l37SyncChannel.on('broadcast', { event: 'chat_action' }, function (m) { l37HandleChatAction37(m && m.payload); });
+        l37SyncChannel.on('broadcast', { event: 'new_post' }, function (m) { l37HandleNewPost37(); });
+        l37SyncChannel.subscribe(function (status) {
+          try {
+            if (status === 'SUBSCRIBED') { l37SyncReady = true; }
+            else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') { l37SyncReady = false; }
+          } catch (eSu37) {}
+        });
+      } catch (eSl37) { l37SyncChannel = null; l37SyncReady = false; }
     }
 
     /* ---- Рассылки с таймером по МСК ---- */
@@ -8800,6 +8945,9 @@
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
     try {
   startInstant();
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  startL37Sync();
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
     try {
   startDmSync();
@@ -15372,6 +15520,7 @@ try {
           let changed37 = false;
           arrAll.forEach(function (m) { if (m.from !== user.id && !m.read) { m.read = true; changed37 = true; } });
           if (changed37) saveDmMsgs(user.id, currentDmPartner, arrAll);
+          if (changed37 && typeof l37SyncSend === 'function') { try { l37SyncSend('chat_read', { chatKey: dmCloudKey(user.id, currentDmPartner), reader: user.id, ts: Date.now() }); } catch (eCrR37) {} }
         }
       } catch (eMr37) {}
       try {
