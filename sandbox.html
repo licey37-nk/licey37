@@ -165,6 +165,58 @@
   .sb-line.err { color: #ff7b72; font-weight: 600; }
   .sb-line.sys { color: #7dd3fc; }
   .sb-line.ok { color: #3fb950; font-weight: 700; }
+  .sb-syms {
+    display: flex; gap: 6px; overflow-x: auto; padding: 2px 2px;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .sb-syms::-webkit-scrollbar { display: none; }
+  .sb-sym {
+    flex: 0 0 auto; min-width: 40px; padding: 8px 11px; border-radius: 10px; cursor: pointer;
+    background: rgba(30, 38, 56, 0.85); border: 1px solid rgba(99, 112, 158, 0.35);
+    color: #c7d2fe; font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace;
+    font-size: 13.5px; font-weight: 700; white-space: nowrap; user-select: none;
+    transition: border-color 0.2s ease, color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  }
+  .sb-sym:active { transform: scale(0.94); border-color: #818cf8; box-shadow: 0 0 10px rgba(99, 102, 241, 0.35); }
+  .sb-sym.wide { min-width: 52px; }
+  .sb-modal {
+    position: fixed; inset: 0; z-index: 50; display: none;
+    align-items: center; justify-content: center; padding: 18px;
+    background: rgba(4, 7, 15, 0.66);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  }
+  .sb-modal-card {
+    width: 100%; max-width: 520px; max-height: 82dvh; overflow: auto;
+    background: rgba(17, 23, 41, 0.92);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    border: 1px solid rgba(129, 140, 248, 0.35); border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(2, 6, 23, 0.6);
+    padding: 16px;
+  }
+  .sb-modal-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 15.5px; font-weight: 800; color: #f0f6fc; letter-spacing: -0.01em; }
+  .sb-modal-head .sb-mini { margin-left: auto; }
+  .sb-save-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .sb-save-row input {
+    flex: 1; min-width: 0; padding: 11px 13px; border-radius: 12px;
+    background: rgba(11, 15, 25, 0.7); border: 1px solid rgba(99, 112, 158, 0.40);
+    color: #e6edf3; font-size: 16px; font-family: inherit; outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .sb-save-row input:focus { border-color: #818cf8; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18); }
+  .sb-prog-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin-bottom: 8px;
+    background: rgba(11, 15, 25, 0.55); border: 1px solid rgba(99, 112, 158, 0.28); border-radius: 14px;
+  }
+  .sb-prog-meta { min-width: 0; flex: 1; }
+  .sb-prog-meta b { display: block; font-size: 13.5px; font-weight: 800; color: #f0f6fc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sb-prog-meta small { font-size: 11px; color: #8b93a7; font-weight: 600; }
+  .sb-prog-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .sb-progs-empty { font-size: 12.5px; color: #8b93a7; font-weight: 600; padding: 6px 2px; }
+  @media (max-width: 768px) {
+    .sb-modal { align-items: flex-end; padding: 0; }
+    .sb-modal-card { max-width: none; border-radius: 22px 22px 0 0; max-height: 86dvh; padding: 14px 14px calc(16px + env(safe-area-inset-bottom)); }
+    .sb-sym { min-width: 38px; padding: 9px 10px; font-size: 13px; }
+  }
   .sb-spin { display: inline-block; animation: sbRot 1s linear infinite; }
   @keyframes sbRot { to { transform: rotate(360deg); } }
   @media (max-width: 768px) {
@@ -206,6 +258,8 @@
     <div class="sb-actions">
       <button type="button" class="sb-btn run" id="sb-run">▶️ Запустить</button>
       <button type="button" class="sb-btn init" id="sb-py-init" style="display:none;">⚙️ Инициализировать Python (~6 МБ)</button>
+      <button type="button" class="sb-btn ghost" id="sb-save">💾 Сохранить</button>
+      <button type="button" class="sb-btn ghost" id="sb-progs">📂 Мои программы</button>
     </div>
     <section class="sb-editor">
       <div class="sb-ed-head">
@@ -222,6 +276,25 @@
         <textarea class="sb-code" id="sb-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Редактор кода"></textarea>
       </div>
     </section>
+    <div class="sb-syms" id="sb-syms" aria-label="Панель быстрых символов">
+      <button type="button" class="sb-sym wide" data-sym="Tab">Tab ⇥</button>
+      <button type="button" class="sb-sym" data-sym="{">{</button>
+      <button type="button" class="sb-sym" data-sym="}">}</button>
+      <button type="button" class="sb-sym" data-sym="(">(</button>
+      <button type="button" class="sb-sym" data-sym=")">)</button>
+      <button type="button" class="sb-sym" data-sym="[">[</button>
+      <button type="button" class="sb-sym" data-sym="]">]</button>
+      <button type="button" class="sb-sym" data-sym=";">;</button>
+      <button type="button" class="sb-sym" data-sym=":">:</button>
+      <button type="button" class="sb-sym" data-sym="==">==</button>
+      <button type="button" class="sb-sym" data-sym="!=">!=</button>
+      <button type="button" class="sb-sym" data-sym="<=">&lt;=</button>
+      <button type="button" class="sb-sym" data-sym=">=">&gt;=</button>
+      <button type="button" class="sb-sym" data-sym="<<">&lt;&lt;</button>
+      <button type="button" class="sb-sym" data-sym=">>">&gt;&gt;</button>
+      <button type="button" class="sb-sym" data-sym='"'>&quot;</button>
+      <button type="button" class="sb-sym" data-sym="'">'</button>
+    </div>
     <section class="sb-termwrap">
       <div class="sb-term-head">
         <span class="sb-status" id="sb-status">● Готово</span>
@@ -230,6 +303,17 @@
       </div>
       <div class="sb-term" id="sb-term" aria-live="polite"></div>
     </section>
+  </div>
+
+  <div class="sb-modal" id="sb-progs-modal">
+    <div class="sb-modal-card">
+      <div class="sb-modal-head">📂 Мои программы<button type="button" class="sb-mini" id="sb-progs-close">✕</button></div>
+      <div class="sb-save-row">
+        <input id="sb-prog-name" placeholder="Название программы (например, Домашка)" maxlength="60">
+        <button type="button" class="sb-btn init" id="sb-prog-save">💾 Сохранить</button>
+      </div>
+      <div id="sb-prog-list"></div>
+    </div>
   </div>
 
 <script>
@@ -459,6 +543,100 @@
     $('sb-clear').addEventListener('click', function () { codeEl.value = ''; updateGutter(); codeEl.focus(); sysMsg('Редактор очищен.'); });
     $('sb-term-clear').addEventListener('click', function () { term.innerHTML = ''; sysMsg('Терминал очищен.'); });
     $('sb-tmpl-btn').addEventListener('click', function () { applyTemplate(); });
+
+    /* ==== ⌨️ Панель быстрых символов (вставка в позицию курсора) ==== */
+    function insertSym37(sym) {
+      var text = sym === 'Tab' ? '    ' : sym;
+      var s = codeEl.selectionStart || 0;
+      var e = codeEl.selectionEnd || 0;
+      codeEl.value = codeEl.value.slice(0, s) + text + codeEl.value.slice(e);
+      codeEl.selectionStart = codeEl.selectionEnd = s + text.length;
+      codeEl.focus();
+      updateGutter();
+    }
+    (function () {
+      var symPanel = $('sb-syms');
+      if (!symPanel) return;
+      symPanel.addEventListener('mousedown', function (e) { e.preventDefault(); });
+      symPanel.addEventListener('click', function (e) {
+        var b = e.target.closest('button[data-sym]');
+        if (b) insertSym37(b.getAttribute('data-sym'));
+      });
+    })();
+
+    /* ==== 💾 Мои сохранённые программы (100% локально, только localStorage) ==== */
+    var PROG_KEY = 'l37_sandbox_programs';
+    var LANG_LABEL = { python: 'Python 3', cpp: 'C++17', js: 'JavaScript' };
+    function loadProgs37() {
+      try { var v = JSON.parse(localStorage.getItem(PROG_KEY) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; }
+    }
+    function storeProgs37(arr) {
+      try { localStorage.setItem(PROG_KEY, JSON.stringify(arr.slice(-50))); } catch (e) { errMsg('Не удалось сохранить: хранилище браузера недоступно.'); }
+    }
+    function renderProgs37() {
+      var box = $('sb-prog-list');
+      if (!box) return;
+      var arr = loadProgs37();
+      if (!arr.length) { box.innerHTML = '<p class="sb-progs-empty">Пока пусто — напиши код и нажми «💾 Сохранить».</p>'; return; }
+      box.innerHTML = arr.slice().reverse().map(function (p) {
+        return '<div class="sb-prog-item">' +
+          '<div class="sb-prog-meta"><b>' + escHtml(p.name) + '</b><small>' + escHtml(LANG_LABEL[p.lang] || p.lang) + ' · ' + new Date(p.ts).toLocaleString('ru-RU') + '</small></div>' +
+          '<div class="sb-prog-actions">' +
+          '<button type="button" class="sb-mini" data-prog-load="' + escHtml(p.id) + '">📂 Загрузить</button>' +
+          '<button type="button" class="sb-mini" data-prog-del="' + escHtml(p.id) + '">🗑️</button>' +
+          '</div></div>';
+      }).join('');
+      Array.prototype.forEach.call(box.querySelectorAll('[data-prog-load]'), function (b) {
+        b.addEventListener('click', function () { loadProg37(b.getAttribute('data-prog-load')); });
+      });
+      Array.prototype.forEach.call(box.querySelectorAll('[data-prog-del]'), function (b) {
+        b.addEventListener('click', function () {
+          var pid = b.getAttribute('data-prog-del');
+          storeProgs37(loadProgs37().filter(function (p) { return p.id !== pid; }));
+          renderProgs37();
+          sysMsg('🗑️ Программа удалена из локального хранилища.');
+        });
+      });
+    }
+    function loadProg37(id) {
+      var p = loadProgs37().filter(function (x) { return x.id === id; })[0];
+      if (!p) return;
+      state.lang = (p.lang in TEMPLATES) ? p.lang : 'python';
+      state.tmpl = 0;
+      Array.prototype.forEach.call(document.querySelectorAll('.sb-lang-tab'), function (t2) {
+        t2.classList.toggle('active', t2.getAttribute('data-lang') === state.lang);
+      });
+      rebuildTmplChips();
+      syncFileBadge37();
+      syncPyBtn();
+      codeEl.value = p.code;
+      updateGutter();
+      closeProgs37();
+      sysMsg('📂 Загружена программа: ' + p.name + ' (' + LANG_LABEL[state.lang] + ')');
+    }
+    function openProgs37() {
+      renderProgs37();
+      $('sb-progs-modal').style.display = 'flex';
+      var inp = $('sb-prog-name');
+      if (inp) { inp.value = ''; setTimeout(function () { try { inp.focus(); } catch (e) {} }, 60); }
+    }
+    function closeProgs37() { $('sb-progs-modal').style.display = 'none'; }
+    $('sb-progs').addEventListener('click', openProgs37);
+    $('sb-save').addEventListener('click', openProgs37);
+    $('sb-progs-close').addEventListener('click', closeProgs37);
+    $('sb-progs-modal').addEventListener('click', function (e) { if (e.target === this) closeProgs37(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeProgs37(); });
+    $('sb-prog-save').addEventListener('click', function () {
+      var code = codeEl.value;
+      if (!code.trim()) { errMsg('⚠️ Редактор пуст — нечего сохранять.'); return; }
+      var name = ($('sb-prog-name').value || '').trim() || ('Программа · ' + new Date().toLocaleDateString('ru-RU'));
+      var arr = loadProgs37();
+      arr.push({ id: 'pr' + Date.now().toString(36), name: name, lang: state.lang, code: code, ts: Date.now() });
+      storeProgs37(arr);
+      $('sb-prog-name').value = '';
+      renderProgs37();
+      okMsg('💾 Сохранено локально в этом браузере: ' + name);
+    });
     $('sb-copy').addEventListener('click', function () {
       function fallback() {
         codeEl.select();
@@ -529,7 +707,9 @@
       rebuildTmplChips: rebuildTmplChips,
       lines: function () { return term.children.length; },
       termText: function () { return term.textContent; },
-      code: function () { return codeEl.value; }
+      code: function () { return codeEl.value; },
+      programs: loadProgs37,
+      openProgs: openProgs37
     };
 
     sysMsg('💻 Код-песочница Лицеиста готова. Выбери язык, шаблон — и жми «▶️ Запустить» (или Ctrl+Enter).');
