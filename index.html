@@ -3825,6 +3825,41 @@
     .dm-row .dm-pin-toggle { background: none; border: none; cursor: pointer; font-size: 0.95rem; opacity: 0.55; }
     .dm-row .dm-pin-toggle.on { opacity: 1; }
 
+    .dm-meta37 { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+    .dm-time37 { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
+    .dm-unread-pill37 {
+      min-width: 22px; height: 22px; border-radius: 999px; padding: 0 7px;
+      background: linear-gradient(135deg, #1d4ed8, #059669); color: #fff;
+      font-size: 0.74rem; font-weight: 800; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 12px rgba(29, 78, 216, 0.45);
+    }
+    .dm-ticks37 { font-size: 0.82rem; color: #059669; white-space: nowrap; letter-spacing: -1px; }
+
+    /* ---- 🔔 Карточка настроек уведомлений в шторку ---- */
+    .notif-banner37 {
+      display: flex; gap: 10px; align-items: center; justify-content: space-between;
+      background: linear-gradient(135deg, rgba(29, 78, 216, 0.10), rgba(5, 150, 105, 0.10));
+      border: 1px solid rgba(29, 78, 216, 0.25); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px;
+    }
+    .notif-banner37.off37 { background: rgba(239, 68, 68, 0.08); border-color: rgba(239, 68, 68, 0.3); }
+    .notif-banner-txt37 { font-size: 0.8rem; line-height: 1.35; }
+    .ns-row37 { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+    .ns-row37:last-child { border-bottom: none; }
+    .ns-info37 { min-width: 0; }
+    .ns-label37 { font-size: 0.86rem; font-weight: 600; }
+    .ns-hint37 { font-size: 0.72rem; color: var(--muted); }
+    .ns-toggle37 {
+      width: 44px; height: 25px; border-radius: 999px; border: none; background: var(--border);
+      position: relative; cursor: pointer; flex-shrink: 0; transition: background 0.25s;
+    }
+    .ns-toggle37.on { background: linear-gradient(135deg, #1d4ed8, #059669); }
+    .ns-knob37 {
+      position: absolute; top: 3px; left: 3px; width: 19px; height: 19px; border-radius: 50%;
+      background: #fff; box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25);
+      transition: left 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .ns-toggle37.on .ns-knob37 { left: 22px; }
+
     /* ---- Лента: табы, опросы, сворачивание, стекло ---- */
     .feed-tabs { display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 2px; }
     .feed-tabs button {
@@ -4593,6 +4628,7 @@
           </div>
           <div class="people-grid" id="dm-people-results" style="margin-top:10px;"></div>
         </div>
+        <div class="card" id="notif-settings-card37" style="margin-bottom:14px;"></div>
         <div class="archive-folder">
           <button type="button" class="archive-toggle" id="archive-toggle"><span>📥 Архив чатов (<span id="archive-count">0</span>)</span><span id="archive-arrow">▸</span></button>
           <div class="archive-list" id="archive-list"></div>
@@ -6129,7 +6165,7 @@
         if (DEVICE_LOCAL_KEYS.indexOf(row.key) !== -1) return;
         const before = liveSyncSnapshot();
         mergeIntoStorage(row.key, row.value);
-        if (liveSyncSnapshot() !== before) { refreshActiveViews(); refreshChatViews(); }
+        if (liveSyncSnapshot() !== before) { refreshActiveViews(); refreshChatViews(); try { l37NotifyKeyChanged37(row.key); } catch (eNk37) { /* тихо */ } }
       } catch (e) {}
     }
 
@@ -9607,6 +9643,16 @@
                 const aNow37 = getDmMsgs(user.id, currentDmPartner);
                 if (aNow37.length && (aNow37[aNow37.length - 1].id || '') !== lastMine37 && aNow37[aNow37.length - 1].from !== user.id) playDmSound37('in');
               } catch (eSn37) { /* тихо */ }
+              try {
+                if (document.hidden) {
+                  const aN37 = getDmMsgs(user.id, currentDmPartner);
+                  const lmN37 = aN37[aN37.length - 1];
+                  if (lmN37 && lmN37.from !== user.id) {
+                    const suF37 = getUserById(lmN37.from);
+                    l37ShowNotif37('dm:' + (lmN37.id || ''), (suF37 && suF37.name) || 'Новое сообщение', (lmN37.text || '📷 Фото').slice(0, 160), 'dm:' + lmN37.from);
+                  }
+                }
+              } catch (eNf37) { /* тихо */ }
               try { renderActiveChatMessages(); } catch (eRa37) {}
               try { renderDms(); } catch (eRd37) {}
             }
@@ -9695,6 +9741,14 @@
         const added = l37MergeIncomingDm37(p);
         if (!added) return;
         try { playDmSound37('in'); } catch (eSn37) { /* тихо */ }
+        try {
+          const isOpenChat37 = l37IsChatOpen37(user, p.chatKey);
+          if (!isOpenChat37 || document.hidden) {
+            const senderIdN37 = p.from || p.msg.from;
+            const suN37 = getUserById(senderIdN37);
+            l37ShowNotif37('dm:' + (p.msg.id || (p.chatKey + ':' + (p.msg.ts || ''))), (suN37 && suN37.name) || 'Новое сообщение', (p.msg.text || '📷 Фото').slice(0, 160), 'dm:' + senderIdN37);
+          }
+        } catch (eNdm37) { /* тихо */ }
         try {
           if (typeof registerDmIndex === 'function') {
             const senderId = p.from || p.msg.from;
@@ -10107,7 +10161,8 @@
           toast('Чат перемещён в архив 📥', 'info');
           return;
         }
-        const openBtn = e.target.closest('[data-dm-open]') || e.target.closest('[data-dm-row]');
+        if (e.target.closest('[data-dm-pintoggle]')) return;
+        const openBtn = e.target.closest('[data-dm-row]') || e.target.closest('[data-dm-open]');
         if (openBtn) { openDm(openBtn.dataset.dmOpen || openBtn.dataset.dmRow); return; }
       });
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
@@ -17012,6 +17067,19 @@ try {
 
     let dmFilter37 = 'all';
 
+    /* Время последнего сообщения: HH:MM / Вчера / ДД.ММ */
+    function dmTime37(ts) {
+      try {
+        if (!ts) return '';
+        const d = new Date(ts), now = new Date();
+        const hm = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+        const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+        if (ts >= startToday) return hm;
+        if (ts >= startToday - 86400000) return 'Вчера';
+        return ('0' + d.getDate()).slice(-2) + '.' + ('0' + (d.getMonth() + 1)).slice(-2);
+      } catch (eT37) { return ''; }
+    }
+
     function unreadCount37(user, arr) {
       return (Array.isArray(arr) ? arr : []).filter(function (m) {
         return m.from !== user.id && !m.read && !(Array.isArray(m.deletedFor) && m.deletedFor.indexOf(user.id) !== -1);
@@ -17114,16 +17182,20 @@ try {
             const pu = getUserById(partnerId);
             const fromMe = last.from === user.id;
             const unread = unreadCount37(user, getDmMsgs(user.id, partnerId));
-            return '<div class="dm-row' + (isPinned(partnerId) ? ' pinned-chat' : '') + '">' +
+            return '<div class="dm-row' + (isPinned(partnerId) ? ' pinned-chat' : '') + '" data-dm-row="' + esc(partnerId) + '">' +
               '<div class="ava-online-wrap37">' + msgAvatarHtml(pu ? pu.avatar : null, 'mini-ava ava-ring ' + (pu ? itagRing37(pu) : 'ring-def')) + (pu && dmIsOnline37(pu.id) ? '<span class="ava-online-dot37"></span>' : '') + '</div>' +
               '<div style="min-width:0; flex:1;">' +
                 '<div style="font-weight:700;">' + esc(pu ? pu.name : 'Пользователь') + (pu ? userVerifiedSpan(pu) + roleBadges37(pu, classIdOf(pu.grade, pu.letter)) : '') + (pu ? ' <span class="user-class">' + esc(classIdOf(pu.grade, pu.letter)) + '</span>' : '') + '</div>' +
                 '<div class="field-hint" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + (fromMe ? 'Вы: ' : '') + esc(last.text || '📷 Фото') + '</div>' +
                 (getDmDraft37(user.id, partnerId) ? '<div class="dm-draft-hint">Черновик: ' + esc(getDmDraft37(user.id, partnerId).slice(0, 40)) + '</div>' : '') +
               '</div>' +
-              (unread ? '<span class="unread-badge">' + (unread > 99 ? '99+' : unread) + '</span>' : '') +
+              '<div class="dm-meta37">' +
+                '<span class="dm-time37">' + esc(dmTime37(last.ts)) + '</span>' +
+                (unread
+                  ? '<span class="dm-unread-pill37">' + (unread > 99 ? '99+' : unread) + '</span>'
+                  : (fromMe ? '<span class="dm-ticks37">' + (last.read ? '✓✓' : '✓') + '</span>' : '')) +
+              '</div>' +
               '<button type="button" class="dm-pin-toggle' + (isPinned(partnerId) ? ' on' : '') + '" data-dm-pintoggle="' + esc(partnerId) + '" title="Закрепить диалог">📌</button>' +
-              '<button type="button" class="btn btn-outline btn-sm" data-dm-open="' + esc(partnerId) + '">Открыть</button>' +
               '<button type="button" class="btn btn-ghost btn-sm" data-dm-archive="' + esc(partnerId) + '" title="В архив">📥</button>' +
             '</div>';
           }).join('')
@@ -18234,6 +18306,7 @@ try {
 
     let l37AudioCtx37 = null;
     function playDmSound37(kind) {
+      try { if (typeof l37NotifAllowed37 === 'function' && !l37NotifAllowed37('sound')) return; } catch (eSg37) { /* тихо */ }
       try {
         if (typeof window === 'undefined') return;
         const AC37 = window.AudioContext || window.webkitAudioContext;
@@ -18759,6 +18832,278 @@ try {
       l37FbState37 = null;
       toast('💾 Блок сохранён и виден всем посетителям сайта!', 'success');
     }
+
+
+    /* ============================================================
+       🔔 L37 PUSH-IN-SITE NOTIFICATIONS v1 — системные уведомления
+       в шторку телефона/ПК прямо из браузера (sw.js + Notification API).
+       Дедупликация id в localStorage, тумблеры, роутинг по клику.
+       Ни один существующий движок не изменён и не удалён.
+       ============================================================ */
+    const L37_NOTIF_LS37 = 'l37_notif_settings';
+    const L37_NOTIF_SHOWN37 = 'l37_notif_shown37';
+    var l37SwReg37 = null;
+
+    function getNotifSettings37() {
+      let s = null;
+      try { s = polishLsGet(L37_NOTIF_LS37, null); } catch (e) { s = null; }
+      if (!s || typeof s !== 'object') s = {};
+      return {
+        master: s.master !== false,
+        dm: s.dm !== false,
+        posts: s.posts !== false,
+        channels: s.channels !== false,
+        sound: s.sound !== false
+      };
+    }
+
+    function setNotifSetting37(k, v) {
+      const s = getNotifSettings37();
+      if (k in s) s[k] = !!v;
+      try { polishLsSet(L37_NOTIF_LS37, s); } catch (e) {}
+      return s;
+    }
+
+    function l37NotifPerm37() {
+      try { return ('Notification' in window) ? Notification.permission : 'unsupported'; }
+      catch (e) { return 'unsupported'; }
+    }
+
+    function l37RegisterSW37() {
+      try {
+        if (!('serviceWorker' in navigator)) return Promise.resolve(null);
+        if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') return Promise.resolve(null);
+        if (l37SwReg37) return Promise.resolve(l37SwReg37);
+        return navigator.serviceWorker.register('sw.js').then(function (reg) {
+          l37SwReg37 = reg;
+          return reg;
+        }).catch(function () { return null; });
+      } catch (eSw37) { return Promise.resolve(null); }
+    }
+
+    function l37RequestNotif37() {
+      try {
+        if (!('Notification' in window)) { toast('Браузер не поддерживает уведомления 😭', 'error'); return Promise.resolve(false); }
+        if (Notification.permission === 'granted') return Promise.resolve(true);
+        if (Notification.permission === 'denied') { toast('Уведомления заблокированы в настройках браузера 🚫', 'error'); return Promise.resolve(false); }
+        return Notification.requestPermission().then(function (res) {
+          try { renderNotifSettings37(); } catch (eR37) {}
+          if (res === 'granted') return true;
+          toast('Разрешение на уведомления не выдано', 'info');
+          return false;
+        }).catch(function () { return false; });
+      } catch (eRn37) { return Promise.resolve(false); }
+    }
+
+    function l37NotifAllowed37(kind) {
+      const s = getNotifSettings37();
+      if (!s.master) return false;
+      if (kind === 'sound') return !!s.sound;
+      if (kind === 'dm') return !!s.dm;
+      if (kind === 'posts') return !!s.posts;
+      if (kind === 'channels') return !!s.channels;
+      return false;
+    }
+
+    function l37NotifSeen37(id) {
+      try {
+        const arr = polishLsGet(L37_NOTIF_SHOWN37, []);
+        return Array.isArray(arr) && arr.indexOf(id) !== -1;
+      } catch (e) { return false; }
+    }
+
+    function l37NotifRemember37(id) {
+      try {
+        let arr = polishLsGet(L37_NOTIF_SHOWN37, []);
+        if (!Array.isArray(arr)) arr = [];
+        if (arr.indexOf(id) === -1) arr.push(id);
+        while (arr.length > 300) arr.shift();
+        polishLsSet(L37_NOTIF_SHOWN37, arr);
+      } catch (e) {}
+    }
+
+    function l37NotifKind37(id) {
+      const s = String(id || '');
+      if (s.indexOf('dm:') === 0) return 'dm';
+      if (s.indexOf('ch') === 0) return 'channels';
+      return 'posts';
+    }
+
+    function l37ShowNotif37(id, title, body, open) {
+      try {
+        if (!l37NotifAllowed37(l37NotifKind37(id))) return;
+        if (l37NotifSeen37(id)) return;
+        if (l37NotifPerm37() !== 'granted') return;
+        l37NotifRemember37(id);
+        const opts = { body: String(body || '').slice(0, 160), tag: id, data: { open: open || '', url: location.href.split('#')[0] } };
+        if (l37SwReg37 && l37SwReg37.showNotification) {
+          try { l37SwReg37.showNotification(title || 'Лицей \u211637', opts); return; } catch (eSwN37) { /* fallback */ }
+        }
+        if (typeof Notification !== 'undefined') {
+          const n = new Notification(title || 'Лицей \u211637', opts);
+          try {
+            n.onclick = function () { try { window.focus(); l37RouteOpen37(open || ''); n.close(); } catch (eNc37) {} };
+          } catch (eNc2) {}
+        }
+      } catch (eN37) {}
+    }
+
+    function l37RouteOpen37(open) {
+      try {
+        if (!open) return;
+        if (open.indexOf('dm:') === 0) {
+          const pid = open.slice(3);
+          setTab('social');
+          setSocialSub('dms');
+          setTimeout(function () { try { openDm(pid); } catch (e) {} }, 150);
+        } else if (open.indexOf('post:') === 0) {
+          const postId = open.slice(5);
+          setTab('social');
+          setSocialSub('feed');
+          openPostComments[postId] = true;
+          try { renderSocial(); } catch (e) {}
+        } else if (open.indexOf('ch:') === 0) {
+          const parts = open.split(':');
+          setTab('social');
+          setSocialSub('channels');
+          setTimeout(function () {
+            try {
+              const btn = document.querySelector('[data-ch-open="' + (parts[1] || '') + '"]');
+              if (btn) { btn.click(); try { btn.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {} }
+            } catch (e) {}
+          }, 200);
+        }
+      } catch (eR37) {}
+    }
+
+    function l37NotifyKeyChanged37(key) {
+      try {
+        const user = getCurrentUser();
+        if (!user) return;
+        const navBtn = document.querySelector('#main-nav button.active');
+        const activeTab = navBtn ? navBtn.dataset.tab : '';
+        const quiet = document.hidden || activeTab !== 'social';
+        if (!quiet) return;
+        const fresh = Date.now() - 20000;
+        if (key === 'posts') {
+          getList('posts').forEach(function (p) {
+            if (!p) return;
+            const author = p.userId || p.from || p.authorId;
+            if (author && author !== user.id && (p.ts || 0) > fresh) {
+              const au = getUserById(author);
+              l37ShowNotif37('post:' + p.id, (au && au.name) || 'Новый пост', (p.text || '').slice(0, 160), 'post:' + p.id);
+            }
+            (Array.isArray(p.comments) ? p.comments : []).forEach(function (c) {
+              if (c && c.userId && c.userId !== user.id && (c.ts || 0) > fresh) {
+                const cu = getUserById(c.userId);
+                l37ShowNotif37('postc:' + p.id + ':' + c.id, (cu && cu.name) || 'Новый комментарий', (c.text || '').slice(0, 160), 'post:' + p.id);
+              }
+            });
+          });
+        } else if (key === 'channels') {
+          getList('channels').forEach(function (ch) {
+            if (!ch || !Array.isArray(ch.subs) || ch.subs.indexOf(user.id) === -1) return;
+            if (Array.isArray(ch.notifOff) && ch.notifOff.indexOf(user.id) !== -1) return;
+            (Array.isArray(ch.posts) ? ch.posts : []).forEach(function (p) {
+              if (!p) return;
+              const author = p.userId || p.from;
+              if (author && author !== user.id && (p.ts || 0) > fresh) {
+                const cu = getUserById(author);
+                l37ShowNotif37('chpost:' + ch.id + ':' + p.id, (ch.icon ? ch.icon + ' ' : '') + (ch.name || 'Канал'), (cu && cu.name ? cu.name + ': ' : '') + (p.text || '').slice(0, 140), 'ch:' + ch.id + ':' + p.id);
+              }
+            });
+          });
+        }
+      } catch (eK37) {}
+    }
+
+    function l37NsBtn37(key, label, hint) {
+      const s = getNotifSettings37();
+      const on = !!s[key];
+      return '<div class="ns-row37"><div class="ns-info37"><div class="ns-label37">' + label + '</div>' + (hint ? '<div class="ns-hint37">' + hint + '</div>' : '') + '</div><button type="button" class="ns-toggle37' + (on ? ' on' : '') + '" data-ns37="' + key + '" aria-pressed="' + (on ? 'true' : 'false') + '"><span class="ns-knob37"></span></button></div>';
+    }
+
+    function renderNotifSettings37() {
+      try {
+        const card = document.getElementById('notif-settings-card37');
+        if (!card) return;
+        const perm = l37NotifPerm37();
+        let html = '<h3 class="info-title">🔔 Уведомления в шторку телефона</h3>';
+        if (perm === 'default') {
+          html += '<div class="notif-banner37" id="notif-banner37"><div class="notif-banner-txt37">Включите уведомления — Лицей \u211637 сообщит о новых сообщениях, постах и записях в каналах, даже если вкладка свёрнута.</div><button type="button" class="btn btn-primary btn-sm" id="notif-enable-btn37">🔔 Включить</button></div>';
+        } else if (perm === 'denied') {
+          html += '<div class="notif-banner37 off37"><div class="notif-banner-txt37">Уведомления заблокированы в настройках браузера — разрешите их вручную в информации о сайте.</div></div>';
+        } else if (perm === 'unsupported') {
+          html += '<div class="notif-banner37 off37"><div class="notif-banner-txt37">Этот браузер не поддерживает системные уведомления.</div></div>';
+        }
+        html += l37NsBtn37('master', '🔔 Уведомления в шторку телефона (прямо с сайта)', 'Главный переключатель всех уведомлений');
+        html += l37NsBtn37('dm', '💬 Личные сообщения', 'Новые сообщения в диалогах');
+        html += l37NsBtn37('posts', '📝 Новые посты и комментарии', 'Активность в Соцсети');
+        html += l37NsBtn37('channels', '📣 Каналы, на которые я подписан', 'Новые записи в моих каналах');
+        html += l37NsBtn37('sound', '🔊 Звук уведомлений', 'Звук при новых сообщениях');
+        card.innerHTML = html;
+      } catch (eRns37) {}
+    }
+
+    try {
+      const nsc37 = document.getElementById('notif-settings-card37');
+      if (nsc37) {
+        nsc37.addEventListener('click', function (e) {
+          const en = e.target.closest ? e.target.closest('#notif-enable-btn37') : null;
+          if (en) {
+            l37RequestNotif37().then(function (ok) {
+              if (ok) {
+                setNotifSetting37('master', true);
+                try { l37RegisterSW37(); } catch (e2) {}
+                try { toast('🔔 Уведомления включены!', 'success'); } catch (e4) {}
+              }
+              try { renderNotifSettings37(); } catch (e3) {}
+            });
+            return;
+          }
+          const t = e.target.closest ? e.target.closest('[data-ns37]') : null;
+          if (t) {
+            const key = t.getAttribute('data-ns37');
+            const now = !getNotifSettings37()[key];
+            if (key === 'master' && now) {
+              l37RequestNotif37().then(function (ok) {
+                if (!ok) return;
+                setNotifSetting37('master', true);
+                try { l37RegisterSW37(); } catch (e2) {}
+                try { renderNotifSettings37(); } catch (e3) {}
+              });
+            } else {
+              setNotifSetting37(key, now);
+              try { renderNotifSettings37(); } catch (e3) {}
+            }
+          }
+        });
+      }
+    } catch (eNsCard37) {}
+
+    try {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('message', function (ev) {
+          try {
+            const d = ev && ev.data;
+            if (d && d.l37NotifyOpen37) {
+              l37RouteOpen37(d.l37NotifyOpen37);
+              try { window.focus(); } catch (e) {}
+            }
+          } catch (eM37) {}
+        });
+      }
+    } catch (eL37) {}
+    try { l37RegisterSW37(); } catch (eReg37) {}
+    try {
+      const h37 = location.hash || '';
+      if (h37.indexOf('#l37open=') === 0) {
+        const target37 = decodeURIComponent(h37.slice(9));
+        try { history.replaceState(null, '', location.pathname + location.search); } catch (eH37) { try { location.hash = ''; } catch (eH2) {} }
+        setTimeout(function () { try { l37RouteOpen37(target37); } catch (eR2) {} }, 500);
+      }
+    } catch (eHash37) {}
+    try { if (typeof window !== 'undefined') { window.l37RouteOpen37 = l37RouteOpen37; window.l37ShowNotif37 = l37ShowNotif37; window.getNotifSettings37 = getNotifSettings37; window.setNotifSetting37 = setNotifSetting37; window.renderNotifSettings37 = renderNotifSettings37; window.l37NotifyKeyChanged37 = l37NotifyKeyChanged37; window.l37NotifAllowed37 = l37NotifAllowed37; } } catch (eExp37) {}
 
     window.__lp37Ready = true;
 
