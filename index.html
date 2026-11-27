@@ -1449,6 +1449,12 @@
       gap: 18px;
       align-items: center;
       flex-wrap: wrap;
+      position: relative;
+    }
+
+    .pet-avatar-wrap {
+      position: relative;
+      flex-shrink: 0;
     }
 
     .pet-avatar {
@@ -1462,6 +1468,7 @@
       font-size: 2.6rem;
       box-shadow: var(--shadow-sm);
       flex-shrink: 0;
+      transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .pet-nick {
@@ -3009,13 +3016,16 @@
     .btn:active { transform: scale(0.97); }
 
     .pet-avatar { position: relative; animation: petSway 3.6s ease-in-out infinite; }
-    .pet-avatar.sleeping { animation: petZzz 4.5s ease-in-out infinite; }
-    .pet-avatar.jump { animation: petJump 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
-    .pet-avatar.wobble { animation: petWobble 0.7s ease-in-out; }
+    .pet-avatar.sleeping { transform: rotate(-78deg) translateY(14px) scaleY(0.92); animation: petSleepBreath 3.4s ease-in-out infinite 0.8s; }
+    .pet-avatar.jump { animation: petJump 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .pet-avatar.wobble { animation: petWobble 1.5s ease-in-out; }
+    .pet-zzz { position: absolute; top: -4px; right: -6px; display: flex; align-items: flex-start; gap: 1px; pointer-events: none; z-index: 6; font-weight: 800; color: #6366f1; }
+    .pet-zzz span { font-size: 0.95rem; line-height: 1; opacity: 0; animation: zzzRise 2.8s ease-in-out infinite; }
     @keyframes petSway { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg) translateY(-3px); } }
     @keyframes petJump { 0% { transform: translateY(0); } 35% { transform: translateY(-24px) rotate(-7deg); } 62% { transform: translateY(0); } 80% { transform: translateY(-9px); } 100% { transform: translateY(0); } }
     @keyframes petWobble { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-10deg) scale(1.06); } 70% { transform: rotate(10deg) scale(1.06); } }
-    @keyframes petZzz { 0%, 100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(0.96); filter: brightness(0.82); } }
+    @keyframes petSleepBreath { 0%, 100% { transform: rotate(-78deg) translateY(14px) scaleY(0.92) scale(1); filter: brightness(1); } 50% { transform: rotate(-78deg) translateY(14px) scaleY(0.92) scale(0.96); filter: brightness(0.84); } }
+    @keyframes zzzRise { 0% { opacity: 0; transform: translateY(8px) scale(0.6); } 25% { opacity: 1; } 100% { opacity: 0; transform: translateY(-28px) scale(1.2); } }
 
     .pet-scale { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; color: var(--muted); margin: 5px 0; font-weight: 600; }
     .pet-scale .xp-bar { flex: 1; height: 10px; margin: 0; }
@@ -7564,9 +7574,9 @@
       setTimeout(function () { if (layer.parentNode) layer.parentNode.removeChild(layer); }, 6000);
     }
 
-    function spawnHearts(container) {
+    function spawnHearts(container, emojiSet) {
       if (!container) return;
-      const emojis = ['❤️', '💖', '💛', '🧡', '💗'];
+      const emojis = emojiSet && emojiSet.length ? emojiSet : ['❤️', '💖', '💛', '🧡', '💗'];
       for (let i = 0; i < 6; i++) {
         const h = document.createElement('div');
         h.className = 'float-heart';
@@ -7606,9 +7616,12 @@
 
     function mskHour(ts) { return new Date(ts + 3 * 3600000).getUTCHours(); }
 
-    function isPetSleeping(ts) {
-      const h = mskHour(ts || Date.now());
-      return h >= 22 || h < 8;
+    function isPetSleeping(ts, pet) {
+      const d = new Date((ts || Date.now()) + 3 * 3600000);
+      const h = d.getUTCHours();
+      const m = d.getUTCMinutes();
+      if (h >= 22 || h < 6 || (h === 6 && m < 30)) return true;
+      return !!(pet && pet.manualSleep);
     }
 
     function daytimeMinutes(fromTs, toTs) {
@@ -7619,7 +7632,7 @@
       let day = mskDayStart(from);
       let guard = 0;
       while (day <= toTs && guard < 450) {
-        const lo = Math.max(from, day + 8 * 3600000);
+        const lo = Math.max(from, day + 6.5 * 3600000);
         const hi = Math.min(toTs, day + 22 * 3600000);
         if (hi > lo) total += (hi - lo) / 60000;
         day += 86400000;
@@ -7688,7 +7701,7 @@
     }
 
     function petStatus(pet) {
-      if (isPetSleeping(Date.now())) return '💤 Питомец сладко спит';
+      if (isPetSleeping(Date.now(), pet)) return '😴 Спит до утра';
       if (pet.hunger <= 15 && pet.fun <= 15) return '😢 Совсем грустит: голоден и скучает...';
       if (pet.hunger <= 15) return '🍖 Проголодался — покорми!';
       if (pet.fun <= 15) return '🎾 Скучает — поиграй!';
@@ -7746,14 +7759,18 @@
         return;
       }
       const nowTs = Date.now();
-      const sleeping = isPetSleeping(nowTs);
+      const sleeping = isPetSleeping(nowTs, pet);
+      const nightNow = isPetSleeping(nowTs);
       const feedReady = !pet.lastFeed || nowTs - pet.lastFeed >= PET_ACTION_CD;
       const playReady = !pet.lastPlay || nowTs - pet.lastPlay >= PET_ACTION_CD;
       const feedLeft = feedReady ? 0 : Math.ceil((PET_ACTION_CD - (nowTs - pet.lastFeed)) / 60000);
       const playLeft = playReady ? 0 : Math.ceil((PET_ACTION_CD - (nowTs - pet.lastPlay)) / 60000);
       card.innerHTML =
         '<div class="pet-card-top">' +
-          '<div class="pet-avatar' + (sleeping ? ' sleeping' : '') + '" id="pet-avatar">' + pet.beast + '</div>' +
+          '<div class="pet-avatar-wrap">' +
+            '<div class="pet-avatar' + (sleeping ? ' sleeping' : '') + '" id="pet-avatar">' + pet.beast + '</div>' +
+            (sleeping ? '<div class="pet-zzz" aria-hidden="true"><span style="animation-delay:0s">z</span><span style="animation-delay:0.9s">z</span><span style="animation-delay:1.8s">💤</span></div>' : '') +
+          '</div>' +
           '<div style="min-width:0; flex:1;">' +
             '<h3 class="pet-nick" style="margin-bottom:2px;">' + esc(pet.nick) + '</h3>' +
             '<div class="pet-rank">' + petRank(pet.level) + ' · ' + esc(pet.beastName) + ' · талисман класса ' + esc(currentClass) + '</div>' +
@@ -7762,10 +7779,11 @@
             '<div class="pet-scale"><span>⭐ Опыт</span><div class="xp-bar"><div class="xp-progress" style="width:' + Math.round(pet.xp / PET_XP_PER_LEVEL * 100) + '%;"></div></div><b>' + pet.xp + '/' + PET_XP_PER_LEVEL + '</b></div>' +
             '<div class="pet-meta">Уровень ' + pet.level + ' · XP: ' + pet.xp + '/' + PET_XP_PER_LEVEL + ' до следующего уровня</div>' +
             '<div class="pet-mood">' + petStatus(pet) + '</div>' +
-            (sleeping ? '<div class="pet-sleep-badge">💤 Питомец сладко спит (до 08:00 МСК)</div>' : '') +
+            (sleeping ? '<div class="pet-sleep-badge">😴 Спит до утра (до 06:30 МСК)</div>' : '') +
             '<div class="pet-actions">' +
               '<button class="btn btn-primary btn-sm" id="pet-feed-btn"' + (!feedReady || sleeping ? ' disabled' : '') + '>🍖 Покормить (+12 XP)' + (feedReady ? '' : ' · через ' + feedLeft + ' мин') + '</button>' +
               '<button class="btn btn-ghost btn-sm" id="pet-play-btn"' + (!playReady || sleeping ? ' disabled' : '') + '>🎾 Поиграть (+10 XP)' + (playReady ? '' : ' · через ' + playLeft + ' мин') + '</button>' +
+              (!sleeping ? '<button class="btn btn-ghost btn-sm" id="pet-sleep-btn">🌙 Уложить спать</button>' : (!nightNow ? '<button class="btn btn-ghost btn-sm" id="pet-wake-btn">☀️ Разбудить</button>' : '')) +
             '</div>' +
           '</div>' +
         '</div>';
@@ -7774,7 +7792,7 @@
         if (!u) { openModal('modal-login'); toast('Войди, чтобы заботиться о питомце класса.', 'info'); return; }
         const fresh = getPet(currentClass);
         if (!fresh) { renderPet(); return; }
-        if (isPetSleeping(Date.now())) { toast('💤 ' + fresh.nick + ' сладко спит до 08:00 МСК. Ночью голод и веселье не тратятся!', 'info'); return; }
+        if (isPetSleeping(Date.now(), fresh)) { toast('😴 ' + fresh.nick + ' спит до 06:30 МСК. Ночью голод и веселье не тратятся!', 'info'); return; }
         if (Date.now() - (fresh.lastFeed || 0) < PET_ACTION_CD) { toast('🍖 ' + fresh.nick + ' недавно ел. Загляни чуть позже!', 'info'); return; }
         fresh.hunger = 100;
         fresh.lastFeed = Date.now();
@@ -7788,7 +7806,7 @@
         if (!u) { openModal('modal-login'); toast('Войди, чтобы играть с питомцем класса.', 'info'); return; }
         const fresh = getPet(currentClass);
         if (!fresh) { renderPet(); return; }
-        if (isPetSleeping(Date.now())) { toast('💤 ' + fresh.nick + ' видит сладкие сны. Поиграешь утром!', 'info'); return; }
+        if (isPetSleeping(Date.now(), fresh)) { toast('😴 ' + fresh.nick + ' видит сладкие сны. Поиграешь утром!', 'info'); return; }
         if (Date.now() - (fresh.lastPlay || 0) < PET_ACTION_CD) { toast('🎾 ' + fresh.nick + ' только что играл. Дай ему отдохнуть!', 'info'); return; }
         fresh.fun = 100;
         fresh.lastPlay = Date.now();
@@ -7797,15 +7815,33 @@
         petCelebrate('wobble');
         toast('🎾 ' + fresh.nick + ' вдоволь наигрался! +10 XP классу.', 'success');
       });
+      const sleepBtn = document.getElementById('pet-sleep-btn');
+      if (sleepBtn) sleepBtn.addEventListener('click', function () {
+        const fresh = getPet(currentClass);
+        if (!fresh) { renderPet(); return; }
+        fresh.manualSleep = true;
+        savePet(currentClass, fresh);
+        renderPet();
+        toast('😴 ' + (fresh.nick || 'Питомец') + ' уложен спать. Спокойной ночи!', 'info');
+      });
+      const wakeBtn = document.getElementById('pet-wake-btn');
+      if (wakeBtn) wakeBtn.addEventListener('click', function () {
+        const fresh = getPet(currentClass);
+        if (!fresh) { renderPet(); return; }
+        fresh.manualSleep = false;
+        savePet(currentClass, fresh);
+        renderPet();
+        toast('☀️ ' + (fresh.nick || 'Питомец') + ' проснулся и полон сил!', 'success');
+      });
     }
 
     function petCelebrate(kind) {
       const av = document.getElementById('pet-avatar');
       if (av) {
         av.classList.add(kind === 'jump' ? 'jump' : 'wobble');
-        setTimeout(function () { av.classList.remove('jump', 'wobble'); }, 900);
+        setTimeout(function () { av.classList.remove('jump', 'wobble'); }, 1500);
       }
-      spawnHearts(av);
+      spawnHearts(av, kind === 'jump' ? ['🍎', '✨', '❤️'] : ['🎾', '✨', '❤️']);
     }
 
     function renderPetTop() {
@@ -13989,19 +14025,54 @@ try {
       updateAiStatus();
     }
 
+    /* v3.7 Neural Engine: полный смысловой разбор всего запроса (без срабатывания по первым трём буквам) */
+    const AI_STOP_WORDS37 = ['привет', 'пока', 'спасибо', 'пожалуйста', 'подскажи', 'подскажите', 'объясни', 'объясните', 'расскажи', 'расскажите', 'хочу', 'знать', 'узнать', 'могу', 'можно', 'нужно', 'надо', 'давай', 'давайте', 'например', 'просто', 'очень', 'больше', 'меньше', 'тогда', 'когда', 'почему', 'зачем', 'какой', 'какая', 'какие', 'каково', 'чего', 'чего-то', 'тебя', 'тебе', 'мне', 'нас', 'вас', 'них', 'него', 'неё', 'себя', 'твой', 'твоя', 'моё', 'моя', 'твои', 'мои', 'это', 'эта', 'эти', 'тот', 'та', 'те', 'или', 'либо', 'быть', 'будет', 'будут', 'был', 'была', 'были', 'есть', 'значит', 'типа', 'типе', 'the', 'and', 'for', 'you', 'your', 'what', 'how', 'why', 'where', 'please', 'about'];
+    function aiStem37(w) {
+      if (w.length < 6) return w;
+      return w.replace(/(ами|ями|ого|его|ому|ему|ыми|ими|ать|ять|еть|ить|ыть|ешь|ишь|ует|ают|яют|ах|ях|ам|ям|ов|ев|ей|ой|ый|ий|ая|яя|ое|ее|ые|ие|ом|ем|ью|ия|ии)$/, '');
+    }
+    function aiAnalyzeQuery37(query) {
+      const words = aiWords(query);
+      const seen = {};
+      const keys = [];
+      words.forEach(function (w) {
+        if (AI_STOP_WORDS37.indexOf(w) !== -1 || seen[w]) return;
+        seen[w] = true;
+        keys.push({ w: w, stem: aiStem37(w), weight: Math.min(2.2, 0.8 + w.length * 0.09) });
+      });
+      return keys;
+    }
+    let aiLastReasoning37 = null;
+    function aiReasoningLine37(coverage) {
+      const r = aiLastReasoning37;
+      if (!r || !r.length) return '';
+      const pct = typeof coverage === 'number' && coverage > 0 ? ' (покрытие ~' + Math.round(coverage * 100) + '%)' : '';
+      return '🧠 Мысли: прочитал запрос целиком и выделил ключевые слова — «' + r.slice(0, 6).map(function (k) { return k.w; }).join('», «') + '»' + pct + '. ';
+    }
     function aiSearchKnowledge(query, limit) {
-      const qw = aiWords(query);
-      if (!qw.length) return [];
+      const keys = aiAnalyzeQuery37(query);
+      const lowQuery = String(query).toLowerCase().replace(/\s+/g, ' ').trim();
+      if (!keys.length) return [];
+      const totalW = keys.reduce(function (s, k) { return s + k.weight; }, 0) || 1;
       const scored = [];
       for (let i = 0; i < aiKnowledge.length; i++) {
         const t = aiKnowledge[i].lt || String(aiKnowledge[i].t).toLowerCase();
-        let score = 0;
-        for (let j = 0; j < qw.length; j++) {
-          if (t.indexOf(qw[j]) !== -1) score++;
+        let hitW = 0;
+        let hits = 0;
+        for (let j = 0; j < keys.length; j++) {
+          const k = keys[j];
+          const full = t.indexOf(k.w) !== -1;
+          const stem = !full && k.stem.length >= 4 && t.indexOf(k.stem) !== -1;
+          if (full || stem) { hitW += k.weight * (full ? 1 : 0.55); hits++; }
         }
-        if (score > 0) scored.push({ item: aiKnowledge[i], score: score });
+        if (!hits) continue;
+        const coverage = hits / keys.length;
+        const phraseBonus = lowQuery.length > 8 && t.indexOf(lowQuery) !== -1 ? 1.5 : 0;
+        const score = coverage * 100 + (hitW / totalW) * 60 + phraseBonus;
+        scored.push({ item: aiKnowledge[i], score: score, coverage: coverage });
       }
-      scored.sort(function (a, b) { return b.score - a.score; });
+      scored.sort(function (a, b) { return b.score - a.score || b.coverage - a.coverage; });
+      if (scored.length) aiLastReasoning37 = keys;
       return scored.slice(0, limit || 3).map(function (x) { return x.item; });
     }
 
@@ -14186,12 +14257,16 @@ try {
         } catch (e) { /* упадём в заглушку ниже */ }
         return 'Хм, не смог открыть эту страницу 🙈 Проверь ссылку — или попробуй позже, иногда сайты закрыты от гостей.';
       }
+      aiLastReasoning37 = aiAnalyzeQuery37(text);
       const local = aiSearchKnowledge(text, 3);
-      if (local.length) return aiComposeAnswer(text, local);
+      if (local.length) {
+        const coverage = local.length && aiLastReasoning37 && aiLastReasoning37.length ? Math.min(1, 0.6 + 0.4 * (local.length / 3)) : null;
+        return aiReasoningLine37(coverage) + aiComposeAnswer(text, local);
+      }
       if (typeof fetch === 'function') {
         const web = await aiWebSearch(text);
         if (web.length) {
-          const intro = (!aiGreeted ? aiPick(AI_HI).replace('{name}', aiName()) + ' ' : '');
+          const intro = aiReasoningLine37(null) + (!aiGreeted ? aiPick(AI_HI).replace('{name}', aiName()) + ' ' : '');
           const body = web.slice(0, 3).map(function (w, i) {
             return (i === 0 ? 'Вот главное: ' : aiPick(AI_LINK)) + w.replace(/\s+/g, ' ').trim();
           }).join(' ');
