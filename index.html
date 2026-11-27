@@ -3050,7 +3050,6 @@
       outline: 3px solid rgba(59, 130, 246, 0.4);
       outline-offset: 2px;
     }
-    .dm-controls { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:-6px 0 12px; }
     .dm-controls .btn:disabled { opacity:0.5; cursor:not-allowed; }
     .ch-form-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
     .ch-post-form .thumb-row { margin-top:8px; }
@@ -3151,7 +3150,61 @@
     }
     #modal-dm.dm-full .chat-form {
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
     }
+    #modal-dm.dm-full .chat-form #dm-input {
+      flex: 1;
+      width: 100%;
+      min-height: 44px;
+      max-height: 120px;
+      border-radius: 22px;
+      padding: 10px 16px;
+    }
+    .dm-send-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      flex-shrink: 0;
+      cursor: pointer;
+      color: #fff;
+      font-size: 1.1rem;
+      background: linear-gradient(135deg, #1d4ed8, #059669);
+      box-shadow: 0 4px 12px rgba(29, 78, 216, 0.35);
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    .dm-send-btn:hover { transform: scale(1.06); }
+    .dm-send-btn:active { transform: scale(0.94); }
+    .dm-send-btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+    .dm-photo-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      font-size: 1.15rem;
+      padding: 0;
+      background: var(--primary-soft);
+      border: none;
+      cursor: pointer;
+    }
+    .dm-head-ava { flex-shrink: 0; }
+    .dm-head-ava .mini-ava { width: 40px; height: 40px; }
+    .dm-head-info { min-width: 0; flex: 1; }
+    .dm-head-info h3 {
+      margin: 0;
+      font-size: 1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .dm-head-info p { margin: 0; }
+    .dm-head-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .dm-head-actions .btn-sm { padding: 6px 10px; font-size: 0.78rem; }
     .dm-back-btn {
       background: var(--primary-soft);
       color: var(--primary);
@@ -4148,27 +4201,26 @@
 
   <div class="modal" id="modal-dm" aria-modal="true" role="dialog">
     <div class="modal-content">
-      <button class="modal-close" data-close-modal="modal-dm">✕</button>
       <div class="modal-head dm-head-row">
         <button type="button" class="dm-back-btn" id="dm-back-btn">← Назад</button>
-        <div class="modal-icon">✉️</div>
-        <div style="min-width:0;">
-          <h3>Личные сообщения</h3>
+        <div class="dm-head-ava" id="dm-head-ava"></div>
+        <div class="dm-head-info">
+          <h3 id="dm-head-name">Личные сообщения</h3>
           <p id="dm-with"></p>
         </div>
-      </div>
-      <div class="dm-controls" id="dm-controls">
-        <button type="button" class="btn btn-ghost btn-sm" id="dm-block-btn">🚫 Заблокировать</button>
-        <button type="button" class="btn btn-ghost btn-sm" id="dm-delete-btn">🗑️ Удалить чат</button>
+        <div class="dm-head-actions">
+          <button type="button" class="btn btn-ghost btn-sm" id="dm-block-btn">🚫</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="dm-delete-btn" title="Удалить чат">🗑️</button>
+        </div>
       </div>
       <div class="form-error" id="dm-blocked-note" style="display:none;">Вы заблокировали этого пользователя — нажмите «✅ Разблокировать», чтобы продолжить общение.</div>
       <div class="chat-list modal-chat-list" id="dm-list-modal"></div>
       <div id="dm-compose-plate" style="display:none;"></div>
-      <div class="chat-form">
-        <textarea id="dm-input" rows="1" placeholder="Сообщение... (Enter — отправить)"></textarea>
-        <button class="btn btn-ghost" id="dm-photo-btn" title="Прикрепить фото">📷</button>
+      <div class="chat-form dm-input-bar">
+        <button type="button" class="dm-photo-btn" id="dm-photo-btn" title="Прикрепить фото">📷</button>
+        <textarea id="dm-input" rows="1" placeholder="Напишите сообщение..."></textarea>
+        <button type="button" class="dm-send-btn" id="dm-send" title="Отправить">➤</button>
         <input type="file" id="dm-photo-input" accept="image/*" hidden>
-        <button class="btn btn-primary" id="dm-send">➤</button>
       </div>
     </div>
   </div>
@@ -4402,6 +4454,7 @@
       <button data-adm="rewards">🎁 Призы</button>
       <button data-adm="verified">☑️ Галочки</button>
       <button data-adm="director">🏛️ Директор</button>
+      <button data-adm="users">👥 Пользователи</button>
       <button data-adm="broadcast">📣 Рассылка</button>
       <button data-adm="points">💎 Баллы</button>
       <button data-adm="analytics">📊 Аналитика</button>
@@ -4616,9 +4669,19 @@
     async function syncKey(key, data) {
       if (!sb37) return;
       try {
+        let payload = data;
+        if (typeof key === 'string' && key.indexOf('dm__') === 0 && Array.isArray(data)) {
+          try {
+            const fresh = await sb37.from(TABLE).select('value').eq('key', key).maybeSingle();
+            if (!fresh.error && fresh.data && Array.isArray(fresh.data.value)) {
+              payload = mergeLists(data, fresh.data.value).sort(function (x, y) { return (x.ts || 0) - (y.ts || 0); });
+              try { writeLs(key, payload); } catch (eWl37) {}
+            }
+          } catch (eM37) { /* пишем как есть */ }
+        }
         const answer = await sb37
           .from(TABLE)
-          .upsert({ key: key, value: data }, { onConflict: 'key' });
+          .upsert({ key: key, value: payload }, { onConflict: 'key' });
         if (answer.error) throw answer.error;
         try { instantSend('row', { key: key }); } catch (eI37) {}
       } catch (e) {
@@ -5034,7 +5097,13 @@
     try {
   document.querySelectorAll('.modal').forEach(function (modal) {
         modal.addEventListener('click', function (e) {
-          if (e.target === modal) closeModal(modal.id);
+          if (e.target === modal) {
+            closeModal(modal.id);
+            if (modal.id === 'modal-dm') {
+              modal.classList.remove('dm-full');
+              try { setAiFabVisible(true); } catch (eFa37) {}
+            }
+          }
         });
       });
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
@@ -7207,6 +7276,12 @@
         const draftInp = document.getElementById('dm-input');
         if (draftInp && !editingDmId) draftInp.value = getDmDraft37(user.id, partnerId) || '';
       } catch (eDr37) {}
+      try {
+        const avaEl = document.getElementById('dm-head-ava');
+        if (avaEl) avaEl.innerHTML = msgAvatarHtml(pu.avatar, 'mini-ava');
+        const nameEl = document.getElementById('dm-head-name');
+        if (nameEl) nameEl.textContent = pu.name;
+      } catch (eHd37) {}
       const withEl = document.getElementById('dm-with');
       if (withEl) {
         withEl.innerHTML = '<span class="dm-name-line">' + esc(pu.name) + userVerifiedSpan(pu) + ' <span class="user-class">' + esc(classIdOf(pu.grade, pu.letter)) + '</span></span>' +
@@ -7216,6 +7291,7 @@
       }
       const mdm = document.getElementById('modal-dm');
       if (mdm) mdm.classList.add('dm-full');
+      setAiFabVisible(false);
       updateDmControls();
       renderDmPlate();
       renderDmMessages();
@@ -7270,6 +7346,7 @@
       currentDmPartner = null;
       const mdm = document.getElementById('modal-dm');
       if (mdm) mdm.classList.remove('dm-full');
+      setAiFabVisible(true);
       closeModal('modal-dm');
       renderDms();
       toast('🗑️ Чат удалён.', 'success');
@@ -7302,13 +7379,15 @@
       if (!text && !dmPendingPhoto) return;
       if (text && !antispamCheck('dm', text)) return;
       const arr = getDmMsgs(user.id, currentDmPartner);
-      arr.push({
+      const newMsg37 = {
         id: makeId('dm'), key: dmKey(user.id, currentDmPartner), from: user.id, name: user.name, avatar: user.avatar,
         text: text, photo: dmPendingPhoto || null,
         replyTo: dmReplyTo ? { id: dmReplyTo.id, name: dmReplyTo.name, text: dmReplyTo.text } : null,
         ts: Date.now()
-      });
+      };
+      arr.push(newMsg37);
       saveDmMsgs(user.id, currentDmPartner, arr);
+      instantSend('msg', { chatKey: dmCloudKey(user.id, currentDmPartner), msg: newMsg37 });
       instantSend('row', { key: dmCloudKey(user.id, currentDmPartner) });
       input.value = '';
       try { clearDmDraft37(user.id, currentDmPartner); } catch (eCd37) {}
@@ -7785,12 +7864,17 @@
       if (viewer) viewer.classList.remove('open');
     }
 
+    function setAiFabVisible(v) {
+      try { const fab = document.getElementById('ai-fab'); if (fab) fab.style.display = v ? '' : 'none'; } catch (eFa37) {}
+    }
+
     function closeDmFull() {
       const mdm = document.getElementById('modal-dm');
       if (mdm) mdm.classList.remove('dm-full');
       try { saveDmDraftFromInput37(); } catch (eSd37) {}
       currentDmPartner = null;
       clearDmCompose();
+      setAiFabVisible(true);
       closeModal('modal-dm');
       renderDms();
     }
@@ -7865,6 +7949,21 @@
             } catch (eRr37) {}
           });
         });
+        instantChannel.on('broadcast', { event: 'msg' }, function (msg) {
+          try {
+            const p = msg && msg.payload;
+            if (!p || !p.chatKey || !p.msg || !p.msg.id) return;
+            const arr = readLs(p.chatKey);
+            const list = Array.isArray(arr) ? arr : [];
+            if (list.some(function (m) { return m && m.id === p.msg.id; })) return;
+            list.push(p.msg);
+            list.sort(function (x, y) { return (x.ts || 0) - (y.ts || 0); });
+            if (list.length > 300) list.splice(0, list.length - 300);
+            writeLs(p.chatKey, list);
+            refreshChatViews();
+            try { renderActiveChatMessages(); } catch (eRa37) {}
+          } catch (eIm37) {}
+        });
         instantChannel.on('broadcast', { event: 'typing' }, function (msg) {
           try {
             const p = msg && msg.payload;
@@ -7914,11 +8013,34 @@
       dmSyncBusy = false;
     }
 
+    function renderActiveChatMessages() {
+      try {
+        const dmModal = document.getElementById('modal-dm');
+        if (dmModal && dmModal.classList.contains('open') && currentDmPartner) renderDmMessages();
+      } catch (eRac37) {}
+    }
+
     function startDmSync() {
       if (dmSyncTimer) return;
+      let tick37 = 0;
       dmSyncTimer = setInterval(function () {
-        if (document.visibilityState === 'visible') dmSyncTick();
-      }, 8000);
+        if (document.visibilityState !== 'visible') return;
+        tick37++;
+        const dmModal = document.getElementById('modal-dm');
+        const openChat = !!(dmModal && dmModal.classList.contains('open') && currentDmPartner);
+        if (openChat) {
+          const user = getCurrentUser();
+          if (!user) return;
+          const ck = dmCloudKey(user.id, currentDmPartner);
+          const keys = [ck, 'dm_index'];
+          const before = dmSyncSnapshot(keys);
+          pullKeys(keys).then(function () {
+            if (dmSyncSnapshot(keys) !== before) { refreshChatViews(); try { renderActiveChatMessages(); } catch (eRa37) {} }
+          }).catch(function () {});
+        } else if (tick37 % 3 === 0) {
+          dmSyncTick();
+        }
+      }, 2500);
     }
 
     /* ---- Рассылки с таймером по МСК ---- */
@@ -8040,6 +8162,7 @@
           try { saveDmDraftFromInput37(); } catch (eSd37) {}
           currentDmPartner = null;
           clearDmCompose();
+          setAiFabVisible(true);
           return;
         }
         const photoBtn = e.target.closest('#dm-photo-btn');
@@ -11061,6 +11184,18 @@ try {
         if (panels.class.classList.contains('active')) renderClassTab();
       } else if (u.kind === 'points') {
         addPointsToUser(u.userId, -(u.delta || 0), '↩️ Отмена действия');
+      } else if (u.kind === 'user_delete') {
+        const s = u.before || {};
+        if (s.users) dbSave('users', s.users);
+        if (s.posts) dbSave('posts', s.posts);
+        if (s.listings) dbSave('listings', s.listings);
+        if (s.applications) dbSave('applications', s.applications);
+        if (s.dms) dbSave('dms', s.dms);
+        if (s.dmIndex) dbSave('dm_index', s.dmIndex);
+        (s.dmCloudKeys || []).forEach(function (k) { dbSave(k, (s.dmBefore || {})[k] || []); });
+        updateAuthUI();
+        try { renderProfileTab(); } catch (eUd37) {}
+        try { refreshChatViews(); } catch (eUd237) {}
       } else if (u.kind === 'widgets') {
         dbSave('custom_text_widgets', u.before || []);
         renderTextWidgets();
@@ -11218,7 +11353,7 @@ try {
     /* ---- Инструменты админки (Журнал / Права / Призы / Пароль) ---- */
     function openAdminTool(mode) {
       adminToolsMode = mode;
-      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pets: '🐾 Талисманы классов', classreset: '🗑 Очистка данных класса', pass: '🔑 Смена пароля админа', ticker: '📰 Плашка новостей', verified: '☑️ Верификация', broadcast: '📣 Срочная рассылка', points: '💎 Баллы ученикам и опыт классам', analytics: '📊 Аналитика портала', backup: '💾 Бэкап и восстановление', complaints: '🚨 Жалобы учеников', director: '🏛️ Статус Директора Лицея №37' };
+      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pets: '🐾 Талисманы классов', classreset: '🗑 Очистка данных класса', pass: '🔑 Смена пароля админа', ticker: '📰 Плашка новостей', verified: '☑️ Верификация', broadcast: '📣 Срочная рассылка', points: '💎 Баллы ученикам и опыт классам', analytics: '📊 Аналитика портала', backup: '💾 Бэкап и восстановление', complaints: '🚨 Жалобы учеников', director: '🏛️ Статус Директора Лицея №37', users: '👥 Пользователи портала' };
       document.getElementById('admin-tools-title').textContent = titles[mode] || 'Администрирование';
       openModal('modal-admin-tools');
       if (mode === 'log') renderAdminLog();
@@ -11235,6 +11370,7 @@ try {
       if (mode === 'backup') renderAdminBackup();
       if (mode === 'complaints' && typeof renderAdminComplaints === 'function') renderAdminComplaints();
       if (mode === 'director' && typeof renderAdminDirector === 'function') renderAdminDirector();
+      if (mode === 'users' && typeof renderAdminUsers === 'function') renderAdminUsers('');
     }
 
     function renderAdminClassReset() {
@@ -13675,6 +13811,98 @@ try {
     window.normalizeFio37 = normalizeFio37;
     window.toggleDirectorStatus37 = toggleDirectorStatus37;
     window.renderAdminDirector = renderAdminDirector;
+
+    /* ---- 👥 Пользователи: удаление аккаунта и всех его данных ---- */
+    function renderAdminUsers(filter) {
+      const body = document.getElementById('admin-tools-body');
+      if (!body) return;
+      const q = String(filter || '').toLowerCase().trim();
+      const users = getUsers().filter(function (u) {
+        if (!q) return true;
+        return String(u.name || '').toLowerCase().indexOf(q) !== -1 || String(classIdOf(u.grade, u.letter)).toLowerCase().indexOf(q) !== -1;
+      });
+      let html = '<p class="info-desc">Полное удаление аккаунта: пользователь, его посты и комментарии, объявления Барахолки, заявки и личные сообщения. Действие можно отменить в 📜 Журнале.</p>';
+      html += '<input type="text" id="adm-users-search" class="input-field" placeholder="🔍 Поиск по имени или классу…" value="' + esc(filter || '') + '" style="margin-bottom:12px;">';
+      if (!users.length) html += '<p class="empty-line">Пользователи не найдены.</p>';
+      users.forEach(function (u) {
+        const role = u.role === 'teacher' ? '👩‍🏫 Учитель' : '🎒 Ученик';
+        const cls = classIdOf(u.grade, u.letter);
+        const st = u.isAdmin ? '👑 Главный Админ' : esc(displayStatus(u));
+        html += '<div class="admin-row"><div class="admin-row-main"><b>' + esc(u.name) + userVerifiedSpan(u) + roleBadges37(u, cls) + '</b><small>' + role + (cls ? ' · ' + esc(cls) + ' класс' : '') + ' · 💎 ' + Number(u.points || 0) + ' б. · ' + st + '</small></div>' +
+          '<div class="admin-row-actions">' + (u.isAdmin ? '' : '<button class="btn btn-ghost btn-sm" data-del-user="' + esc(u.id) + '">🗑️ Удалить пользователя</button>') + '</div></div>';
+      });
+      body.innerHTML = html;
+      const si = document.getElementById('adm-users-search');
+      if (si) si.addEventListener('input', function () { renderAdminUsers(si.value); });
+    }
+    function deleteUser37(userId) {
+      if (!isFullAdmin37()) { toast('Удалять пользователей может только Главный Админ.', 'error'); return; }
+      const users = getUsers();
+      const u = users.find(function (x) { return x.id === userId; });
+      if (!u) return;
+      if (u.isAdmin) { toast('Нельзя удалить аккаунт Главного Админа.', 'error'); return; }
+      if (!confirm('Удалить пользователя «' + u.name + '» со всеми его данными?')) return;
+      if (!confirm('Это необратимо: аккаунт, посты, объявления, заявки и личные сообщения будут удалены. Продолжить?')) return;
+      const posts = getList('posts');
+      const listings = getList('listings');
+      const applications = getList('applications');
+      const dms = getList('dms');
+      const dmIndex = dbLoad('dm_index', {});
+      const dmCloudKeys = (Array.isArray(dmIndex[u.id]) ? dmIndex[u.id] : []).slice();
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.indexOf(LS_PREFIX + 'dm__') === 0) {
+            const kk = k.slice(LS_PREFIX.length);
+            if (dmCloudKeys.indexOf(kk) === -1 && kk.indexOf(u.id) !== -1) dmCloudKeys.push(kk);
+          }
+        }
+      } catch (eK37) {}
+      const before = {
+        users: JSON.parse(JSON.stringify(users)),
+        posts: posts, listings: listings, applications: applications, dms: dms, dmIndex: dmIndex,
+        dmCloudKeys: dmCloudKeys, dmBefore: {}
+      };
+      dmCloudKeys.forEach(function (k) { before.dmBefore[k] = dbLoad(k, []); });
+      const newPosts = posts.filter(function (p) { return p.userId !== u.id; });
+      newPosts.forEach(function (p) {
+        if (Array.isArray(p.comments)) p.comments = p.comments.filter(function (c) { return c.userId !== u.id && c.from !== u.id; });
+        if (Array.isArray(p.likes)) p.likes = p.likes.filter(function (x) { return x !== u.id; });
+      });
+      const newListings = listings.filter(function (l) { return l.sellerId !== u.id; });
+      const newApps = applications.filter(function (a) { return String(a.fio || '').toLowerCase() !== String(u.name || '').toLowerCase(); });
+      const newDms = dms.filter(function (m) { return m && m.from !== u.id && String(m.key || '').indexOf(u.id) === -1; });
+      const newIdx = {};
+      Object.keys(dmIndex).forEach(function (uid) {
+        if (uid === u.id) return;
+        newIdx[uid] = (dmIndex[uid] || []).filter(function (k) { return String(k).indexOf(u.id) === -1; });
+      });
+      dbSave('posts', newPosts);
+      dbSave('listings', newListings);
+      dbSave('applications', newApps);
+      dbSave('dms', newDms);
+      dbSave('dm_index', newIdx);
+      dmCloudKeys.forEach(function (k) { if (String(k).indexOf(u.id) !== -1) dbSave(k, []); });
+      const rest = users.filter(function (x) { return x.id !== u.id; });
+      saveUsers(rest);
+      adminLogAction('users', '🗑️ Удалён пользователь: ' + u.name + ' (' + (classIdOf(u.grade, u.letter) || 'без класса') + ')', { kind: 'user_delete', before: before });
+      if (getSessionUserId() === u.id) {
+        try { localStorage.removeItem(LS_PREFIX + 'session'); } catch (eS37) {}
+        updateAuthUI();
+        renderProfileTab();
+      }
+      try { renderAdminUsers(document.getElementById('adm-users-search') ? document.getElementById('adm-users-search').value : ''); } catch (eR37) {}
+      try { refreshChatViews(); } catch (eC37) {}
+      toast('🗑️ Пользователь «' + u.name + '» и все его данные удалены.', 'success');
+    }
+    try {
+  document.addEventListener('click', function (e) {
+        const du = e.target.closest('[data-del-user]');
+        if (du) { deleteUser37(du.getAttribute('data-del-user')); }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    window.renderAdminUsers = renderAdminUsers;
+    window.deleteUser37 = deleteUser37;
 
     window.__lp37Ready = true;
 
