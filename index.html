@@ -5564,8 +5564,11 @@
         if (up37.error) throw up37.error;
         const back37 = await sb37.from(TABLE).select('value').eq('key', DIAG_PROBE_KEY37).maybeSingle();
         if (back37.error) throw back37.error;
-        const probeVal = back37.data && back37.data.value ? back37.data.value : null;
-        if (!probeVal || probeVal.probe !== probe37) throw { code: 'MISMATCH', message: 'Записанное значение не совпало с прочитанным: записано ' + probe37 + ', прочитано ' + JSON.stringify(probeVal) };
+        let probeVal = back37.data && back37.data.value !== undefined && back37.data.value !== null ? back37.data.value : null;
+        if (typeof probeVal === 'string') {
+          try { probeVal = JSON.parse(probeVal); } catch (ePj37) { /* оставляем как есть — сравнение ниже честно сообщит о несовпадении */ }
+        }
+        if (!probeVal || typeof probeVal !== 'object' || probeVal.probe !== probe37) throw { code: 'MISMATCH', message: 'Записанное значение не совпало с прочитанным: записано ' + probe37 + ', прочитано ' + JSON.stringify(probeVal) };
       } catch (e37) {
         fails37.push({ op: 'UPSERT+SELECT', key: DIAG_PROBE_KEY37, err: e37 });
       }
