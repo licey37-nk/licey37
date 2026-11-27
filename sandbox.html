@@ -190,8 +190,8 @@
   </div>
 
   <div class="sb-langs" id="sb-langs">
-    <button type="button" class="sb-lang-tab active" data-lang="python">🐍 Python</button>
-    <button type="button" class="sb-lang-tab" data-lang="cpp">⚙️ C++</button>
+    <button type="button" class="sb-lang-tab active" data-lang="python">🐍 Python 3</button>
+    <button type="button" class="sb-lang-tab" data-lang="cpp">⚙️ C++17</button>
     <button type="button" class="sb-lang-tab" data-lang="js">⚡ JavaScript</button>
   </div>
 
@@ -314,7 +314,7 @@
       codeEl.value = TEMPLATES[state.lang][state.tmpl].code;
       updateGutter();
       term.innerHTML = '';
-      sysMsg('Загружен шаблон: ' + TEMPLATES[state.lang][state.tmpl].name + ' (' + ({ python: 'Python', cpp: 'C++', js: 'JavaScript' })[state.lang] + ')');
+      sysMsg('Загружен шаблон: ' + TEMPLATES[state.lang][state.tmpl].name + ' (' + ({ python: 'Python 3', cpp: 'C++17', js: 'JavaScript' })[state.lang] + ')');
       syncFileBadge37();
       syncPyBtn();
     }
@@ -345,7 +345,7 @@
             state.pyodide = py;
             state.pyLoading = false;
             syncPyBtn();
-            okMsg('✅ Python готов! Можно запускать код.');
+            okMsg('✅ Python 3 готов! Можно запускать код.');
             resolve(py);
           }).catch(reject);
         };
@@ -362,7 +362,7 @@
       setBusy(true);
       loadPyodide37().then(function (py) {
         term.innerHTML = '';
-        sysMsg('🐍 Python · запускаю программу...');
+        sysMsg('🐍 Python 3 · запускаю программу...');
         py.setStdout({ batched: function (s) { outMsg(s); } });
         py.setStderr({ batched: function (s) { errMsg(s); } });
         var promptLine = '';
@@ -386,7 +386,7 @@
     function runCpp() {
       setBusy(true);
       term.innerHTML = '';
-      sysMsg('⚙️ C++ · отправляю код в облачный компилятор Piston...');
+      sysMsg('⚙️ C++17 · отправляю код в облачный компилятор Piston...');
       var t0 = performance.now();
       fetch(PISTON_URL, {
         method: 'POST',
@@ -423,7 +423,7 @@
     function runJs() {
       setBusy(true);
       term.innerHTML = '';
-      sysMsg('⚡ JavaScript · мгновенный запуск в песочнице...');
+      sysMsg('⚡ JavaScript ES2023 · мгновенный запуск в песочнице...');
       var t0 = performance.now();
       var logs = [];
       var fakeConsole = {
