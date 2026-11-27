@@ -8,100 +8,174 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
   body {
-    background: #0d1117;
+    background:
+      radial-gradient(1100px 720px at 88% -12%, rgba(99, 102, 241, 0.20), transparent 60%),
+      radial-gradient(900px 640px at -12% 108%, rgba(14, 165, 233, 0.16), transparent 55%),
+      radial-gradient(700px 500px at 50% 120%, rgba(16, 185, 129, 0.10), transparent 60%),
+      #0b0f19;
+    background-attachment: fixed;
     color: #e6edf3;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     display: flex;
     flex-direction: column;
     min-height: 100dvh;
+    overflow-x: hidden;
   }
   .sb-top {
-    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-    padding: 12px 16px;
-    background: #161b22;
-    border-bottom: 1px solid #30363d;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 12px 18px;
+    background: rgba(15, 20, 34, 0.72);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(129, 140, 248, 0.20);
+    position: sticky; top: 0; z-index: 5;
   }
   .sb-logo {
-    width: 38px; height: 38px; border-radius: 11px; flex-shrink: 0;
+    width: 40px; height: 40px; border-radius: 13px; flex-shrink: 0;
     background: linear-gradient(135deg, #0ea5e9, #6366f1);
     display: flex; align-items: center; justify-content: center;
-    font-size: 19px; font-weight: 800; color: #fff;
+    font-size: 20px; font-weight: 800; color: #fff;
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
   }
   .sb-titles { min-width: 0; flex: 1; }
-  .sb-titles h1 { font-size: 16.5px; font-weight: 800; letter-spacing: -0.02em; color: #f0f6fc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .sb-titles p { font-size: 11.5px; color: #7d8590; font-weight: 600; }
+  .sb-titles h1 { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; color: #f0f6fc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sb-titles p { font-size: 11.5px; color: #8b93a7; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sb-back {
     display: inline-flex; align-items: center; gap: 6px;
-    padding: 9px 14px; border-radius: 11px; text-decoration: none;
-    background: #21262d; border: 1px solid #30363d; color: #c9d1d9;
-    font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap;
+    padding: 9px 15px; border-radius: 999px; text-decoration: none;
+    background: rgba(30, 38, 56, 0.85); border: 1px solid rgba(129, 140, 248, 0.35); color: #c7d2fe;
+    font-size: 13px; font-weight: 800; cursor: pointer; white-space: nowrap;
+    transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.12s ease;
   }
-  .sb-back:hover { border-color: #58a6ff; color: #fff; }
-  .sb-langs { display: flex; gap: 8px; padding: 10px 16px 0; flex-wrap: wrap; }
+  .sb-back:hover { border-color: #818cf8; color: #fff; box-shadow: 0 0 18px rgba(99, 102, 241, 0.35); }
+  .sb-back:active { transform: scale(0.97); }
+  .sb-langs { display: flex; gap: 8px; padding: 12px 18px 0; flex-wrap: wrap; }
   .sb-lang-tab {
-    padding: 9px 16px; border-radius: 12px 12px 0 0; cursor: pointer;
-    background: #161b22; border: 1px solid #30363d; border-bottom: none;
-    color: #7d8590; font-size: 13.5px; font-weight: 800; letter-spacing: -0.01em;
+    padding: 9px 18px; border-radius: 999px; cursor: pointer;
+    background: rgba(21, 27, 45, 0.8); border: 1px solid rgba(99, 112, 158, 0.35);
+    color: #8b93a7; font-size: 13.5px; font-weight: 800; letter-spacing: -0.01em; font-family: inherit;
+    transition: color 0.25s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.12s ease;
   }
-  .sb-lang-tab.active { color: #fff; background: #0d1117; border-color: #58a6ff; }
-  .sb-lang-tab:not(.active):hover { color: #c9d1d9; }
-  .sb-tmpls { display: flex; gap: 7px; padding: 10px 16px; flex-wrap: wrap; align-items: center; }
-  .sb-tmpls span.lbl { font-size: 11.5px; color: #7d8590; font-weight: 700; margin-right: 2px; }
+  .sb-lang-tab.active {
+    color: #fff; border-color: rgba(129, 140, 248, 0.75);
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.32), rgba(14, 165, 233, 0.30));
+    box-shadow: 0 0 16px rgba(99, 102, 241, 0.35), inset 0 0 12px rgba(99, 102, 241, 0.14);
+  }
+  .sb-lang-tab:not(.active):hover { color: #c9d1d9; border-color: rgba(129, 140, 248, 0.5); }
+  .sb-lang-tab:active { transform: scale(0.97); }
+  .sb-tmpls { display: flex; gap: 7px; padding: 10px 18px 0; flex-wrap: wrap; align-items: center; }
+  .sb-tmpls span.lbl { font-size: 11.5px; color: #8b93a7; font-weight: 700; margin-right: 2px; }
   .sb-tmpl {
-    padding: 6px 12px; border-radius: 99px; cursor: pointer;
-    background: #161b22; border: 1px solid #30363d; color: #a5b4fc;
+    padding: 6px 13px; border-radius: 999px; cursor: pointer;
+    background: rgba(21, 27, 45, 0.8); border: 1px solid rgba(99, 112, 158, 0.35); color: #a5b4fc;
     font-size: 12px; font-weight: 700; font-family: inherit;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, transform 0.12s ease;
   }
-  .sb-tmpl.active { background: #1f2a44; border-color: #6366f1; color: #fff; }
-  .sb-main { flex: 1; display: flex; flex-direction: column; padding: 0 16px 14px; gap: 12px; min-height: 0; }
+  .sb-tmpl.active { background: rgba(49, 46, 129, 0.55); border-color: #818cf8; color: #fff; box-shadow: 0 0 12px rgba(99, 102, 241, 0.25); }
+  .sb-tmpl:active { transform: scale(0.97); }
+  .sb-main { flex: 1; display: flex; flex-direction: column; padding: 12px 18px 16px; gap: 12px; min-height: 0; }
   .sb-actions { display: flex; gap: 8px; flex-wrap: wrap; }
   .sb-btn {
-    padding: 11px 18px; border-radius: 12px; border: none; cursor: pointer;
+    padding: 11px 18px; border-radius: 13px; border: none; cursor: pointer;
     font-size: 14px; font-weight: 800; letter-spacing: -0.01em; font-family: inherit;
-    transition: transform 0.12s ease, filter 0.15s ease;
+    transition: transform 0.12s ease, filter 0.15s ease, box-shadow 0.2s ease;
   }
   .sb-btn:active { transform: scale(0.97); }
-  .sb-btn.run { background: linear-gradient(135deg, #10b981, #059669); color: #fff; box-shadow: 0 8px 22px rgba(16,185,129,0.30); }
-  .sb-btn.run:hover { filter: brightness(1.08); }
-  .sb-btn.ghost { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; }
-  .sb-btn.ghost:hover { border-color: #58a6ff; color: #fff; }
-  .sb-btn.init { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #fff; }
+  .sb-btn.run { background: linear-gradient(135deg, #10b981, #06b6d4); color: #fff; box-shadow: 0 10px 26px rgba(16, 185, 129, 0.35), 0 0 14px rgba(6, 182, 212, 0.25); }
+  .sb-btn.run:hover { filter: brightness(1.08); box-shadow: 0 12px 30px rgba(16, 185, 129, 0.45), 0 0 20px rgba(6, 182, 212, 0.35); }
+  .sb-btn.ghost { background: rgba(30, 38, 56, 0.85); color: #c9d1d9; border: 1px solid rgba(99, 112, 158, 0.35); }
+  .sb-btn.ghost:hover { border-color: #818cf8; color: #fff; }
+  .sb-btn.init { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #fff; box-shadow: 0 8px 22px rgba(14, 165, 233, 0.30); }
   .sb-btn[disabled] { opacity: 0.55; cursor: wait; }
   .sb-editor {
-    display: flex; flex: 1; min-height: 220px;
-    background: #161b22; border: 1px solid #30363d; border-radius: 14px; overflow: hidden;
+    display: flex; flex-direction: column; flex: 1; min-height: 220px;
+    background: rgba(17, 23, 41, 0.72);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    border: 1px solid rgba(129, 140, 248, 0.28); border-radius: 18px; overflow: hidden;
+    box-shadow: 0 18px 44px rgba(2, 6, 23, 0.55);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
-  .sb-gutter {
-    padding: 12px 10px; text-align: right; user-select: none;
-    background: #0d1117; color: #484f58; border-right: 1px solid #30363d;
+  .sb-editor:focus-within {
+    border-color: rgba(129, 140, 248, 0.75);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.16), 0 0 34px rgba(99, 102, 241, 0.22), 0 18px 44px rgba(2, 6, 23, 0.55);
+  }
+  .sb-ed-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    background: rgba(11, 15, 25, 0.6);
+    border-bottom: 1px solid rgba(129, 140, 248, 0.16);
+  }
+  .sb-dots { display: flex; gap: 7px; flex-shrink: 0; }
+  .sb-dots i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+  .sb-dots i:nth-child(1) { background: #ff5f56; }
+  .sb-dots i:nth-child(2) { background: #ffbd2e; }
+  .sb-dots i:nth-child(3) { background: #27c93f; }
+  .sb-file {
     font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace;
-    font-size: 13.5px; line-height: 1.6; min-width: 46px; overflow: hidden;
+    font-size: 12.5px; font-weight: 700; color: #a5b4fc;
+    background: rgba(99, 102, 241, 0.14); border: 1px solid rgba(129, 140, 248, 0.30);
+    padding: 4px 11px; border-radius: 999px; white-space: nowrap;
+  }
+  .sb-ed-actions { margin-left: auto; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  .sb-mini {
+    padding: 6px 12px; border-radius: 999px; cursor: pointer; font-family: inherit;
+    background: rgba(30, 38, 56, 0.85); border: 1px solid rgba(99, 112, 158, 0.35);
+    color: #c9d1d9; font-size: 12px; font-weight: 700; white-space: nowrap;
+    transition: border-color 0.2s ease, color 0.2s ease, transform 0.12s ease;
+  }
+  .sb-mini:hover { border-color: #818cf8; color: #fff; }
+  .sb-mini:active { transform: scale(0.97); }
+  .sb-ed-body { display: flex; flex: 1; min-height: 0; }
+  .sb-gutter {
+    padding: 14px 10px; text-align: right; user-select: none;
+    background: rgba(11, 15, 25, 0.5); color: #4b5570; border-right: 1px solid rgba(129, 140, 248, 0.16);
+    font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace;
+    font-size: 16px; line-height: 1.6; min-width: 52px; overflow: hidden;
   }
   .sb-code {
     flex: 1; resize: none; border: none; outline: none; background: transparent;
-    color: #e6edf3; padding: 12px 14px;
+    color: #e6edf3; padding: 14px 16px;
     font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace;
-    font-size: 13.5px; line-height: 1.6; tab-size: 4; white-space: pre; overflow: auto;
+    font-size: 16px; line-height: 1.6; tab-size: 4; white-space: pre; overflow: auto;
   }
-  .sb-term-head { font-size: 12px; font-weight: 800; color: #7d8590; letter-spacing: 0.04em; text-transform: uppercase; }
+  .sb-termwrap {
+    background: rgba(17, 23, 41, 0.72);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    border: 1px solid rgba(129, 140, 248, 0.28); border-radius: 18px; overflow: hidden;
+    box-shadow: 0 18px 44px rgba(2, 6, 23, 0.55);
+  }
+  .sb-term-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    background: rgba(11, 15, 25, 0.6);
+    border-bottom: 1px solid rgba(129, 140, 248, 0.16);
+    font-size: 12px; font-weight: 800; color: #8b93a7; letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .sb-status { font-size: 12px; font-weight: 800; letter-spacing: 0.02em; text-transform: none; color: #3fb950; transition: color 0.25s ease; white-space: nowrap; }
+  .sb-status.busy { color: #f5d76e; animation: sbPulse 1.1s ease-in-out infinite; }
+  .sb-status.err { color: #ff7b72; }
+  @keyframes sbPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+  .sb-term-head .sb-mini { margin-left: auto; text-transform: none; letter-spacing: 0; }
   .sb-term {
-    background: #010409; border: 1px solid #30363d; border-radius: 14px;
-    min-height: 130px; max-height: 34dvh; overflow: auto; padding: 12px 14px;
+    background: transparent;
+    min-height: 130px; max-height: 34dvh; overflow: auto; padding: 12px 16px;
     font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace;
-    font-size: 13px; line-height: 1.55; white-space: pre-wrap; word-break: break-word;
+    font-size: 14px; line-height: 1.55; white-space: pre-wrap; word-break: break-word;
   }
   .sb-line.out { color: #c9d1d9; }
   .sb-line.err { color: #ff7b72; font-weight: 600; }
-  .sb-line.sys { color: #58a6ff; }
+  .sb-line.sys { color: #7dd3fc; }
   .sb-line.ok { color: #3fb950; font-weight: 700; }
-  .sb-foot { padding: 8px 16px calc(10px + env(safe-area-inset-bottom)); text-align: center; font-size: 11.5px; color: #484f58; font-weight: 600; }
   .sb-spin { display: inline-block; animation: sbRot 1s linear infinite; }
   @keyframes sbRot { to { transform: rotate(360deg); } }
   @media (max-width: 768px) {
-    .sb-titles h1 { font-size: 14.5px; }
-    .sb-code, .sb-gutter, .sb-term { font-size: 12.5px; }
+    .sb-top { padding: 10px 12px; gap: 8px; }
+    .sb-titles h1 { font-size: 15px; }
+    .sb-langs, .sb-tmpls { padding-left: 12px; padding-right: 12px; }
+    .sb-main { padding: 10px 12px 14px; }
     .sb-btn { padding: 11px 14px; font-size: 13px; }
     .sb-editor { min-height: 180px; }
+    .sb-ed-actions .sb-mini { padding: 6px 9px; font-size: 11.5px; }
+    .sb-term { max-height: 40dvh; }
   }
 </style>
 </head>
@@ -109,15 +183,15 @@
   <div class="sb-top">
     <div class="sb-logo">💻</div>
     <div class="sb-titles">
-      <h1>Код-песочница Лицеиста · МБОУ «Лицей №37»</h1>
-      <p>Изолированная среда: работает только в твоём браузере, данные портала не затрагиваются</p>
+      <h1>💻 Код-песочница</h1>
+      <p>Автономный тренажёр: работает только в твоём браузере, база портала не затрагивается</p>
     </div>
-    <a class="sb-back" id="sb-back" href="index.html">← Вернуться в Лицей №37</a>
+    <a class="sb-back" id="sb-back" href="index.html">← В Лицей №37</a>
   </div>
 
   <div class="sb-langs" id="sb-langs">
-    <button type="button" class="sb-lang-tab active" data-lang="python">🐍 Python 3</button>
-    <button type="button" class="sb-lang-tab" data-lang="cpp">⚙️ C++17</button>
+    <button type="button" class="sb-lang-tab active" data-lang="python">🐍 Python</button>
+    <button type="button" class="sb-lang-tab" data-lang="cpp">⚙️ C++</button>
     <button type="button" class="sb-lang-tab" data-lang="js">⚡ JavaScript</button>
   </div>
 
@@ -132,17 +206,30 @@
     <div class="sb-actions">
       <button type="button" class="sb-btn run" id="sb-run">▶️ Запустить</button>
       <button type="button" class="sb-btn init" id="sb-py-init" style="display:none;">⚙️ Инициализировать Python (~6 МБ)</button>
-      <button type="button" class="sb-btn ghost" id="sb-copy">📋 Скопировать код</button>
-      <button type="button" class="sb-btn ghost" id="sb-clear">🧹 Очистить терминал</button>
     </div>
-    <div class="sb-editor">
-      <div class="sb-gutter" id="sb-gutter">1</div>
-      <textarea class="sb-code" id="sb-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Редактор кода"></textarea>
-    </div>
-    <div>
-      <div class="sb-term-head">Терминал вывода</div>
+    <section class="sb-editor">
+      <div class="sb-ed-head">
+        <div class="sb-dots"><i></i><i></i><i></i></div>
+        <span class="sb-file" id="sb-file">main.py</span>
+        <div class="sb-ed-actions">
+          <button type="button" class="sb-mini" id="sb-copy">📋 Копировать</button>
+          <button type="button" class="sb-mini" id="sb-tmpl-btn">✨ Шаблон</button>
+          <button type="button" class="sb-mini" id="sb-clear">🗑️ Очистить</button>
+        </div>
+      </div>
+      <div class="sb-ed-body">
+        <div class="sb-gutter" id="sb-gutter">1</div>
+        <textarea class="sb-code" id="sb-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Редактор кода"></textarea>
+      </div>
+    </section>
+    <section class="sb-termwrap">
+      <div class="sb-term-head">
+        <span class="sb-status" id="sb-status">● Готово</span>
+        <span>Terminal</span>
+        <button type="button" class="sb-mini" id="sb-term-clear">🧹 Очистить</button>
+      </div>
       <div class="sb-term" id="sb-term" aria-live="polite"></div>
-    </div>
+    </section>
   </div>
 
 <script>
@@ -185,6 +272,17 @@
     var state = { lang: 'python', tmpl: 0, pyodide: null, pyLoading: false };
     var $ = function (id) { return document.getElementById(id); };
     var codeEl = $('sb-code'), gutter = $('sb-gutter'), term = $('sb-term');
+    var FILE_NAMES = { python: 'main.py', cpp: 'main.cpp', js: 'script.js' };
+    var statusEl = $('sb-status');
+    function setStatus37(kind, text) {
+      if (!statusEl) return;
+      statusEl.className = 'sb-status' + (kind ? ' ' + kind : '');
+      statusEl.textContent = text;
+    }
+    function syncFileBadge37() {
+      var f = $('sb-file');
+      if (f) f.textContent = FILE_NAMES[state.lang] || 'main.txt';
+    }
 
     var PYODIDE_URL = 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js';
     var PISTON_URL = 'https://emkc.org/api/v2/piston/execute';
@@ -216,7 +314,8 @@
       codeEl.value = TEMPLATES[state.lang][state.tmpl].code;
       updateGutter();
       term.innerHTML = '';
-      sysMsg('Загружен шаблон: ' + TEMPLATES[state.lang][state.tmpl].name + ' (' + ({ python: 'Python 3', cpp: 'C++17', js: 'JavaScript' })[state.lang] + ')');
+      sysMsg('Загружен шаблон: ' + TEMPLATES[state.lang][state.tmpl].name + ' (' + ({ python: 'Python', cpp: 'C++', js: 'JavaScript' })[state.lang] + ')');
+      syncFileBadge37();
       syncPyBtn();
     }
 
@@ -229,6 +328,7 @@
     function setBusy(on) {
       $('sb-run').disabled = on;
       $('sb-run').textContent = on ? '⏳ Выполняется...' : '▶️ Запустить';
+      if (on) setStatus37('busy', '● Выполняется…');
     }
 
     function loadPyodide37() {
@@ -245,7 +345,7 @@
             state.pyodide = py;
             state.pyLoading = false;
             syncPyBtn();
-            okMsg('✅ Python 3 готов! Можно запускать код.');
+            okMsg('✅ Python готов! Можно запускать код.');
             resolve(py);
           }).catch(reject);
         };
@@ -262,7 +362,7 @@
       setBusy(true);
       loadPyodide37().then(function (py) {
         term.innerHTML = '';
-        sysMsg('🐍 Python 3 · запускаю программу...');
+        sysMsg('🐍 Python · запускаю программу...');
         py.setStdout({ batched: function (s) { outMsg(s); } });
         py.setStderr({ batched: function (s) { errMsg(s); } });
         var promptLine = '';
@@ -275,16 +375,18 @@
         var t0 = performance.now();
         return py.runPythonAsync(codeEl.value).then(function () {
           okMsg('✅ Программа завершена за ' + (performance.now() - t0).toFixed(1) + ' мс');
+          setStatus37('ok', '● Готово');
         });
       }).catch(function (e) {
         errMsg('❌ ' + (e && e.message ? e.message : String(e)));
+        setStatus37('err', '● Ошибка');
       }).then(function () { setBusy(false); });
     }
 
     function runCpp() {
       setBusy(true);
       term.innerHTML = '';
-      sysMsg('⚙️ C++17 · отправляю код в облачный компилятор Piston...');
+      sysMsg('⚙️ C++ · отправляю код в облачный компилятор Piston...');
       var t0 = performance.now();
       fetch(PISTON_URL, {
         method: 'POST',
@@ -310,16 +412,18 @@
           if (run.stdout) outMsg(String(run.stdout).replace(/\n$/, ''));
           if (run.stderr) errMsg(String(run.stderr).trim());
           okMsg('✅ Программа завершена (код выхода ' + (run.code === undefined ? 0 : run.code) + ') за ' + (performance.now() - t0).toFixed(0) + ' мс, включая компиляцию в облаке');
+          setStatus37('ok', '● Готово');
         }
       }).catch(function (e) {
         errMsg('❌ ' + (e && e.message ? e.message : String(e)));
+        setStatus37('err', '● Ошибка');
       }).then(function () { setBusy(false); });
     }
 
     function runJs() {
       setBusy(true);
       term.innerHTML = '';
-      sysMsg('⚡ JavaScript ES2023 · мгновенный запуск в песочнице...');
+      sysMsg('⚡ JavaScript · мгновенный запуск в песочнице...');
       var t0 = performance.now();
       var logs = [];
       var fakeConsole = {
@@ -335,9 +439,11 @@
         fn(fakeConsole);
         logs.forEach(function (p) { (p[0] === 'err' ? errMsg : outMsg)(p[1]); });
         okMsg('✅ Программа завершена за ' + (performance.now() - t0).toFixed(1) + ' мс');
+        setStatus37('ok', '● Готово');
       } catch (e) {
         logs.forEach(function (p) { (p[0] === 'err' ? errMsg : outMsg)(p[1]); });
         errMsg('❌ Ошибка выполнения: ' + (e && e.message ? e.message : String(e)));
+        setStatus37('err', '● Ошибка');
       }
       setBusy(false);
     }
@@ -350,7 +456,9 @@
 
     $('sb-run').addEventListener('click', run);
     $('sb-py-init').addEventListener('click', function () { loadPyodide37().catch(function (e) { errMsg('❌ ' + e.message); }); });
-    $('sb-clear').addEventListener('click', function () { term.innerHTML = ''; sysMsg('Терминал очищен.'); });
+    $('sb-clear').addEventListener('click', function () { codeEl.value = ''; updateGutter(); codeEl.focus(); sysMsg('Редактор очищен.'); });
+    $('sb-term-clear').addEventListener('click', function () { term.innerHTML = ''; sysMsg('Терминал очищен.'); });
+    $('sb-tmpl-btn').addEventListener('click', function () { applyTemplate(); });
     $('sb-copy').addEventListener('click', function () {
       function fallback() {
         codeEl.select();
