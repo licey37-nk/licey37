@@ -1138,6 +1138,20 @@
       color: var(--text-strong);
     }
 
+    .best-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 14px;
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      background: rgba(100, 116, 139, 0.07);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.88rem;
+      text-align: center;
+    }
+
     .best-ach {
       font-size: 0.84rem;
       color: var(--muted);
@@ -2711,7 +2725,7 @@
     /* ======== 21. СУПЕР-АДМИНКА (ШАГ 5) ======== */
     #admin-panel {
       position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-      display: flex; align-items: center; gap: 6px; flex-wrap: nowrap;
+      display: flex; flex-direction: column; align-items: stretch; gap: 4px;
       padding: 5px 10px; min-height: 40px;
       background: linear-gradient(135deg, #1d4ed8, #059669);
       box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
@@ -2725,20 +2739,22 @@
     #admin-panel button:hover { background: rgba(255, 255, 255, 0.25); }
     #admin-panel button.active { background: #fff; color: #1d4ed8; }
     .admin-panel-title { color: #fff; font-weight: 800; font-size: 0.8rem; margin-right: 2px; flex-shrink: 0; }
+    .adm-main-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
     #adm-collapse-btn {
-      width: 28px; height: 28px; padding: 0; text-align: center;
+      font-weight: 800; padding: 4px 10px;
       display: inline-flex; align-items: center; justify-content: center;
       transition: transform 0.2s;
     }
-    #admin-panel.adm-collapsed { min-height: 34px; padding-top: 3px; padding-bottom: 3px; }
     #admin-panel.adm-collapsed #adm-collapse-btn { transform: rotate(180deg); }
-    .adm-btns {
+    .adm-quick {
       display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0;
       overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
     }
-    .adm-btns::-webkit-scrollbar { display: none; }
-    #admin-panel.adm-collapsed .adm-btns { display: none; }
+    .adm-quick::-webkit-scrollbar { display: none; }
+    .adm-extra { display: none; flex-wrap: wrap; gap: 6px; padding: 2px 0 4px; }
+    #admin-panel:not(.adm-collapsed) .adm-extra { display: flex; }
+    body.admin-mode { padding-top: var(--adm-h, 40px); }
     body.admin-mode header { top: var(--adm-h, 40px); }
     .admin-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
     .admin-tabs button {
@@ -4045,19 +4061,22 @@
 
         <div class="card card-hover">
           <h3 class="info-title" data-editable="best-title">🏆 Лучший ученик месяца</h3>
-          <div class="best-student">
-            <div class="best-avatar">🏆</div>
-            <div style="min-width:0;">
-              <div class="best-name" data-editable="best-name">Имя Фамилия</div>
-              <span class="user-class" data-editable="best-class">9Б</span>
-              <p class="best-ach" data-editable="best-ach">Победитель муниципального этапа олимпиады по математике.</p>
+          <div id="best-student-real">
+            <div class="best-student">
+              <div class="best-avatar">🏆</div>
+              <div style="min-width:0;">
+                <div class="best-name" data-editable="best-name">Имя Фамилия</div>
+                <span class="user-class" data-editable="best-class">9Б</span>
+                <p class="best-ach" data-editable="best-ach">Победитель муниципального этапа олимпиады по математике.</p>
+              </div>
+            </div>
+            <div class="like-row">
+              <button class="btn btn-primary btn-sm" id="congrats-btn">👏 Поздравить</button>
+              <span class="like-counter" id="like-counter">0</span>
+              <span class="like-label">поздравлений</span>
             </div>
           </div>
-          <div class="like-row">
-            <button class="btn btn-primary btn-sm" id="congrats-btn">👏 Поздравить</button>
-            <span class="like-counter" id="like-counter">0</span>
-            <span class="like-label">поздравлений</span>
-          </div>
+          <div class="best-placeholder" id="best-student-placeholder" style="display:none;">⏳ Кандидаты недели определяются…</div>
         </div>
 
         <div class="card card-hover">
@@ -4426,7 +4445,7 @@
       <div class="footer-logo">37</div>
       МБОУ «Лицей №37» г. Нижнекамск
     </div>
-    <div>Республика Татарстан · Портал учеников · 2025</div>
+    <div>Республика Татарстан · Портал учеников · 2026</div>
     <div class="footer-privacy">Учебно-информационный портал сообщества МБОУ «Лицей №37» г. Нижнекамск. Портал не запрашивает и не хранит номера телефонов, адреса, паспортные данные и электронную почту учащихся.</div>
   </footer>
 
@@ -4475,7 +4494,7 @@
       <div class="modal-head">
         <div class="modal-icon">🎓</div>
         <h3>Регистрация</h3>
-        <p>Присоединяйся к порталу и получи <strong>⚡ +50 Квантов</strong> на старт!</p>
+        <p>Присоединяйся к цифровому порталу МБОУ «Лицей №37»!</p>
       </div>
       <div class="form-error" id="register-error"></div>
       <form id="register-form">
@@ -4528,7 +4547,7 @@
           </label>
         </div>
         <a id="rules-open-link" style="display:block; text-align:center; margin-bottom:10px; cursor:pointer; font-weight:700; color:var(--accent, #1d4ed8);">📜 Правила сообщества МБОУ «Лицей №37» (100 пунктов)</a>
-        <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться · ⚡ +50 Q</button>
+        <button type="submit" class="btn btn-primary btn-block">🚀 Зарегистрироваться</button>
       </form>
       <div class="modal-footer-link">
         Уже есть аккаунт? <a id="go-to-login">Войти</a>
@@ -4712,6 +4731,7 @@
         <h3>Переслать сообщение</h3>
         <p>Выбери, кому переслать</p>
       </div>
+      <img id="forward-photo-preview" src="" alt="" style="display:none; width:100%; max-height:220px; object-fit:cover; border-radius:12px; margin-bottom:10px;">
       <div id="forward-list" style="max-height:50vh; overflow-y:auto;"></div>
     </div>
   </div>
@@ -4915,28 +4935,32 @@
   </div>
 
   <div id="admin-panel" style="display:none;">
-    <button id="adm-collapse-btn" title="Свернуть / развернуть панель" type="button">▾</button>
-    <span class="admin-panel-title">👑 Админка</span>
-    <div class="adm-btns">
-      <button id="adm-live-edit-btn">✏️ Живое редактирование: ВЫКЛ</button>
+    <div class="adm-main-row">
+      <button id="adm-collapse-btn" title="Свернуть / развернуть панель" type="button">👑 Админка ▾</button>
+      <div class="adm-quick">
+        <button id="adm-live-edit-btn">✏️ Живое ред.: ВЫКЛ</button>
+        <button id="adm-widget-btn" style="display:none;">➕ Блок</button>
+        <button data-adm="broadcast">📣 Рассылка</button>
+        <button id="adm-all-tools-btn">☰ Все инструменты Админа</button>
+      </div>
+    </div>
+    <div class="adm-extra">
+      <button data-adm="users">👥 Пользователи</button>
+      <button data-adm="points">⚡ Кванты и опыт</button>
+      <button data-adm="wires">🔌 Права (Провода)</button>
+      <button data-adm="rights">👥 Права</button>
       <button data-adm="tables">📊 Таблицы</button>
       <button data-adm="log">📜 Журнал</button>
-      <button data-adm="rights">👥 Права</button>
+      <button data-adm="complaints">🚨 Жалобы<span class="adm-badge-red" id="adm-compl-badge" style="display:none;">0</span></button>
       <button data-adm="scripts">💻 Скрипты</button>
       <button data-adm="rewards">🎁 Призы</button>
       <button data-adm="verified">☑️ Галочки</button>
       <button data-adm="director">🏛️ Директор</button>
-      <button data-adm="users">👥 Пользователи</button>
-      <button data-adm="broadcast">📣 Рассылка</button>
-      <button data-adm="points">⚡ Кванты</button>
-      <button data-adm="analytics">📊 Аналитика</button>
-      <button data-adm="backup">💾 Бэкап</button>
-      <button data-adm="wires">🔌 Права (Провода)</button>
-      <button data-adm="complaints">🚨 Жалобы<span class="adm-badge-red" id="adm-compl-badge" style="display:none;">0</span></button>
-      <button id="adm-widget-btn" style="display:none;">➕ Добавить текстовый блок</button>
       <button data-adm="pets">🐾 Талисманы</button>
       <button data-adm="classreset">🗑 Класс</button>
       <button data-adm="ticker">📰 Плашка</button>
+      <button data-adm="analytics">📊 Аналитика</button>
+      <button data-adm="backup">💾 Бэкап</button>
       <button data-adm="pass">🔑 Пароль</button>
       <button id="adm-exit-btn">🚪 Выйти</button>
     </div>
@@ -5123,7 +5147,7 @@
 
     const LS_PREFIX = 'lp37_';
     const TABLE = 'site_content';
-    const START_POINTS = 50;
+    const START_POINTS = 0;
 
     const CLASS_GRADES = Array.from({ length: 11 }, function (_, i) { return i + 1; });
     const CLASS_LETTERS = ['А', 'Б', 'В', 'Г', 'Д'];
@@ -5928,7 +5952,7 @@
             theme: null,
             about: '',
             volunteer: false,
-            history: [{ ts: Date.now(), delta: START_POINTS, reason: '🎁 Стартовые Кванты за регистрацию' }],
+            history: [],
             createdAt: new Date().toISOString()
           };
 
@@ -5938,7 +5962,6 @@
           }
 
           users.push(user);
-          qLedgerPush37(user, START_POINTS, 'start', '🎁 Стартовые Кванты за регистрацию');
           saveUsers(users);
           setSessionUserId(user.id);
           closeModal('modal-register');
@@ -5946,7 +5969,7 @@
           updateAuthUI();
           updateStats();
           renderProfileTab();
-          toast('Добро пожаловать в Лицей №37, ' + user.name + '! Начислено ⚡ ' + START_POINTS + ' Квантов.', 'success');
+          toast('🚀 Добро пожаловать в Лицей №37, ' + user.name + '!', 'success');
         } catch (err) {
           console.warn('Регистрация: ошибка', err);
           showFormError('register-error', 'Что-то пошло не так. Попробуй ещё раз — данные сохранятся локально даже без сети.');
@@ -8440,6 +8463,11 @@
       const user = getCurrentUser();
       if (!user || !msg) return;
       forwardMsg = msg;
+      const fpp37 = document.getElementById('forward-photo-preview');
+      if (fpp37) {
+        if (msg.photo) { fpp37.src = msg.photo; fpp37.style.display = ''; }
+        else { fpp37.removeAttribute('src'); fpp37.style.display = 'none'; }
+      }
       const wrap = document.getElementById('forward-list');
       if (!wrap) return;
       const users = getUsers().filter(function (u) { return u.id !== user.id && !isUserBlocked(u.id); });
@@ -12066,8 +12094,7 @@ try {
       try {
         const panel = document.getElementById('admin-panel');
         if (!panel) return;
-        if (localStorage.getItem('lp37_admin_collapsed') === '1') panel.classList.add('adm-collapsed');
-        else panel.classList.remove('adm-collapsed');
+        panel.classList.toggle('adm-collapsed', localStorage.getItem('lp37_admin_collapsed') !== '0');
       } catch (e) {}
     }
 
@@ -12202,6 +12229,21 @@ try {
           el.textContent = map[key];
         });
       });
+      updateBestStudentBlock37();
+    }
+
+    function updateBestStudentBlock37() {
+      const real = document.getElementById('best-student-real');
+      const ph = document.getElementById('best-student-placeholder');
+      if (!real || !ph) return;
+      let name = '';
+      try {
+        const map = dbLoad('editableTexts', {});
+        name = String((map && map['best-name']) || '').trim();
+      } catch (e37bs) { name = ''; }
+      const empty = !name || name === 'Имя Фамилия';
+      real.style.display = empty ? 'none' : '';
+      ph.style.display = empty ? '' : 'none';
     }
 
     function setLiveEdit(on) {
@@ -12210,7 +12252,7 @@ try {
       const btn = document.getElementById('adm-live-edit-btn');
       if (btn) {
         btn.classList.toggle('active', on);
-        btn.textContent = on ? '✏️ Живое редактирование: ВКЛ' : '✏️ Живое редактирование: ВЫКЛ';
+        btn.textContent = on ? '✏️ Живое ред.: ВКЛ' : '✏️ Живое ред.: ВЫКЛ';
       }
       const wb = document.getElementById('adm-widget-btn');
       if (wb) wb.style.display = on ? '' : 'none';
@@ -12240,6 +12282,7 @@ try {
             adminLogAction('edit', 'Правка текста «' + key + '»', { kind: 'editable', key: key, before: before });
             toast('💾 Сохранено: «' + key + '»', 'success');
           }
+          if (key === 'best-name') updateBestStudentBlock37();
           el.removeEventListener('blur', finish);
           el.removeEventListener('keydown', onKey);
         }
@@ -12697,7 +12740,7 @@ try {
   document.getElementById('admin-panel').addEventListener('click', function (e) {
         const b = e.target.closest('button');
         if (!b) return;
-        if (b.id === 'adm-collapse-btn') {
+        if (b.id === 'adm-collapse-btn' || b.id === 'adm-all-tools-btn') {
           const p = document.getElementById('admin-panel');
           p.classList.toggle('adm-collapsed');
           try { localStorage.setItem('lp37_admin_collapsed', p.classList.contains('adm-collapsed') ? '1' : '0'); } catch (e) {}
@@ -16597,6 +16640,7 @@ try {
     try { ensureLessonIndicator37(); } catch (e37) {}
     try { ensureBottomNav37(); } catch (e37) {}
     try { ensureToTop37(); } catch (e37) {}
+    try { applyEditableTexts(); } catch (e37) {}
 
     window.__lp37Ready = true;
 
