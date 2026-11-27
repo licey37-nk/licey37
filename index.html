@@ -3116,6 +3116,180 @@
       .wg-palette { grid-template-columns:repeat(6, 1fr); }
       .tw-float { bottom:80px; right:12px; max-width:200px; }
     }
+    /* ============ МОДУЛЬ 23: МЕССЕНДЖЕР ============ */
+    #modal-dm.dm-full .modal-content {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      max-width: none;
+      max-height: none;
+      border-radius: 0;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      z-index: 9500;
+      animation: none;
+    }
+    #modal-dm.dm-full .modal-head {
+      margin-bottom: 8px;
+    }
+    #modal-dm.dm-full .modal-chat-list {
+      flex: 1;
+      max-height: none;
+      min-height: 0;
+      overflow-y: auto;
+    }
+    #modal-dm.dm-full .chat-form {
+      flex-shrink: 0;
+    }
+    .dm-back-btn {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border: none;
+      border-radius: 12px;
+      padding: 9px 14px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    .dm-back-btn:active { transform: scale(0.96); }
+    .dm-head-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+    }
+    .dm-name-line { display: block; }
+    .dm-mood {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .dm-status { display: block; font-size: 0.8rem; margin-top: 2px; }
+    .dm-status-on { color: #10b981; font-weight: 700; }
+    .dm-status-off { color: var(--muted); }
+    .dm-typing { color: var(--primary); font-size: 0.8rem; font-weight: 600; margin-top: 2px; }
+    .dm-quote {
+      border-left: 3px solid var(--primary);
+      background: var(--primary-soft);
+      border-radius: 8px;
+      padding: 5px 9px;
+      margin: 6px 0;
+      font-size: 0.8rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .dm-fwd {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .dm-text { word-break: break-word; }
+    .dm-photo {
+      max-width: 240px;
+      max-height: 240px;
+      border-radius: 12px;
+      display: block;
+      cursor: zoom-in;
+      margin: 6px 0;
+    }
+    .dm-reacts { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    .dm-react {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .dm-react.on { border-color: var(--primary); background: var(--primary-soft); }
+    .dm-react:active { transform: scale(0.94); }
+    .dm-plate {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+    .dm-plate-edit { background: rgba(245, 158, 11, 0.15); color: #b45309; }
+    .dm-plate button {
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0 4px;
+    }
+    .mm-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      margin-bottom: 8px;
+      cursor: pointer;
+      font-size: 0.92rem;
+      color: var(--text);
+      font-family: inherit;
+      transition: transform 0.15s;
+    }
+    .mm-btn:active { transform: scale(0.98); }
+    .mm-danger { color: #dc2626; }
+    #photo-viewer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9800;
+      background: rgba(2, 6, 23, 0.92);
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+    #photo-viewer.open { display: flex; }
+    #photo-viewer img {
+      max-width: 96vw;
+      max-height: 96dvh;
+      border-radius: 10px;
+    }
+    .bc-row {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      background: var(--surface-soft);
+    }
+    .bc-row.bc-ended { opacity: 0.6; }
+    .bc-text { font-weight: 600; word-break: break-word; }
+    .bc-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+    .bc-actions button {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      color: var(--text);
+      font-family: inherit;
+    }
+    .bc-mode-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body class="theme-light">
@@ -3787,10 +3961,13 @@
   <div class="modal" id="modal-dm" aria-modal="true" role="dialog">
     <div class="modal-content">
       <button class="modal-close" data-close-modal="modal-dm">✕</button>
-      <div class="modal-head">
+      <div class="modal-head dm-head-row">
+        <button type="button" class="dm-back-btn" id="dm-back-btn">← Назад</button>
         <div class="modal-icon">✉️</div>
-        <h3>Личные сообщения</h3>
-        <p id="dm-with"></p>
+        <div style="min-width:0;">
+          <h3>Личные сообщения</h3>
+          <p id="dm-with"></p>
+        </div>
       </div>
       <div class="dm-controls" id="dm-controls">
         <button type="button" class="btn btn-ghost btn-sm" id="dm-block-btn">🚫 Заблокировать</button>
@@ -3798,12 +3975,41 @@
       </div>
       <div class="form-error" id="dm-blocked-note" style="display:none;">Вы заблокировали этого пользователя — нажмите «✅ Разблокировать», чтобы продолжить общение.</div>
       <div class="chat-list modal-chat-list" id="dm-list-modal"></div>
+      <div id="dm-compose-plate" style="display:none;"></div>
       <div class="chat-form">
         <textarea id="dm-input" rows="1" placeholder="Сообщение... (Enter — отправить)"></textarea>
+        <button class="btn btn-ghost" id="dm-photo-btn" title="Прикрепить фото">📷</button>
+        <input type="file" id="dm-photo-input" accept="image/*" hidden>
         <button class="btn btn-primary" id="dm-send">➤</button>
       </div>
     </div>
   </div>
+
+  <div class="modal" id="modal-msgmenu" aria-modal="true" role="dialog">
+    <div class="modal-content" style="max-width:380px;">
+      <button class="modal-close" data-close-modal="modal-msgmenu">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">💬</div>
+        <h3>Действия с сообщением</h3>
+        <p id="msgmenu-preview"></p>
+      </div>
+      <div id="msgmenu-body"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal-forward" aria-modal="true" role="dialog">
+    <div class="modal-content" style="max-width:420px;">
+      <button class="modal-close" data-close-modal="modal-forward">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">↪️</div>
+        <h3>Переслать сообщение</h3>
+        <p>Выбери, кому переслать</p>
+      </div>
+      <div id="forward-list" style="max-height:50vh; overflow-y:auto;"></div>
+    </div>
+  </div>
+
+  <div id="photo-viewer" role="dialog" aria-modal="true"><img id="photo-viewer-img" src="" alt="Фото"></div>
 
   <div class="modal" id="modal-channel" aria-modal="true" role="dialog">
     <div class="modal-content">
@@ -3929,6 +4135,7 @@
       <button data-adm="points">💎 Баллы</button>
       <button data-adm="analytics">📊 Аналитика</button>
       <button data-adm="backup">💾 Бэкап</button>
+      <button data-adm="wires">🔌 Права (Провода)</button>
       <button id="adm-widget-btn" style="display:none;">➕ Виджет</button>
       <button data-adm="pets">🐾 Талисманы</button>
       <button data-adm="classreset">🗑 Класс</button>
@@ -4141,6 +4348,7 @@
           .from(TABLE)
           .upsert({ key: key, value: data }, { onConflict: 'key' });
         if (answer.error) throw answer.error;
+        try { instantSend('row', { key: key }); } catch (eI37) {}
       } catch (e) {
         console.warn('syncKey: облако недоступно, работаем локально —', key, e && e.message);
       }
@@ -4212,6 +4420,21 @@
             const lt = typeof l.lastUpdate === 'number' ? l.lastUpdate : 0;
             if (ct > lt) merged[cid] = c;
           });
+        } else if (key === 'presence_ts') {
+          merged = Object.assign({}, local);
+          Object.keys(cloudData).forEach(function (uid) {
+            const c = Number(cloudData[uid] || 0);
+            if (!merged[uid] || Number(merged[uid] || 0) < c) merged[uid] = c;
+          });
+        } else if (key === 'dm_index') {
+          merged = Object.assign({}, local);
+          Object.keys(cloudData).forEach(function (uid) {
+            const c = Array.isArray(cloudData[uid]) ? cloudData[uid] : [];
+            const l = Array.isArray(local[uid]) ? local[uid] : [];
+            const uni = l.slice();
+            c.forEach(function (k) { if (uni.indexOf(k) === -1) uni.push(k); });
+            merged[uid] = uni;
+          });
         }
       }
       writeLs(key, merged);
@@ -4245,7 +4468,7 @@
     let offlineSyncTimer = null;
     let chatSyncBusy = false;
 
-    const CHAT_SYNC_KEYS = ['chat', 'pchat', 'dms', 'dmArchive', 'channels', 'posts'];
+    const CHAT_SYNC_KEYS = ['chat', 'pchat', 'dms', 'dmArchive', 'channels', 'posts', 'broadcasts'];
 
     function chatSyncSnapshot() {
       let s = '';
@@ -4277,7 +4500,7 @@
     }
 
     function liveSyncSnapshot() {
-      const keys = ['users', 'posts', 'channels', 'volunteers', 'chat', 'pchat', 'dms', 'homework', 'ideas', 'listings', 'compliments', 'capsule', 'pets', 'reaction', 'customScripts', 'shopCustomRewards', 'applications', 'adminLog', 'topTicker', 'bestLikes', 'broadcast', 'custom_text_widgets'];
+      const keys = ['users', 'posts', 'channels', 'volunteers', 'chat', 'pchat', 'dms', 'homework', 'ideas', 'listings', 'compliments', 'capsule', 'pets', 'reaction', 'customScripts', 'shopCustomRewards', 'applications', 'adminLog', 'topTicker', 'bestLikes', 'broadcast', 'broadcasts', 'custom_text_widgets'];
       let s = '';
       keys.forEach(function (k) { s += (localStorage.getItem(LS_PREFIX + k) || '') + '|'; });
       return s;
@@ -4352,6 +4575,7 @@
       } catch (e) {}
       startRealtime();
       liveSyncTick();
+      startDmSync();
     }
 
     /* ============ ПОЛЬЗОВАТЕЛИ И СЕССИЯ ============ */
@@ -4915,6 +5139,7 @@
           '<div class="card" style="text-align:center;">' +
             avatarHtml(user.avatar, frameClass(user.frame)) +
             '<h3 style="margin-top:10px;">' + esc(user.name) + '</h3>' +
+            (user.mood ? '<div class="dm-mood" style="margin-top:4px; font-size:0.9rem;">🎵 ' + esc(user.mood) + '</div>' : '') +
             '<div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:center; margin-top:6px;">' +
               '<span class="user-class" style="font-size:0.9rem; padding:4px 12px;">' + esc(classIdOf(user.grade, user.letter)) + ' класс</span>' +
               '<span class="coming-badge" style="background:var(--accent-soft); color:var(--accent);">' + esc(displayStatus(user)) + '</span>' +
@@ -4935,6 +5160,8 @@
               '<button type="button" class="btn btn-outline btn-sm" id="pf-photo-btn" style="margin-top:8px;">🖼️ Загрузить своё фото</button>' +
             '</div>' +
             '<div class="field"><label for="pf-about">О себе</label><textarea id="pf-about" class="textarea-field" maxlength="200" placeholder="Мои увлечения, любимые предметы...">' + esc(user.about || '') + '</textarea></div>' +
+            '<div class="field"><label for="pf-mood">🎵 Статус-настроение (видно под ником и в чатах)</label><input type="text" id="pf-mood" maxlength="80" placeholder="Например: Готовлюсь к контрольной 💻" value="' + esc(user.mood || '') + '"></div>' +
+            '<label class="toggle-row"><input type="checkbox" id="pf-hidestatus"' + (user.hideStatus ? ' checked' : '') + '> 🕵️ Скрывать статус «В сети» и «Печатает...» от других</label>' +
             '<label class="toggle-row"><input type="checkbox" id="pf-vol"' + (user.volunteer ? ' checked' : '') + '> 🤝 Готов помогать с предметами в Банке взаимопомощи</label>' +
             '<button class="btn btn-primary btn-block" id="pf-save" style="margin-top:12px;">💾 Сохранить изменения</button>' +
           '</div>' +
@@ -5121,6 +5348,10 @@
       u.letter = String(letter).toUpperCase();
       u.about = about;
       u.volunteer = volunteer;
+      const moodVal = document.getElementById('pf-mood') ? document.getElementById('pf-mood').value.trim() : '';
+      u.mood = moodVal.slice(0, 80);
+      const hideVal = document.getElementById('pf-hidestatus');
+      u.hideStatus = !!(hideVal && hideVal.checked);
       const vols = getList('volunteers');
       const vi = vols.findIndex(function (v) { return v.userId === u.id; });
       if (volunteer) {
@@ -6270,6 +6501,7 @@
             '</div>' +
             '<div class="listing-actions">' +
               '<button type="button" class="btn btn-outline btn-sm" data-pchat="' + esc(l.id) + '">💬 Написать продавцу</button>' +
+              ((mine || admin) ? '<button type="button" class="btn btn-outline btn-sm" data-listing-edit="' + esc(l.id) + '">✏️ Редактировать</button>' : '') +
               ((mine || admin) ? '<button type="button" class="btn btn-danger btn-sm" data-listing-del="' + esc(l.id) + '">🗑️ Снять с продажи</button>' : '') +
             '</div>' +
           '</div>' +
@@ -6561,11 +6793,22 @@
       const pu = getUserById(partnerId);
       if (!pu) { toast('Пользователь не найден.', 'error'); return; }
       currentDmPartner = partnerId;
-      document.getElementById('dm-with').innerHTML = esc(pu.name) + userVerifiedSpan(pu) + ' <span class="user-class">' + esc(classIdOf(pu.grade, pu.letter)) + '</span>';
+      clearDmCompose();
+      const withEl = document.getElementById('dm-with');
+      if (withEl) {
+        withEl.innerHTML = '<span class="dm-name-line">' + esc(pu.name) + userVerifiedSpan(pu) + ' <span class="user-class">' + esc(classIdOf(pu.grade, pu.letter)) + '</span></span>' +
+          (pu.mood ? '<span class="dm-mood">🎵 ' + esc(pu.mood) + '</span>' : '') +
+          '<span class="dm-status" id="dm-status-line">' + dmStatusLine(pu) + '</span>' +
+          '<span class="dm-typing" id="dm-typing" style="display:none;">✍️ печатает...</span>';
+      }
+      const mdm = document.getElementById('modal-dm');
+      if (mdm) mdm.classList.add('dm-full');
       updateDmControls();
+      renderDmPlate();
       renderDmMessages();
       openModal('modal-dm');
     }
+
 
     function getBlockedIds() {
       const me = getCurrentUser();
@@ -6609,37 +6852,19 @@
       if (!confirm('Удалить этот чат вместе со всей историей сообщений? Действие необратимо.')) return;
       const key = dmKey(user.id, partnerId);
       dbSave('dms', getList('dms').filter(function (m) { return m.key !== key; }));
+      dbSave(dmCloudKey(user.id, partnerId), []);
       setArchived(user.id, getArchived(user.id).filter(function (p) { return p !== partnerId; }));
       currentDmPartner = null;
+      const mdm = document.getElementById('modal-dm');
+      if (mdm) mdm.classList.remove('dm-full');
       closeModal('modal-dm');
       renderDms();
       toast('🗑️ Чат удалён.', 'success');
     }
 
-    function renderDmMessages() {
-      const user = getCurrentUser();
-      const wrap = document.getElementById('dm-list-modal');
-      if (!wrap || !currentDmPartner || !user) return;
-      const key = dmKey(user.id, currentDmPartner);
-      const messages = getList('dms')
-        .filter(function (m) { return m.key === key; })
-        .sort(function (a, b) { return (a.ts || 0) - (b.ts || 0); })
-        .slice(-80);
-      wrap.innerHTML = messages.length
-        ? messages.map(function (m) {
-            const mine = m.from === user.id;
-            return '<div class="mini-msg' + (mine ? ' own' : '') + '">' +
-              msgAvatarHtml(m.avatar, 'mini-ava') +
-              '<div class="mini-bubble">' +
-                '<div class="mini-head"><span class="mini-author">' + esc(m.name) + '</span><span>' + fmtDateTime(m.ts) + (m.edited ? ' · изменено' : '') + '</span></div>' +
-                '<div>' + esc(m.text) + '</div>' +
-                (mine ? '<div class="mini-actions"><button type="button" data-dmmsg-edit="' + esc(m.id) + '">✏️</button><button type="button" data-dmmsg-del="' + esc(m.id) + '">🗑️</button></div>' : '') +
-              '</div>' +
-            '</div>';
-          }).join('')
-        : '<p class="empty-line">Начни диалог — напиши первое сообщение!</p>';
-      wrap.scrollTop = wrap.scrollHeight;
-    }
+
+
+
 
     function sendDm() {
       const user = getCurrentUser();
@@ -6647,14 +6872,36 @@
       if (isUserBlocked(currentDmPartner)) { toast('🚫 Пользователь заблокирован — отправка недоступна.', 'error'); return; }
       const input = document.getElementById('dm-input');
       const text = input.value.trim();
-      if (!text) return;
-      if (!antispamCheck('dm', text)) return;
-      const list = getList('dms');
-      list.push({ id: makeId('dm'), key: dmKey(user.id, currentDmPartner), from: user.id, name: user.name, avatar: user.avatar, text: text, ts: Date.now(), edited: false });
-      dbSave('dms', list);
+      if (editingDmId) {
+        if (!text) return;
+        const found = findDmMsgById(editingDmId);
+        if (found.msg && found.msg.from === user.id) {
+          found.msg.text = text;
+          found.msg.edited = true;
+          saveDmArr(found.arr);
+        }
+        input.value = '';
+        clearDmCompose();
+        renderDmMessages();
+        toast('✏️ Сообщение изменено.', 'success');
+        return;
+      }
+      if (!text && !dmPendingPhoto) return;
+      if (text && !antispamCheck('dm', text)) return;
+      const arr = getDmMsgs(user.id, currentDmPartner);
+      arr.push({
+        id: makeId('dm'), key: dmKey(user.id, currentDmPartner), from: user.id, name: user.name, avatar: user.avatar,
+        text: text, photo: dmPendingPhoto || null,
+        replyTo: dmReplyTo ? { id: dmReplyTo.id, name: dmReplyTo.name, text: dmReplyTo.text } : null,
+        ts: Date.now()
+      });
+      saveDmMsgs(user.id, currentDmPartner, arr);
+      instantSend('row', { key: dmCloudKey(user.id, currentDmPartner) });
       input.value = '';
+      clearDmCompose();
       renderDmMessages();
     }
+
 
     try {
   document.getElementById('dm-send').addEventListener('click', sendDm);
@@ -6675,34 +6922,192 @@
       });
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    try {
-  document.getElementById('dm-list-modal').addEventListener('click', function (e) {
-        const user = getCurrentUser();
-        if (!user) return;
-        const editBtn = e.target.closest('[data-dmmsg-edit]');
-        const delBtn = e.target.closest('[data-dmmsg-del]');
-        if (!editBtn && !delBtn) return;
-        const list = getList('dms');
-        const id = editBtn ? editBtn.dataset.dmmsgEdit : delBtn.dataset.dmmsgDel;
-        const msg = list.find(function (m) { return m.id === id && m.from === user.id; });
-        if (!msg) return;
-        if (editBtn) {
-          const newText = prompt('Редактировать сообщение:', msg.text);
-          if (newText === null) return;
-          const trimmed = newText.trim();
-          if (!trimmed) { toast('Сообщение не может быть пустым.', 'error'); return; }
-          msg.text = trimmed;
-          msg.edited = true;
-          dbSave('dms', list);
-          renderDmMessages();
-        } else {
-          if (!confirm('Удалить это сообщение?')) return;
-          list.splice(list.indexOf(msg), 1);
-          dbSave('dms', list);
-          renderDmMessages();
+    /* ============ МОДУЛЬ 23: МЕССЕНДЖЕР ВК-СТИЛЯ, МГНОВЕННАЯ ДОСТАВКА, РАССЫЛКИ С ТАЙМЕРОМ ============ */
+
+    let dmReplyTo = null;
+    let editingDmId = null;
+    let dmPendingPhoto = null;
+    let msgMenuMsgId = null;
+    let forwardMsg = null;
+    let lastTapInfo = { id: null, ts: 0 };
+    let tapMenuTimer = null;
+    let lastTypingSent = 0;
+    let typingHideTimer = null;
+    let lp37OnlineMap = {};
+    let bcastTickerTimer = null;
+
+    function dmCloudKey(a, b) { return 'dm__' + [a, b].sort().join('_'); }
+
+    function knownDmCloudKeys() {
+      const out = [];
+      const user = getCurrentUser();
+      const idx = dbLoad('dm_index', {});
+      if (user && idx && idx[user.id] && Array.isArray(idx[user.id])) {
+        idx[user.id].forEach(function (k) { if (out.indexOf(k) === -1) out.push(k); });
+      }
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.indexOf(LS_PREFIX + 'dm__') === 0) {
+            const kk = k.slice(LS_PREFIX.length);
+            if (out.indexOf(kk) === -1) out.push(kk);
+          }
         }
+      } catch (eKd37) {}
+      return out;
+    }
+
+    function registerDmIndex(a, b, ck) {
+      try {
+        const idx = dbLoad('dm_index', {});
+        if (!idx || typeof idx !== 'object' || Array.isArray(idx)) return;
+        let changed = false;
+        [a, b].forEach(function (uid) {
+          if (!Array.isArray(idx[uid])) idx[uid] = [];
+          if (idx[uid].indexOf(ck) === -1) { idx[uid].push(ck); changed = true; }
+        });
+        if (changed) dbSave('dm_index', idx);
+      } catch (eRd37) {}
+    }
+
+    function getDmMsgs(a, b) {
+      const key = dmKey(a, b);
+      const legacy = getList('dms').filter(function (m) { return m && m.key === key; });
+      const fresh = dbLoad(dmCloudKey(a, b), []);
+      const all = mergeLists(legacy, Array.isArray(fresh) ? fresh : []);
+      return all.sort(function (x, y) { return (x.ts || 0) - (y.ts || 0); });
+    }
+
+    function saveDmMsgs(a, b, arr) {
+      dbSave(dmCloudKey(a, b), arr);
+      registerDmIndex(a, b, dmCloudKey(a, b));
+    }
+
+    function migrateLegacyDms() {
+      try {
+        const legacy = getList('dms');
+        if (!legacy.length) return;
+        const groups = {};
+        legacy.forEach(function (m) {
+          if (!m || !m.key) return;
+          const ids = m.key.split('|');
+          if (ids.length !== 2) return;
+          const ck = dmCloudKey(ids[0], ids[1]);
+          if (!groups[ck]) groups[ck] = { a: ids[0], b: ids[1], arr: [] };
+          groups[ck].arr.push(m);
+        });
+        Object.keys(groups).forEach(function (ck) {
+          const g = groups[ck];
+          const existing = dbLoad(ck, []);
+          const merged = mergeLists(Array.isArray(existing) ? existing : [], g.arr);
+          dbSave(ck, merged);
+          registerDmIndex(g.a, g.b, ck);
+        });
+        dbSave('dms', []);
+      } catch (eMl37) { try { console.error('migrateLegacyDms:', eMl37); } catch (e2) {} }
+    }
+
+    function visibleDmMsgs(a, b) {
+      return getDmMsgs(a, b).filter(function (m) {
+        return !(Array.isArray(m.deletedFor) && m.deletedFor.indexOf(a) !== -1);
       });
-} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    }
+
+    function bumpSeen(uid, ts) {
+      try {
+        const map = dbLoad('presence_ts', {});
+        if (!map || typeof map !== 'object' || Array.isArray(map)) return;
+        if (!map[uid] || Number(map[uid]) < ts) { map[uid] = ts; writeLs('presence_ts', map); }
+      } catch (eBs37) {}
+    }
+
+    function lastSeenOf(uid) {
+      const map = dbLoad('presence_ts', {});
+      return map && typeof map === 'object' && !Array.isArray(map) ? Number(map[uid] || 0) : 0;
+    }
+
+    function localClock(ts) {
+      try { return new Date(ts).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }); }
+      catch (eLc37) { return ''; }
+    }
+
+    function dmStatusLine(pu) {
+      if (!pu) return '';
+      if (pu.hideStatus) return '<span class="dm-status-off">🕵️ статус скрыт</span>';
+      const pres = lp37OnlineMap[pu.id];
+      if (pres && Date.now() - pres.ts < 70000) return '<span class="dm-status-on">● в сети</span>';
+      const seen = lastSeenOf(pu.id);
+      if (seen) return '<span class="dm-status-off">был(а) в сети в ' + esc(localClock(seen)) + '</span>';
+      return '<span class="dm-status-off">не в сети</span>';
+    }
+
+    function updateDmHeaderStatus() {
+      try {
+        const el = document.getElementById('dm-status-line');
+        if (!el || !currentDmPartner) return;
+        const pu = getUserById(currentDmPartner);
+        if (pu) el.innerHTML = dmStatusLine(pu);
+      } catch (eUh37) {}
+    }
+
+    function clearDmCompose() {
+      dmReplyTo = null;
+      editingDmId = null;
+      dmPendingPhoto = null;
+      renderDmPlate();
+    }
+
+    function renderDmPlate() {
+      try {
+        const plate = document.getElementById('dm-compose-plate');
+        if (!plate) return;
+        let html = '';
+        if (dmReplyTo) {
+          html += '<div class="dm-plate"><span>↩️ Ответ: <b>' + esc(dmReplyTo.name) + '</b> · ' + esc(String(dmReplyTo.text || '📷 Фото').slice(0, 40)) + '</span><button type="button" id="dm-reply-cancel" title="Отменить">✕</button></div>';
+        }
+        if (editingDmId) {
+          html += '<div class="dm-plate dm-plate-edit"><span>✏️ Редактирование сообщения</span><button type="button" id="dm-edit-cancel" title="Отменить">✕</button></div>';
+        }
+        if (dmPendingPhoto) {
+          html += '<div class="dm-plate"><span>📷 Фото прикреплено</span><button type="button" id="dm-photo-cancel" title="Убрать">✕</button></div>';
+        }
+        plate.innerHTML = html;
+        plate.style.display = html ? 'block' : 'none';
+      } catch (eRp37) {}
+    }
+
+    function renderDmMessages() {
+      const user = getCurrentUser();
+      const wrap = document.getElementById('dm-list-modal');
+      if (!wrap || !currentDmPartner || !user) return;
+      updateDmHeaderStatus();
+      const messages = visibleDmMsgs(user.id, currentDmPartner).slice(-80);
+      wrap.innerHTML = messages.length
+        ? messages.map(function (m) {
+            const mine = m.from === user.id;
+            const reacts = m.reactions || {};
+            const reactHtml = Object.keys(reacts).filter(function (em) { return reacts[em] && reacts[em].length; }).map(function (em) {
+              const on = reacts[em].indexOf(user.id) !== -1;
+              return '<button type="button" class="dm-react' + (on ? ' on' : '') + '" data-dm-react="' + esc(m.id) + '|' + em + '">' + em + ' ' + reacts[em].length + '</button>';
+            }).join('');
+            const quoteHtml = m.replyTo ? '<div class="dm-quote"><b>↩️ ' + esc(m.replyTo.name) + '</b> · ' + esc(String(m.replyTo.text || '📷 Фото').slice(0, 60)) + '</div>' : '';
+            const fwdHtml = m.fwdFrom ? '<div class="dm-fwd">↪️ Переслано от ' + esc(m.fwdFrom) + '</div>' : '';
+            return '<div class="mini-msg' + (mine ? ' own' : '') + '">' +
+              msgAvatarHtml(m.avatar, 'mini-ava') +
+              '<div class="mini-bubble" data-dm-msg="' + esc(m.id) + '">' +
+                '<div class="mini-head"><span class="mini-author">' + esc(m.name) + '</span><span>' + fmtDateTime(m.ts) + (m.edited ? ' · изменено' : '') + '</span></div>' +
+                fwdHtml +
+                quoteHtml +
+                (m.photo ? '<img class="dm-photo" data-dm-photo="' + esc(m.id) + '" src="' + m.photo + '" alt="Фото">' : '') +
+                (m.text ? '<div class="dm-text">' + esc(m.text) + '</div>' : '') +
+                (reactHtml ? '<div class="dm-reacts">' + reactHtml + '</div>' : '') +
+                (mine ? '<div class="mini-actions"><button type="button" data-dmmsg-edit="' + esc(m.id) + '">✏️</button><button type="button" data-dmmsg-del="' + esc(m.id) + '">🗑️</button></div>' : '') +
+              '</div>' +
+            '</div>';
+          }).join('')
+        : '<p class="empty-line">Начни диалог — напиши первое сообщение!</p>';
+      wrap.scrollTop = wrap.scrollHeight;
+    }
 
     function renderDms() {
       const user = getCurrentUser();
@@ -6717,16 +7122,20 @@
         return;
       }
       const archived = getArchived(user.id);
-      const all = getList('dms');
       const dialogs = {};
-      all.forEach(function (m) {
-        if (m.from !== user.id) {
-          const ids = (m.key || '').split('|');
-          if (ids.indexOf(user.id) === -1) return;
-        }
-        const ids2 = (m.key || '').split('|');
-        const partner = ids2[0] === user.id ? ids2[1] : ids2[0];
+      function considerMsg(m) {
+        if (!m || !m.key) return;
+        const ids = m.key.split('|');
+        if (ids.length !== 2) return;
+        if (ids[0] !== user.id && ids[1] !== user.id) return;
+        if (Array.isArray(m.deletedFor) && m.deletedFor.indexOf(user.id) !== -1) return;
+        const partner = ids[0] === user.id ? ids[1] : ids[0];
         if (!dialogs[partner] || (dialogs[partner].ts || 0) < (m.ts || 0)) dialogs[partner] = m;
+      }
+      getList('dms').forEach(considerMsg);
+      knownDmCloudKeys().forEach(function (ck) {
+        const arr = dbLoad(ck, []);
+        (Array.isArray(arr) ? arr : []).forEach(considerMsg);
       });
       const partners = Object.keys(dialogs).filter(function (p) { return !isUserBlocked(p); });
       const active = partners.filter(function (p) { return archived.indexOf(p) === -1; })
@@ -6743,7 +7152,7 @@
               msgAvatarHtml(pu ? pu.avatar : null, 'mini-ava') +
               '<div style="min-width:0; flex:1;">' +
                 '<div style="font-weight:700;">' + esc(pu ? pu.name : 'Пользователь') + (pu ? ' <span class="user-class">' + esc(classIdOf(pu.grade, pu.letter)) + '</span>' : '') + '</div>' +
-                '<div class="field-hint" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + (fromMe ? 'Ты: ' : '') + esc(last.text) + '</div>' +
+                '<div class="field-hint" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + (fromMe ? 'Ты: ' : '') + esc(last.text || '📷 Фото') + '</div>' +
               '</div>' +
               '<button type="button" class="btn btn-outline btn-sm" data-dm-open="' + esc(partnerId) + '">Открыть</button>' +
               '<button type="button" class="btn btn-ghost btn-sm" data-dm-archive="' + esc(partnerId) + '" title="В архив">📥</button>' +
@@ -6761,6 +7170,580 @@
           }).join('')
         : '<p class="empty-line">Архив пуст.</p>';
     }
+
+    function findDmMsgById(msgId) {
+      const user = getCurrentUser();
+      if (!user || !currentDmPartner) return { arr: null, msg: null };
+      const arr = getDmMsgs(user.id, currentDmPartner);
+      const m = arr.find(function (x) { return x.id === msgId; });
+      return { arr: arr, msg: m || null };
+    }
+
+    function saveDmArr(arr) {
+      if (!currentDmPartner) return;
+      const user = getCurrentUser();
+      if (!user) return;
+      saveDmMsgs(user.id, currentDmPartner, arr);
+      instantSend('row', { key: dmCloudKey(user.id, currentDmPartner) });
+    }
+
+    function toggleDmReaction(msgId, emoji) {
+      const user = getCurrentUser();
+      if (!user || !currentDmPartner || !msgId || !emoji) return;
+      const found = findDmMsgById(msgId);
+      if (!found.msg) return;
+      found.msg.reactions = found.msg.reactions || {};
+      const lst = Array.isArray(found.msg.reactions[emoji]) ? found.msg.reactions[emoji] : [];
+      const idx = lst.indexOf(user.id);
+      if (idx !== -1) lst.splice(idx, 1); else lst.push(user.id);
+      if (lst.length) found.msg.reactions[emoji] = lst; else delete found.msg.reactions[emoji];
+      saveDmArr(found.arr);
+      renderDmMessages();
+    }
+
+    function startDmReply(msg) {
+      if (!msg) return;
+      editingDmId = null;
+      dmReplyTo = { id: msg.id, name: msg.name || 'Сообщение', text: msg.text || '' };
+      renderDmPlate();
+      const input = document.getElementById('dm-input');
+      if (input) input.focus();
+    }
+
+    function startDmEdit(msg) {
+      if (!msg) return;
+      dmReplyTo = null;
+      editingDmId = msg.id;
+      const input = document.getElementById('dm-input');
+      if (input) { input.value = msg.text || ''; input.focus(); }
+      renderDmPlate();
+    }
+
+    function deleteDmForMe(msgId) {
+      const user = getCurrentUser();
+      if (!user) return;
+      const found = findDmMsgById(msgId);
+      if (!found.msg) return;
+      found.msg.deletedFor = Array.isArray(found.msg.deletedFor) ? found.msg.deletedFor : [];
+      if (found.msg.deletedFor.indexOf(user.id) === -1) found.msg.deletedFor.push(user.id);
+      saveDmArr(found.arr);
+      renderDmMessages();
+      toast('🗑️ Сообщение удалено у тебя.', 'info');
+    }
+
+    function deleteDmForAll(msgId) {
+      const user = getCurrentUser();
+      if (!user) return;
+      const found = findDmMsgById(msgId);
+      if (!found.msg || found.msg.from !== user.id) return;
+      found.arr.splice(found.arr.indexOf(found.msg), 1);
+      saveDmArr(found.arr);
+      renderDmMessages();
+      toast('💥 Сообщение удалено у всех.', 'info');
+    }
+
+    function copyTextToClipboard(text) {
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { toast('📋 Текст скопирован.', 'success'); }, function () { copyTextFallback(text); });
+          return;
+        }
+      } catch (eCp37) {}
+      copyTextFallback(text);
+    }
+
+    function copyTextFallback(text) {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        toast('📋 Текст скопирован.', 'success');
+      } catch (eCf37) { toast('Не удалось скопировать текст.', 'error'); }
+    }
+
+    function openMsgMenu(msgId) {
+      const user = getCurrentUser();
+      if (!user || !currentDmPartner) return;
+      const m = getDmMsgs(user.id, currentDmPartner).find(function (x) { return x.id === msgId; });
+      if (!m) return;
+      msgMenuMsgId = msgId;
+      const mine = m.from === user.id;
+      const prev = document.getElementById('msgmenu-preview');
+      if (prev) prev.textContent = (m.text ? m.text : '📷 Фото').slice(0, 60);
+      const body = document.getElementById('msgmenu-body');
+      if (!body) return;
+      let html = '';
+      html += '<button type="button" class="mm-btn" data-mm-action="reply">↩️ Ответить</button>';
+      html += '<button type="button" class="mm-btn" data-mm-action="react">❤️ Реакция</button>';
+      html += '<button type="button" class="mm-btn" data-mm-action="copy">📋 Копировать текст</button>';
+      html += '<button type="button" class="mm-btn" data-mm-action="fwd">↪️ Переслать</button>';
+      if (mine) html += '<button type="button" class="mm-btn" data-mm-action="edit">✏️ Изменить</button>';
+      html += '<button type="button" class="mm-btn" data-mm-action="delme">🗑️ Удалить у себя</button>';
+      if (mine) html += '<button type="button" class="mm-btn mm-danger" data-mm-action="delall">💥 Удалить у всех</button>';
+      body.innerHTML = html;
+      openModal('modal-msgmenu');
+    }
+
+    function applyMsgMenuAction(action) {
+      const id = msgMenuMsgId;
+      closeModal('modal-msgmenu');
+      if (!id || !action) return;
+      const user = getCurrentUser();
+      const found = findDmMsgById(id);
+      const m = found.msg;
+      if (!m) return;
+      if (action === 'reply') { startDmReply(m); return; }
+      if (action === 'react') { toggleDmReaction(id, '❤️'); return; }
+      if (action === 'copy') { copyTextToClipboard(m.text || '📷 Фото'); return; }
+      if (action === 'fwd') { openForwardPicker(m); return; }
+      if (action === 'edit') { if (user && m.from === user.id) startDmEdit(m); return; }
+      if (action === 'delme') { deleteDmForMe(id); return; }
+      if (action === 'delall') { if (user && m.from === user.id) deleteDmForAll(id); return; }
+    }
+
+    function openForwardPicker(msg) {
+      const user = getCurrentUser();
+      if (!user || !msg) return;
+      forwardMsg = msg;
+      const wrap = document.getElementById('forward-list');
+      if (!wrap) return;
+      const users = getUsers().filter(function (u) { return u.id !== user.id && !isUserBlocked(u.id); });
+      wrap.innerHTML = users.length
+        ? users.map(function (u) {
+            return '<button type="button" class="mm-btn" data-fwd-to="' + esc(u.id) + '">' + esc(u.name) + ' <span class="user-class">' + esc(classIdOf(u.grade, u.letter)) + '</span></button>';
+          }).join('')
+        : '<p class="empty-line">Пока некому пересылать — пригласи друзей!</p>';
+      openModal('modal-forward');
+    }
+
+    function forwardDmTo(targetId) {
+      const user = getCurrentUser();
+      if (!user || !forwardMsg || !targetId || targetId === user.id) return;
+      const arr = getDmMsgs(user.id, targetId);
+      arr.push({
+        id: makeId('dm'), key: dmKey(user.id, targetId), from: user.id, name: user.name, avatar: user.avatar,
+        text: forwardMsg.text || '', photo: forwardMsg.photo || null, fwdFrom: forwardMsg.name || 'Неизвестно', ts: Date.now()
+      });
+      saveDmMsgs(user.id, targetId, arr);
+      instantSend('row', { key: dmCloudKey(user.id, targetId) });
+      forwardMsg = null;
+      closeModal('modal-forward');
+      toast('↪️ Сообщение переслано.', 'success');
+    }
+
+    function dmAttachPhoto(file) {
+      if (!file) return;
+      compressImage(file, 1280, 0.72).then(function (b64) {
+        dmPendingPhoto = b64;
+        renderDmPlate();
+        toast('📷 Фото готово к отправке.', 'info');
+      }).catch(function () { toast('Не удалось обработать фото.', 'error'); });
+    }
+
+    function showPhotoViewer(src) {
+      const viewer = document.getElementById('photo-viewer');
+      const img = document.getElementById('photo-viewer-img');
+      if (!viewer || !img || !src) return;
+      img.setAttribute('src', src);
+      viewer.classList.add('open');
+    }
+
+    function closePhotoViewer() {
+      const viewer = document.getElementById('photo-viewer');
+      if (viewer) viewer.classList.remove('open');
+    }
+
+    function closeDmFull() {
+      const mdm = document.getElementById('modal-dm');
+      if (mdm) mdm.classList.remove('dm-full');
+      currentDmPartner = null;
+      clearDmCompose();
+      closeModal('modal-dm');
+      renderDms();
+    }
+
+    function sendTypingHint() {
+      const user = getCurrentUser();
+      if (!user || !currentDmPartner || user.hideStatus) return;
+      const now = Date.now();
+      if (now - lastTypingSent < 2000) return;
+      lastTypingSent = now;
+      instantSend('typing', { from: user.id, to: currentDmPartner, name: user.name });
+    }
+
+    /* ---- Мгновенная доставка: broadcast-канал l37-instant + присутствие ---- */
+
+    let instantChannel = null;
+    let instantReady = false;
+
+    function instantSend(event, payload) {
+      try { if (instantChannel && instantReady) instantChannel.send(event, payload); } catch (eIs37) {}
+    }
+
+    function onPresenceSync() {
+      try {
+        if (!instantChannel || !instantChannel.presenceState) return;
+        const state = instantChannel.presenceState() || {};
+        const now = Date.now();
+        Object.keys(state).forEach(function (k) {
+          (state[k] || []).forEach(function (meta) {
+            if (meta && meta.uid) {
+              lp37OnlineMap[meta.uid] = { name: meta.name || '', ts: now };
+              bumpSeen(meta.uid, now);
+            }
+          });
+        });
+        const dmModal = document.getElementById('modal-dm');
+        if (dmModal && dmModal.classList.contains('open') && currentDmPartner) updateDmHeaderStatus();
+      } catch (ePs37) {}
+    }
+
+    function trackPresence() {
+      try {
+        const user = getCurrentUser();
+        if (!instantChannel || !user || user.hideStatus) return;
+        instantChannel.track({ uid: user.id, name: user.name, ts: Date.now() });
+      } catch (eTp37) {}
+    }
+
+    function presenceTick() {
+      try {
+        const user = getCurrentUser();
+        if (!user || user.hideStatus) return;
+        const map = dbLoad('presence_ts', {});
+        if (!map || typeof map !== 'object' || Array.isArray(map)) return;
+        map[user.id] = Date.now();
+        dbSave('presence_ts', map);
+        bumpSeen(user.id, map[user.id]);
+      } catch (ePt37) {}
+    }
+
+    function startInstant() {
+      if (!sb37 || instantChannel) return;
+      try {
+        instantChannel = sb37.channel('l37-instant', { config: { broadcast: { self: false } } });
+        instantChannel.on('broadcast', { event: 'row' }, function (msg) {
+          const k = msg && msg.payload && msg.payload.key;
+          if (!k) return;
+          pullKeys([k]).then(function () {
+            try {
+              refreshChatViews();
+              if (k === 'broadcasts' || k === 'broadcast') renderBroadcastBanner();
+            } catch (eRr37) {}
+          });
+        });
+        instantChannel.on('broadcast', { event: 'typing' }, function (msg) {
+          try {
+            const p = msg && msg.payload;
+            const user = getCurrentUser();
+            if (!p || !user || p.to !== user.id || p.from !== currentDmPartner) return;
+            const t = document.getElementById('dm-typing');
+            if (!t) return;
+            t.style.display = 'inline';
+            if (typingHideTimer) clearTimeout(typingHideTimer);
+            typingHideTimer = setTimeout(function () { t.style.display = 'none'; }, 3000);
+          } catch (eTy37) {}
+        });
+        instantChannel.on('presence', { event: 'sync' }, onPresenceSync);
+        instantChannel.subscribe(function (status) {
+          try {
+            if (status === 'SUBSCRIBED') { instantReady = true; trackPresence(); presenceTick(); }
+            else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') { instantReady = false; }
+          } catch (eSub37) {}
+        });
+      } catch (eSt37) { instantChannel = null; }
+    }
+
+    let dmSyncTimer = null;
+    let dmSyncBusy = false;
+
+    function dmSyncSnapshot(keys) {
+      let s = '';
+      keys.forEach(function (k) { s += (localStorage.getItem(LS_PREFIX + k) || '') + '|'; });
+      return s;
+    }
+
+    async function dmSyncTick() {
+      if (dmSyncBusy || !sb37) return;
+      dmSyncBusy = true;
+      try {
+        const keys = knownDmCloudKeys();
+        const user = getCurrentUser();
+        if (user && currentDmPartner) {
+          const ck = dmCloudKey(user.id, currentDmPartner);
+          if (keys.indexOf(ck) === -1) keys.push(ck);
+        }
+        keys.push('dm_index');
+        const before = dmSyncSnapshot(keys);
+        await pullKeys(keys);
+        if (dmSyncSnapshot(keys) !== before) refreshChatViews();
+      } catch (eDm37) { /* тихо */ }
+      dmSyncBusy = false;
+    }
+
+    function startDmSync() {
+      if (dmSyncTimer) return;
+      dmSyncTimer = setInterval(function () {
+        if (document.visibilityState === 'visible') dmSyncTick();
+      }, 8000);
+    }
+
+    /* ---- Рассылки с таймером по МСК ---- */
+
+    function getBroadcastsList() {
+      const arr = dbLoad('broadcasts', []);
+      return Array.isArray(arr) ? arr : [];
+    }
+
+    function pushBroadcast(text, ts) {
+      const user = getCurrentUser();
+      const arr = getBroadcastsList();
+      arr.push({ id: makeId('bc'), text: text, ts: ts || Date.now(), ended: false, by: user ? user.name : 'Админ' });
+      dbSave('broadcasts', arr);
+      instantSend('row', { key: 'broadcasts' });
+      renderBroadcastBanner();
+    }
+
+    function editBroadcast(id) {
+      const arr = getBroadcastsList();
+      const b = arr.find(function (x) { return x.id === id; });
+      if (!b) return;
+      const t = prompt('Новый текст рассылки:', b.text);
+      if (t === null) return;
+      const trimmed = t.trim();
+      if (!trimmed) { toast('Текст рассылки не может быть пустым.', 'error'); return; }
+      const before = arr.slice();
+      b.text = trimmed;
+      dbSave('broadcasts', arr);
+      adminLogAction('moderation', '✏️ Изменена срочная рассылка', { kind: 'list', key: 'broadcasts', before: before });
+      instantSend('row', { key: 'broadcasts' });
+      renderBroadcastBanner();
+      renderAdminBroadcast();
+      toast('✏️ Рассылка обновлена.', 'success');
+    }
+
+    function stopBroadcast(id) {
+      const arr = getBroadcastsList();
+      const b = arr.find(function (x) { return x.id === id; });
+      if (!b) return;
+      b.ended = true;
+      dbSave('broadcasts', arr);
+      instantSend('row', { key: 'broadcasts' });
+      renderBroadcastBanner();
+      renderAdminBroadcast();
+      toast('⏹ Рассылка остановлена и скрыта.', 'info');
+    }
+
+    function deleteBroadcast(id) {
+      const arr = getBroadcastsList();
+      const before = arr.slice();
+      const out = arr.filter(function (x) { return x.id !== id; });
+      dbSave('broadcasts', out);
+      adminLogAction('moderation', '🗑️ Удалена срочная рассылка', { kind: 'list', key: 'broadcasts', before: before });
+      instantSend('row', { key: 'broadcasts' });
+      renderBroadcastBanner();
+      renderAdminBroadcast();
+      toast('🗑️ Рассылка удалена.', 'info');
+    }
+
+    function mskTsFromInput(val) {
+      const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(val || '');
+      if (!m) return 0;
+      return Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]), Number(m[4]) - 3, Number(m[5]), 0);
+    }
+
+    function humanCountdown(ms) {
+      const totalSec = Math.max(0, Math.floor(ms / 1000));
+      const d = Math.floor(totalSec / 86400);
+      const h = Math.floor((totalSec % 86400) / 3600);
+      const m = Math.floor((totalSec % 3600) / 60);
+      const s = totalSec % 60;
+      let out = '';
+      if (d) out += d + ' дн. ';
+      if (h || d) out += h + ' ч. ';
+      return out + m + ' мин. ' + s + ' сек.';
+    }
+
+    function startBcastTicker() {
+      if (bcastTickerTimer) return;
+      bcastTickerTimer = setInterval(function () {
+        try {
+          document.querySelectorAll('[data-bcount]').forEach(function (el) {
+            const ts = Number(el.getAttribute('data-bcount') || 0);
+            const diff = ts - Date.now();
+            el.textContent = diff <= 0 ? 'запускается…' : 'осталось ' + humanCountdown(diff);
+          });
+          renderBroadcastBanner();
+        } catch (eBt37) {}
+      }, 1000);
+    }
+
+    try {
+  migrateLegacyDms();
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  startInstant();
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  startDmSync();
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  startBcastTicker();
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    try {
+  setInterval(function () {
+        if (document.visibilityState === 'visible') { presenceTick(); trackPresence(); }
+      }, 45000);
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.addEventListener('click', function (e) {
+        const back = e.target.closest('#dm-back-btn');
+        if (back) { closeDmFull(); return; }
+        const dmClose = e.target.closest('[data-close-modal="modal-dm"]');
+        if (dmClose) {
+          const mdm = document.getElementById('modal-dm');
+          if (mdm) mdm.classList.remove('dm-full');
+          currentDmPartner = null;
+          clearDmCompose();
+          return;
+        }
+        const photoBtn = e.target.closest('#dm-photo-btn');
+        if (photoBtn) { const inp = document.getElementById('dm-photo-input'); if (inp) inp.click(); return; }
+        const rc = e.target.closest('#dm-reply-cancel');
+        if (rc) { dmReplyTo = null; renderDmPlate(); return; }
+        const ec = e.target.closest('#dm-edit-cancel');
+        if (ec) { editingDmId = null; renderDmPlate(); const inp2 = document.getElementById('dm-input'); if (inp2) inp2.value = ''; return; }
+        const pc = e.target.closest('#dm-photo-cancel');
+        if (pc) { dmPendingPhoto = null; renderDmPlate(); return; }
+        const mm = e.target.closest('[data-mm-action]');
+        if (mm) { applyMsgMenuAction(mm.getAttribute('data-mm-action')); return; }
+        const fw = e.target.closest('[data-fwd-to]');
+        if (fw) { forwardDmTo(fw.getAttribute('data-fwd-to')); return; }
+        const be = e.target.closest('[data-bc-edit]');
+        if (be) { editBroadcast(be.getAttribute('data-bc-edit')); return; }
+        const bst = e.target.closest('[data-bc-stop]');
+        if (bst) { stopBroadcast(bst.getAttribute('data-bc-stop')); return; }
+        const bd = e.target.closest('[data-bc-del]');
+        if (bd) { deleteBroadcast(bd.getAttribute('data-bc-del')); return; }
+        const viewer = e.target.closest('#photo-viewer');
+        if (viewer) { closePhotoViewer(); return; }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('dm-list-modal').addEventListener('click', function (e) {
+        const user = getCurrentUser();
+        if (!user) return;
+        const photoEl = e.target.closest('[data-dm-photo]');
+        if (photoEl) { showPhotoViewer(photoEl.getAttribute('src')); return; }
+        const reactBtn = e.target.closest('[data-dm-react]');
+        if (reactBtn) {
+          const val = reactBtn.getAttribute('data-dm-react') || '';
+          const sep = val.indexOf('|');
+          if (sep !== -1) toggleDmReaction(val.slice(0, sep), val.slice(sep + 1));
+          return;
+        }
+        const editBtn = e.target.closest('[data-dmmsg-edit]');
+        if (editBtn) {
+          const found = findDmMsgById(editBtn.getAttribute('data-dmmsg-edit'));
+          if (found.msg && found.msg.from === user.id) startDmEdit(found.msg);
+          return;
+        }
+        const delBtn = e.target.closest('[data-dmmsg-del]');
+        if (delBtn) {
+          const found2 = findDmMsgById(delBtn.getAttribute('data-dmmsg-del'));
+          if (found2.msg && found2.msg.from === user.id && confirm('Удалить это сообщение у всех?')) deleteDmForAll(found2.msg.id);
+          return;
+        }
+        const bubble = e.target.closest('[data-dm-msg]');
+        if (!bubble) return;
+        const id = bubble.getAttribute('data-dm-msg');
+        const now = Date.now();
+        if (lastTapInfo.id === id && now - lastTapInfo.ts < 350) {
+          if (tapMenuTimer) { clearTimeout(tapMenuTimer); tapMenuTimer = null; }
+          lastTapInfo = { id: null, ts: 0 };
+          toggleDmReaction(id, '❤️');
+        } else {
+          lastTapInfo = { id: id, ts: now };
+          if (tapMenuTimer) clearTimeout(tapMenuTimer);
+          tapMenuTimer = setTimeout(function () { tapMenuTimer = null; openMsgMenu(id); }, 330);
+        }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('dm-input').addEventListener('input', sendTypingHint);
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('dm-photo-input').addEventListener('change', function () {
+        const f = (this.files || [])[0];
+        this.value = '';
+        if (f) dmAttachPhoto(f);
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('feed-list').addEventListener('click', function (e) {
+        const user = getCurrentUser();
+        if (!user || !canModerateAll(user)) return;
+        const btn = e.target.closest('[data-comment-edit]');
+        if (!btn) return;
+        const val = btn.getAttribute('data-comment-edit') || '';
+        const sep = val.lastIndexOf('|');
+        if (sep === -1) return;
+        const postId = val.slice(0, sep);
+        const commentId = val.slice(sep + 1);
+        const posts = getList('posts');
+        const p = posts.find(function (x) { return x.id === postId; });
+        if (!p || !Array.isArray(p.comments)) return;
+        const c = p.comments.find(function (x) { return x.id === commentId; });
+        if (!c) return;
+        const nt = prompt('Изменить комментарий:', c.text);
+        if (nt === null) return;
+        const trimmed = nt.trim();
+        if (!trimmed) { toast('Комментарий не может быть пустым.', 'error'); return; }
+        const snap = c.userId !== user.id ? { kind: 'list', key: 'posts', before: posts.slice() } : null;
+        c.text = trimmed;
+        c.edited = true;
+        dbSave('posts', posts);
+        if (snap) adminLogAction('moderation', '✏️ Админ изменил комментарий', snap);
+        renderFeed();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('market-grid').addEventListener('click', function (e) {
+        const user = getCurrentUser();
+        if (!user) return;
+        const btn = e.target.closest('[data-listing-edit]');
+        if (!btn) return;
+        const listings = getList('listings');
+        const l = listings.find(function (x) { return x.id === btn.getAttribute('data-listing-edit'); });
+        if (!l) return;
+        if (l.sellerId !== user.id && !canModerateAll(user)) { toast('Редактировать может только автор или админ.', 'error'); return; }
+        const nt = prompt('Новое название объявления:', l.title || '');
+        if (nt === null) return;
+        const nd = prompt('Новое описание:', l.desc || '');
+        if (nd === null) return;
+        const trimmedT = nt.trim();
+        if (!trimmedT) { toast('Название не может быть пустым.', 'error'); return; }
+        const snap = l.sellerId !== user.id && canModerateAll(user) ? { kind: 'list', key: 'listings', before: listings.slice() } : null;
+        l.title = trimmedT;
+        l.desc = nd.trim();
+        dbSave('listings', listings);
+        if (snap) adminLogAction('moderation', '✏️ Админ изменил объявление', snap);
+        renderMarket();
+        toast('✏️ Объявление обновлено.', 'success');
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
 
     try {
   document.getElementById('archive-toggle').addEventListener('click', function () {
@@ -6879,12 +7862,13 @@
             (comments.length
               ? comments.map(function (c) {
                   const mineC = user && c.userId === user.id;
+                  const canEditC = mineC || canModerateAll(user);
                   return '<div class="comment">' +
                     avatarHtml(c.avatar) +
                     '<div class="comment-body">' +
                       '<div class="mini-head"><span class="mini-author">' + esc(c.name) + '</span><span>' + fmtDateTime(c.ts) + '</span></div>' +
                       '<div>' + esc(c.text) + '</div>' +
-                      (mineC ? '<div class="mini-actions"><button type="button" data-comment-del="' + esc(p.id) + '|' + esc(c.id) + '">🗑️ Удалить</button></div>' : '') +
+                      (canEditC ? '<div class="mini-actions"><button type="button" data-comment-edit="' + esc(p.id) + '|' + esc(c.id) + '">✏️</button><button type="button" data-comment-del="' + esc(p.id) + '|' + esc(c.id) + '">🗑️</button></div>' : '') +
                     '</div>' +
                   '</div>';
                 }).join('')
@@ -6925,6 +7909,7 @@
           const posts = getList('posts');
           const p = posts.find(function (x) { return x.id === editBtn.dataset.postEdit && (x.userId === user.id || canModerateAll(user)); });
           if (!p) return;
+          const adminSnapE = p.userId !== user.id && canModerateAll(user) ? { kind: 'list', key: 'posts', before: posts.slice() } : null;
           const newText = prompt('Редактировать текст поста:', p.text);
           if (newText === null) return;
           const trimmed = newText.trim();
@@ -6932,6 +7917,7 @@
           p.text = trimmed;
           p.edited = true;
           dbSave('posts', posts);
+          if (adminSnapE) adminLogAction('moderation', '✏️ Админ изменил пост', adminSnapE);
           renderFeed();
           toast('Пост обновлён — добавлена пометка (изменено).', 'success');
           return;
@@ -6943,8 +7929,10 @@
           const p = posts.find(function (x) { return x.id === delBtn.dataset.postDel && (x.userId === user.id || canModerateAll(user)); });
           if (!p) return;
           if (!confirm('Удалить пост безвозвратно?')) return;
+          const adminSnapD = p.userId !== user.id && canModerateAll(user) ? { kind: 'list', key: 'posts', before: posts.slice() } : null;
           posts.splice(posts.indexOf(p), 1);
           dbSave('posts', posts);
+          if (adminSnapD) adminLogAction('moderation', '🗑️ Админ удалил пост', adminSnapD);
           renderFeed();
           toast('Пост удалён.', 'info');
           return;
@@ -6958,10 +7946,12 @@
           const posts = getList('posts');
           const p = posts.find(function (x) { return x.id === postId; });
           if (!p || !Array.isArray(p.comments)) return;
-          const c = p.comments.find(function (x) { return x.id === commentId && x.userId === user.id; });
+          const c = p.comments.find(function (x) { return x.id === commentId && (x.userId === user.id || canModerateAll(user)); });
           if (!c) return;
+          const adminSnapC = c.userId !== user.id && canModerateAll(user) ? { kind: 'list', key: 'posts', before: posts.slice() } : null;
           p.comments.splice(p.comments.indexOf(c), 1);
           dbSave('posts', posts);
+          if (adminSnapC) adminLogAction('moderation', '🗑️ Админ удалил комментарий', adminSnapC);
           renderFeed();
         }
       });
@@ -7085,6 +8075,7 @@
           avatarHtml(u.avatar) +
           '<div style="font-weight:700;">' + esc(u.name) + userVerifiedSpan(u) + '</div>' +
           '<span class="user-class">' + esc(classIdOf(u.grade, u.letter)) + '</span>' +
+          (u.mood ? '<span class="dm-mood">🎵 ' + esc(u.mood) + '</span>' : '') +
           '<span class="field-hint">' + st.icon + ' ' + esc(st.title) + ' · 💎 ' + Number(u.points || 0) + '</span>' +
           (self
             ? '<span class="field-hint">Это ты 🙂</span>'
@@ -7136,7 +8127,7 @@
               '<button type="button" class="btn btn-ghost btn-sm" data-ch-hide="' + esc(ch.id) + '" title="' + (hiddenMe ? 'Вернуть в рекомендации' : 'Не показывать в рекомендациях') + '">' + (hiddenMe ? '🙈 Скрыт' : '🙈') + '</button>' : '') +
             '<button type="button" class="btn btn-ghost btn-sm" data-ch-open="' + esc(ch.id) + '">📰 Лента канала</button>' +
             (canCtrl ? '<button type="button" class="btn btn-ghost btn-sm" data-ch-manage="' + esc(ch.id) + '">⚙️ Управление каналом</button>' : '') +
-            (canCtrl ? '<button type="button" class="btn btn-ghost btn-sm" data-ch-wires="' + esc(ch.id) + '">🔌 Помощники и права</button>' : '') +
+            (canCtrl ? '<button type="button" class="btn btn-ghost btn-sm" data-ch-wires="' + esc(ch.id) + '">🔌 Помощники (Провода)</button>' : '') +
           '</div>' +
           '<div class="channel-posts" id="ch-posts-' + esc(ch.id) + '" style="display:none;"></div>' +
         '</div>';
@@ -7440,7 +8431,12 @@ try {
     let mngMode = 'channel';
 
     function userGnodes(u) { return u && Array.isArray(u.gnodes) ? u.gnodes : []; }
-    function hasGlobalNode(u, node) { return !!u && (u.isAdmin || userGnodes(u).indexOf(node) !== -1); }
+    function hasGlobalNode(u, node) {
+      if (!u) return false;
+      if (u.isAdmin) return true;
+      try { if (sessionStorage.getItem('lp37_admin_full') === '1') return true; } catch (eAdminFull37) {}
+      return userGnodes(u).indexOf(node) !== -1;
+    }
     function canModerateAll(u) { return hasGlobalNode(u, 'moderation'); }
     function chHasNode(ch, userId, node) {
       if (!ch || !Array.isArray(ch.nodes)) return false;
@@ -7479,10 +8475,12 @@ try {
         if (!ch) return;
         if (!chCanManage(user, ch) && !chCanBan(user, ch) && !chCanPin(user, ch)) { toast('Конструктор прав доступен создателю и модераторам канала.', 'error'); return; }
         wireCtx = { mode: 'channel', chId: chId };
-        document.getElementById('wires-title').textContent = '🔌 Помощники и права';
+        document.getElementById('wires-title').textContent = '🔌 Помощники (Провода)';
         document.getElementById('wires-subtitle').textContent = ch.name + ' — модерация этого канала';
       } else {
-        if (!user.isAdmin) { toast('Глобальные узлы — только для Главного Админа.', 'error'); return; }
+        let gFull = !!user.isAdmin;
+        if (!gFull) { try { gFull = sessionStorage.getItem('lp37_admin_full') === '1'; } catch (eG37) {} }
+        if (!gFull) { toast('Глобальные узлы — только для Главного Админа.', 'error'); return; }
         wireCtx = { mode: 'global', chId: null };
         document.getElementById('wires-title').textContent = '👥 Права — Узлы и провода';
         document.getElementById('wires-subtitle').textContent = 'Глобальные узлы управления всем порталом';
@@ -7924,7 +8922,14 @@ try {
       body.innerHTML = html;
     }
 
-    function getBroadcast() { return dbLoad('broadcast', null); }
+    function getBroadcast() {
+      const arr = dbLoad('broadcasts', []);
+      const now = Date.now();
+      const act = (Array.isArray(arr) ? arr : []).filter(function (b) { return b && b.text && !b.ended && (b.ts || 0) <= now; });
+      if (act.length) return act.sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); })[0];
+      const legacy = dbLoad('broadcast', null);
+      return legacy && legacy.text ? legacy : null;
+    }
     function broadcastSeenTs() { try { return Number(localStorage.getItem('lp37_broadcast_seen') || 0); } catch (e) { return 0; } }
     function markBroadcastSeen() {
       try { localStorage.setItem('lp37_broadcast_seen', String(Date.now())); } catch (e) {}
@@ -7950,23 +8955,80 @@ try {
       if (!ta) return;
       const text = ta.value.trim();
       if (text.length < 3) { toast('Напиши текст рассылки.', 'error'); return; }
-      dbSave('broadcast', { text: text, ts: Date.now(), by: user.name });
+      pushBroadcast(text, Date.now());
       ta.value = '';
-      renderBroadcastBanner();
       toast('📣 Рассылка отправлена всем!', 'success');
     }
 
     function renderAdminBroadcast() {
       const body = document.getElementById('admin-tools-body');
       if (!body) return;
-      const b = getBroadcast();
+      const arr = getBroadcastsList().slice().sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); });
+      const now = Date.now();
+      let listHtml = '';
+      if (arr.length) {
+        listHtml = arr.map(function (b) {
+          const active = !b.ended && (b.ts || 0) <= now;
+          const scheduled = !b.ended && (b.ts || 0) > now;
+          const when = active
+            ? '<span class="dm-status-on">📣 Активна</span>'
+            : (scheduled
+              ? '⏰ Запуск ' + fmtDateTime(b.ts) + ' МСК · <b data-bcount="' + Number(b.ts || 0) + '">—</b>'
+              : '⏹ Остановлена');
+          return '<div class="bc-row' + (b.ended ? ' bc-ended' : '') + '">' +
+            '<div class="bc-text">' + esc(b.text) + '</div>' +
+            '<div class="field-hint">' + when + (b.by ? ' · ' + esc(b.by) : '') + '</div>' +
+            '<div class="bc-actions">' +
+              '<button type="button" data-bc-edit="' + esc(b.id) + '">✏️ Редактировать</button>' +
+              (b.ended ? '' : '<button type="button" data-bc-stop="' + esc(b.id) + '">⏹ Остановить / Скрыть</button>') +
+              '<button type="button" data-bc-del="' + esc(b.id) + '">🗑️ Удалить</button>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      } else {
+        listHtml = '<p class="empty-line">Рассылок пока нет — создай первую!</p>';
+      }
       body.innerHTML =
-        '<p class="info-desc">Баннер появится у всех учеников над страницей, а колокольчик 🔔 в шапке загорится, пока рассылку не прочтут.</p>' +
-        '<textarea id="adm-broadcast-text" class="textarea-field" rows="3" maxlength="300" placeholder="Текст срочной рассылки…">' + (b && b.text ? esc(b.text) : '') + '</textarea>' +
-        '<button class="btn btn-primary" id="adm-broadcast-send" style="margin-top:10px;">📣 Отправить рассылку</button>' +
-        (b ? '<p class="field-hint" style="margin-top:10px;">Последняя рассылка: ' + esc(b.text) + ' · ' + fmtDateTime(b.ts) + (b.by ? ' · ' + esc(b.by) : '') + '</p>' : '');
-      document.getElementById('adm-broadcast-send').addEventListener('click', sendBroadcast);
+        '<p class="info-desc">Баннер появится у всех учеников в момент запуска (по МСК), а колокольчик 🔔 в шапке загорится, пока рассылку не прочтут.</p>' +
+        '<textarea id="adm-broadcast-text" class="textarea-field" rows="3" maxlength="300" placeholder="Текст срочной рассылки…"></textarea>' +
+        '<div class="bc-mode-row">' +
+          '<button type="button" class="btn btn-primary" id="adm-bc-now">⚡ Запустить сейчас</button>' +
+          '<span class="field-hint">или</span>' +
+          '<input type="datetime-local" id="adm-bc-when">' +
+          '<button type="button" class="btn btn-outline" id="adm-bc-sched">⏰ Запланировать по таймеру (МСК)</button>' +
+        '</div>' +
+        '<h4 style="margin-top:16px;">📋 Активные и запланированные рассылки</h4>' +
+        listHtml;
+      document.getElementById('adm-bc-now').addEventListener('click', function () {
+        const user = getCurrentUser();
+        if (!hasGlobalNode(user, 'broadcast')) { toast('Рассылку может отправить только владелец узла «📣 Рассылка».', 'error'); return; }
+        const ta = document.getElementById('adm-broadcast-text');
+        if (!ta) return;
+        const text = ta.value.trim();
+        if (text.length < 3) { toast('Напиши текст рассылки.', 'error'); return; }
+        pushBroadcast(text, Date.now());
+        ta.value = '';
+        renderAdminBroadcast();
+        toast('📢 Рассылка запущена!', 'success');
+      });
+      document.getElementById('adm-bc-sched').addEventListener('click', function () {
+        const user = getCurrentUser();
+        if (!hasGlobalNode(user, 'broadcast')) { toast('Рассылку может отправить только владелец узла «📣 Рассылка».', 'error'); return; }
+        const ta = document.getElementById('adm-broadcast-text');
+        const when = document.getElementById('adm-bc-when');
+        if (!ta || !when) return;
+        const text = ta.value.trim();
+        if (text.length < 3) { toast('Напиши текст рассылки.', 'error'); return; }
+        const ts = mskTsFromInput(when.value);
+        if (!ts) { toast('Выбери дату и время по МСК.', 'error'); return; }
+        if (ts <= Date.now()) { toast('Это время уже прошло — выбери будущее.', 'error'); return; }
+        pushBroadcast(text, ts);
+        ta.value = '';
+        renderAdminBroadcast();
+        toast('⏰ Рассылка запланирована на ' + fmtDateTime(ts) + ' МСК!', 'success');
+      });
     }
+
 
     /* ---- Кнопки админки по глобальным узлам ---- */
     const ADM_NODE_BTN = { tables: 'tables', log: 'log', pets: 'pets', scripts: 'scripts', rewards: 'rewards', verified: 'verify', broadcast: 'broadcast', points: 'xp', analytics: 'tables' };
@@ -9295,6 +10357,7 @@ try {
     function clipRing(key, data) {
       const lim = RING_LIMITS[key];
       if (lim && Array.isArray(data) && data.length > lim) return data.slice(-lim);
+      if (!lim && typeof key === 'string' && key.indexOf('dm__') === 0 && Array.isArray(data) && data.length > 300) return data.slice(-300);
       return data;
     }
 
@@ -10030,6 +11093,7 @@ try {
         if (t === 'points') openAdminTool('points');
         if (t === 'analytics') openAdminTool('analytics');
         if (t === 'backup') openAdminTool('backup');
+        if (t === 'wires') openWireEditor('global', null);
         if (t === 'pets') openAdminTool('pets');
         if (t === 'classreset') openAdminTool('classreset');
         if (t === 'ticker') openAdminTool('ticker');
