@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>🖥️ Профессиональная студия · МБОУ «Лицей №37»</title>
+<style>
+:root { --bg:#0b0f1a; --panel:#111827; --panel2:#0d1322; --line:rgba(148,163,184,.16); --tx:#e2e8f0; --mut:#8b98ad; --acc:#4f8cff; --ok:#10b981; --err:#ef4444; }
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body { height:100%; }
+body { background:radial-gradient(1200px 700px at 80% -10%, #16233f 0%, var(--bg) 55%); color:var(--tx); font:14px/1.5 -apple-system,"Segoe UI",Roboto,Arial,sans-serif; }
+button { font:inherit; cursor:pointer; border:none; border-radius:10px; }
+input, select, textarea { font:inherit; color:var(--tx); background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:16px; width:100%; }
+textarea { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:13px; resize:vertical; }
+#gate { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
+.gate-card { background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:28px 24px; max-width:380px; width:100%; text-align:center; box-shadow:0 30px 70px rgba(0,0,0,.5); }
+.gate-card h1 { font-size:19px; margin-bottom:6px; }
+.gate-card p { color:var(--mut); font-size:12.5px; margin-bottom:16px; }
+.gate-card input { text-align:center; margin-bottom:10px; }
+.gate-err { color:var(--err); font-size:12.5px; min-height:18px; margin-bottom:8px; }
+.btn-p { background:linear-gradient(135deg,#4f8cff,#6d5cff); color:#fff; font-weight:700; padding:11px 16px; width:100%; }
+header { display:flex; align-items:center; gap:10px; padding:12px 16px; border-bottom:1px solid var(--line); background:rgba(17,24,39,.7); position:sticky; top:0; z-index:5; backdrop-filter:blur(8px); }
+header .logo { font-size:17px; font-weight:800; white-space:nowrap; }
+header .sub { color:var(--mut); font-size:11.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.hbtn { background:var(--panel2); border:1px solid var(--line); color:var(--tx); padding:7px 12px; font-size:12.5px; white-space:nowrap; }
+.hbtn.ok { color:var(--ok); border-color:rgba(16,185,129,.4); }
+nav#tabs { display:flex; gap:6px; padding:10px 12px; overflow-x:auto; white-space:nowrap; border-bottom:1px solid var(--line); scrollbar-width:none; }
+nav#tabs::-webkit-scrollbar { display:none; }
+nav#tabs button { background:var(--panel2); border:1px solid var(--line); color:var(--mut); padding:8px 13px; font-size:13px; flex-shrink:0; }
+nav#tabs button.on { background:linear-gradient(135deg,rgba(79,140,255,.22),rgba(109,92,255,.22)); color:#fff; border-color:rgba(79,140,255,.55); }
+main { padding:14px; max-width:1100px; margin:0 auto; padding-bottom:40px; }
+section.tab { display:none; }
+section.tab.on { display:block; }
+.tool-head { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:10px; }
+.tool-head h2 { font-size:16px; margin-right:auto; }
+.term { background:#05070d; border:1px solid var(--line); border-radius:12px; padding:12px; font-family:ui-monospace,Consolas,monospace; font-size:12.5px; white-space:pre-wrap; word-break:break-word; min-height:140px; max-height:46vh; overflow:auto; margin-top:10px; color:#c7d2e8; }
+.term .e { color:#fca5a5; } .term .o { color:#a7f3d0; }
+.hint { color:var(--mut); font-size:12px; margin:6px 0 10px; }
+.chip { background:var(--panel2); border:1px solid var(--line); color:var(--mut); padding:5px 10px; border-radius:999px; font-size:12px; }
+.chip:hover { color:#fff; border-color:var(--acc); }
+.run { background:linear-gradient(135deg,#10b981,#059669); color:#fff; font-weight:700; padding:9px 18px; }
+table.dt { width:100%; border-collapse:collapse; font-size:12.5px; margin-top:10px; }
+table.dt th, table.dt td { border:1px solid var(--line); padding:6px 8px; text-align:left; word-break:break-word; }
+table.dt th { background:var(--panel2); color:var(--mut); position:sticky; top:0; }
+.tbl-wrap { overflow:auto; max-height:60vh; border:1px solid var(--line); border-radius:12px; }
+.cardk { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px; margin-bottom:10px; }
+.row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.compl-card { border-left:3px solid var(--err); }
+.compl-card.ok { border-left-color:var(--ok); }
+.badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; font-weight:700; background:rgba(79,140,255,.18); color:#93b4ff; }
+.btn-d { background:rgba(239,68,68,.14); color:#fca5a5; border:1px solid rgba(239,68,68,.4); padding:7px 12px; font-size:12.5px; }
+.btn-s { background:var(--panel2); border:1px solid var(--line); color:var(--tx); padding:7px 12px; font-size:12.5px; }
+pre.jsonview { background:#05070d; border:1px solid var(--line); border-radius:12px; padding:12px; font-size:12px; max-height:50vh; overflow:auto; white-space:pre-wrap; word-break:break-word; }
+#hcv iframe { width:100%; height:46vh; border:1px solid var(--line); border-radius:12px; background:#fff; }
+#blocked { position:fixed; inset:0; background:#0b0f1a; display:none; align-items:center; justify-content:center; text-align:center; padding:24px; z-index:99; }
+.spin { display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,.35); border-top-color:#fff; border-radius:50%; animation:sp 0.8s linear infinite; vertical-align:-2px; }
+@keyframes sp { to { transform:rotate(360deg); } }
+@media (max-width:640px) { header .sub { display:none; } main { padding:10px; } textarea { min-height:130px; } }
+</style>
+</head>
+<body>
+<div id="blocked">
+  <div>
+    <div style="font-size:46px;">🛡️</div>
+    <h2 style="margin:10px 0 6px;">Доступ запрещён</h2>
+    <p style="color:var(--mut); max-width:420px;">IT-студия администратора работает только на официальном портале МБОУ «Лицей №37» г. Нижнекамска. Копирование на сторонние домены заблокировано защитой авторских прав.</p>
+  </div>
+</div>
+
+<div id="gate">
+  <div class="gate-card">
+    <div style="font-size:38px; margin-bottom:8px;">🖥️</div>
+    <h1>Профессиональная IT-студия</h1>
+    <p>Супер-Админ · МБОУ «Лицей №37» г. Нижнекамска<br>Вход по мастер-паролю Супер-Админа</p>
+    <input type="password" id="gate-pass" placeholder="Мастер-пароль" autocomplete="current-password">
+    <div class="gate-err" id="gate-err"></div>
+    <button class="btn-p" id="gate-btn">🔓 Войти в студию</button>
+    <p style="margin-top:14px; margin-bottom:0; font-size:11px;">🛡️ Защищено Domain Shield Лицея №37</p>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <header>
+    <span class="logo">🖥️ IT-Студия</span>
+    <span class="sub">МБОУ «Лицей №37» · Supabase site_content</span>
+    <button class="hbtn" id="btn-refresh" title="Перечитать базу из Supabase">⟳ База</button>
+    <button class="hbtn ok" id="btn-cloud">☁️ …</button>
+    <button class="hbtn" id="btn-exit">Выход</button>
+  </header>
+  <nav id="tabs">
+    <button data-t="py" class="on">🐍 Python</button>
+    <button data-t="cpp">⚙️ C++</button>
+    <button data-t="js">⚡ JavaScript</button>
+    <button data-t="sql">🗄️ SQL-аналитика</button>
+    <button data-t="hcv">🎨 HTML/CSS</button>
+    <button data-t="json">🧬 JSON-инспектор</button>
+    <button data-t="pass">🪪 Паспорта L37</button>
+    <button data-t="compl">🚨 Жалобы</button>
+    <button data-t="clean">🧹 Очистка</button>
+  </nav>
+  <main>
+    <section class="tab on" id="sec-py">
+      <div class="tool-head"><h2>🐍 Python (Pyodide, автономно в браузере)</h2><button class="run" id="py-run">▶ Запустить</button></div>
+      <p class="hint">Первый запуск загружает среду Python (~10 МБ) с CDN и кешируется браузером. Доступ к базе: словари <b>USERS, POSTS, LISTINGS, QUANT_TXS, COMPLAINTS</b> уже загружены из Supabase.</p>
+      <textarea id="py-code" rows="9" spellcheck="false"># Пример: топ-10 учеников по Квантам
+top = sorted(USERS, key=lambda u: -(u.get('points') or 0))[:10]
+for i, u in enumerate(top, 1):
+    print(f"{i}. {u.get('name')} - {u.get('grade','')}{u.get('letter','')} - {u.get('points',0)} Q")
+print("Всего пользователей:", len(USERS))</textarea>
+      <div class="term" id="py-out">Terminal готов.</div>
+    </section>
+
+    <section class="tab" id="sec-cpp">
+      <div class="tool-head"><h2>⚙️ C++17 (облачный запуск через Piston API)</h2><button class="run" id="cpp-run">▶ Запустить</button></div>
+      <p class="hint">Компиляция GCC 10.2 (C++17) на сервере Piston — без скачивания компиляторов. Для олимпиадных задач и алгоритмов.</p>
+      <textarea id="cpp-code" rows="9" spellcheck="false"></textarea>
+      <input id="cpp-stdin" rows="1" placeholder="stdin — входные данные (по строкам), например: 2 3" style="margin-top:8px;">
+      <div class="term" id="cpp-out">Terminal готов.</div>
+    </section>
+
+    <section class="tab" id="sec-js">
+      <div class="tool-head"><h2>⚡ JavaScript (мгновенная песочница)</h2><button class="run" id="js-run">▶ Запустить</button></div>
+      <p class="hint">Выполняется локально в изолированной функции. Доступ к базе: константы <b>USERS, POSTS, LISTINGS, QUANT_TXS, COMPLAINTS, DB</b> (все ключи Supabase).</p>
+      <textarea id="js-code" rows="9" spellcheck="false">// Пример: распределение пользователей по классам
+const byClass = {};
+for (const u of USERS) {
+  const c = (u.grade ? u.grade + (u.letter || '') : 'педагоги');
+  byClass[c] = (byClass[c] || 0) + 1;
+}
+console.log(byClass);
+console.log('Переводов Квантов:', QUANT_TXS.length);</textarea>
+      <div class="term" id="js-out">Terminal готов.</div>
+    </section>
+
+    <section class="tab" id="sec-sql">
+      <div class="tool-head"><h2>🗄️ SQL-аналитика базы лицея</h2><button class="run" id="sql-run">▶ Выполнить</button><button class="hbtn" id="sql-json">⬇ JSON</button><button class="hbtn" id="sql-csv">⬇ CSV</button></div>
+      <p class="hint">Таблицы: <b>users, posts, listings, quant_txs, complaints, channels, reaction, friends, notifications, dms</b> и все диалоги <b>dm__…</b>. Синтаксис: SELECT поля FROM таблица [WHERE поле =/!=/&gt;/&lt;/&gt;=/&lt;=/LIKE значение] [ORDER BY поле [DESC]] [LIMIT n].</p>
+      <div class="row" style="margin-bottom:8px;" id="sql-chips"></div>
+      <textarea id="sql-code" rows="3" spellcheck="false">SELECT name, grade, letter, points FROM users ORDER BY points DESC LIMIT 10</textarea>
+      <div id="sql-res"></div>
+    </section>
+
+    <section class="tab" id="sec-hcv">
+      <div class="tool-head"><h2>🎨 Конструктор виджетов HTML/CSS</h2><button class="hbtn" id="hc-copy">📋 Скопировать код</button></div>
+      <p class="hint">Живое превью обновляется при вводе. Готовый код можно вставить в «Живое редактирование» → «➕ Блок» на портале.</p>
+      <textarea id="hc-html" rows="6" spellcheck="false"></textarea>
+      <textarea id="hc-css" rows="6" spellcheck="false" style="margin-top:8px;"></textarea>
+      <div id="hcv" style="margin-top:10px;"><iframe id="hc-frame" title="Превью виджета" sandbox="allow-same-origin"></iframe></div>
+    </section>
+
+    <section class="tab" id="sec-json">
+      <div class="tool-head"><h2>🧬 JSON-инспектор ключей Supabase</h2><button class="hbtn" id="json-refresh">⟳ Обновить</button></div>
+      <p class="hint">Прямой просмотр всех ключей таблицы <b>site_content</b>. Клик по кнопке «Открыть» — полное значение. Удаление — с подтверждением.</p>
+      <div id="json-list"></div>
+      <pre class="jsonview" id="json-view" style="display:none;"></pre>
+    </section>
+
+    <section class="tab" id="sec-pass">
+      <div class="tool-head"><h2>🪪 Цифровые паспорта и коды L37-XXXX</h2><input id="pass-search" placeholder="🔍 Поиск: имя, класс, L37-код…" style="max-width:280px;"></div>
+      <p class="hint">Все зарегистрированные паспорта лицеистов: персональные платёжные коды, дата регистрации, баланс Квантов.</p>
+      <div class="tbl-wrap"><table class="dt" id="pass-table"><thead><tr><th>Лицеист</th><th>Класс</th><th>Код L37</th><th>Серийный №</th><th>Зарегистрирован</th><th>Баланс</th><th></th></tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <section class="tab" id="sec-compl">
+      <div class="tool-head"><h2>🚨 Центр жалоб и апелляций</h2><button class="hbtn" id="compl-refresh">⟳ Обновить</button></div>
+      <div id="compl-list"></div>
+    </section>
+
+    <section class="tab" id="sec-clean">
+      <div class="tool-head"><h2>🧹 Очистка тестовых данных (с авто-бэкапом)</h2></div>
+      <p class="hint">Перед очисткой полный снимок users, постов, объявлений, чатов, рекордов и журнала Квантов сохраняется в Supabase под ключом <b>admin_backups</b> (хранятся последние 5 снимков — откат возможен одной кнопкой). Сайт, настройки, ИИ-Наставник и аккаунт Супер-Админа не затрагиваются.</p>
+      <div class="row" id="clean-stats"></div>
+      <div class="row" style="margin-top:14px;">
+        <button class="btn-d" id="clean-run">🧹 Очистить тестовые данные (2 подтверждения)</button>
+        <button class="hbtn" id="clean-restore">↩️ Восстановить последний снимок</button>
+      </div>
+      <div class="term" id="clean-out">Ожидание действий администратора…</div>
+    </section>
+  </main>
+</div>
+
+<script>
+'use strict';
+(function () {
+  /* ==== Domain Shield (обфускация XOR 0x37, как на портале) ==== */
+  function deob(a) { let s = ''; for (let i = 0; i < a.length; i++) s += String.fromCharCode(a[i] ^ 0x37); return s; }
+  var ALLOWED = [deob([91,94,84,82,78,4,0,26,89,92,25,80,94,67,95,66,85,25,94,88]), deob([91,88,84,86,91,95,88,68,67]), deob([6,5,0,25,7,25,7,25,6])];
+  var hostOk = false;
+  try { hostOk = ALLOWED.indexOf(String(location.hostname || '').toLowerCase()) !== -1; } catch (e) {}
+  if (!hostOk) {
+    document.getElementById('blocked').style.display = 'flex';
+    document.getElementById('gate').style.display = 'none';
+    return;
+  }
+
+  /* ==== Supabase REST (та же база site_content, что и портал) ==== */
+  var SB_URL = 'https://' + ['ektyxbnzkreekdjrdnnk', 'supabase', 'co'].join('.');
+  var SB_KEY = 'sb_publishable_' + 'JPIOPSvKlCji-oie2K6q3A_' + 'S9s1ZNZb';
+  var DEFAULT_HASH = 'a1cf317655b1b261d990dbe8a65ddd1f7cb4f3435c8eaaa097fdc67d91d56022';
+  var DB = {};
+
+  function parseCloudVal(raw) {
+    var v = raw, guard = 0;
+    while (typeof v === 'string' && guard < 5) { try { v = JSON.parse(v); } catch (e) { break; } guard++; }
+    return v;
+  }
+  function rest(path, opts) {
+    if (typeof fetch !== 'function') return Promise.reject(new Error('fetch недоступен'));
+    opts = opts || {};
+    opts.headers = Object.assign({
+      apikey: SB_KEY,
+      Authorization: 'Bearer ' + SB_KEY,
+      'Content-Type': 'application/json'
+    }, opts.headers || {});
+    return fetch(SB_URL + '/rest/v1' + path, opts);
+  }
+  function setCloud(ok, text) {
+    var b = document.getElementById('btn-cloud');
+    b.textContent = ok ? '☁️ Облако OK' : '☁️ ' + (text || 'СБОЙ');
+    b.className = 'hbtn ' + (ok ? 'ok' : '');
+  }
+  function loadAll() {
+    return rest('/site_content?select=key,value&order=key.asc').then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function (rows) {
+      DB = {};
+      (rows || []).forEach(function (row) { DB[row.key] = parseCloudVal(row.value); });
+      setCloud(true);
+      return DB;
+    }).catch(function (e) {
+      setCloud(false, 'нет связи');
+      throw e;
+    });
+  }
+  function upsertKey(key, value) {
+    return rest('/site_content?on_conflict=key', {
+      method: 'POST',
+      headers: { Prefer: 'resolution=merge-duplicates' },
+      body: JSON.stringify([{ key: key, value: value }])
+    }).then(function (r) {
+      if (!r.ok) throw new Error('UPSERT HTTP ' + r.status);
+      DB[key] = value;
+      return true;
+    });
+  }
+  function deleteKey(key) {
+    return rest('/site_content?key=' + encodeURIComponent('eq.' + key), { method: 'DELETE' })
+      .then(function (r) { if (!r.ok) throw new Error('DELETE HTTP ' + r.status); delete DB[key]; return true; });
+  }
+
+  /* ==== Вход по мастер-паролю ==== */
+  function sha256Hex(s) {
+    try {
+      if (typeof crypto === 'undefined' || !crypto.subtle || !crypto.subtle.digest) return Promise.reject(new Error('crypto.subtle недоступен в этом браузере'));
+    } catch (e) { return Promise.reject(new Error('crypto.subtle недоступен в этом браузере')); }
+    return crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)).then(function (buf) {
+      return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+    });
+  }
+  function adminHash() {
+    try {
+      var v = parseCloudVal(localStorage.getItem('lp37_admin_pass_hash'));
+      if (typeof v === 'string' && /^[0-9a-f]{64}$/.test(v)) return Promise.resolve(v);
+    } catch (e) {}
+    return rest('/site_content?select=value&key=eq.admin_pass_hash').then(function (r) { return r.json(); })
+      .then(function (rows) {
+        var v = parseCloudVal(rows && rows[0] && rows[0].value);
+        if (typeof v === 'string' && /^[0-9a-f]{64}$/.test(v)) return v;
+        return DEFAULT_HASH;
+      }).catch(function () { return DEFAULT_HASH; });
+  }
+  function gateFail(msg) {
+    document.getElementById('gate-err').textContent = msg;
+  }
+  function tryGate() {
+    var inp = document.getElementById('gate-pass');
+    var btn = document.getElementById('gate-btn');
+    var val = inp.value;
+    if (!val) { gateFail('Введите мастер-пароль.'); return; }
+    btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Проверка…';
+    Promise.all([sha256Hex(val), adminHash()]).then(function (res) {
+      if (res[0] === res[1]) {
+        try { sessionStorage.setItem('lp37_admin_full', '1'); } catch (e) {}
+        inp.value = '';
+        enter();
+      } else {
+        gateFail('❌ Неверный мастер-пароль Супер-Админа.');
+      }
+    }).catch(function () { gateFail('Ошибка проверки — нет доступа к базе.'); })
+      .then(function () { btn.disabled = false; btn.textContent = '🔓 Войти в студию'; });
+  }
+  function enter() {
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('app').hidden = false;
+    bootData();
+  }
+  document.getElementById('gate-btn').addEventListener('click', tryGate);
+  document.getElementById('gate-pass').addEventListener('keydown', function (e) { if (e.key === 'Enter') tryGate(); });
+
+  /* ==== Данные ==== */
+  function coll(key) { var v = DB[key]; return Array.isArray(v) ? v : []; }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function classOf(u) { return u && u.grade ? (u.grade + (u.letter || '') + ' класс') : 'педагоги'; }
+  function fmtTs(ts) { try { return new Date(Number(ts)).toLocaleString('ru-RU'); } catch (e) { return '—'; } }
+  function bootData() {
+    setCloud(true, '…');
+    return loadAll().then(function () { renderPass(); renderCompl(); renderJson(); renderCleanStats(); })
+      .catch(function (e) { console.warn(e); });
+  }
+  document.getElementById('btn-refresh').addEventListener('click', function () { bootData(); });
+  document.getElementById('btn-exit').addEventListener('click', function () {
+    try { sessionStorage.removeItem('lp37_admin_full'); } catch (e) {}
+    location.reload();
+  });
+
+  /* ==== Вкладки ==== */
+  var tabs = document.querySelectorAll('nav#tabs button');
+  tabs.forEach(function (b) {
+    b.addEventListener('click', function () {
+      tabs.forEach(function (x) { x.classList.remove('on'); });
+      b.classList.add('on');
+      document.querySelectorAll('section.tab').forEach(function (s) { s.classList.remove('on'); });
+      document.getElementById('sec-' + b.getAttribute('data-t')).classList.add('on');
+      if (b.getAttribute('data-t') === 'sql') renderSqlChips();
+    });
+  });
+
+  function term(el, text, cls) {
+    var t = document.getElementById(el);
+    var line = document.createElement('div');
+    if (cls) line.className = cls;
+    line.textContent = text;
+    t.appendChild(line);
+    t.scrollTop = t.scrollHeight;
+  }
+  function termReset(el) { document.getElementById(el).innerHTML = ''; }
+
+  /* ==== 🐍 Python (Pyodide, ленивая загрузка) ==== */
+  var pyReady = null;
+  function ensurePy() {
+    if (pyReady) return pyReady;
+    pyReady = new Promise(function (res, rej) {
+      term('py-out', '⏳ Загружаю среду Python (Pyodide) с CDN — только при первом запуске…');
+      var s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js';
+      s.onload = function () {
+        window.loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/' }).then(function (py) {
+          py.setStdout({ batched: function (t) { term('py-out', t, 'o'); } });
+          py.setStderr({ batched: function (t) { term('py-out', t, 'e'); } });
+          term('py-out', '✅ Python готов.', 'o');
+          res(py);
+        }).catch(rej);
+      };
+      s.onerror = function () { pyReady = null; rej(new Error('Pyodide CDN недоступен — проверь интернет')); };
+      document.head.appendChild(s);
+    });
+    return pyReady;
+  }
+  var PY_SETUP = [
+    'import json as __json',
+    'USERS = __json.loads(r"""__USERS__""")',
+    'POSTS = __json.loads(r"""__POSTS__""")',
+    'LISTINGS = __json.loads(r"""__LISTINGS__""")',
+    'QUANT_TXS = __json.loads(r"""__QUANT__""")',
+    'COMPLAINTS = __json.loads(r"""__COMPL__""")'
+  ].join('\n');
+  function jsToJson(v) { return JSON.stringify(Array.isArray(v) ? v : (v || []), null, 0).replace(/"""/g, '\\"\\"\\"'); }
+  document.getElementById('py-run').addEventListener('click', function () {
+    var btn = this;
+    btn.disabled = true;
+    ensurePy().then(function (py) {
+      var ctx = PY_SETUP
+        .replace('__USERS__', jsToJson(coll('users')))
+        .replace('__POSTS__', jsToJson(coll('posts')))
+        .replace('__LISTINGS__', jsToJson(coll('listings')))
+        .replace('__QUANT__', jsToJson(coll('quant_txs')))
+        .replace('__COMPL__', jsToJson(coll('complaints')));
+      termReset('py-out');
+      term('py-out', '▶ Запуск Python-скрипта…', 'o');
+      return py.runPythonAsync(ctx + '\n' + document.getElementById('py-code').value);
+    }).catch(function (e) { term('py-out', String(e && e.message || e), 'e'); })
+      .then(function () { btn.disabled = false; });
+  });
+
+  /* ==== ⚙️ C++ (Piston API) ==== */
+  var CPP_TMPL = '#include <iostream>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    int a, b;\n    cin >> a >> b;\n    cout << a + b << "\\n";\n    return 0;\n}\n';
+  document.getElementById('cpp-code').value = CPP_TMPL;
+  document.getElementById('cpp-run').addEventListener('click', function () {
+    var btn = this;
+    btn.disabled = true;
+    termReset('cpp-out');
+    term('cpp-out', '⏳ Отправляю код на сервер Piston (GCC 10.2, C++17)…', 'o');
+    fetch('https://emkc.org/api/v2/piston/execute', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        language: 'c++',
+        version: '10.2.0',
+        files: [{ name: 'main.cpp', content: document.getElementById('cpp-code').value }],
+        stdin: document.getElementById('cpp-stdin').value
+      })
+    }).then(function (r) { return r.json(); }).then(function (res) {
+      if (res.compile && res.compile.output) term('cpp-out', res.compile.output, res.compile.code ? 'e' : 'o');
+      if (res.run) {
+        if (res.run.stdout) term('cpp-out', res.run.stdout, 'o');
+        if (res.run.stderr) term('cpp-out', res.run.stderr, 'e');
+        term('cpp-out', '— код выхода: ' + res.run.code, 'o');
+      }
+      if (res.message) term('cpp-out', res.message, 'e');
+    }).catch(function (e) { term('cpp-out', 'Ошибка сети: ' + e.message, 'e'); })
+      .then(function () { btn.disabled = false; });
+  });
+
+  /* ==== ⚡ JavaScript ==== */
+  document.getElementById('js-run').addEventListener('click', function () {
+    termReset('js-out');
+    term('js-out', '▶ Запуск в песочнице…', 'o');
+    var logs = [];
+    function fmt(a) { return a.map(function (x) { try { return typeof x === 'string' ? x : JSON.stringify(x); } catch (e) { return String(x); } }).join(' '); }
+    var fake = { log: function () { logs.push('  ' + fmt([].slice.call(arguments))); }, warn: function () { logs.push('⚠ ' + fmt([].slice.call(arguments))); }, error: function () { logs.push('✖ ' + fmt([].slice.call(arguments))); }, info: function () { logs.push('ℹ ' + fmt([].slice.call(arguments))); } };
+    try {
+      var fn = new Function('console', 'USERS', 'POSTS', 'LISTINGS', 'QUANT_TXS', 'COMPLAINTS', 'DB',
+        '"use strict";\n' + document.getElementById('js-code').value);
+      fn(fake, coll('users'), coll('posts'), coll('listings'), coll('quant_txs'), coll('complaints'), DB);
+      logs.forEach(function (l) { term('js-out', l, l.charAt(0) === '✖' ? 'e' : 'o'); });
+      term('js-out', '✅ Выполнено без ошибок.', 'o');
+    } catch (e) {
+      logs.forEach(function (l) { term('js-out', l, 'o'); });
+      term('js-out', String(e), 'e');
+    }
+  });
+
+  /* ==== 🗄️ SQL-аналитика ==== */
+  var SQL_TABLES = ['users', 'posts', 'listings', 'quant_txs', 'complaints', 'channels', 'reaction', 'friends', 'notifications', 'dms'];
+  function sqlRows(table) { return coll(table); }
+  function allSqlTables() {
+    var names = SQL_TABLES.filter(function (t) { return DB[t] !== undefined; });
+    Object.keys(DB).forEach(function (k) { if (k.indexOf('dm__') === 0 && names.indexOf(k) === -1) names.push(k); });
+    return names;
+  }
+  function renderSqlChips() {
+    var box = document.getElementById('sql-chips');
+    box.innerHTML = '';
+    allSqlTables().forEach(function (t) {
+      var b = document.createElement('button');
+      b.className = 'chip';
+      b.textContent = t + ' (' + (Array.isArray(DB[t]) ? DB[t].length : 'obj') + ')';
+      b.addEventListener('click', function () {
+        document.getElementById('sql-code').value = 'SELECT * FROM ' + t + ' LIMIT 20';
+        runSql();
+      });
+      box.appendChild(b);
+    });
+  }
+  var SQL_LAST = [];
+  function parseVal(x) {
+    if (x == null) return '';
+    var s = String(x);
+    if (s.length > 1 && ((s.charAt(0) === '"' && s.charAt(s.length - 1) === '"') || (s.charAt(0) === "'" && s.charAt(s.length - 1) === "'"))) return s.slice(1, -1);
+    return s;
+  }
+  function runSql() {
+    var q = document.getElementById('sql-code').value.trim().replace(/\s+/g, ' ');
+    var box = document.getElementById('sql-res');
+    SQL_LAST = [];
+    var m = /^select\s+(.+?)\s+from\s+([a-zа-яё0-9_]+)(\s+where\s+.+?)?(\s+order\s+by\s+(\w+)\s*(desc)?)?(\s+limit\s+(\d+))?$/i.exec(q);
+    if (!m) { box.innerHTML = '<p class="hint" style="color:#fca5a5;">❌ Не удалось разобрать запрос. Пример: SELECT name, points FROM users WHERE points > 50 ORDER BY points DESC LIMIT 10</p>'; return; }
+    var cols = /^\*$/.test(m[1].trim()) ? null : m[1].split(',').map(function (c) { return c.trim(); });
+    var table = m[2].toLowerCase();
+    var rows = sqlRows(table);
+    if (!Array.isArray(rows)) { box.innerHTML = '<p class="hint" style="color:#fca5a5;">❌ Таблица «' + esc(table) + '» не найдена или не является списком.</p>'; return; }
+    var out = rows.slice();
+    var w = (m[3] || '').trim();
+    if (w) {
+      var wm = /^where\s+(\w+)\s*(=|!=|>=|<=|>|<|like)\s*(.+)$/i.exec(w);
+      if (!wm) { box.innerHTML = '<p class="hint" style="color:#fca5a5;">❌ Не удалось разобрать WHERE. Пример: WHERE points > 50</p>'; return; }
+      var wf = wm[1], op = wm[2].toLowerCase(), rv = parseVal(wm[3].trim());
+      var rnum = Number(rv);
+      out = out.filter(function (row) {
+        var cell = row ? row[wf] : undefined;
+        if (op === 'like') return String(cell == null ? '' : cell).toLowerCase().indexOf(String(rv).toLowerCase()) !== -1;
+        var bothNum = cell != null && Number(cell) === Number(cell) && rv !== '' && !isNaN(rnum);
+        var a = bothNum ? Number(cell) : String(cell == null ? '' : cell).toLowerCase();
+        var b = bothNum ? rnum : String(rv).toLowerCase();
+        if (op === '=') return a === b;
+        if (op === '!=') return a !== b;
+        if (op === '>') return a > b;
+        if (op === '<') return a < b;
+        if (op === '>=') return a >= b;
+        if (op === '<=') return a <= b;
+        return false;
+      });
+    }
+    if (m[4]) {
+      var of37 = m[5], desc = !!m[6];
+      out.sort(function (x, y) {
+        var a = x ? x[of37] : undefined, b = y ? y[of37] : undefined;
+        var r = (a != null && b != null && Number(a) === Number(a) && Number(b) === Number(b)) ? Number(a) - Number(b) : String(a == null ? '' : a).localeCompare(String(b == null ? '' : b), 'ru');
+        return desc ? -r : r;
+      });
+    }
+    if (m[8]) out = out.slice(0, Number(m[8]));
+    if (cols) out = out.map(function (row) { var o = {}; cols.forEach(function (c) { o[c] = row ? row[c] : undefined; }); return o; });
+    SQL_LAST = out;
+    if (!out.length) { box.innerHTML = '<p class="hint">Пустой результат (0 строк).</p>'; return; }
+    var keys = cols || (out[0] ? Object.keys(out[0]) : []);
+    box.innerHTML = '<div class="tbl-wrap"><table class="dt"><thead><tr>' + keys.map(function (k) { return '<th>' + esc(k) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      out.map(function (row) { return '<tr>' + keys.map(function (k) { var v = row[k]; return '<td>' + esc(typeof v === 'object' ? JSON.stringify(v) : v) + '</td>'; }).join('') + '</tr>'; }).join('') +
+      '</tbody></table></div><p class="hint">Строк: ' + out.length + ' · таблица ' + esc(table) + '</p>';
+  }
+  document.getElementById('sql-run').addEventListener('click', runSql);
+  function download(name, text, mime) {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], { type: mime }));
+    a.download = name;
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 3000);
+  }
+  document.getElementById('sql-json').addEventListener('click', function () {
+    if (!SQL_LAST.length) runSql();
+    download('l37_sql.json', JSON.stringify(SQL_LAST, null, 2), 'application/json');
+  });
+  document.getElementById('sql-csv').addEventListener('click', function () {
+    if (!SQL_LAST.length) runSql();
+    var keys = SQL_LAST.length && SQL_LAST[0] ? Object.keys(SQL_LAST[0]) : [];
+    var csv = '\ufeff' + keys.join(';') + '\n' + SQL_LAST.map(function (row) {
+      return keys.map(function (k) { var v = row[k]; v = typeof v === 'object' ? JSON.stringify(v) : v; return String(v == null ? '' : v).replace(/;/g, ',').replace(/\n/g, ' '); }).join(';');
+    }).join('\n');
+    download('l37_sql.csv', csv, 'text/csv');
+  });
+
+  /* ==== 🎨 HTML/CSS конструктор ==== */
+  var HC_HTML_D = '<div class="widget">\n  <h3>⚡ До встречи в Лице!</h3>\n  <p>Кванты начисляются за активность</p>\n</div>';
+  var HC_CSS_D = '.widget { font-family: sans-serif; padding: 18px; border-radius: 16px;\n  background: linear-gradient(135deg, #4f8cff, #6d5cff); color: #fff; }\n.widget h3 { margin: 0 0 6px; }';
+  document.getElementById('hc-html').value = HC_HTML_D;
+  document.getElementById('hc-css').value = HC_CSS_D;
+  var hcTimer = null;
+  function hcUpdate() {
+    clearTimeout(hcTimer);
+    hcTimer = setTimeout(function () {
+      document.getElementById('hc-frame').srcdoc =
+        '<!doctype html><html><head><meta charset="utf-8"><style>' + document.getElementById('hc-css').value + '</style></head><body>' +
+        document.getElementById('hc-html').value + '</body></html>';
+    }, 250);
+  }
+  document.getElementById('hc-html').addEventListener('input', hcUpdate);
+  document.getElementById('hc-css').addEventListener('input', hcUpdate);
+  hcUpdate();
+  document.getElementById('hc-copy').addEventListener('click', function () {
+    var code = document.getElementById('hc-html').value + '\n<style>\n' + document.getElementById('hc-css').value + '\n</style>';
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(code);
+    this.textContent = '✅ Скопировано';
+    var b = this;
+    setTimeout(function () { b.textContent = '📋 Скопировать код'; }, 1600);
+  });
+
+  /* ==== 🧬 JSON-инспектор ==== */
+  function byteSize(v) { try { return JSON.stringify(v).length; } catch (e) { return 0; } }
+  function renderJson() {
+    var box = document.getElementById('json-list');
+    var keys = Object.keys(DB).sort();
+    box.innerHTML = keys.map(function (k) {
+      var v = DB[k];
+      var n = Array.isArray(v) ? v.length + ' эл.' : (v && typeof v === 'object' ? Object.keys(v).length + ' ключей' : typeof v);
+      return '<div class="cardk row"><b style="margin-right:auto;">' + esc(k) + '</b>' +
+        '<span class="badge">' + esc(n) + ' · ' + byteSize(v) + ' Б</span>' +
+        '<button class="btn-s" data-jview="' + esc(k) + '">👁 Открыть</button>' +
+        '<button class="btn-s" data-jcopy="' + esc(k) + '">📋</button>' +
+        '<button class="btn-d" data-jdel="' + esc(k) + '">🗑</button></div>';
+    }).join('') || '<p class="hint">Ключей нет.</p>';
+    document.getElementById('json-view').style.display = 'none';
+  }
+  document.getElementById('json-refresh').addEventListener('click', bootData);
+  document.getElementById('json-list').addEventListener('click', function (e) {
+    var v = e.target.closest('[data-jview]'), c = e.target.closest('[data-jcopy]'), d = e.target.closest('[data-jdel]');
+    if (v) {
+      var k = v.getAttribute('data-jview');
+      var pre = document.getElementById('json-view');
+      pre.style.display = 'block';
+      var s = '';
+      try { s = JSON.stringify(DB[k], null, 2); } catch (er) { s = String(DB[k]); }
+      pre.textContent = s.length > 40000 ? s.slice(0, 40000) + '\n… (обрезано)' : s;
+    } else if (c) {
+      var k2 = c.getAttribute('data-jcopy');
+      var s2 = '';
+      try { s2 = JSON.stringify(DB[k2], null, 2); } catch (er) { s2 = String(DB[k2]); }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(s2);
+      c.textContent = '✅';
+      setTimeout(function () { c.textContent = '📋'; }, 1200);
+    } else if (d) {
+      var k3 = d.getAttribute('data-jdel');
+      if (!confirm('🗑 Удалить ключ «' + k3 + '» из Supabase site_content?\nПортал пересоздаст ключ при следующем сохранении.')) return;
+      deleteKey(k3).then(renderJson).catch(function (er) { alert('Не удалось удалить: ' + er.message); });
+    }
+  });
+
+  /* ==== 🪪 Паспорта L37 ==== */
+  function serial37(u) {
+    var h = 5381, s = String(u.id || '');
+    for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+    var AB = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    var a = Math.abs(h), b = Math.abs(h >> 7), c = Math.abs(h >> 14), d = Math.abs(h >> 21);
+    return 'L37-2026-' + AB[a % 32] + AB[b % 32] + AB[c % 32] + AB[d % 32];
+  }
+  function renderPass() {
+    var q = String((document.getElementById('pass-search') || {}).value || '').trim().toLowerCase();
+    var tb = document.querySelector('#pass-table tbody');
+    if (!tb) return;
+    var users = coll('users').slice().sort(function (a, b) { return Number(b.registeredAt || 0) - Number(a.registeredAt || 0); });
+    if (q) users = users.filter(function (u) {
+      return (String(u.name || '') + ' ' + classOf(u) + ' ' + String(u.payCode || '')).toLowerCase().indexOf(q) !== -1;
+    });
+    tb.innerHTML = users.map(function (u) {
+      return '<tr><td><b>' + esc(u.name || '') + '</b>' + (u.verified ? ' ☑' : '') + (u.suspended37 ? ' 🚫' : '') + '</td>' +
+        '<td>' + esc(classOf(u)) + '</td>' +
+        '<td><b>' + esc(u.payCode || '—') + '</b></td>' +
+        '<td>' + esc(serial37(u)) + '</td>' +
+        '<td>' + esc(fmtTs(u.registeredAt)) + '</td>' +
+        '<td>' + Number(u.points || 0) + '</td>' +
+        '<td><button class="btn-s" data-pcopy="' + esc(u.payCode || '') + '">📋</button></td></tr>';
+    }).join('') || '<tr><td colspan="7">Пользователи не найдены.</td></tr>';
+  }
+  document.getElementById('pass-search').addEventListener('input', renderPass);
+  document.getElementById('pass-table').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-pcopy]');
+    if (b && b.getAttribute('data-pcopy') && navigator.clipboard) {
+      navigator.clipboard.writeText(b.getAttribute('data-pcopy'));
+      b.textContent = '✅';
+      setTimeout(function () { b.textContent = '📋'; }, 1200);
+    }
+  });
+
+  /* ==== 🚨 Жалобы ==== */
+  function complKindLabel(c) {
+    if (c.kind === 'lock') return 'Заявка на сброс пароль-замка';
+    if (c.kind === 'comment') return 'Комментарий';
+    if (c.kind === 'user') return 'Профиль';
+    if (c.kind === 'listing') return 'Объявление: ' + (c.targetTitle || '');
+    return 'Пост: ' + (c.targetTitle || '');
+  }
+  function complCard(c) {
+    return '<div class="cardk compl-card">' +
+      (c.kind === 'lock'
+        ? '<b>' + esc(c.fromName || 'Ученик') + '</b> просит сбросить пароль-замок (вопрос: ' + esc(c.secQ || '—') + '; ответ: ' + esc(c.secAnswer || '—') + ')'
+        : '<b>' + esc(c.fromName || '') + ' · ' + esc(c.fromClass || '') + '</b> пожаловался на <b>' + esc(c.targetAuthorName || '') + '</b>') +
+      '<div style="margin-top:6px;">' + esc(complKindLabel(c)) +
+      (c.targetQuote ? '<br>«' + esc(c.targetQuote) + '»' : '') + '</div>' +
+      '<div style="color:var(--mut); margin-top:4px;">Причина: ' + esc(c.reason || '') + ' · ' + esc(fmtTs(c.ts)) + '</div>' +
+      '<div class="row" style="margin-top:10px;">' +
+      (c.kind === 'lock' ? '<button class="btn-p" style="width:auto; padding:8px 14px;" data-c-unlock="' + esc(c.targetId || c.fromId || '') + '">🔑 Сбросить пароль-замок</button>' : '') +
+      (c.kind !== 'lock' && c.targetId ? '<button class="btn-d" data-c-delcontent="' + esc(c.kind + '|' + c.targetId) + '">🗑 Удалить нарушающий контент</button>' : '') +
+      (c.targetAuthorId && c.kind !== 'lock' ? '<button class="btn-d" data-c-ban="' + esc(c.targetAuthorId) + '">🚫 Заблокировать нарушителя</button>' : '') +
+      '<button class="btn-s" data-c-dismiss="' + esc(c.id) + '">✅ Отклонить жалобу</button>' +
+      '</div></div>';
+  }
+  function renderCompl() {
+    var box = document.getElementById('compl-list');
+    if (!box) return;
+    var list = coll('complaints');
+    var open = list.filter(function (c) { return c && c.status === 'open'; });
+    var done = list.filter(function (c) { return c && c.status !== 'open'; });
+    box.innerHTML =
+      (open.length ? open.map(complCard).join('') : '<p class="hint">🎉 Открытых жалоб нет — все рассмотрены.</p>') +
+      (done.length ? '<h3 style="margin:14px 0 8px; font-size:14px;">Рассмотренные (' + done.length + ')</h3>' + done.slice(-20).reverse().map(function (c) {
+        return '<div class="cardk compl-card ok"><b>' + esc(c.fromName || '') + '</b> → <b>' + esc(c.targetAuthorName || '') + '</b> · ' + esc(c.reason || '') + ' · ' + (c.status === 'resolved_del' ? 'контент удалён' : c.status === 'resolved_ok' ? 'замок сброшен' : 'отклонена') + '</div>';
+      }).join('') : '');
+  }
+  document.getElementById('compl-refresh').addEventListener('click', bootData);
+  document.getElementById('compl-list').addEventListener('click', function (e) {
+    var un = e.target.closest('[data-c-unlock]'), dc = e.target.closest('[data-c-delcontent]'), bn = e.target.closest('[data-c-ban]'), ds = e.target.closest('[data-c-dismiss]');
+    if (un) return complUnlock(un.getAttribute('data-c-unlock'));
+    if (dc) { var p = dc.getAttribute('data-c-delcontent').split('|'); return complDelContent(p[0], p.slice(1).join('|')); }
+    if (bn) return complBan(bn.getAttribute('data-c-ban'));
+    if (ds) return complSetStatus(ds.getAttribute('data-c-dismiss'), 'rejected');
+  });
+  function afterSave() { return loadAll().then(function () { renderCompl(); renderPass(); renderCleanStats(); }); }
+  function complSetStatus(id, status) {
+    var list = coll('complaints');
+    var c = list.find(function (x) { return x && x.id === id; });
+    if (!c) return;
+    c.status = status;
+    upsertKey('complaints', list).then(afterSave).catch(function (e) { alert('Ошибка сохранения: ' + e.message); });
+  }
+  function complUnlock(uid) {
+    if (!uid) return;
+    if (!confirm('🔑 Сбросить пароль-замок с аккаунта? Ученик сможет входить без замка.')) return;
+    var users = coll('users');
+    var u = users.find(function (x) { return x && x.id === uid; });
+    if (!u) { alert('Пользователь не найден.'); return; }
+    delete u.lockHash;
+    var list = coll('complaints');
+    list.forEach(function (c) { if (c && c.kind === 'lock' && c.status === 'open' && (c.targetId === uid || c.fromId === uid)) c.status = 'resolved_ok'; });
+    Promise.all([upsertKey('users', users), upsertKey('complaints', list)]).then(afterSave)
+      .then(function () { alert('✅ Пароль-замок сброшен.'); })
+      .catch(function (e) { alert('Ошибка сохранения: ' + e.message); });
+  }
+  function complBan(uid) {
+    if (!confirm('🚫 Заблокировать нарушителя на портале?')) return;
+    var users = coll('users');
+    var u = users.find(function (x) { return x && x.id === uid; });
+    if (!u) { alert('Пользователь не найден.'); return; }
+    u.suspended37 = true;
+    var list = coll('complaints');
+    list.forEach(function (c) { if (c && c.targetAuthorId === uid && c.status === 'open') c.status = 'resolved_del'; });
+    Promise.all([upsertKey('users', users), upsertKey('complaints', list)]).then(afterSave)
+      .then(function () { alert('🚫 Нарушитель заблокирован.'); })
+      .catch(function (e) { alert('Ошибка сохранения: ' + e.message); });
+  }
+  function complDelContent(kind, id) {
+    if (!confirm('🗑 Удалить нарушающий контент безвозвратно?')) return;
+    if (kind === 'post') {
+      upsertKey('posts', coll('posts').filter(function (x) { return x && x.id !== id; })).then(afterSave);
+    } else if (kind === 'listing') {
+      upsertKey('listings', coll('listings').filter(function (x) { return x && x.id !== id; })).then(afterSave);
+    }
+    complSetStatus(id, 'resolved_del');
+  }
+
+  /* ==== 🧹 Очистка с авто-бэкапом ==== */
+  var CLEAN_KEYS = ['users', 'posts', 'listings', 'quant_txs', 'quantum_ledger', 'friends', 'reaction', 'dms', 'notifications'];
+  function dmKeys() { return Object.keys(DB).filter(function (k) { return k.indexOf('dm__') === 0; }); }
+  function renderCleanStats() {
+    var box = document.getElementById('clean-stats');
+    if (!box) return;
+    box.innerHTML = CLEAN_KEYS.concat(dmKeys()).map(function (k) {
+      var v = DB[k];
+      var n = Array.isArray(v) ? v.length : (v && typeof v === 'object' ? Object.keys(v).length : 0);
+      return '<span class="chip">' + esc(k) + ': ' + n + '</span>';
+    }).join('') || '<span class="chip">База пуста</span>';
+  }
+  document.getElementById('clean-run').addEventListener('click', function () {
+    if (!confirm('🧹 Очистка всех тестовых данных?\n\nБудут удалены: аккаунты (кроме Супер-Админа), чаты dm__, посты, объявления, рекорды, балансы Квантов и очки классов.\n\nСайт, настройки, ИИ и сам портал не пострадают. Снимок сохранится в admin_backups.')) return;
+    if (!confirm('Второе подтверждение: продолжить очистку?')) return;
+    var out = document.getElementById('clean-out');
+    out.innerHTML = '';
+    term('clean-out', '📸 Сохраняю снимок в Supabase (admin_backups)…', 'o');
+    var snap = { when: new Date().toLocaleString('ru-RU') };
+    CLEAN_KEYS.concat(dmKeys()).forEach(function (k) { snap[k] = DB[k] !== undefined ? DB[k] : null; });
+    var backups = Array.isArray(DB.admin_backups) ? DB.admin_backups.slice(-4) : [];
+    backups.push(snap);
+    var admins = coll('users').filter(function (u) { return u && u.isAdmin; }).map(function (u) { var c = JSON.parse(JSON.stringify(u)); c.points = 0; return c; });
+    var resets = { users: admins, posts: [], listings: [], quant_txs: [], quantum_ledger: {}, friends: [], reaction: [], dms: [], notifications: [] };
+    dmKeys().forEach(function (k) { resets[k] = []; });
+    var ops = [upsertKey('admin_backups', backups)];
+    Object.keys(resets).forEach(function (k) { ops.push(upsertKey(k, resets[k])); });
+    Promise.all(ops).then(function () { return loadAll(); }).then(function () {
+      try {
+        Object.keys(resets).forEach(function (k) { localStorage.setItem('lp37_' + k, JSON.stringify(resets[k])); });
+        dmKeys().forEach(function (k) { localStorage.setItem('lp37_' + k, '[]'); });
+      } catch (e) {}
+      term('clean-out', '✅ Готово: тестовые данные очищены, снимок сохранён (всего снимков: ' + backups.length + ').', 'o');
+      renderCleanStats(); renderPass(); renderJson();
+    }).catch(function (e) { term('clean-out', '❌ Ошибка очистки: ' + e.message, 'e'); });
+  });
+  document.getElementById('clean-restore').addEventListener('click', function () {
+    var backups = Array.isArray(DB.admin_backups) ? DB.admin_backups : [];
+    if (!backups.length) { alert('Снимков пока нет.'); return; }
+    var snap = backups[backups.length - 1];
+    if (!confirm('↩️ Восстановить снимок от ' + snap.when + '? Текущие данные будут перезаписаны.')) return;
+    var ops = [];
+    Object.keys(snap).forEach(function (k) { if (k !== 'when' && snap[k] !== null) ops.push(upsertKey(k, snap[k])); });
+    Promise.all(ops).then(function () { return loadAll(); })
+      .then(function () { term('clean-out', '✅ Снимок от ' + snap.when + ' восстановлен.', 'o'); renderCleanStats(); renderPass(); renderJson(); })
+      .catch(function (e) { term('clean-out', '❌ Ошибка восстановления: ' + e.message, 'e'); });
+  });
+
+  /* ==== Старт ==== */
+  var authed = false;
+  try { authed = sessionStorage.getItem('lp37_admin_full') === '1'; } catch (e) {}
+  if (authed) enter();
+
+  /* ==== Экспорт для автотестов (jsdom) ==== */
+  window.__l37admin37 = {
+    parseCloudVal: parseCloudVal,
+    coll: coll,
+    setDB: function (d) { DB = d || {}; },
+    getDB: function () { return DB; },
+    runSql: runSql,
+    renderPass: renderPass,
+    renderCompl: renderCompl,
+    renderJson: renderJson,
+    serial37: serial37,
+    sha256Hex: sha256Hex,
+    adminHash: adminHash
+  };
+})();
+</script>
+</body>
+</html>

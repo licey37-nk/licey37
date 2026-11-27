@@ -4855,6 +4855,11 @@
           </div>
           <label class="toggle-row" style="margin-top:8px;"><input type="checkbox" id="reg-no-homeroom"> Я не классный руководитель (учитель-предметник)</label>
         </div>
+        <div class="field" id="reg-birth-field">
+          <label for="reg-birth">🎂 Дата рождения</label>
+          <input type="date" id="reg-birth" style="font-size:16px;">
+          <div class="field-hint">Попадёт в твой Цифровой паспорт лицеиста.</div>
+        </div>
         <div class="field">
           <label for="reg-password" id="reg-pass-label">Пароль</label>
           <input type="password" id="reg-password" placeholder="Минимум 4 символа" autocomplete="new-password" required>
@@ -5275,7 +5280,7 @@
   </div>
 
   <div id="admin-panel" style="display:none;">
-    <button id="adm-collapse-btn" title="Свернуть / развернуть панель" type="button">👑 Админка ⌄</button>
+    <!-- Request 22: кнопка «👑 Админка ⌄» удалена — однострочная панель инструментов всегда развёрнута целиком -->
     <button class="adm-scroll-btn" id="adm-scroll-left" title="Прокрутить влево" type="button">‹</button>
     <div class="adm-strip" id="adm-strip">
       <div class="adm-quick">
@@ -5286,6 +5291,7 @@
         <button id="adm-diag-btn" title="Отчёт о состоянии облачной синхронизации Supabase">🩺 Диагностика</button>
         <button id="adm-reset-tests-btn" title="Сброс тестовых данных с сохранением снимка в Журнале (можно отменить)">🧹 Сброс тестов</button>
         <button id="adm-about-btn" title="Презентация портала для руководства школы">🚀 О портале</button>
+        <button id="adm-studio-btn" title="Профессиональная IT-студия администратора (открывается в новой вкладке admin.html)">🖥️ Профессиональная студия</button>
       </div>
       <div class="adm-extra">
         <button data-adm="users">👥 Пользователи</button>
@@ -6770,6 +6776,7 @@
           }
 
           user.registeredAt = Date.now();
+          try { user.birthDate = ((document.getElementById('reg-birth') || {}).value || '').trim() || null; } catch (eBrR37) { user.birthDate = null; }
           try { if (typeof l37GenPayCode37 === 'function') user.payCode = l37GenPayCode37(users); } catch (ePcR37) { /* тихо */ }
           users.push(user);
           saveUsers(users);
@@ -7004,6 +7011,7 @@
             '<div class="field"><label for="pf-about">О себе</label><textarea id="pf-about" class="textarea-field" maxlength="200" placeholder="Мои увлечения, любимые предметы...">' + esc(user.about || '') + '</textarea></div>' +
             '<div class="field"><label for="pf-mood">🎵 Статус-настроение (видно под ником и в чатах)</label><input type="text" id="pf-mood" maxlength="80" placeholder="Например: Готовлюсь к контрольной 💻" value="' + esc(user.mood || '') + '"></div>' +
             '<div class="field"><label for="pf-bday">🎂 День рождения (ДД.ММ — увидят одноклассники)</label><input type="text" id="pf-bday" maxlength="5" placeholder="Например: 14.03" value="' + esc(user.bday || '') + '"></div>' +
+            '<div class="field"><label for="pf-birth37">🎂 Дата рождения (полная — для Цифрового паспорта)</label><input type="date" id="pf-birth37" style="font-size:16px;" value="' + esc(user.birthDate || '') + '"></div>' +
             '<div class="field"><label>🎨 Обложка профиля (градиент)</label><div class="pf-cover-picker" id="pf-covers37"></div></div>' +
             '<label class="toggle-row"><input type="checkbox" id="pf-hidestatus"' + (user.hideStatus ? ' checked' : '') + '> 🕵️ Скрывать статус «В сети» и «Печатает...» от других</label>' +
             '<label class="toggle-row"><input type="checkbox" id="pf-hideread"' + (user.hideReadMarks ? ' checked' : '') + '> 🕵️ Скрывать отметку о прочтении (у других всегда остаётся 1 галочка ✓)</label>' +
@@ -7295,6 +7303,8 @@
         if (bRaw37 && !bM37) { toast('🎂 День рождения — в формате ДД.ММ, например 14.03 (или очисти поле).', 'error'); return; }
         u.bday = bM37 ? bM37[1] + '.' + bM37[2] : '';
       }
+      const birthEl37 = document.getElementById('pf-birth37');
+      if (birthEl37) u.birthDate = (birthEl37.value || '').trim() || null;
       const hideVal = document.getElementById('pf-hidestatus');
       u.hideStatus = !!(hideVal && hideVal.checked);
       const hideReadVal = document.getElementById('pf-hideread');
@@ -13653,7 +13663,8 @@ try {
       try {
         const panel = document.getElementById('admin-panel');
         if (!panel) return;
-        panel.classList.toggle('adm-collapsed', localStorage.getItem('lp37_admin_collapsed') !== '0');
+        try { localStorage.removeItem('lp37_admin_collapsed'); } catch (eClr37) { /* тихо */ }
+        panel.classList.remove('adm-collapsed');
       } catch (e) {}
     }
 
@@ -14351,6 +14362,7 @@ try {
         if (b.id === 'adm-diag-btn') { l37DiagOpenReport37(); return; }
         if (b.id === 'adm-reset-tests-btn') { adminTestReset37(); return; }
         if (b.id === 'adm-about-btn') { l37OpenAbout37(); return; }
+        if (b.id === 'adm-studio-btn') { try { window.open('admin.html', '_blank'); } catch (eSt37) { /* тихо */ } return; }
         if (b.id === 'adm-exit-btn') { setAdminActive(false); toast('🚪 Ты вышел из админки.', 'info'); return; }
         const t = b.getAttribute('data-adm');
         if (t === 'tables') openAdminTables('applications');
@@ -20546,7 +20558,11 @@ try {
         l37Overlay37('l37-tx-ov37',
           '<div style="background:#fff; color:#0f172a; max-width:420px; width:100%; border-radius:20px; padding:20px; box-shadow:0 24px 60px rgba(0,0,0,0.4); font-size:14px;">' +
             '<h3 style="margin:0 0 4px; font-size:18px;">⚡ Перевести Кванты лицеисту</h3>' +
-            '<p class="field-hint" style="margin:0 0 12px;">Мгновенно и без комиссии — СБП Лицея №37. Твой код: <b>' + esc(me.payCode || '—') + '</b></p>' +
+            '<div style="margin:0 0 12px; padding:12px 14px; border-radius:16px; background:linear-gradient(135deg,#eef2ff,#ecfeff); border:1px solid #c7d2fe; display:flex; align-items:center; justify-content:space-between; gap:10px;">' +
+              '<div style="min-width:0;"><div class="field-hint" style="margin:0;">СБП Лицея №37 · твой номер для переводов</div>' +
+              '<b style="font-size:22px; letter-spacing:2px;">' + esc(me.payCode || '—') + '</b>' +
+              '<div class="field-hint" style="margin:0;">Баланс: <b>' + qfmt37(me.points) + '</b></div></div>' +
+              '<button type="button" class="btn btn-outline btn-sm" id="l37-pc-copy37" style="flex-shrink:0;">📋 Скопировать номер</button></div>' +
             '<label style="display:block; margin-bottom:8px; font-weight:600;">Код получателя (например, L37-4829 или @ник)' +
               '<input type="text" id="tx-addr37" placeholder="L37-4829 или @Иван" value="' + esc(prefill || '') + '" style="width:100%; box-sizing:border-box; font-size:16px; padding:10px 12px; border-radius:12px; border:1px solid #cbd5e1; margin-top:4px;"></label>' +
             '<div id="tx-who37" class="field-hint" style="margin:0 0 8px; min-height:16px;"></div>' +
@@ -20692,10 +20708,10 @@ try {
         card.style.marginTop = '16px';
         card.innerHTML =
           '<h3 class="info-title">🪪 Цифровой паспорт лицеиста</h3>' +
-          '<div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">' +
-            '<button type="button" class="btn btn-primary" id="pf-passport-btn37">🪪 Мой цифровой паспорт' +
+          '<div class="pf-eco-grid37">' +
+            '<button type="button" class="btn btn-primary" id="pf-passport-btn37" style="width:100%;">🪪 Цифровой паспорт' +
               ' <span style="display:inline-block; padding:2px 8px; border-radius:999px; background:linear-gradient(90deg,#6366f1,#a855f7,#6366f1); background-size:200% 100%; animation:l37badge37 2.8s linear infinite; color:#fff; font-weight:800;">' + esc(me.payCode || 'L37-····') + '</span></button>' +
-            '<button type="button" class="btn btn-outline" id="pf-transfer-btn37">⚡ Перевести Кванты</button>' +
+            '<button type="button" class="btn btn-outline" id="pf-transfer-btn37" style="width:100%;">⚡ Перевод Квантов</button>' +
           '</div>' +
           '<p class="field-hint" style="margin:8px 0 0;">Покажи QR паспорта — и тебе моментально переведут ⚡ Кванты по коду <b>' + esc(me.payCode || '') + '</b>.</p>' +
           '<details id="pf-tx-history37" style="margin-top:10px;"><summary style="cursor:pointer; font-weight:700;">📜 История переводов Квантов</summary><div id="pf-tx-history-list37" style="margin-top:8px;"></div></details>';
@@ -20732,6 +20748,39 @@ try {
         return place + ' из ' + same.length;
       } catch (eCp37) { return '—'; }
     }
+    function l37AgeOf37(bd) {
+      try {
+        const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(bd || ''));
+        if (!m) return null;
+        const now = new Date();
+        let age = now.getFullYear() - Number(m[1]);
+        const mm = now.getMonth() + 1 - Number(m[2]);
+        if (mm < 0 || (mm === 0 && now.getDate() < Number(m[3]))) age--;
+        return (age >= 0 && age < 130) ? age : null;
+      } catch (eA37) { return null; }
+    }
+    function l37BirthLine37(u) {
+      try {
+        const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(u && u.birthDate || ''));
+        if (!m) return '';
+        const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+        const line = Number(m[3]) + ' ' + (months[Number(m[2]) - 1] || m[2]) + ' ' + m[1] + ' г.';
+        const age = l37AgeOf37(u.birthDate);
+        if (age === null) return line;
+        const word = (age % 10 === 1 && age % 100 !== 11) ? 'год' : ((age % 10 >= 2 && age % 10 <= 4 && (age % 100 < 10 || age % 100 >= 20)) ? 'года' : 'лет');
+        return line + ' (' + age + ' ' + word + ')';
+      } catch (eB37) { return ''; }
+    }
+    function l37EduStage37(u) {
+      try {
+        if (String(u.role || '') === 'teacher') return 'Педагогический работник';
+        const g = Number(u.grade || 0);
+        if (g >= 1 && g <= 4) return 'Начальное общее образование';
+        if (g >= 5 && g <= 9) return 'Основное общее образование';
+        if (g >= 10 && g <= 11) return 'Среднее общее образование';
+        return 'Сотрудник лицея';
+      } catch (eE37) { return '—'; }
+    }
     function l37OpenPassport37() {
       try {
         const user = getCurrentUser();
@@ -20741,10 +20790,13 @@ try {
         const online = (lp37OnlineMap && lp37OnlineMap[me.id]) ? '🟢 В сети' : (lastSeenOf(me.id) ? '🕓 был(а) недавно' : '⚪ не в сети');
         const friends = (friendsData37()[me.id] || {}).friends || [];
         const posts = getList('posts').filter(function (p) { return p && p.userId === me.id; }).length;
+        const recs = getList('reaction').filter(function (r) { return r && r.userId === me.id; }).length;
         const url = l37ProfileUrl37(me);
         l37Overlay37('l37-pass-ov37',
           '<div style="position:relative; background:linear-gradient(150deg,#eef2ff,#fdf4ff 55%,#ecfeff); color:#0f172a; max-width:420px; width:100%; border-radius:22px; padding:20px; box-shadow:0 24px 60px rgba(0,0,0,0.45); font-size:14px; overflow:hidden; border:1px solid rgba(99,102,241,0.25);">' +
             '<div class="l37holo37"></div>' +
+            '<div class="l37pass-wm37">ЛИЦЕЙ №37</div>' +
+            '<div class="l37pass-stamp37"><b>✓ ВЕРИФИЦИРОВАНО</b><span>ЛИЦЕЙ №37</span></div>' +
             '<div style="position:relative;">' +
               '<div style="display:flex; align-items:center; gap:8px;">' +
                 '<span style="font-size:22px;">🏛️</span>' +
@@ -20753,26 +20805,32 @@ try {
               '</div>' +
               '<div class="field-hint" style="margin-top:2px; font-size:11px; font-weight:700; color:#4f46e5;">' + esc(l37Serial37(me)) + '</div>' +
               '<div style="display:flex; gap:12px; margin-top:12px; align-items:center;">' +
-                avatarHtml(me.avatar, 'mini-ava ava-ring ' + itagRing37(me)) +
+                avatarHtml(me.avatar, 'mini-ava ava-ring l37pass-ava37 ' + itagRing37(me)) +
                 '<div style="min-width:0; flex:1;">' +
                   '<div style="font-size:18px; font-weight:800;">' + esc(me.name) + userVerifiedSpan(me) + '</div>' +
                   '<div>' + roleBadges37(me, classIdOf(me.grade, me.letter)) + ' <span class="user-class">' + esc(classIdOf(me.grade, me.letter) || 'сотрудник') + '</span></div>' +
+                  '<div class="field-hint">' + esc((classIdOf(me.grade, me.letter) ? classIdOf(me.grade, me.letter) + ' класс · ' : '') + l37EduStage37(me) + ' (МБОУ «Лицей №37» г. Нижнекамска)') + '</div>' +
                   '<div class="field-hint">@' + esc(String(me.name || '').replace(/\s+/g, '')) + ' · ' + online + '</div>' +
-                  '<div class="field-hint">Дата регистрации: ' + esc(fmtDateTime(Number(me.registeredAt || Date.now()))) + '</div>' +
+                  (l37BirthLine37(me)
+                    ? '<div class="field-hint">🎂 Дата рождения: ' + esc(l37BirthLine37(me)) + '</div>'
+                    : '<div class="field-hint">🎂 Дата рождения: <button type="button" class="btn btn-outline btn-sm" id="l37-pass-setbirth37" style="margin-left:4px;">Указать в профиле</button></div>') +
+                  '<div class="field-hint">Зарегистрирован: ' + esc(fmtDateTime(Number(me.registeredAt || Date.now()))) + '</div>' +
                 '</div></div>' +
               '<div style="margin:12px 0 6px; padding:10px 12px; border-radius:14px; background:#fff; border:1px dashed #6366f1; display:flex; align-items:center; justify-content:space-between; gap:8px;">' +
                 '<div style="min-width:0;"><div class="field-hint" style="margin:0;">Код для перевода Квантов</div>' +
                 '<b style="font-size:19px; letter-spacing:1.5px;">' + esc(me.payCode || '—') + '</b></div>' +
                 '<button type="button" class="btn btn-outline btn-sm" id="l37-pc-copy37">📋 Скопировать код</button></div>' +
-              '<div class="l37pass-grid37" style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:6px; margin-bottom:12px;">' +
+              '<div class="l37pass-grid37" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-bottom:12px;">' +
                 '<div style="background:#fff; border-radius:12px; padding:8px; text-align:center;"><div class="field-hint" style="margin:0;">⚡ Баланс</div><b>' + Number(me.points || 0) + '</b></div>' +
                 '<div style="background:#fff; border-radius:12px; padding:8px; text-align:center;"><div class="field-hint" style="margin:0;">🤝 Друзья</div><b>' + friends.length + '</b></div>' +
                 '<div style="background:#fff; border-radius:12px; padding:8px; text-align:center;"><div class="field-hint" style="margin:0;">📝 Посты</div><b>' + posts + '</b></div>' +
-                '<div style="background:#fff; border-radius:12px; padding:8px; text-align:center;"><div class="field-hint" style="margin:0;">🏆 Класс</div><b>' + esc(l37ClassPlace37(me)) + '</b></div></div>' +
+                '<div style="background:#fff; border-radius:12px; padding:8px; text-align:center;"><div class="field-hint" style="margin:0;">🏆 Класс</div><b>' + esc(l37ClassPlace37(me)) + '</b></div>' +
+                '<div style="background:#fff; border-radius:12px; padding:8px; text-align:center;"><div class="field-hint" style="margin:0;">🥇 Рекорды</div><b>' + recs + '</b></div>' +
+                '<div style="background:#fff; border-radius:12px; padding:8px; text-align:center;"><div class="field-hint" style="margin:0;">📊 Активность</div><b>' + (String(online).indexOf('🟢') === 0 ? 'в сети' : 'был(а)') + '</b></div></div>' +
               '<div style="background:#fff; border-radius:16px; padding:14px; text-align:center;">' +
                 '<canvas id="l37-qr-canvas37" width="220" height="220" style="max-width:100%;"></canvas>' +
                 '<div class="field-hint" style="margin-top:6px;">Наведи камеру телефона — откроется профиль</div>' +
-                '<button type="button" class="btn btn-outline btn-sm" id="l37-qr-share37" style="margin-top:6px;">🔗 Поделиться ссылкой на профиль</button></div>' +
+                '<button type="button" class="btn btn-outline btn-sm" id="l37-qr-share37" style="margin-top:6px;">🔗 Скопировать ссылку на паспорт</button></div>' +
               '<button type="button" id="l37-pass-close37" class="btn btn-ghost btn-sm" style="width:100%; margin-top:10px;">✖ Закрыть</button>' +
             '</div></div>', 2147482300);
         const cv = document.getElementById('l37-qr-canvas37');
@@ -20907,6 +20965,18 @@ try {
         const cl = function (id) { const el = document.getElementById(id); if (el) el.remove(); };
         if (t.closest('#pf-passport-btn37')) { l37OpenPassport37(); return; }
         if (t.closest('#pf-transfer-btn37')) { l37OpenTransfer37(''); return; }
+        if (t.closest('#l37-pass-setbirth37')) {
+          const ovSb37 = document.getElementById('l37-pass-ov37');
+          if (ovSb37) ovSb37.remove();
+          try { setTab('profile'); } catch (eSb37) { /* тихо */ }
+          setTimeout(function () {
+            try {
+              const el37 = document.getElementById('pf-birth37');
+              if (el37) { el37.scrollIntoView({ block: 'center', behavior: 'smooth' }); el37.focus(); }
+            } catch (eSb237) { /* тихо */ }
+          }, 350);
+          return;
+        }
         if (t.closest('#tx-send37')) { l37TxSubmit37(); return; }
         if (t.closest('#tx-close37') || t.closest('#l37-receipt-done37') || t.closest('#l37-pass-close37') || t.closest('#l37-about-close37')) {
           ['l37-tx-ov37', 'l37-receipt37', 'l37-pass-ov37', 'l37-about-ov37'].forEach(cl);
@@ -20925,8 +20995,7 @@ try {
           const me = getUserById((getCurrentUser() || {}).id);
           if (!me) return;
           const url = l37ProfileUrl37(me);
-          if (navigator.share) { navigator.share({ title: 'Профиль в Лицее №37', url: url }).catch(function () { /* тихо */ }); }
-          else l37CopyText37(url, 'Ссылка на профиль скопирована ✓');
+          l37CopyText37(url, '🔗 Ссылка на паспорт скопирована ✓');
           return;
         }
         const qtx = t.closest('[data-qr-tx]');
@@ -20947,7 +21016,14 @@ try {
           '@keyframes l37badge37 { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }' +
           '.l37holo37 { position:absolute; inset:0; pointer-events:none; overflow:hidden; border-radius:22px; z-index:1; }' +
           '.l37holo37::after { content:""; position:absolute; top:-40%; left:0; width:45%; height:180%; background:linear-gradient(105deg, rgba(255,255,255,0) 20%, rgba(255,255,255,0.45) 48%, rgba(255,255,255,0) 76%); animation:holoShimmer37 3.2s cubic-bezier(0.22,1,0.36,1) infinite; }' +
-          '@media (max-width:768px) { .l37pass-grid37 { grid-template-columns:1fr 1fr !important; } }';
+          '.pf-eco-grid37 { display:grid; grid-template-columns:1fr 1fr; gap:8px; align-items:stretch; }' +
+          '.pf-eco-grid37 .btn { width:100%; font-size:13px; padding:10px 6px; }' +
+          '.l37pass-ava37 { width:84px !important; height:84px !important; font-size:44px !important; border-radius:20px !important; border:3px solid #6366f1; box-shadow:0 6px 18px rgba(99,102,241,0.35); flex-shrink:0; }' +
+          '.l37pass-wm37 { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; font-size:52px; font-weight:900; color:rgba(30,41,59,0.06); transform:rotate(-18deg); letter-spacing:6px; white-space:nowrap; z-index:0; }' +
+          '.l37pass-stamp37 { position:absolute; top:112px; right:10px; width:86px; height:86px; border-radius:50%; border:3px solid rgba(37,99,235,0.5); color:rgba(37,99,235,0.6); display:flex; flex-direction:column; align-items:center; justify-content:center; transform:rotate(-12deg); pointer-events:none; z-index:2; background:repeating-linear-gradient(45deg, rgba(37,99,235,0.05) 0 4px, transparent 4px 8px); }' +
+          '.l37pass-stamp37 b { font-size:9.5px; letter-spacing:0.4px; text-align:center; }' +
+          '.l37pass-stamp37 span { font-size:8.5px; font-weight:800; margin-top:2px; }' +
+          '@media (max-width:768px) { .l37pass-grid37 { grid-template-columns:1fr 1fr !important; } .l37pass-stamp37 { top:100px; right:4px; width:76px; height:76px; } .pf-eco-grid37 .btn { font-size:12.5px; } }';
         (document.head || document.documentElement).appendChild(st37);
       }
     } catch (eCss37) { /* тихо */ }
