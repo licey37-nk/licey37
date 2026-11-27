@@ -13425,6 +13425,10 @@ try {
         dbSave('dm_index', u.dmIndex);
         dbSave('reaction', u.reaction);
         dbSave('pets', u.pets);
+        if (u.quantumLedger !== undefined) { try { qLedgerSave37(u.quantumLedger || {}); } catch (eQr37) { /* тихо */ } }
+        if (u.capsule !== undefined) dbSave('capsule', u.capsule || []);
+        if (u.purchases !== undefined) dbSave('purchases', u.purchases || []);
+        if (u.bestLikes !== undefined) dbSave('bestLikes', u.bestLikes || []);
         Object.keys(u.dmCloud || {}).forEach(function (k) {
           try { writeLs(k, u.dmCloud[k] || []); } catch (eWc37) { /* тихо */ }
           l37ForceCloudSet37(k, u.dmCloud[k] || []);
@@ -16234,7 +16238,6 @@ try {
       if (!confirm('Второе подтверждение: удаляем ученические данные и обнуляем очки классов. Продолжить?')) return;
       const users = getUsers();
       const keep = users.filter(function (u) { return u.isAdmin; });
-      if (!keep.length) { toast('Внутренняя ошибка: Главный Админ не найден.', 'error'); return; }
       const removedUsers = users.filter(function (u) { return !u.isAdmin && u.id; });
       const dmIndex = dbLoad('dm_index', {});
       const dmKeys37 = [];
@@ -16263,6 +16266,10 @@ try {
         dmCloud: dmCloudSnap37,
         reaction: getList('reaction'),
         pets: pets,
+        quantumLedger: dbLoad('quantum_ledger', {}),
+        capsule: getList('capsule'),
+        purchases: getList('purchases'),
+        bestLikes: getList('bestLikes'),
         when: new Date().toLocaleString('ru-RU')
       };
       const restUsers = keep.map(function (u) { const c = Object.assign({}, u); c.points = 0; return c; });
@@ -16288,6 +16295,10 @@ try {
       dbSave('reaction', []);
       writeLs('pets', petsReset);
       dbSave('pets', petsReset);
+      try { qLedgerSave37({}); } catch (eQl37) { /* тихо */ }
+      dbSave('capsule', []);
+      dbSave('purchases', []);
+      dbSave('bestLikes', []);
       dmKeys37.forEach(function (k) {
         writeLs(k, []);
         l37ForceCloudSet37(k, []);
