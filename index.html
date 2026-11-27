@@ -5033,6 +5033,9 @@
             <button type="button" class="dm-menu-item" id="dm-menu-block">🚫 Заблокировать</button>
             <button type="button" class="dm-menu-item" id="dm-menu-clear">🧹 Очистить историю</button>
             <button type="button" class="dm-menu-item dm-menu-danger" id="dm-menu-delete">🗑️ Удалить чат</button>
+            <button type="button" class="dm-menu-item" id="dm-menu-ttl">⏳ Таймер сообщений</button>
+            <button type="button" class="dm-menu-item" id="dm-menu-cleanup">🧹 Убрать пустые чаты</button>
+            <button type="button" class="dm-menu-item" id="dm-menu-trash">🗑️ Корзина чатов (24 ч)</button>
           </div>
         </div>
       </div>
@@ -5533,7 +5536,7 @@
        из Supabase, объединяем по уникальному id без потерь и только
        потом делаем UPSERT с повтором через 1 сек при сетевом сбое.
        ============================================================ */
-    const MERGE_COLLECTION_KEYS37 = ['users', 'posts', 'listings', 'channels'];
+    const MERGE_COLLECTION_KEYS37 = ['users', 'posts', 'listings', 'channels', 'complaints'];
 
     function l37ItemFreshness37(it) {
       if (!it || typeof it !== 'object') return 0;
@@ -6341,7 +6344,10 @@
     }
 
     function getSessionUserId() { return dbLoad('session', null); }
-    function setSessionUserId(id) { dbSave('session', id); }
+    function setSessionUserId(id) {
+      dbSave('session', id);
+      try { if (typeof l37LockArm37 === 'function') l37LockArm37(); } catch (eLkArm37) { /* тихо */ }
+    }
 
     function getCurrentUser() {
       const id = getSessionUserId();
@@ -7024,6 +7030,72 @@
             '</div>' +
             '<p class="field-hint">Настройки сохраняются в облаке автоматически — нажатие на кнопку сразу действует.</p>' +
           '</div>' +
+          '<div class="card" id="pf-friends-card37">' +
+            '<h3 class="info-title">🤝 Мои друзья</h3>' +
+            '<div id="pf-friends-list37"></div>' +
+            '<h3 class="info-title" style="margin-top:14px;">📥 Входящие заявки</h3>' +
+            '<div id="pf-fr-in37"></div>' +
+            '<h3 class="info-title" style="margin-top:14px;">📤 Исходящие заявки</h3>' +
+            '<div id="pf-fr-out37"></div>' +
+          '</div>' +
+          '<div class="card" id="pf-privacy2-card37">' +
+            '<h3 class="info-title">🛡️ Приватность: тонкие настройки</h3>' +
+            '<label class="toggle-row"><input type="checkbox" id="pv2-ghost"> 👻 Режим невидимки — скрывает твой статус «в сети» и точное время захода</label>' +
+            '<label class="toggle-row"><input type="checkbox" id="pv2-hidetyping"> ⌨️ Не показывать индикатор «печатает...» в чужом чате</label>' +
+            '<label class="toggle-row"><input type="checkbox" id="pv2-hidefriends"> 👁️ Скрыть список моих друзей и подписок</label>' +
+            '<label class="toggle-row"><input type="checkbox" id="pv2-hidepoints"> ⚡ Скрыть баланс Квантов и место в рейтинге от чужих</label>' +
+            '<label class="toggle-row"><input type="checkbox" id="pv2-hideclass"> 📋 Скрыть мой класс и расписание от посторонних</label>' +
+            '<label class="toggle-row"><input type="checkbox" id="pv2-cleanchat"> 🤬 Личный анти-спам: маскировать грубые слова и блокировать ссылки от незнакомцев в ЛС</label>' +
+            '<label class="toggle-row"><input type="checkbox" id="pv2-noforward"> 🚫 Запретить пересылку моих сообщений и постов в другие чаты</label>' +
+            '<div class="field" style="margin-top:8px;"><label>🔒 Кто видит мою стену постов и активность</label><div class="pv-modes37">' +
+              '<button type="button" class="pv-mode37" data-pv2-wall="all">🌍 Все в лицее</button>' +
+              '<button type="button" class="pv-mode37" data-pv2-wall="friends">🤝 Только друзья</button>' +
+              '<button type="button" class="pv-mode37" data-pv2-wall="list">✅ Только выбранные люди</button>' +
+            '</div></div>' +
+            '<div class="field"><label>➕ Белый список стены (живой поиск по всей школе)</label>' +
+              '<input type="text" class="search-input" id="pv2-wall-search" placeholder="🔍 Найти ученика или учителя..." style="width:100%;">' +
+              '<div id="pv2-wall-list" style="margin-top:6px; max-height:180px; overflow:auto;"></div>' +
+            '</div>' +
+            '<div class="field"><label>💬 Кто может комментировать мои посты (можно выбрать несколько)</label><div class="pv-modes37">' +
+              '<button type="button" class="pv-mode37" data-pv2-multi="commentWho" data-val="all">🌍 Все</button>' +
+              '<button type="button" class="pv-mode37" data-pv2-multi="commentWho" data-val="friends">🤝 Друзья</button>' +
+              '<button type="button" class="pv-mode37" data-pv2-multi="commentWho" data-val="classmates">🧡 Одноклассники</button>' +
+              '<button type="button" class="pv-mode37" data-pv2-multi="commentWho" data-val="teachers">👩‍🏫 Учителя</button>' +
+              '<button type="button" class="pv-mode37" data-pv2-multi="commentWho" data-val="none">⛔ Никто</button>' +
+            '</div></div>' +
+            '<div class="field"><label>👥 Кто может добавлять меня в групповые чаты (можно несколько)</label><div class="pv-modes37">' +
+              '<button type="button" class="pv-mode37" data-pv2-multi="groupInvWho" data-val="all">🌍 Все</button>' +
+              '<button type="button" class="pv-mode37" data-pv2-multi="groupInvWho" data-val="friends">🤝 Друзья</button>' +
+              '<button type="button" class="pv-mode37" data-pv2-multi="groupInvWho" data-val="classmates">🧡 Одноклассники</button>' +
+              '<button type="button" class="pv-mode37" data-pv2-multi="groupInvWho" data-val="teachers">👩‍🏫 Учителя</button>' +
+              '<button type="button" class="pv-mode37" data-pv2-multi="groupInvWho" data-val="none">⛔ Никто</button>' +
+            '</div></div>' +
+            '<div class="field"><label>🏷️ Кто может отмечать меня (@Ник)</label><div class="pv-modes37">' +
+              '<button type="button" class="pv-mode37" data-pv2-tag="all">🌍 Все в лицее</button>' +
+              '<button type="button" class="pv-mode37" data-pv2-tag="fof">🤝 Только друзья и одноклассники</button>' +
+              '<button type="button" class="pv-mode37" data-pv2-tag="none">⛔ Никто</button>' +
+            '</div></div>' +
+            '<div class="field"><label>🌙 Тихие часы (Не беспокоить) — звук и уведомления в шторку отключаются</label>' +
+              '<div class="field-row"><input type="time" id="pv2-dnd-from"><input type="time" id="pv2-dnd-to"></div>' +
+              '<p class="field-hint">Например, 21:00 – 07:30. В этот интервал звук сообщений и системные уведомления автоматически выключаются.</p>' +
+            '</div>' +
+            '<p class="field-hint">Все настройки сохраняются в облаке автоматически в один клик.</p>' +
+          '</div>' +
+          '<div class="card" id="pf-security-card37">' +
+            '<h3 class="info-title">🚨 Защита аккаунта: пароль-замок и контрольный вопрос</h3>' +
+            '<p class="field-hint">Пароль-замок (4–8 символов) запрашивается при каждом входе в аккаунт — вторая линия защиты, даже если главный пароль кто-то узнал.</p>' +
+            '<div id="pf-lock-state37"></div>' +
+            '<div class="field"><label for="pf-lock-pass">🔑 Новый пароль-замок (4–8 символов, цифры или буквы)</label><input type="text" id="pf-lock-pass" maxlength="8" placeholder="Например: 7531 или l37x"></div>' +
+            '<div style="display:flex; gap:8px; flex-wrap:wrap;">' +
+              '<button type="button" class="btn btn-primary btn-sm" id="pf-lock-set">🔒 Поставить замок</button>' +
+              '<button type="button" class="btn btn-outline btn-sm" id="pf-lock-remove">🔓 Снять замок</button>' +
+            '</div>' +
+            '<div class="field" style="margin-top:12px;"><label for="pf-secq">❓ Секретный контрольный вопрос (для восстановления у Админа)</label>' +
+              '<input type="text" id="pf-secq" maxlength="120" placeholder="Кличка первого питомца"></div>' +
+            '<div class="field"><label for="pf-seca">Ответ на вопрос (хранится в тайне)</label>' +
+              '<input type="text" id="pf-seca" maxlength="120" placeholder="Например: Барсик"></div>' +
+            '<button type="button" class="btn btn-primary btn-sm" id="pf-sec-save">💾 Сохранить контрольный вопрос</button>' +
+          '</div>' +
           '<div class="card">' +
             '<h3 class="info-title">📜 История начисления Квантов</h3>' +
             (history.length
@@ -7060,6 +7132,7 @@
       try { renderPfCovers37(); } catch (ePc37) { /* тихо */ }
       try { renderPfBookmarks37(); } catch (ePb37) {}
       try { renderPfPurchases37(); } catch (ePp37) {}
+      try { if (typeof l37RenderProfileExtras37 === 'function') l37RenderProfileExtras37(); } catch (ePe37) {}
     }
 
     const SHOP_ITEMS = [
@@ -8921,6 +8994,7 @@
       if (!user || !currentDmPartner) return;
       if (!confirm('Очистить всю историю сообщений в этом чате?')) return;
       const key = dmKey(user.id, currentDmPartner);
+      try { if (typeof l37DmTrashPush37 === 'function') l37DmTrashPush37(user.id, currentDmPartner, getDmMsgs(user.id, currentDmPartner)); } catch (eTr37) { /* тихо */ }
       dbSave('dms', getList('dms').filter(function (m) { return m && m.key !== key; }));
       dbSave(dmCloudKey(user.id, currentDmPartner), []);
       renderDmMessages();
@@ -8949,6 +9023,7 @@
       if (!user || !partnerId) return;
       if (!confirm('Удалить этот чат вместе со всей историей сообщений? Действие необратимо.')) return;
       const key = dmKey(user.id, partnerId);
+      try { if (typeof l37DmTrashPush37 === 'function') l37DmTrashPush37(user.id, partnerId, getDmMsgs(user.id, partnerId)); } catch (eTrD37) { /* тихо */ }
       dbSave('dms', getList('dms').filter(function (m) { return m.key !== key; }));
       dbSave(dmCloudKey(user.id, partnerId), []);
       setArchived(user.id, getArchived(user.id).filter(function (p) { return p !== partnerId; }));
@@ -9139,6 +9214,7 @@
       if (!user || !currentDmPartner) return;
       if (isUserBlocked(currentDmPartner)) { toast('🚫 Пользователь заблокирован — отправка недоступна.', 'error'); return; }
       if (!l37CanWriteTo37(user.id, currentDmPartner)) { l37PrivacyBlockedToast37(); return; }
+      try { if (typeof l37CleanBlock37 === 'function' && l37CleanBlock37(user, currentDmPartner)) return; } catch (eCc37) { /* тихо */ }
       const input = document.getElementById('dm-input');
       const text = input.value.trim();
       if (editingDmId) {
@@ -9160,7 +9236,7 @@
       const arr = getDmMsgs(user.id, currentDmPartner);
       const newMsg37 = {
         id: makeId('dm'), key: dmKey(user.id, currentDmPartner), from: user.id, name: user.name, avatar: user.avatar,
-        text: text, photo: dmPendingPhoto || null,
+        text: (typeof l37MaskForChat37 === 'function') ? l37MaskForChat37(user, currentDmPartner, text) : text, photo: dmPendingPhoto || null,
         replyTo: dmReplyTo ? { id: dmReplyTo.id, name: dmReplyTo.name, text: dmReplyTo.text } : null,
         ts: Date.now()
       };
@@ -9572,8 +9648,7 @@
       let html = '';
       html += '<button type="button" class="mm-btn" data-mm-action="reply">↩️ Ответить</button>';
       html += '<button type="button" class="mm-btn" data-mm-action="react">❤️ Реакция</button>';
-      html += '<button type="button" class="mm-btn" data-mm-action="copy">📋 Копировать текст</button>';
-      html += '<button type="button" class="mm-btn" data-mm-action="fwd">↪️ Переслать</button>';
+      try { if (typeof l37NoFwd37 === 'function' && l37NoFwd37(m)) { html += '<div class="field-hint" style="padding:2px 10px;">🚫 Автор запретил пересылку и копирование</div>'; } else { html += '<button type="button" class="mm-btn" data-mm-action="copy">📋 Копировать текст</button>'; html += '<button type="button" class="mm-btn" data-mm-action="fwd">↪️ Переслать</button>'; } } catch (eNfM37) { html += '<button type="button" class="mm-btn" data-mm-action="copy">📋 Копировать текст</button>'; html += '<button type="button" class="mm-btn" data-mm-action="fwd">↪️ Переслать</button>'; }
       if (mine) html += '<button type="button" class="mm-btn" data-mm-action="edit">✏️ Изменить</button>';
       html += '<button type="button" class="mm-btn" data-mm-action="delme">🗑️ Удалить у себя</button>';
       if (mine) html += '<button type="button" class="mm-btn mm-danger" data-mm-action="delall">💥 Удалить у всех</button>';
@@ -9621,6 +9696,7 @@
     function forwardDmTo(targetId) {
       const user = getCurrentUser();
       if (!user || !forwardMsg || !targetId || targetId === user.id) return;
+      try { if (typeof l37NoFwd37 === 'function' && l37NoFwd37(forwardMsg)) { toast('🚫 Автор запретил пересылку этого сообщения.', 'error'); return; } } catch (eNfF37) { /* тихо */ }
       if (!l37CanWriteTo37(user.id, targetId)) { l37PrivacyBlockedToast37(); return; }
       const arr = getDmMsgs(user.id, targetId);
       arr.push({
@@ -9674,6 +9750,7 @@
     function sendTypingHint() {
       const user = getCurrentUser();
       if (!user || !currentDmPartner || user.hideStatus) return;
+      try { if (typeof pv2On37 === 'function' && pv2On37(user, 'hideTyping')) return; } catch (eHt37) { /* тихо */ }
       const now = Date.now();
       if (now - lastTypingSent < 2000) return;
       lastTypingSent = now;
@@ -10453,6 +10530,9 @@
         const tagLow = feedTagFilter37.toLowerCase();
         posts = posts.filter(function (p) { return extractTags37(p.text).indexOf(tagLow) !== -1; });
       }
+      if (user) {
+        try { posts = posts.filter(function (pW37) { return !pW37 || !pW37.userId || pW37.userId === user.id || (typeof l37WallVisible37 === 'function' && l37WallVisible37(pW37.userId, user.id)); }); } catch (eWl37) { /* тихо */ }
+      }
       ensureFeedTabs37();
       updateFeedTabsActive37();
       const feedSeenTs37 = user ? Number(polishLsGet('feed_seen_' + user.id, 0)) : 0;
@@ -10520,7 +10600,7 @@
                     '<div class="comment-body">' +
                       '<div class="mini-head"><span class="mini-author">' + esc(c.name) + '</span><span>' + fmtAgo37(c.ts) + '</span></div>' +
                       '<div>' + esc(c.text) + '</div>' +
-                      (user && !mineC ? '<div class="mini-actions"><button type="button" data-cmt-reply="' + esc(p.id) + '|' + esc(c.id) + '|' + esc(c.name) + '" title="Ответить">↩️ Ответить</button></div>' : '') +
+                      (user && !mineC ? '<div class="mini-actions"><button type="button" data-cmt-reply="' + esc(p.id) + '|' + esc(c.id) + '|' + esc(c.name) + '" title="Ответить">↩️ Ответить</button> <button type="button" data-cmt-report="' + esc(p.id) + '|' + esc(c.id) + '" title="Пожаловаться">🚩</button></div>' : '') +
                       (canEditC ? '<div class="mini-actions"><button type="button" data-comment-edit="' + esc(p.id) + '|' + esc(c.id) + '">✏️</button><button type="button" data-comment-del="' + esc(p.id) + '|' + esc(c.id) + '">🗑️</button></div>' : '') +
                     '</div>' +
                   '</div>';
@@ -10696,6 +10776,7 @@
         const posts = getList('posts');
         const p = posts.find(function (x) { return x.id === input.dataset.commentInput; });
         if (!p) return;
+        try { if (typeof l37CanComment37 === 'function' && !l37CanComment37(p, user)) { toast('🔒 Автор ограничил круг лиц, которые могут комментировать его посты.', 'error'); return; } } catch (eCw37) { /* тихо */ }
         p.comments = p.comments || [];
         p.comments.push({ id: makeId('cmt'), userId: user.id, name: user.name, avatar: user.avatar, text: text, ts: Date.now() });
         dbSave('posts', posts);
@@ -10822,10 +10903,10 @@
         return '<div class="card person-card">' +
           avatarHtml(u.avatar) +
           '<div style="font-weight:700;">' + esc(u.name) + userVerifiedSpan(u) + roleBadges37(u, classIdOf(u.grade, u.letter)) + '</div>' +
-          '<span class="user-class">' + esc(classIdOf(u.grade, u.letter)) + '</span>' +
+          '<span class="user-class">' + esc(typeof l37ShowClass37 === 'function' ? l37ShowClass37(user, u) : classIdOf(u.grade, u.letter)) + '</span>' +
           (u.mood ? '<span class="dm-mood">🎵 ' + esc(u.mood) + '</span>' : '') +
           (tags.length ? '<div class="itags-row">' + tags.map(function (t) { return '<span class="itag-chip">' + esc(t) + '</span>'; }).join('') + '</div>' : '') +
-          '<span class="field-hint">' + st.icon + ' ' + esc(st.title) + ' · ' + qfmt37(u.points) + '</span>' +
+          '<span class="field-hint">' + st.icon + ' ' + esc(st.title) + (typeof l37ShowPoints37 === 'function' && !l37ShowPoints37(user, u) ? ' · ⚡ скрыто' : ' · ' + qfmt37(u.points)) + '</span>' +
           (self
             ? '<span class="field-hint">Это ты 🙂</span>'
             : '<div class="field-row" style="width:100%;">' +
@@ -15242,6 +15323,7 @@ try {
       nicks.forEach(function (nick) {
         const target = users.find(function (u) { return String(u.name || '').toLowerCase() === nick; });
         if (!target || target.id === user.id) return;
+        try { if (typeof l37CanBeTagged37 === 'function' && !l37CanBeTagged37(target, user)) return; } catch (eTg37) { /* тихо */ }
         pushNotif37(target.id, {
           type: 'mention',
           text: '🔔 ' + user.name + ' упомянул(а) тебя: «' + String(ctx && ctx.text ? ctx.text : '').slice(0, 80) + '»',
@@ -15446,6 +15528,7 @@ try {
       if (!user) { openModal('modal-login'); toast('Войди, чтобы делиться постами.', 'info'); return; }
       const post = getList('posts').find(function (p) { return p.id === postId; });
       if (!post) { toast('Пост не найден.', 'error'); return; }
+      try { if (typeof l37NoFwd37 === 'function' && l37NoFwd37(post)) { toast('🚫 Автор запретил пересылку этого поста.', 'error'); return; } } catch (eNfR37) { /* тихо */ }
       repostPostId37 = postId;
       const hint = document.getElementById('repost-hint');
       if (hint) hint.textContent = 'Пост от ' + (post.name || 'ученика') + ': «' + String(post.text || '').slice(0, 80) + '…»';
@@ -15471,6 +15554,7 @@ try {
       if (!user || !repostPostId37) return;
       const orig = getList('posts').find(function (p) { return p.id === repostPostId37; });
       if (!orig) { toast('Пост не найден.', 'error'); return; }
+      try { if (typeof l37NoFwd37 === 'function' && l37NoFwd37(orig)) { toast('🚫 Автор запретил пересылку этого поста.', 'error'); return; } } catch (eNfW37) { /* тихо */ }
       const commentEl = document.getElementById('repost-comment');
       const comment = commentEl ? commentEl.value.trim() : '';
       const posts = getList('posts');
@@ -15495,6 +15579,7 @@ try {
       if (friendId && !l37CanWriteTo37(user.id, friendId)) { l37PrivacyBlockedToast37(); return; }
       const orig = getList('posts').find(function (p) { return p.id === repostPostId37; });
       if (!orig) { toast('Пост не найден.', 'error'); return; }
+      try { if (typeof l37NoFwd37 === 'function' && l37NoFwd37(orig)) { toast('🚫 Автор запретил пересылку этого поста.', 'error'); return; } } catch (eNfD37) { /* тихо */ }
       const fu = getUserById(friendId);
       if (!fu) { toast('Друг не найден.', 'error'); return; }
       const arr = getDmMsgs(user.id, friendId);
@@ -15520,7 +15605,7 @@ try {
       if (!target || !target.id) return;
       reportTarget37 = { kind: target.kind, id: target.id };
       const hint = document.getElementById('report-target-hint');
-      if (hint) hint.textContent = target.kind === 'listing' ? 'Жалоба на объявление Лицей-Маркета' : 'Жалоба на пост в Соцсети';
+      if (hint) hint.textContent = target.kind === 'listing' ? 'Жалоба на объявление Лицей-Маркета' : target.kind === 'comment' ? 'Жалоба на комментарий в Соцсети' : target.kind === 'user' ? 'Жалоба на профиль пользователя' : 'Жалоба на пост в Соцсети';
       const sel = document.getElementById('report-reason');
       if (sel) sel.value = 'spam';
       const other = document.getElementById('report-reason-other');
@@ -15536,7 +15621,19 @@ try {
       let reason = sel ? sel.value : 'other';
       const reasonText = reason === 'other' && other && other.value.trim() ? other.value.trim() : (COMPL_REASONS37[reason] || 'Другое');
       let targetAuthorId = null, targetAuthorName = '', targetTitle = '', targetQuote = '';
-      if (reportTarget37.kind === 'listing') {
+      if (reportTarget37.kind === 'comment') {
+        const partsC37 = String(reportTarget37.id).split('|');
+        const pC37 = getList('posts').find(function (x) { return x.id === partsC37[0]; });
+        const cC37 = pC37 && Array.isArray(pC37.comments) ? pC37.comments.find(function (y) { return y.id === partsC37[1]; }) : null;
+        if (!cC37) { showFormError('report-error', 'Комментарий уже не найден.'); return; }
+        targetAuthorId = cC37.userId; targetAuthorName = cC37.name || '';
+        targetTitle = 'Комментарий в Соцсети'; targetQuote = String(cC37.text || '').slice(0, 200);
+      } else if (reportTarget37.kind === 'user') {
+        const uu37 = typeof getUserById === 'function' ? getUserById(reportTarget37.id) : null;
+        if (!uu37) { showFormError('report-error', 'Пользователь не найден.'); return; }
+        targetAuthorId = uu37.id; targetAuthorName = uu37.name || '';
+        targetTitle = 'Профиль пользователя'; targetQuote = classIdOf(uu37.grade, uu37.letter);
+      } else if (reportTarget37.kind === 'listing') {
         const l = getList('listings').find(function (x) { return x.id === reportTarget37.id; });
         if (!l) { showFormError('report-error', 'Объявление уже не найдено.'); return; }
         targetAuthorId = l.sellerId; targetAuthorName = l.sellerName || '';
@@ -15585,13 +15682,17 @@ try {
           ? open.map(function (c) {
               const when = c.ts ? fmtDateTime(c.ts) : '';
               return '<div class="card complaint-card">' +
-                '<b>' + esc(c.fromName || 'Ученик') + ' · ' + esc(c.fromClass || '') + '</b> пожаловался на <b>' + esc(c.targetAuthorName || 'пользователя') + '</b>' +
-                '<div class="complaint-quote">' + esc(c.kind === 'listing' ? 'Объявление: ' + (c.targetTitle || '') : 'Пост: ' + (c.targetTitle || '')) +
+                (c.kind === 'lock'
+                  ? '<b>' + esc(c.fromName || 'Ученик') + '</b> просит сбросить пароль-замок (вопрос: ' + esc(c.secQ || '—') + '; ответ ученика: ' + esc(c.secAnswer || '—') + ')'
+                  : '<b>' + esc(c.fromName || 'Ученик') + ' · ' + esc(c.fromClass || '') + '</b> пожаловался на <b>' + esc(c.targetAuthorName || 'пользователя') + '</b>') +
+                '<div class="complaint-quote">' + esc(c.kind === 'lock' ? 'Заявка на сброс пароль-замка' : c.kind === 'comment' ? 'Комментарий' : c.kind === 'user' ? 'Профиль' : c.kind === 'listing' ? 'Объявление: ' + (c.targetTitle || '') : 'Пост: ' + (c.targetTitle || '')) +
                 (c.targetQuote ? '<br>«' + esc(c.targetQuote) + '»' : '') + '</div>' +
                 '<div>Причина: <b>' + esc(c.reason || '') + '</b> · ' + esc(when) + '</div>' +
                 '<div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;">' +
                   (c.fromId ? '<button type="button" class="btn btn-outline btn-sm" data-compl-dm="' + esc(c.fromId) + '">💬 Написать ученику</button>' : '') +
                   (c.targetAuthorId ? '<button type="button" class="btn btn-outline btn-sm" data-compl-dm="' + esc(c.targetAuthorId) + '">💬 Написать автору</button>' : '') +
+                  (c.kind === 'lock' ? '<button type="button" class="btn btn-primary btn-sm" data-compl-unlock="' + esc(c.targetId || c.fromId || '') + '">🔑 Сбросить пароль-замок</button>' : '') +
+                  (c.targetAuthorId && c.kind !== 'lock' ? '<button type="button" class="btn btn-outline btn-sm" data-compl-ban="' + esc(c.targetAuthorId) + '">🚫 Заблокировать нарушителя</button>' : '') +
                   '<button type="button" class="btn btn-danger btn-sm" data-compl-del="' + esc(c.id) + '">🗑️ Удалить нарушающий контент</button>' +
                   '<button type="button" class="btn btn-ghost btn-sm" data-compl-dismiss="' + esc(c.id) + '">✅ Отклонить жалобу</button>' +
                 '</div></div>';
@@ -16993,6 +17094,7 @@ try {
       try {
         if (!pu) return '';
         if (pu.hideStatus) return '<span class="dm-status-off">🕵️ статус скрыт</span>';
+        try { if (typeof pv2On37 === 'function' && pv2On37(pu, 'ghost')) return '<span class="dm-status-off">👻 был(а) недавно</span>'; } catch (eGhL37) { /* тихо */ }
         const pres = lp37OnlineMap[pu.id];
         if (pres && Date.now() - pres.ts < 70000) return '<span class="dm-status-on"><span class="pulse-dot"></span>в сети</span>';
         const seen = lastSeenOf(pu.id);
@@ -17019,7 +17121,7 @@ try {
         card.innerHTML =
           '<div class="mpc-top">' + msgAvatarHtml(pu.avatar, 'mini-ava ava-ring ' + itagRing37(pu)) +
           '<div><h4>' + esc(pu.name) + userVerifiedSpan(pu) + '</h4>' +
-          '<span class="user-class">' + esc(classIdOf(pu.grade, pu.letter)) + '</span></div></div>' +
+          '<span class="user-class">' + esc(typeof l37ShowClass37 === 'function' ? l37ShowClass37(user, pu) : classIdOf(pu.grade, pu.letter)) + '</span></div></div>' +
           '<div style="margin-top:6px;">' + dmStatusLine(pu) + '</div>' +
           (pu.mood ? '<div class="dm-mood" style="margin-top:4px;">🎵 ' + esc(pu.mood) + '</div>' : '') +
           roleBadges37(pu, classIdOf(pu.grade, pu.letter)) +
@@ -17028,6 +17130,7 @@ try {
             ? '<div class="mpc-actions">' +
               '<button type="button" class="btn btn-outline btn-sm" data-mpc-dm="' + esc(pu.id) + '">💬 Написать</button>' +
               '<button type="button" class="btn btn-ghost btn-sm" data-friend-act="' + esc(pu.id) + '">' + esc(fState ? fState.label : '🤝 В друзья') + '</button>' +
+              '<button type="button" class="btn btn-ghost btn-sm" data-mpc-report="' + esc(pu.id) + '" title="Пожаловаться на профиль">🚩</button>' +
             '</div>'
             : '<div class="field-hint" style="margin-top:8px;">Это ты 😊</div>');
         document.body.appendChild(card);
@@ -18523,6 +18626,7 @@ try {
     let l37AudioCtx37 = null;
     function playDmSound37(kind) {
       try { if (typeof l37NotifAllowed37 === 'function' && !l37NotifAllowed37('sound')) return; } catch (eSg37) { /* тихо */ }
+      try { const meD37 = typeof getCurrentUser === 'function' ? getCurrentUser() : null; if (meD37 && typeof l37DndActive37 === 'function' && l37DndActive37(meD37)) return; } catch (eDd37) { /* тихо */ }
       try {
         if (typeof window === 'undefined') return;
         const AC37 = window.AudioContext || window.webkitAudioContext;
@@ -18552,6 +18656,7 @@ try {
 
     function dmIsOnline37(uid) {
       try {
+        try { const gu37 = typeof getUserById === 'function' ? getUserById(uid) : null; if (gu37 && typeof pv2On37 === 'function' && pv2On37(gu37, 'ghost')) return false; } catch (eGh37) { /* тихо */ }
         const pres37 = lp37OnlineMap[uid];
         if (pres37 && Date.now() - pres37.ts < 70000) return true;
         const seen37 = lastSeenOf(uid);
@@ -19147,6 +19252,7 @@ try {
 
     function l37ShowNotif37(id, title, body, open) {
       try {
+        try { const meDn37 = typeof getCurrentUser === 'function' ? getCurrentUser() : null; if (meDn37 && typeof l37DndActive37 === 'function' && l37DndActive37(meDn37)) return; } catch (eDn37) { /* тихо */ }
         if (!l37NotifAllowed37(l37NotifKind37(id))) return;
         if (l37NotifSeen37(id)) return;
         if (l37NotifPerm37() !== 'granted') return;
@@ -19320,6 +19426,814 @@ try {
       }
     } catch (eHash37) {}
     try { if (typeof window !== 'undefined') { window.l37RouteOpen37 = l37RouteOpen37; window.l37ShowNotif37 = l37ShowNotif37; window.getNotifSettings37 = getNotifSettings37; window.setNotifSetting37 = setNotifSetting37; window.renderNotifSettings37 = renderNotifSettings37; window.l37NotifyKeyChanged37 = l37NotifyKeyChanged37; window.l37NotifAllowed37 = l37NotifAllowed37; } } catch (eExp37) {}
+
+    /* ============================================================
+       L37 PRIVACY & SAFETY ECOSYSTEM v1 - Request 20
+       Module 1: Friends tab in Profile.
+       Module 2: Fine privacy settings (user.pv2, 11 settings).
+       Module 3: Password-lock 4-8 chars + secret question +
+                 vanishing messages (TTL) + DM Trash (24h).
+       Module 4: Complaints on comments/profiles + lock-reset
+                 requests -> Complaints Center in Super-Admin.
+       No existing engine is changed or removed: only point hooks
+       in index.html plus this standalone block.
+       ============================================================ */
+    const L37_PV2_CHECKS37 = [
+      ['pv2-ghost', 'ghost'],
+      ['pv2-hidetyping', 'hideTyping'],
+      ['pv2-hidefriends', 'hideFriends'],
+      ['pv2-hidepoints', 'hidePoints'],
+      ['pv2-hideclass', 'hideClass'],
+      ['pv2-cleanchat', 'cleanChat'],
+      ['pv2-noforward', 'noForward']
+    ];
+    function pv2Defaults37() {
+      return {
+        ghost: false, hideTyping: false, hideFriends: false, hidePoints: false, hideClass: false,
+        cleanChat: false, noForward: false,
+        wallMode: 'all', wallAllow: [],
+        commentWho: ['all'], groupInvWho: ['all'], tagWho: 'all',
+        dndFrom: '', dndTo: ''
+      };
+    }
+    function pv2Get37(u) {
+      try {
+        const v = (u && u.pv2) || {};
+        const d = pv2Defaults37();
+        const out = {};
+        Object.keys(d).forEach(function (k) {
+          if (typeof d[k] === 'boolean') out[k] = !!v[k];
+          else if (Array.isArray(d[k])) out[k] = Array.isArray(v[k]) ? v[k].slice() : d[k].slice();
+          else out[k] = (v[k] === undefined || v[k] === null) ? d[k] : v[k];
+        });
+        if (out.wallMode !== 'friends' && out.wallMode !== 'list') out.wallMode = 'all';
+        if (out.tagWho !== 'fof' && out.tagWho !== 'none') out.tagWho = 'all';
+        return out;
+      } catch (ePvG37) { return pv2Defaults37(); }
+    }
+    function pv2On37(u, k) {
+      try { return !!pv2Get37(u)[k]; } catch (ePvO37) { return false; }
+    }
+    function pv2Set37(mut) {
+      try {
+        const user = getCurrentUser();
+        if (!user || typeof mut !== 'function') return false;
+        const users = getUsers();
+        const me = users.find(function (x) { return x.id === user.id; });
+        if (!me) return false;
+        me.pv2 = (me.pv2 && typeof me.pv2 === 'object') ? me.pv2 : {};
+        mut(me.pv2, me);
+        saveUsers(users);
+        return true;
+      } catch (ePvS37) { return false; }
+    }
+    function l37IsAdmin37(u) {
+      try { return !!u && typeof canModerateAll === 'function' && canModerateAll(u); }
+      catch (eAd37) { return false; }
+    }
+    function l37IsTeacher37(u) {
+      try { return !!u && u.role === 'teacher'; } catch (eTe37) { return false; }
+    }
+    function l37SameClass37(a, b) {
+      try {
+        if (!a || !b || a.id === b.id) return false;
+        const ca = classIdOf(a.grade, a.letter);
+        return !!ca && ca === classIdOf(b.grade, b.letter);
+      } catch (eSc37) { return false; }
+    }
+    function l37Privileged37(viewer, owner) {
+      try {
+        if (!viewer || !owner || viewer.id === owner.id) return true;
+        return l37IsAdmin37(viewer) || l37IsTeacher37(viewer);
+      } catch (ePr37) { return true; }
+    }
+
+    /* ---- Module 2: visibility rules ---- */
+    function l37WallVisible37(ownerId, viewerId) {
+      try {
+        if (!ownerId || !viewerId || ownerId === viewerId) return true;
+        const owner = getUserById(ownerId);
+        const viewer = getUserById(viewerId);
+        if (!owner) return true;
+        if (!viewer) return false;
+        if (l37Privileged37(viewer, owner)) return true;
+        const v = pv2Get37(owner);
+        if (v.wallMode === 'friends') return isFriend37(ownerId, viewerId);
+        if (v.wallMode === 'list') return v.wallAllow.indexOf(viewerId) !== -1 || isFriend37(ownerId, viewerId);
+        return true;
+      } catch (eWv37) { return true; }
+    }
+    function l37CanComment37(post, viewer) {
+      try {
+        if (!post || !viewer) return false;
+        const owner = getUserById(post.userId);
+        if (!owner) return true;
+        if (owner.id === viewer.id || l37Privileged37(viewer, owner)) return true;
+        const who = pv2Get37(owner).commentWho;
+        if (!Array.isArray(who) || !who.length) return false;
+        if (who.indexOf('all') !== -1) return true;
+        if (who.indexOf('none') !== -1) return false;
+        if (who.indexOf('friends') !== -1 && isFriend37(owner.id, viewer.id)) return true;
+        if (who.indexOf('classmates') !== -1 && l37SameClass37(owner, viewer)) return true;
+        if (who.indexOf('teachers') !== -1 && l37IsTeacher37(viewer)) return true;
+        return false;
+      } catch (eCw37) { return true; }
+    }
+    function l37CanBeTagged37(target, actor) {
+      try {
+        if (!target || !actor || target.id === actor.id) return false;
+        if (l37Privileged37(target, actor)) return false;
+        const mode = pv2Get37(target).tagWho;
+        if (mode === 'none') return false;
+        if (mode === 'fof') return isFriend37(target.id, actor.id) || l37SameClass37(target, actor);
+        return true;
+      } catch (eTg37) { return true; }
+    }
+    function l37NoFwd37(obj) {
+      try {
+        if (!obj) return false;
+        const user = getCurrentUser();
+        const ownerId = obj.from || obj.userId || '';
+        if (!user || !ownerId || user.id === ownerId) return false;
+        if (l37IsAdmin37(user)) return false;
+        const owner = getUserById(ownerId);
+        if (!owner) return false;
+        return pv2On37(owner, 'noForward');
+      } catch (eNf37) { return false; }
+    }
+    function l37ShowClass37(viewer, pu) {
+      try {
+        if (!pu) return '';
+        const cls = classIdOf(pu.grade, pu.letter);
+        if (!cls) return cls;
+        if (!pv2On37(pu, 'hideClass')) return cls;
+        if (!viewer || viewer.id === pu.id || l37Privileged37(viewer, pu) || l37SameClass37(pu, viewer)) return cls;
+        return '🔒 класс скрыт';
+      } catch (eShC37) { return ''; }
+    }
+    function l37ShowPoints37(viewer, u) {
+      try {
+        if (!u) return true;
+        if (!viewer || viewer.id === u.id || l37Privileged37(viewer, u)) return true;
+        return !pv2On37(u, 'hidePoints');
+      } catch (eShP37) { return true; }
+    }
+    function l37DndActive37(u) {
+      try {
+        const v = pv2Get37(u);
+        if (!v.dndFrom || !v.dndTo) return false;
+        const toMin = function (s) {
+          const t = String(s || '').split(':');
+          if (t.length !== 2) return -1;
+          const h = Number(t[0]), m = Number(t[1]);
+          if (isNaN(h) || isNaN(m)) return -1;
+          return h * 60 + m;
+        };
+        const from = toMin(v.dndFrom), to = toMin(v.dndTo);
+        if (from < 0 || to < 0) return false;
+        const now = new Date();
+        const cur = now.getHours() * 60 + now.getMinutes();
+        return from <= to ? (cur >= from && cur < to) : (cur >= from || cur < to);
+      } catch (eDn37) { return false; }
+    }
+
+    /* ---- Module 2: anti-spam ---- */
+    const L37_RUDE_WORDS37 = ['дурак', 'дура', 'идиот', 'тупица', 'тупой', 'тупая', 'урод', 'заткнись', 'лох', 'кретин'];
+    function l37MaskText37(text) {
+      let out = String(text || '');
+      L37_RUDE_WORDS37.forEach(function (w) {
+        try {
+          out = out.replace(new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), '****');
+        } catch (eRw37) {}
+      });
+      return out;
+    }
+    function l37CleanBlock37(user, partnerId) {
+      try {
+        const pu = getUserById(partnerId);
+        if (!pu || !user || user.id === partnerId || !pv2On37(pu, 'cleanChat')) return false;
+        if (isFriend37(partnerId, user.id) || l37IsAdmin37(user)) return false;
+        const inp = document.getElementById('dm-input');
+        const val = inp ? String(inp.value || '') : '';
+        if (/(https?:\/\/|www\.)/i.test(val)) {
+          toast('🚫 ' + (pu.name || 'Пользователь') + ' скрывает ссылки от незнакомцев — отправь сообщение без ссылок.', 'error');
+          return true;
+        }
+        return false;
+      } catch (eCb37) { return false; }
+    }
+    function l37MaskForChat37(user, partnerId, text) {
+      try {
+        const pu = getUserById(partnerId);
+        if (!pu || !user || user.id === partnerId || !pv2On37(pu, 'cleanChat')) return text;
+        if (isFriend37(partnerId, user.id) || l37IsAdmin37(user)) return text;
+        return l37MaskText37(String(text || '').replace(/(https?:\/\/|www\.)[^\s]+/gi, '🔗 ссылка скрыта'));
+      } catch (eMf37) { return text; }
+    }
+
+    /* ---- Module 1: friends tab ---- */
+    function l37FriendRow37(u, actions) {
+      return '<div class="friend-req-row">' +
+        avatarHtml(u ? u.avatar : null, 'mini-ava') +
+        '<div style="min-width:0; flex:1;">' +
+          '<b>' + esc(u ? u.name : 'Ученик') + '</b>' +
+          (u ? ' <span class="user-class">' + esc(classIdOf(u.grade, u.letter)) + '</span>' : '') +
+        '</div>' + actions + '</div>';
+    }
+    function l37RenderFriendsTab37() {
+      const wrap = document.getElementById('pf-friends-list37');
+      const inWrap = document.getElementById('pf-fr-in37');
+      const outWrap = document.getElementById('pf-fr-out37');
+      if (!wrap || !inWrap || !outWrap) return;
+      const user = getCurrentUser();
+      if (!user) {
+        wrap.innerHTML = '<p class="empty-line">Войди, чтобы видеть друзей.</p>';
+        inWrap.innerHTML = ''; outWrap.innerHTML = '';
+        return;
+      }
+      const map = friendsData37();
+      const mine = friendEntry37(map, user.id);
+      const friends = Array.isArray(mine.friends) ? mine.friends : [];
+      const incoming = Array.isArray(mine.incoming) ? mine.incoming : [];
+      const outgoing = Array.isArray(mine.outgoing) ? mine.outgoing : [];
+      wrap.innerHTML = friends.length
+        ? friends.map(function (fid) {
+            const fu = getUserById(fid);
+            return l37FriendRow37(fu,
+              '<button type="button" class="btn btn-outline btn-sm" data-frd-dm="' + esc(fid) + '">💬 Написать</button>' +
+              '<button type="button" class="btn btn-ghost btn-sm" data-frd-act="remove:' + esc(fid) + '">➖ Удалить</button>');
+          }).join('')
+        : '<p class="empty-line">Пока пусто — добавляй друзей через 🔍 поиск людей!</p>';
+      inWrap.innerHTML = incoming.length
+        ? incoming.map(function (req) {
+            const iu = getUserById(req.id);
+            return l37FriendRow37(iu,
+              '<button type="button" class="btn btn-primary btn-sm" data-frd-act="accept:' + esc(req.id) + '">✅ Принять</button>' +
+              '<button type="button" class="btn btn-ghost btn-sm" data-frd-act="reject:' + esc(req.id) + '">❌ Отклонить</button>');
+          }).join('')
+        : '<p class="empty-line">Входящих заявок нет.</p>';
+      outWrap.innerHTML = outgoing.length
+        ? outgoing.map(function (req) {
+            const ou = getUserById(req.id);
+            return l37FriendRow37(ou,
+              '<button type="button" class="btn btn-ghost btn-sm" data-frd-act="cancel:' + esc(req.id) + '">↩️ Отменить заявку</button>');
+          }).join('')
+        : '<p class="empty-line">Исходящих заявок нет.</p>';
+    }
+    /* ---- Module 2: fine settings card ---- */
+    function l37RenderWallAllowList37(q) {
+      const wrap = document.getElementById('pv2-wall-list');
+      if (!wrap) return;
+      const user = getCurrentUser();
+      if (!user) { wrap.innerHTML = ''; return; }
+      const v = pv2Get37(user);
+      const allow = Array.isArray(v.wallAllow) ? v.wallAllow : [];
+      const query = normText(q);
+      const found = getUsers().filter(function (u) {
+        return u.id !== user.id && (!query || normText(u.name).indexOf(query) !== -1 || normText(classIdOf(u.grade, u.letter)).indexOf(query) !== -1);
+      }).slice(0, 12);
+      wrap.innerHTML =
+        (allow.length
+          ? '<div class="field-hint" style="margin-bottom:4px;">✅ Стену видят выбранные:</div>' + allow.map(function (uid) {
+              const au = getUserById(uid);
+              return '<span class="itag-chip" style="margin:0 6px 6px 0;">' + esc(au ? au.name : uid) +
+                ' <button type="button" data-pv2-walluser="' + esc(uid) + '" title="Убрать" style="border:0; background:none; cursor:pointer; color:#b91c1c; font-weight:700;">✕</button></span>';
+            }).join('')
+          : '<div class="field-hint" style="margin-bottom:4px;">Белый список стены пуст — найди людей ниже.</div>') +
+        (found.length
+          ? '<div style="margin-top:6px;">' + found.map(function (u) {
+              const added = allow.indexOf(u.id) !== -1;
+              return '<div class="friend-req-row">' +
+                '<div style="min-width:0; flex:1;"><b>' + esc(u.name) + '</b> <span class="user-class">' + esc(classIdOf(u.grade, u.letter)) + '</span></div>' +
+                '<button type="button" class="btn ' + (added ? 'btn-ghost' : 'btn-outline') + ' btn-sm" data-pv2-walladd="' + esc(u.id) + '">' + (added ? '✓ Добавлен' : '➕ Добавить') + '</button>' +
+              '</div>';
+            }).join('') + '</div>'
+          : (query ? '<p class="empty-line">Никого не найдено.</p>' : ''));
+    }
+    function l37RenderPrivacy2Card37() {
+      const card = document.getElementById('pf-privacy2-card37');
+      if (!card) return;
+      const user = getCurrentUser();
+      if (!user) { card.style.display = 'none'; return; }
+      card.style.display = 'block';
+      const v = pv2Get37(user);
+      L37_PV2_CHECKS37.forEach(function (p) {
+        const el = document.getElementById(p[0]);
+        if (el) el.checked = !!v[p[1]];
+      });
+      Array.prototype.forEach.call(card.querySelectorAll('[data-pv2-wall]'), function (b) {
+        b.classList.toggle('on', b.dataset.pv2Wall === v.wallMode);
+      });
+      Array.prototype.forEach.call(card.querySelectorAll('[data-pv2-multi]'), function (b) {
+        const key = b.dataset.pv2Multi, val = b.dataset.val;
+        const arr = Array.isArray(v[key]) ? v[key] : [];
+        const on = val === 'none' ? (arr.indexOf('none') !== -1 || !arr.length) : arr.indexOf(val) !== -1;
+        b.classList.toggle('on', on);
+      });
+      Array.prototype.forEach.call(card.querySelectorAll('[data-pv2-tag]'), function (b) {
+        b.classList.toggle('on', b.dataset.pv2Tag === v.tagWho);
+      });
+      const dF = document.getElementById('pv2-dnd-from');
+      const dT = document.getElementById('pv2-dnd-to');
+      if (dF) dF.value = v.dndFrom || '';
+      if (dT) dT.value = v.dndTo || '';
+      l37RenderWallAllowList37('');
+    }
+    function l37RenderProfileExtras37() {
+      try { l37RenderFriendsTab37(); } catch (eRf37) {}
+      try { l37RenderPrivacy2Card37(); } catch (eRp37) {}
+      try { l37RenderLockState37(); } catch (eRl37) {}
+    }
+
+    /* ---- Module 3: password-lock + secret question ---- */
+    function l37LockHash37(s) {
+      let h = 5381;
+      const t = String(s || '');
+      for (let i = 0; i < t.length; i++) h = ((h << 5) + h + t.charCodeAt(i)) | 0;
+      return 'fb_' + Math.abs(h).toString(16) + '_' + t.length;
+    }
+    function l37LockUnlockedFlag37(uid) {
+      try { return sessionStorage.getItem('l37Unlocked37_' + uid) === '1'; } catch (eSs37) { return true; }
+    }
+    function l37RenderLockState37() {
+      const el = document.getElementById('pf-lock-state37');
+      if (!el) return;
+      const user = getCurrentUser();
+      if (!user) { el.innerHTML = ''; return; }
+      el.innerHTML = '<p class="field-hint">' + (user.lockHash ? '🔒 Пароль-замок включён — при каждом входе сайт будет спрашивать его.' : '🔓 Пароль-замок выключен.') + '</p>';
+    }
+    function l37LockSet37(on) {
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); return; }
+      if (on) {
+        const pass = prompt('Придумай пароль-замок (от 4 до 8 символов, цифры или буквы):', '');
+        if (pass === null) return;
+        const t = String(pass);
+        if (t.length < 4 || t.length > 8) { toast('⚠️ Пароль-замок должен быть от 4 до 8 символов.', 'error'); return; }
+        pv2Set37(function (pv2, me) { me.lockHash = l37LockHash37(t); });
+        toast('🔒 Пароль-замок включён. Хорошо запомни его!', 'success');
+      } else {
+        if (!confirm('Отключить пароль-замок?')) return;
+        pv2Set37(function (pv2, me) { delete me.lockHash; });
+        toast('🔓 Пароль-замок отключён.', 'info');
+      }
+      try { sessionStorage.removeItem('l37Unlocked37_' + user.id); } catch (eSs37) {}
+      l37RenderLockState37();
+    }
+    function l37SecSave37() {
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); return; }
+      const qEl = document.getElementById('pf-secq');
+      const aEl = document.getElementById('pf-seca');
+      const q = qEl ? qEl.value.trim() : '';
+      const a = aEl ? aEl.value.trim() : '';
+      if (q.length < 3 || a.length < 2) { toast('⚠️ Впиши вопрос (от 3 символов) и ответ (от 2 символов).', 'error'); return; }
+      pv2Set37(function (pv2, me) { me.secQ = q; me.secHash = l37LockHash37(a.toLowerCase()); });
+      if (aEl) aEl.value = '';
+      toast('✅ Контрольный вопрос сохранён — он подтвердит владение аккаунтом у Админа.', 'success');
+    }
+    function l37LockShow37() {
+      try {
+        if (document.getElementById('l37-lock-overlay37')) return;
+        const user = getCurrentUser();
+        if (!user || !user.lockHash || l37LockUnlockedFlag37(user.id)) return;
+        const ov = document.createElement('div');
+        ov.id = 'l37-lock-overlay37';
+        ov.style.cssText = 'position:fixed; inset:0; z-index:2147483000; background:rgba(8,12,24,0.88); display:flex; align-items:center; justify-content:center; padding:16px;';
+        ov.innerHTML =
+          '<div style="background:#fff; color:#0f172a; max-width:380px; width:100%; border-radius:18px; padding:22px; box-shadow:0 24px 60px rgba(0,0,0,0.4); font-size:14px;">' +
+            '<h3 style="margin:0 0 6px; font-size:18px;">🔒 Аккаунт под замком</h3>' +
+            '<p class="field-hint" style="margin:0 0 12px;">Введи пароль-замок (4–8 символов), чтобы продолжить. Ты в аккаунте <b>' + esc(user.name) + '</b>.</p>' +
+            '<input type="password" id="l37-lock-pass37" maxlength="8" inputmode="text" autocomplete="off" placeholder="Пароль-замок" style="width:100%; box-sizing:border-box; font-size:16px; padding:10px 12px; border-radius:10px; border:1px solid #cbd5e1; margin-bottom:10px;">' +
+            '<button type="button" id="l37-lock-unlock37" class="btn btn-primary" style="width:100%;">🔓 Войти</button>' +
+            '<button type="button" id="l37-lock-report-btn37" class="btn btn-outline" style="width:100%; margin-top:8px;">🚨 Пожаловаться / Забыл или поставили чужой пароль</button>' +
+            '<div id="l37-lock-report37" style="display:none; margin-top:10px;"></div>' +
+            '<div id="l37-lock-msg37" style="margin-top:8px; min-height:18px; font-size:13px; color:#b91c1c;"></div>' +
+          '</div>';
+        document.body.appendChild(ov);
+        const inp = document.getElementById('l37-lock-pass37');
+        if (inp) {
+          inp.focus();
+          inp.addEventListener('keydown', function (ev) {
+            if (ev && ev.key === 'Enter') { ev.preventDefault(); l37LockTry37(); }
+          });
+        }
+      } catch (eLs37) {}
+    }
+    function l37LockTry37() {
+      try {
+        const user = getCurrentUser();
+        const inp = document.getElementById('l37-lock-pass37');
+        const msg = document.getElementById('l37-lock-msg37');
+        if (!user || !user.lockHash) { const ov0 = document.getElementById('l37-lock-overlay37'); if (ov0) ov0.remove(); return; }
+        const val = inp ? inp.value : '';
+        if (l37LockHash37(val) === user.lockHash) {
+          try { sessionStorage.setItem('l37Unlocked37_' + user.id, '1'); } catch (eSs37) {}
+          const ov = document.getElementById('l37-lock-overlay37');
+          if (ov) ov.remove();
+          toast('🔓 Замок снят — добро пожаловать!', 'success');
+        } else if (msg) {
+          msg.textContent = '❌ Неверный пароль-замок. Если это не твой замок — нажми «🚨 Пожаловаться».';
+          if (inp) inp.value = '';
+        }
+      } catch (eLt37) {}
+    }
+    function l37LockReportForm37() {
+      try {
+        const box = document.getElementById('l37-lock-report37');
+        if (!box) return;
+        const user = getCurrentUser();
+        const secQ = user && user.secQ ? user.secQ : '';
+        box.style.display = 'block';
+        box.innerHTML =
+          '<div class="field-hint" style="margin-bottom:6px;">Заявка уйдёт Супер-Админу: он проверит её и снимет чужой замок.</div>' +
+          (secQ
+            ? '<div class="field" style="margin-bottom:6px;"><label>❓ Контрольный вопрос: <b>' + esc(secQ) + '</b></label>' +
+              '<input type="text" id="l37-lock-sec-a37" maxlength="120" placeholder="Твой ответ" style="width:100%; box-sizing:border-box; font-size:16px; padding:9px 10px; border-radius:10px; border:1px solid #cbd5e1;"></div>'
+            : '<div class="field-hint" style="margin-bottom:6px;">⚠️ Контрольный вопрос не задан — Админ свяжется с классным руководителем для проверки.</div>') +
+          '<button type="button" id="l37-lock-report-send37" class="btn btn-primary btn-sm" style="width:100%;">📨 Отправить заявку Админу</button>';
+      } catch (eRf37) {}
+    }
+    function l37LockReportSend37() {
+      try {
+        const user = getCurrentUser();
+        const box = document.getElementById('l37-lock-report37');
+        const msg = document.getElementById('l37-lock-msg37');
+        if (!user || !box) return;
+        const ansEl = document.getElementById('l37-lock-sec-a37');
+        const secAnswer = ansEl ? ansEl.value.trim() : '';
+        const complaints = getList('complaints');
+        const dup = complaints.find(function (c) { return c && c.kind === 'lock' && c.status === 'open' && c.fromId === user.id; });
+        if (dup) {
+          if (msg) { msg.style.color = '#b45309'; msg.textContent = '📨 Твоя заявка уже у Админа — дождись снятия замка.'; }
+          return;
+        }
+        complaints.push({
+          id: makeId('compl'), kind: 'lock', targetId: user.id,
+          fromId: user.id, fromName: user.name, fromClass: classIdOf(user.grade, user.letter),
+          targetAuthorId: user.id, targetAuthorName: user.name,
+          targetTitle: 'Пароль-замок', targetQuote: user.secQ || '',
+          secQ: user.secQ || '', secAnswer: secAnswer,
+          reason: 'Забыл пароль-замок или его поставил кто-то чужой', ts: Date.now(), status: 'open'
+        });
+        dbSave('complaints', complaints);
+        try { if (typeof updateComplaintsBadge37 === 'function') updateComplaintsBadge37(); } catch (eUb37) {}
+        if (msg) { msg.style.color = '#047857'; msg.textContent = '✅ Заявка отправлена! Супер-Админ рассмотрит её и снимет замок.'; }
+        const btn = document.getElementById('l37-lock-report-send37');
+        if (btn) { btn.disabled = true; btn.textContent = '📨 Заявка отправлена'; }
+      } catch (eLr37) {}
+    }
+    /* ---- Module 3: vanishing messages (TTL) ---- */
+    const L37_TTL_STEPS37 = [
+      { id: 0, ms: 0, label: '⏳ Таймер сообщений: выключен' },
+      { id: 1, ms: 3600000, label: '⏳ Таймер сообщений: 1 час' },
+      { id: 24, ms: 86400000, label: '⏳ Таймер сообщений: 24 часа' },
+      { id: 168, ms: 604800000, label: '⏳ Таймер сообщений: 7 дней' }
+    ];
+    function l37DmTtlKey37(uid, partner) { return 'dm_ttl_' + String(uid || '') + '_' + String(partner || ''); }
+    function l37CycleDmTtl37() {
+      try {
+        const user = getCurrentUser();
+        if (!user || !currentDmPartner) { toast('Сначала открой диалог — потом включай таймер.', 'info'); return; }
+        const k = l37DmTtlKey37(user.id, currentDmPartner);
+        const cur = Number(polishLsGet(k, 0)) || 0;
+        let idx = -1;
+        L37_TTL_STEPS37.forEach(function (s, i) { if (s.id === cur) idx = i; });
+        const next = L37_TTL_STEPS37[(idx + 1) % L37_TTL_STEPS37.length] || L37_TTL_STEPS37[0];
+        polishLsSet(k, next.id);
+        const pk = 'dm_ttl_partners_' + user.id;
+        const partners = polishLsGet(pk, []);
+        if (Array.isArray(partners) && partners.indexOf(currentDmPartner) === -1) { partners.push(currentDmPartner); polishLsSet(pk, partners); }
+        toast(next.label + (next.ms ? ' — старые сообщения будут исчезать.' : ' — сообщения больше не удаляются.'), 'success');
+        toggleDmMenu37(false);
+      } catch (eTt37) {}
+    }
+    function l37PruneDmTtl37() {
+      try {
+        const user = getCurrentUser();
+        if (!user) return;
+        const partners = polishLsGet('dm_ttl_partners_' + user.id, []);
+        if (!Array.isArray(partners) || !partners.length) return;
+        const now = Date.now();
+        let touched = false;
+        partners.forEach(function (p) {
+          const ttlMs = Number(polishLsGet(l37DmTtlKey37(user.id, p), 0)) || 0;
+          if (!ttlMs) return;
+          const msgs = getDmMsgs(user.id, p);
+          const kept = msgs.filter(function (m) { return m && now - (m.ts || 0) < ttlMs; });
+          if (kept.length !== msgs.length) {
+            saveDmMsgs(user.id, p, kept);
+            const key = dmKey(user.id, p);
+            dbSave('dms', getList('dms').filter(function (m) { return !(m && m.key === key && now - (m.ts || 0) >= ttlMs); }));
+            touched = true;
+            if (currentDmPartner === p) { try { renderDmMessages(); } catch (eR37) {} }
+          }
+        });
+        if (touched) { try { renderDms(); } catch (eR237) {} }
+      } catch (ePr37) {}
+    }
+
+    /* ---- Module 3: DM trash (24h) ---- */
+    function l37DmTrashGet37(uid) {
+      const arr = polishLsGet('dm_trash_' + String(uid || ''), []);
+      return Array.isArray(arr) ? arr : [];
+    }
+    function l37DmTrashPush37(uid, partnerId, msgs) {
+      try {
+        if (!uid || !partnerId || !Array.isArray(msgs) || !msgs.length) return;
+        const now = Date.now();
+        const arr = l37DmTrashGet37(uid).filter(function (t) { return t && now - (t.ts || 0) < 86400000; });
+        arr.push({ partner: partnerId, msgs: msgs.slice(0, 400), ts: now });
+        polishLsSet('dm_trash_' + uid, arr.slice(-20));
+      } catch (eTp37) {}
+    }
+    function l37OpenDmTrash37() {
+      try {
+        const user = getCurrentUser();
+        if (!user) { openModal('modal-login'); return; }
+        const old = document.getElementById('l37-trash-overlay37');
+        if (old) old.remove();
+        const now = Date.now();
+        const arr = l37DmTrashGet37(user.id).filter(function (t) { return t && now - (t.ts || 0) < 86400000; });
+        polishLsSet('dm_trash_' + user.id, arr);
+        const ov = document.createElement('div');
+        ov.id = 'l37-trash-overlay37';
+        ov.style.cssText = 'position:fixed; inset:0; z-index:2147482000; background:rgba(8,12,24,0.6); display:flex; align-items:center; justify-content:center; padding:16px;';
+        ov.innerHTML =
+          '<div style="background:#fff; color:#0f172a; max-width:480px; width:100%; max-height:80vh; overflow:auto; border-radius:18px; padding:20px; box-shadow:0 24px 60px rgba(0,0,0,0.35); font-size:14px;">' +
+            '<h3 style="margin:0 0 10px; font-size:18px;">🗑️ Корзина чатов (восстановление за 24 ч)</h3>' +
+            (arr.length
+              ? arr.map(function (t, i) {
+                  const pu = getUserById(t.partner);
+                  return '<div class="friend-req-row">' +
+                    '<div style="min-width:0; flex:1;"><b>' + esc(pu ? pu.name : 'Удалённый чат') + '</b>' +
+                    '<div class="field-hint">' + (Array.isArray(t.msgs) ? t.msgs.length : 0) + ' сообщ. · ' + fmtDateTime(t.ts) + '</div></div>' +
+                    '<button type="button" class="btn btn-primary btn-sm" data-trash-restore="' + i + '">♻️ Восстановить</button>' +
+                  '</div>';
+                }).join('')
+              : '<p class="empty-line">Корзина пуста — удалённые за последние 24 часа чаты появятся здесь.</p>') +
+            '<button type="button" id="l37-trash-close37" class="btn btn-ghost btn-sm" style="width:100%; margin-top:10px;">✖ Закрыть</button>' +
+          '</div>';
+        document.body.appendChild(ov);
+        toggleDmMenu37(false);
+      } catch (eOt37) {}
+    }
+    function l37RestoreDmTrash37(i) {
+      try {
+        const user = getCurrentUser();
+        if (!user) return;
+        const arr = l37DmTrashGet37(user.id);
+        const entry = arr[Number(i)];
+        if (!entry || !entry.partner) return;
+        const fresh = getDmMsgs(user.id, entry.partner);
+        const have = {};
+        fresh.forEach(function (m) { if (m && m.id) have[m.id] = 1; });
+        const add = (Array.isArray(entry.msgs) ? entry.msgs : []).filter(function (m) { return m && m.id && !have[m.id]; });
+        const merged = fresh.concat(add).sort(function (a, b) { return (a.ts || 0) - (b.ts || 0); });
+        saveDmMsgs(user.id, entry.partner, merged);
+        const next = arr.filter(function (t, j) { return j !== Number(i); });
+        polishLsSet('dm_trash_' + user.id, next);
+        const ov = document.getElementById('l37-trash-overlay37');
+        if (ov) ov.remove();
+        try { renderDms(); } catch (eRd37) {}
+        toast('♻️ Чат восстановлен: ' + (add.length ? '+' + add.length + ' сообщ.' : 'без изменений'), 'success');
+      } catch (eRr37) {}
+    }
+    function l37CleanupEmptyDms37() {
+      try {
+        const user = getCurrentUser();
+        if (!user) { openModal('modal-login'); return; }
+        const arch = getArchived(user.id);
+        const partners = {};
+        getList('dms').forEach(function (m) {
+          if (!m || !m.key) return;
+          const ids = m.key.split('|');
+          if (ids.length !== 2) return;
+          if (ids[0] === user.id) partners[ids[1]] = 1;
+          if (ids[1] === user.id) partners[ids[0]] = 1;
+        });
+        const idx = dbLoad('dm_index', {});
+        const meLow = String(user.id).toLowerCase();
+        if (idx && typeof idx === 'object' && !Array.isArray(idx) && Array.isArray(idx[user.id])) {
+          idx[user.id].forEach(function (ck) {
+            const m = String(ck || '').replace(/^dm__/, '').split('_');
+            if (m.length !== 2) return;
+            const other = m[0] === meLow ? m[1] : m[0];
+            if (other && other !== meLow) partners[other] = 1;
+          });
+        }
+        let added = 0;
+        Object.keys(partners).forEach(function (p) {
+          const pu = getUserById(p) || getUsers().find(function (u) { return String(u.id).toLowerCase() === p; });
+          const pid = pu ? pu.id : p;
+          if (getDmMsgs(user.id, pid).length === 0 && arch.indexOf(pid) === -1) { arch.push(pid); added++; }
+        });
+        setArchived(user.id, arch);
+        try { renderDms(); } catch (eRd37) {}
+        toggleDmMenu37(false);
+        toast(added ? '🧹 Пустых чатов убрано в архив: ' + added + '. Вернуть можно в архиве.' : '🧹 Пустых чатов не найдено.', 'info');
+      } catch (eCl37) {}
+    }
+
+    /* ---- Module 4: admin actions on complaints ---- */
+    function l37AdminUnlockLock37(uid) {
+      try {
+        const me = getCurrentUser();
+        if (!me || !l37IsAdmin37(me)) { toast('🔑 Доступно только администрации Лицея №37.', 'error'); return; }
+        const users = getUsers();
+        const u = users.find(function (x) { return x.id === uid; });
+        if (!u) { toast('Пользователь не найден.', 'error'); return; }
+        delete u.lockHash;
+        saveUsers(users);
+        try { adminLogAction('lock_reset', '🔑 Снят пароль-замок с аккаунта ' + (u.name || uid) + ' по заявке из Центра жалоб', null); } catch (eAl37) {}
+        try {
+          const complaints = getList('complaints');
+          let closed = false;
+          complaints.forEach(function (c) { if (c && c.kind === 'lock' && c.status === 'open' && (c.targetId === uid || c.fromId === uid)) { c.status = 'resolved_ok'; closed = true; } });
+          if (closed) dbSave('complaints', complaints);
+        } catch (eCc37) {}
+        toast('🔑 Пароль-замок снят с аккаунта ' + (u.name || '') + '.', 'success');
+        try { renderAdminComplaints(); } catch (eRa37) {}
+      } catch (eAu37) {}
+    }
+    function l37AdminBanUser37(uid) {
+      try {
+        const me = getCurrentUser();
+        if (!me || !l37IsAdmin37(me)) { toast('🚫 Доступно только администрации Лицея №37.', 'error'); return; }
+        const users = getUsers();
+        const u = users.find(function (x) { return x.id === uid; });
+        if (!u) { toast('Пользователь не найден.', 'error'); return; }
+        u.suspended37 = true;
+        saveUsers(users);
+        try { adminLogAction('ban', '🚫 Заблокирован нарушитель ' + (u.name || uid) + ' по жалобе', null); } catch (eAl237) {}
+        toast('🚫 Нарушитель ' + (u.name || '') + ' заблокирован.', 'success');
+        try { renderAdminComplaints(); } catch (eRa237) {}
+      } catch (eAb37) {}
+    }
+
+    /* ---- Delegated handlers of the ecosystem ---- */
+    document.addEventListener('click', function (ePvClick37) {
+      try {
+        const e = ePvClick37;
+        const frd = e.target.closest('[data-frd-act]');
+        if (frd) {
+          const parts = String(frd.dataset.frdAct).split(':');
+          handleFriendAction37(parts[0], parts.slice(1).join(':'));
+          l37RenderFriendsTab37();
+          return;
+        }
+        const frdDm = e.target.closest('[data-frd-dm]');
+        if (frdDm) { openDm(frdDm.dataset.frdDm); return; }
+        const wallAdd = e.target.closest('[data-pv2-walladd]');
+        if (wallAdd) {
+          pv2Set37(function (pv2) {
+            pv2.wallAllow = Array.isArray(pv2.wallAllow) ? pv2.wallAllow : [];
+            if (pv2.wallAllow.indexOf(wallAdd.dataset.pv2Walladd) === -1) pv2.wallAllow.push(wallAdd.dataset.pv2Walladd);
+          });
+          l37RenderWallAllowList37('');
+          return;
+        }
+        const wallUser = e.target.closest('[data-pv2-walluser]');
+        if (wallUser) {
+          pv2Set37(function (pv2) {
+            pv2.wallAllow = (Array.isArray(pv2.wallAllow) ? pv2.wallAllow : []).filter(function (x) { return x !== wallUser.dataset.pv2Walluser; });
+          });
+          l37RenderWallAllowList37('');
+          return;
+        }
+        const multi = e.target.closest('[data-pv2-multi]');
+        if (multi) {
+          const key = multi.dataset.pv2Multi, val = multi.dataset.val;
+          pv2Set37(function (pv2) {
+            let arr = Array.isArray(pv2[key]) ? pv2[key].slice() : ['all'];
+            if (val === 'none') arr = ['none'];
+            else {
+              arr = arr.filter(function (x) { return x !== 'none'; });
+              const at = arr.indexOf(val);
+              if (at === -1) arr.push(val);
+              else if (arr.length > 1) arr.splice(at, 1);
+            }
+            if (!arr.length) arr = ['all'];
+            pv2[key] = arr;
+          });
+          l37RenderPrivacy2Card37();
+          return;
+        }
+        const tag = e.target.closest('[data-pv2-tag]');
+        if (tag) {
+          const val = tag.dataset.pv2Tag;
+          pv2Set37(function (pv2) { pv2.tagWho = val; });
+          l37RenderPrivacy2Card37();
+          return;
+        }
+        const wall = e.target.closest('[data-pv2-wall]');
+        if (wall) {
+          const val = wall.dataset.pv2Wall;
+          pv2Set37(function (pv2) { pv2.wallMode = val; });
+          l37RenderPrivacy2Card37();
+          return;
+        }
+        const cmtRep = e.target.closest('[data-cmt-report]');
+        if (cmtRep) { openReportModal37({ kind: 'comment', id: cmtRep.dataset.cmtReport }); return; }
+        const mpcRep = e.target.closest('[data-mpc-report]');
+        if (mpcRep) { openReportModal37({ kind: 'user', id: mpcRep.dataset.mpcReport }); return; }
+        const complUnlock = e.target.closest('[data-compl-unlock]');
+        if (complUnlock) { l37AdminUnlockLock37(complUnlock.dataset.complUnlock); return; }
+        const complBan = e.target.closest('[data-compl-ban]');
+        if (complBan) {
+          if (confirm('🚫 Заблокировать нарушителя?')) l37AdminBanUser37(complBan.dataset.complBan);
+          return;
+        }
+        if (e.target.closest('#dm-menu-ttl')) { l37CycleDmTtl37(); return; }
+        if (e.target.closest('#dm-menu-cleanup')) { l37CleanupEmptyDms37(); return; }
+        if (e.target.closest('#dm-menu-trash')) { l37OpenDmTrash37(); return; }
+        if (e.target.closest('#l37-trash-close37')) {
+          const ovT = document.getElementById('l37-trash-overlay37');
+          if (ovT) ovT.remove();
+          return;
+        }
+        const trashRestore = e.target.closest('[data-trash-restore]');
+        if (trashRestore) { l37RestoreDmTrash37(Number(trashRestore.dataset.trashRestore)); return; }
+        if (e.target.closest('#pf-lock-set')) { l37LockSet37(true); return; }
+        if (e.target.closest('#pf-lock-remove')) { l37LockSet37(false); return; }
+        if (e.target.closest('#pf-sec-save')) { l37SecSave37(); return; }
+        if (e.target.closest('#l37-lock-unlock37')) { l37LockTry37(); return; }
+        if (e.target.closest('#l37-lock-report-btn37')) { l37LockReportForm37(); return; }
+        if (e.target.closest('#l37-lock-report-send37')) { l37LockReportSend37(); return; }
+      } catch (ePvC37) {}
+    });
+    document.addEventListener('change', function (ePvCh37) {
+      try {
+        const e = ePvCh37;
+        const pair = L37_PV2_CHECKS37.find(function (p) { return e.target && e.target.id === p[0]; });
+        if (pair) {
+          const on = e.target.checked;
+          pv2Set37(function (pv2) { pv2[pair[1]] = on; });
+          toast(on ? '✅ Настройка приватности включена.' : 'ℹ️ Настройка приватности выключена.', 'info');
+          return;
+        }
+        if (e.target && (e.target.id === 'pv2-dnd-from' || e.target.id === 'pv2-dnd-to')) {
+          const fEl = document.getElementById('pv2-dnd-from');
+          const tEl = document.getElementById('pv2-dnd-to');
+          pv2Set37(function (pv2) { pv2.dndFrom = fEl ? fEl.value : ''; pv2.dndTo = tEl ? tEl.value : ''; });
+          const meNow = getCurrentUser();
+          toast(l37DndActive37(meNow) ? '🌙 Тихие часы идут — звуки и уведомления выключены.' : '🌙 Тихие часы сохранены.', 'info');
+        }
+      } catch (ePvCh237) {}
+    });
+    document.addEventListener('input', function (ePvIn37) {
+      try {
+        if (ePvIn37.target && ePvIn37.target.id === 'pv2-wall-search') {
+          l37RenderWallAllowList37(ePvIn37.target.value);
+        }
+      } catch (ePvIn237) {}
+    });
+
+    /* ---- Ecosystem init ---- */
+    try { setInterval(function () { try { l37PruneDmTtl37(); } catch (ePt37) {} }, 60000); } catch (eIn37) {}
+    function l37LockArm37() {
+      try {
+        const user = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+        if (!user || !user.lockHash) return;
+        if (l37LockUnlockedFlag37(user.id)) return;
+        l37LockShow37();
+      } catch (eLk37) {}
+    }
+    try { setTimeout(function () { try { l37LockArm37(); } catch (eLa37) {} }, 1500); } catch (eIn237) {}
+    try {
+      if (typeof window !== 'undefined') {
+        window.pv2Get37 = pv2Get37;
+        window.pv2On37 = pv2On37;
+        window.pv2Set37 = pv2Set37;
+        window.l37LockArm37 = l37LockArm37;
+        window.l37LockShow37 = l37LockShow37;
+        window.l37LockTry37 = l37LockTry37;
+        window.l37LockHash37 = l37LockHash37;
+        window.l37RenderProfileExtras37 = l37RenderProfileExtras37;
+        window.l37RenderFriendsTab37 = l37RenderFriendsTab37;
+        window.l37RenderPrivacy2Card37 = l37RenderPrivacy2Card37;
+        window.l37WallVisible37 = l37WallVisible37;
+        window.l37CanComment37 = l37CanComment37;
+        window.l37CanBeTagged37 = l37CanBeTagged37;
+        window.l37NoFwd37 = l37NoFwd37;
+        window.l37ShowClass37 = l37ShowClass37;
+        window.l37ShowPoints37 = l37ShowPoints37;
+        window.l37DndActive37 = l37DndActive37;
+        window.l37MaskForChat37 = l37MaskForChat37;
+        window.l37CleanBlock37 = l37CleanBlock37;
+        window.l37MaskText37 = l37MaskText37;
+        window.l37DmTrashPush37 = l37DmTrashPush37;
+        window.l37OpenDmTrash37 = l37OpenDmTrash37;
+        window.l37RestoreDmTrash37 = l37RestoreDmTrash37;
+        window.l37CleanupEmptyDms37 = l37CleanupEmptyDms37;
+        window.l37CycleDmTtl37 = l37CycleDmTtl37;
+        window.l37PruneDmTtl37 = l37PruneDmTtl37;
+        window.l37AdminUnlockLock37 = l37AdminUnlockLock37;
+        window.l37AdminBanUser37 = l37AdminBanUser37;
+        window.l37LockReportSend37 = l37LockReportSend37;
+        window.l37LockReportForm37 = l37LockReportForm37;
+      }
+    } catch (eExpPe37) {}
 
     window.__lp37Ready = true;
 
