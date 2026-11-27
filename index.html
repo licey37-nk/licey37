@@ -3290,6 +3290,111 @@
       flex-wrap: wrap;
       margin-top: 10px;
     }
+
+    /* ==== Блок 0-3: стили новых модулей ==== */
+    #adm-widget-fab {
+      position: fixed; right: 20px; bottom: 88px; z-index: 1200;
+      padding: 12px 18px; border: none; border-radius: 999px;
+      background: linear-gradient(135deg, #1d4ed8, #059669); color: #fff;
+      font-weight: 700; font-family: inherit; font-size: 0.95rem;
+      box-shadow: 0 12px 30px rgba(29, 78, 216, 0.35); cursor: pointer;
+      animation: fabPop37 0.25s ease;
+    }
+    #adm-widget-fab:active { transform: scale(0.96); }
+    @keyframes fabPop37 { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: none;} }
+    .adm-badge-red {
+      display: inline-block; min-width: 18px; padding: 1px 6px; margin-left: 4px;
+      border-radius: 999px; background: #dc2626; color: #fff; font-size: 0.72rem; font-weight: 800;
+    }
+    .complaint-card { border-left: 4px solid #dc2626; }
+    .complaint-quote {
+      background: var(--bg-soft, #f1f5f9); border-radius: 10px; padding: 8px 12px;
+      margin: 8px 0; font-size: 0.92rem; word-break: break-word; white-space: pre-wrap;
+    }
+    .cond-badge, .place-badge, .stock-badge, .views-badge, .urgent-badge, .bargain-badge, .reserved-badge {
+      display: inline-block; padding: 2px 10px; border-radius: 999px;
+      font-size: 0.75rem; font-weight: 700; margin: 2px 4px 2px 0;
+    }
+    .cond-badge { background: #e0e7ff; color: #3730a3; }
+    .place-badge { background: #fef3c7; color: #92400e; }
+    .stock-badge { background: #dbeafe; color: #1e40af; }
+    .views-badge { background: #f1f5f9; color: #475569; }
+    .urgent-badge { background: #fee2e2; color: #b91c1c; }
+    .bargain-badge { background: #dcfce7; color: #15803d; }
+    .reserved-badge { background: #fde68a; color: #92400e; }
+    .fav-btn { background: none; border: none; font-size: 1.15rem; cursor: pointer; padding: 2px 6px; }
+    .fav-btn.on { filter: drop-shadow(0 0 4px rgba(225, 29, 72, 0.6)); }
+    .seller-rating { font-size: 0.8rem; color: #b45309; font-weight: 700; }
+    .star-row { font-size: 1.4rem; letter-spacing: 4px; cursor: pointer; user-select: none; }
+    .star-row span { transition: transform 0.15s; }
+    .star-row span:hover { transform: scale(1.25); }
+    .teacher-badge {
+      display: inline-block; padding: 2px 10px; border-radius: 999px;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #fff;
+      font-size: 0.72rem; font-weight: 800; margin-left: 6px; vertical-align: middle;
+    }
+    .homeroom-label { font-size: 0.75rem; color: #6d28d9; font-weight: 700; }
+    .starosta-badge {
+      display: inline-block; padding: 2px 10px; border-radius: 999px;
+      background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff;
+      font-size: 0.72rem; font-weight: 800; margin-left: 6px; vertical-align: middle;
+    }
+    .starosta-name-glow { text-shadow: 0 0 8px rgba(245, 158, 11, 0.55); }
+    .council-row {
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      padding: 10px 0; border-bottom: 1px dashed var(--border, #e2e8f0); flex-wrap: wrap;
+    }
+    .council-row:last-child { border-bottom: none; }
+    .friend-req-row {
+      display: flex; align-items: center; gap: 10px; padding: 8px 0;
+      border-bottom: 1px dashed var(--border, #e2e8f0); flex-wrap: wrap;
+    }
+    .itags-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    .itag-chip {
+      padding: 3px 12px; border-radius: 999px; background: var(--accent-soft, #e0e7ff);
+      color: var(--accent, #1d4ed8); font-size: 0.78rem; font-weight: 700; cursor: pointer; border: 2px solid transparent;
+    }
+    .itag-chip.selected { border-color: var(--accent, #1d4ed8); }
+    .hashtag {
+      background: none; border: none; padding: 0; font: inherit; color: #2563eb;
+      cursor: pointer; font-weight: 700;
+    }
+    .hashtag:hover { text-decoration: underline; }
+    .feed-tag-filter {
+      display: flex; align-items: center; gap: 8px; padding: 8px 14px; margin-bottom: 12px;
+      border-radius: 12px; background: var(--accent-soft, #e0e7ff); color: var(--accent, #1d4ed8); font-weight: 700;
+    }
+    .mention-pop {
+      position: absolute; z-index: 60; background: #fff; border-radius: 12px;
+      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.18); max-height: 200px; overflow: auto; min-width: 200px;
+    }
+    .mention-pop div { padding: 8px 12px; cursor: pointer; font-size: 0.9rem; }
+    .mention-pop div:hover { background: #f1f5f9; }
+    .dm-date-pill {
+      text-align: center; margin: 10px 0;
+    }
+    .dm-date-pill span {
+      display: inline-block; padding: 3px 14px; border-radius: 999px;
+      background: rgba(100, 116, 139, 0.15); color: #475569; font-size: 0.75rem; font-weight: 700;
+    }
+    .dm-tick { font-size: 0.75rem; margin-left: 4px; color: #94a3b8; }
+    .dm-tick.read { color: #2563eb; font-weight: 700; }
+    .dm-draft-hint { color: #dc2626; font-size: 0.8rem; font-weight: 700; }
+    .rules-search { width: 100%; margin-bottom: 12px; }
+    .rules-list { max-height: 55vh; overflow: auto; padding-right: 6px; }
+    .rules-section-title {
+      font-weight: 800; margin: 14px 0 6px; padding: 8px 14px; border-radius: 10px;
+      background: linear-gradient(135deg, #1d4ed8, #059669); color: #fff;
+    }
+    .rule-item { padding: 7px 4px; border-bottom: 1px dashed var(--border, #e2e8f0); font-size: 0.92rem; line-height: 1.45; }
+    .rule-item b { color: var(--accent, #1d4ed8); }
+    .rules-hidden { display: none !important; }
+    .role-toggle {
+      display: flex; gap: 8px; margin-bottom: 4px;
+    }
+    .role-toggle .btn { flex: 1; }
+    .review-row { padding: 8px 0; border-bottom: 1px dashed var(--border, #e2e8f0); }
+    .notif-line { padding: 8px 4px; border-bottom: 1px dashed var(--border, #e2e8f0); font-size: 0.9rem; }
   </style>
 </head>
 <body class="theme-light">
@@ -3536,6 +3641,8 @@
 
         <div id="pet-top" style="margin-bottom:20px;"></div>
 
+        <div class="card" id="council-card" style="margin-bottom:20px;"></div>
+
         <div class="card" style="margin-bottom:20px;">
           <h3 class="info-title" data-editable="hw-title">📌 Доска дедлайнов и домашки</h3>
           <div class="hw-form">
@@ -3602,7 +3709,16 @@
           <button type="button" class="cat-btn" data-cat="lost">🆘 Бюро находок</button>
           <button type="button" class="cat-btn" data-cat="other">🎲 Другое</button>
         </div>
-        <button class="btn btn-primary" id="new-listing-btn">➕ Подать объявление</button>
+        <div class="field-row" style="align-items:center;">
+          <select id="market-sort" class="input-field" style="max-width:230px;">
+            <option value="new">⬇️ Сначала новые</option>
+            <option value="cheap">💸 Сначала дешёвые</option>
+            <option value="free">🎁 Сначала бесплатные</option>
+            <option value="popular">🔥 По популярности (просмотрам)</option>
+          </select>
+          <button type="button" class="btn btn-ghost btn-sm" id="market-fav-btn">❤️ Избранное (<span id="market-fav-count">0</span>)</button>
+          <button class="btn btn-primary" id="new-listing-btn">➕ Подать объявление</button>
+        </div>
       </div>
 
       <div class="grid" id="market-grid"></div>
@@ -3625,7 +3741,9 @@
         <button type="button" class="subtab" data-sub="help">🤝 Взаимопомощь</button>
       </div>
 
+      <div class="card" id="friend-req-card" style="margin-bottom:16px;"></div>
       <div class="sub-panel active" id="sub-feed">
+        <div class="card feed-tag-filter" id="feed-tag-filter-bar" style="display:none; margin-bottom:12px;"></div>
         <div class="card post-card" id="composer-card" style="display:none;">
           <textarea id="post-text" class="textarea-field" placeholder="Что нового в жизни Лицея №37?" maxlength="2000"></textarea>
           <input type="file" id="post-photo" accept="image/*" hidden>
@@ -3788,6 +3906,13 @@
       <div class="form-error" id="login-error"></div>
       <form id="login-form">
         <div class="field">
+          <label>Я вхожу как</label>
+          <div class="role-toggle">
+            <button type="button" class="btn btn-primary" id="login-role-student">🎒 Я ученик</button>
+            <button type="button" class="btn btn-ghost" id="login-role-teacher">👩‍🏫 Я учитель</button>
+          </div>
+        </div>
+        <div class="field">
           <label for="login-name">Имя и фамилия или никнейм</label>
           <input type="text" id="login-name" placeholder="Например: Иван Петров" autocomplete="username" required>
         </div>
@@ -3819,11 +3944,18 @@
       <div class="form-error" id="register-error"></div>
       <form id="register-form">
         <div class="field">
-          <label for="reg-name">Имя и фамилия / никнейм</label>
-          <input type="text" id="reg-name" placeholder="Например: Айгуль Салихова" maxlength="32" required>
-          <div class="field-hint">Должно быть уникальным — по нему ты будешь входить.</div>
+          <label>Я регистрируюсь как</label>
+          <div class="role-toggle">
+            <button type="button" class="btn btn-primary" id="reg-role-student">🎒 Я ученик</button>
+            <button type="button" class="btn btn-ghost" id="reg-role-teacher">👩‍🏫 Я учитель</button>
+          </div>
         </div>
         <div class="field">
+          <label for="reg-name" id="reg-name-label">Имя и фамилия / никнейм</label>
+          <input type="text" id="reg-name" placeholder="Например: Айгуль Салихова" maxlength="48" required>
+          <div class="field-hint" id="reg-name-hint">Должно быть уникальным — по нему ты будешь входить.</div>
+        </div>
+        <div class="field" id="reg-class-field">
           <label>Класс</label>
           <div class="field-row">
             <select id="reg-grade" required>
@@ -3835,8 +3967,16 @@
           </div>
           <div class="field-hint">Цифра 1–11, буква строго А, Б, В, Г или Д.</div>
         </div>
+        <div class="field" id="reg-homeroom-field" style="display:none;">
+          <label>Классное руководство</label>
+          <div class="field-row">
+            <select id="reg-hr-grade"></select>
+            <select id="reg-hr-letter"></select>
+          </div>
+          <label class="toggle-row" style="margin-top:8px;"><input type="checkbox" id="reg-no-homeroom"> Я не классный руководитель (учитель-предметник)</label>
+        </div>
         <div class="field">
-          <label for="reg-password">Пароль</label>
+          <label for="reg-password" id="reg-pass-label">Пароль</label>
           <input type="password" id="reg-password" placeholder="Минимум 4 символа" autocomplete="new-password" required>
         </div>
         <div class="field">
@@ -3851,6 +3991,7 @@
             <span id="avatar-upload-text">📷 Загрузить своё фото (сожмём до 150×150)</span>
           </label>
         </div>
+        <a id="rules-open-link" style="display:block; text-align:center; margin-bottom:10px; cursor:pointer; font-weight:700; color:var(--accent, #1d4ed8);">📜 Правила сообщества МБОУ «Лицей №37» (100 пунктов)</a>
         <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться · 💎 +50</button>
       </form>
       <div class="modal-footer-link">
@@ -3925,6 +4066,37 @@
             <button type="button" class="deal-btn" data-deal="trade">🔄 Обмен</button>
           </div>
           <input type="number" id="li-price" min="0" placeholder="Цена в рублях" style="margin-top:8px;">
+        </div>
+        <div class="field">
+          <label for="li-cond">Состояние вещи</label>
+          <select id="li-cond">
+            <option value="new">✨ Новое</option>
+            <option value="likenew">👍 Как новое</option>
+            <option value="good">🧺 Хорошее</option>
+            <option value="worn">👕 Есть следы носки</option>
+            <option value="other">✍️ Другое (указать своё)</option>
+          </select>
+          <input type="text" id="li-cond-other" placeholder="Опиши своё состояние вещи" maxlength="40" style="display:none; margin-top:8px;">
+        </div>
+        <div class="field">
+          <label for="li-place">📍 Место встречи в Лицее №37</label>
+          <select id="li-place">
+            <option value="hall">🏛 Холл 1 этажа у охраны</option>
+            <option value="canteen">🌯 Возле столовой</option>
+            <option value="library">📚 Библиотека</option>
+            <option value="physics">🔬 2 этаж у кабинета физики</option>
+            <option value="gym">⚽ Спортзал</option>
+            <option value="other">📍 Другое место</option>
+          </select>
+          <input type="text" id="li-place-other" placeholder="Укажи своё место встречи" maxlength="40" style="display:none; margin-top:8px;">
+        </div>
+        <div class="field">
+          <label for="li-qty">🧮 Количество (шт.)</label>
+          <input type="number" id="li-qty" min="1" value="1">
+          <div class="field-row" style="margin-top:8px;">
+            <label class="toggle-row" style="margin:0;"><input type="checkbox" id="li-urgent"> 🔥 Срочно</label>
+            <label class="toggle-row" style="margin:0;"><input type="checkbox" id="li-bargain"> 🤝 Торг уместен</label>
+          </div>
         </div>
         <div class="field">
           <label for="li-desc">Описание</label>
@@ -4107,6 +4279,87 @@
   </div>
 
   <div id="widget-zone-float"></div>
+  <button id="adm-widget-fab" style="display:none;">➕ Добавить текстовый блок</button>
+
+  <!-- МОДАЛКА: ЖАЛОБА -->
+  <div class="modal" id="modal-report" aria-modal="true" role="dialog">
+    <div class="modal-content">
+      <button class="modal-close" data-close-modal="modal-report">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">🚫</div>
+        <h3>Пожаловаться</h3>
+        <p id="report-target-hint">Жалоба уйдёт администрации Лицея №37</p>
+      </div>
+      <div class="form-error" id="report-error"></div>
+      <form id="report-form">
+        <div class="field">
+          <label for="report-reason">Причина</label>
+          <select id="report-reason">
+            <option value="spam">Спам / шутка</option>
+            <option value="forbidden">Запрещённый предмет</option>
+            <option value="fraud">Обман</option>
+            <option value="insult">Оскорбления</option>
+            <option value="other">Другое</option>
+          </select>
+          <input type="text" id="report-reason-other" placeholder="Опиши причину своими словами" maxlength="120" style="display:none; margin-top:8px;">
+        </div>
+        <button type="submit" class="btn btn-danger btn-block">🚫 Отправить жалобу</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- МОДАЛКА: РЕПОСТ -->
+  <div class="modal" id="modal-repost" aria-modal="true" role="dialog">
+    <div class="modal-content">
+      <button class="modal-close" data-close-modal="modal-repost">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">↪️</div>
+        <h3>Поделиться постом</h3>
+        <p id="repost-hint"></p>
+      </div>
+      <textarea id="repost-comment" class="textarea-field" rows="2" maxlength="300" placeholder="Свой комментарий (необязательно)"></textarea>
+      <button type="button" class="btn btn-primary btn-block" id="repost-wall" style="margin-top:10px;">📝 Поделиться к себе на стену</button>
+      <div class="modal-divider">или</div>
+      <div id="repost-friends"></div>
+    </div>
+  </div>
+
+  <!-- МОДАЛКА: ОТЗЫВ ПРОДАВЦУ -->
+  <div class="modal" id="modal-review" aria-modal="true" role="dialog">
+    <div class="modal-content">
+      <button class="modal-close" data-close-modal="modal-review">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">⭐</div>
+        <h3>Оценить продавца</h3>
+        <p id="review-hint"></p>
+      </div>
+      <div class="form-error" id="review-error"></div>
+      <form id="review-form">
+        <div class="field" style="text-align:center;">
+          <div class="star-row" id="review-stars"></div>
+        </div>
+        <div class="field">
+          <label for="review-text">Отзыв</label>
+          <textarea id="review-text" class="textarea-field" rows="3" maxlength="300" placeholder="Как прошла сделка?"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">⭐ Отправить отзыв</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- МОДАЛКА: 100 ПРАВИЛ СООБЩЕСТВА -->
+  <div class="modal" id="modal-rules" aria-modal="true" role="dialog">
+    <div class="modal-content" style="max-width:640px;">
+      <button class="modal-close" data-close-modal="modal-rules">✕</button>
+      <div class="modal-head">
+        <div class="modal-icon">📜</div>
+        <h3>Правила сообщества МБОУ «Лицей №37»</h3>
+        <p>100 пунктов · уважение, безопасность, учёба и честная Барахолка</p>
+      </div>
+      <input type="text" class="search-input rules-search" id="rules-search" placeholder="🔍 Поиск по правилам...">
+      <div class="rules-list" id="rules-list"></div>
+    </div>
+  </div>
 
   <div class="modal" id="modal-widget" aria-modal="true" role="dialog">
     <div class="modal-content" style="max-width:560px;">
@@ -4136,7 +4389,8 @@
       <button data-adm="analytics">📊 Аналитика</button>
       <button data-adm="backup">💾 Бэкап</button>
       <button data-adm="wires">🔌 Права (Провода)</button>
-      <button id="adm-widget-btn" style="display:none;">➕ Виджет</button>
+      <button data-adm="complaints">🚨 Жалобы<span class="adm-badge-red" id="adm-compl-badge" style="display:none;">0</span></button>
+      <button id="adm-widget-btn" style="display:none;">➕ Добавить текстовый блок</button>
       <button data-adm="pets">🐾 Талисманы</button>
       <button data-adm="classreset">🗑 Класс</button>
       <button data-adm="ticker">📰 Плашка</button>
@@ -4468,7 +4722,7 @@
     let offlineSyncTimer = null;
     let chatSyncBusy = false;
 
-    const CHAT_SYNC_KEYS = ['chat', 'pchat', 'dms', 'dmArchive', 'channels', 'posts', 'broadcasts'];
+    const CHAT_SYNC_KEYS = ['chat', 'pchat', 'dms', 'dmArchive', 'channels', 'posts', 'broadcasts', 'complaints', 'friends', 'notifications'];
 
     function chatSyncSnapshot() {
       let s = '';
@@ -4479,6 +4733,8 @@
     function refreshChatViews() {
       try {
         renderBroadcastBanner();
+        try { if (typeof updateComplaintsBadge37 === 'function') updateComplaintsBadge37(); } catch (eCB37) {}
+        try { if (typeof updateNotifBell37 === 'function') updateNotifBell37(); } catch (eNB37) {}
         if (panels.class.classList.contains('active')) renderClassTab();
         if (panels.social.classList.contains('active')) renderSocial();
         const dmModal = document.getElementById('modal-dm');
@@ -4500,7 +4756,7 @@
     }
 
     function liveSyncSnapshot() {
-      const keys = ['users', 'posts', 'channels', 'volunteers', 'chat', 'pchat', 'dms', 'homework', 'ideas', 'listings', 'compliments', 'capsule', 'pets', 'reaction', 'customScripts', 'shopCustomRewards', 'applications', 'adminLog', 'topTicker', 'bestLikes', 'broadcast', 'broadcasts', 'custom_text_widgets'];
+      const keys = ['users', 'posts', 'channels', 'volunteers', 'chat', 'pchat', 'dms', 'homework', 'ideas', 'listings', 'compliments', 'capsule', 'pets', 'reaction', 'customScripts', 'shopCustomRewards', 'applications', 'adminLog', 'topTicker', 'bestLikes', 'broadcast', 'broadcasts', 'custom_text_widgets', 'complaints', 'reviews', 'purchases', 'notifications', 'friends', 'bookmarks', 'council'];
       let s = '';
       keys.forEach(function (k) { s += (localStorage.getItem(LS_PREFIX + k) || '') + '|'; });
       return s;
@@ -4687,7 +4943,7 @@
       try {
         if (name === 'games') { fillComplimentTargets(); renderCompliments(); renderReactionRecords(); }
         if (name === 'profile') renderProfileTab();
-        if (name === 'class') renderClassTab();
+        if (name === 'class') { renderClassTab(); try { renderCouncil37(); } catch (eCn37) {} }
         if (name === 'market') renderMarket();
         if (name === 'social') renderSocial();
       } catch (eRender) { console.error('Ошибка отрисовки вкладки ' + name + ':', eRender); }
@@ -4880,6 +5136,7 @@
 
     function resetRegisterForm() {
       document.getElementById('register-form').reset();
+      try { setRegRole37('student'); } catch (eRr37) {}
       showFormError('register-error', null);
       pendingAvatar = null;
       document.querySelectorAll('.avatar-option').forEach(function (b) { b.classList.remove('selected'); });
@@ -4902,13 +5159,14 @@
         e.preventDefault();
         showFormError('register-error', null);
 
+        const isTeacher = regRole37 === 'teacher';
         const name = capitalizeName(document.getElementById('reg-name').value);
         const grade = document.getElementById('reg-grade').value;
         const letter = document.getElementById('reg-letter').value;
         const password = document.getElementById('reg-password').value;
         const password2 = document.getElementById('reg-password2').value;
 
-        if (name.length < 2 || name.length > 32) {
+        if (name.length < 2 || name.length > 48) {
           showFormError('register-error', 'Имя должно быть от 2 до 32 символов.');
           return;
         }
@@ -4916,12 +5174,35 @@
           showFormError('register-error', 'Имя может содержать только русские/латинские буквы, пробелы и дефис.');
           return;
         }
-        if (!isValidClass(grade, letter)) {
+        let userGrade37 = Number(grade);
+        let userLetter37 = String(letter).toUpperCase();
+        let homeroom37 = null;
+        if (isTeacher) {
+          if (name.trim().split(/\s+/).length !== 3) {
+            showFormError('register-error', 'Для учителя введи ФИО полностью — ровно 3 слова: Фамилия Имя Отчество.');
+            return;
+          }
+          const noHr37 = !!(document.getElementById('reg-no-homeroom') || {}).checked;
+          if (!noHr37) {
+            const hrG37 = document.getElementById('reg-hr-grade') ? document.getElementById('reg-hr-grade').value : '';
+            const hrL37 = document.getElementById('reg-hr-letter') ? document.getElementById('reg-hr-letter').value : '';
+            if (!isValidClass(hrG37, hrL37)) {
+              showFormError('register-error', 'Выбери класс руководства (1–11 и А–Д) или отметь «Я не классный руководитель».');
+              return;
+            }
+            homeroom37 = classIdOf(hrG37, hrL37);
+            userGrade37 = Number(hrG37);
+            userLetter37 = String(hrL37).toUpperCase();
+          } else {
+            userGrade37 = 0;
+            userLetter37 = '';
+          }
+        } else if (!isValidClass(grade, letter)) {
           showFormError('register-error', 'Выбери класс: цифра 1–11 и буква строго А, Б, В, Г или Д.');
           return;
         }
-        if (password.length < 4) {
-          showFormError('register-error', 'Пароль должен быть не короче 4 символов.');
+        if (password.length < (isTeacher ? 6 : 4)) {
+          showFormError('register-error', isTeacher ? 'Пароль учителя должен быть не короче 6 символов.' : 'Пароль должен быть не короче 4 символов.');
           return;
         }
         if (password !== password2) {
@@ -4949,8 +5230,10 @@
           const user = {
             id: 'u_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
             name: name,
-            grade: Number(grade),
-            letter: letter,
+            grade: userGrade37,
+            letter: userLetter37,
+            role: isTeacher ? 'teacher' : 'student',
+            homeroom: isTeacher ? homeroom37 : null,
             passwordHash: await hashPassword(password),
             avatar: pendingAvatar,
             points: START_POINTS,
@@ -5144,6 +5427,7 @@
               '<span class="user-class" style="font-size:0.9rem; padding:4px 12px;">' + esc(classIdOf(user.grade, user.letter)) + ' класс</span>' +
               '<span class="coming-badge" style="background:var(--accent-soft); color:var(--accent);">' + esc(displayStatus(user)) + '</span>' +
               (Number(user.streak || 0) > 0 ? '<span class="streak-badge" title="Дней подряд">🔥 ' + Number(user.streak) + '</span>' : '') +
+              roleBadges37(user, classIdOf(user.grade, user.letter)) +
             '</div>' +
             '<div class="user-points" style="font-size:1.15rem; margin-top:10px;">💎 ' + Number(user.points || 0) + ' баллов</div>' +
             (user.about ? '<p class="info-desc" style="margin-top:8px;">' + esc(user.about) + '</p>' : '') +
@@ -5162,6 +5446,8 @@
             '<div class="field"><label for="pf-about">О себе</label><textarea id="pf-about" class="textarea-field" maxlength="200" placeholder="Мои увлечения, любимые предметы...">' + esc(user.about || '') + '</textarea></div>' +
             '<div class="field"><label for="pf-mood">🎵 Статус-настроение (видно под ником и в чатах)</label><input type="text" id="pf-mood" maxlength="80" placeholder="Например: Готовлюсь к контрольной 💻" value="' + esc(user.mood || '') + '"></div>' +
             '<label class="toggle-row"><input type="checkbox" id="pf-hidestatus"' + (user.hideStatus ? ' checked' : '') + '> 🕵️ Скрывать статус «В сети» и «Печатает...» от других</label>' +
+            '<label class="toggle-row"><input type="checkbox" id="pf-hideread"' + (user.hideReadMarks ? ' checked' : '') + '> 🕵️ Скрывать отметку о прочтении (у других всегда остаётся 1 галочка ✓)</label>' +
+            '<div class="field"><label>🏷️ Теги интересов (до 3)</label><div class="itags-row" id="pf-itags"></div><p class="field-hint">Будут видны в профиле и в поиске одноклассников.</p></div>' +
             '<label class="toggle-row"><input type="checkbox" id="pf-vol"' + (user.volunteer ? ' checked' : '') + '> 🤝 Готов помогать с предметами в Банке взаимопомощи</label>' +
             '<button class="btn btn-primary btn-block" id="pf-save" style="margin-top:12px;">💾 Сохранить изменения</button>' +
           '</div>' +
@@ -5173,6 +5459,13 @@
                 }).join('') + '</div>'
               : '<p class="empty-line">Пока начислений не было — пройди викторину или отметь домашку!</p>') +
           '</div>' +
+        '</div>' +
+        '<div class="card" style="margin-top:20px;">' +
+          '<h3 class="info-title">🔖 Мои закладки</h3>' +
+          '<div id="pf-bookmarks"></div>' +
+          '<h3 class="info-title" style="margin-top:18px;">🛒 Мои покупки на Барахолке</h3>' +
+          '<p class="field-hint">Только покупатель может оставить продавцу отзв 1–5 ★.</p>' +
+          '<div id="pf-purchases"></div>' +
         '</div>' +
         '<div class="card" style="margin-top:20px;">' +
           '<h3 class="info-title" data-editable="shop-title">🎨 Магазин наград за баллы</h3>' +
@@ -5189,7 +5482,10 @@
       document.getElementById('pf-grade').value = String(user.grade);
       document.getElementById('pf-letter').value = user.letter;
       renderPfAvatars();
+      renderPfItags37();
       renderShop();
+      try { renderPfBookmarks37(); } catch (ePb37) {}
+      try { renderPfPurchases37(); } catch (ePp37) {}
     }
 
     const SHOP_ITEMS = [
@@ -5352,6 +5648,9 @@
       u.mood = moodVal.slice(0, 80);
       const hideVal = document.getElementById('pf-hidestatus');
       u.hideStatus = !!(hideVal && hideVal.checked);
+      const hideReadVal = document.getElementById('pf-hideread');
+      u.hideReadMarks = !!(hideReadVal && hideReadVal.checked);
+      u.itags = (Array.isArray(pfItagsDraft37) ? pfItagsDraft37 : (Array.isArray(u.itags) ? u.itags : [])).slice(0, 3);
       const vols = getList('volunteers');
       const vi = vols.findIndex(function (v) { return v.userId === u.id; });
       if (volunteer) {
@@ -5519,7 +5818,8 @@
     }
 
     function classIdOf(grade, letter) {
-      return String(grade) + String(letter).toUpperCase();
+      if (grade === null || grade === undefined || grade === '' || Number(grade) === 0) return '';
+      return String(grade) + String(letter || '').toUpperCase();
     }
 
     function addPointsToUser(userId, delta, reason) {
@@ -6453,14 +6753,23 @@
       if (!grid) return;
       const user = getCurrentUser();
       const q = marketQuery.trim().toLowerCase();
-      const items = getList('listings')
+      const userFavs = getUserFavs37(user && user.id);
+      const favCountEl = document.getElementById('market-fav-count');
+      if (favCountEl) favCountEl.textContent = String(userFavs.length);
+      const favBtnEl = document.getElementById('market-fav-btn');
+      if (favBtnEl) favBtnEl.classList.toggle('on', !!marketFavOnly37);
+      let items = getList('listings')
         .filter(function (l) { return l.active !== false; })
         .filter(function (l) { return marketCat === 'all' || l.cat === marketCat; })
         .filter(function (l) {
           if (!q) return true;
           return (l.title || '').toLowerCase().indexOf(q) !== -1 || (l.desc || '').toLowerCase().indexOf(q) !== -1;
-        })
-        .sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
+        });
+      if (marketFavOnly37) items = items.filter(function (l) { return userFavs.indexOf(l.id) !== -1; });
+      if (marketSort37 === 'cheap') items.sort(function (a, b) { return (a.deal === 'price' ? Number(a.price || 0) : -1) - (b.deal === 'price' ? Number(b.price || 0) : -1); });
+      else if (marketSort37 === 'free') items.sort(function (a, b) { return ((a.deal === 'free' ? 0 : 1) - (b.deal === 'free' ? 0 : 1)) || ((b.createdAt || 0) - (a.createdAt || 0)); });
+      else if (marketSort37 === 'popular') items.sort(function (a, b) { return viewsOf(b) - viewsOf(a); });
+      else items.sort(function (a, b) { return (b.createdAt || 0) - (a.createdAt || 0); });
       if (!items.length) {
         grid.innerHTML = '<div class="card stub-card" style="grid-column:1/-1;"><div class="stub-icon">🛍️</div><h3>Объявлений пока нет</h3><p>Стань первым продавцом — нажми «➕ Подать объявление»!</p></div>';
         return;
@@ -6470,6 +6779,8 @@
         const idx = Math.min(galleryIndex[l.id] || 0, Math.max(0, photos.length - 1));
         const mine = user && l.sellerId === user.id;
         const admin = canModerateAll(user);
+        const soldOut = !!l.reserved || (Number(l.qty) > 0 && (l.qtyLeft !== undefined ? Number(l.qtyLeft) : Number(l.qty)) <= 0);
+        const rating = sellerRating37(l.sellerId);
         let photoHtml;
         if (!photos.length) {
           photoHtml = '<div class="listing-photo">' + (l.cat === 'lost' ? '🆘' : '📦') + '</div>';
@@ -6489,20 +6800,33 @@
         if (l.deal === 'free') priceHtml = '<span class="badge-free">🎁 Бесплатно</span>';
         else if (l.deal === 'trade') priceHtml = '<span class="badge-trade">🔄 Обмен</span>';
         else priceHtml = '<span class="listing-price">' + Number(l.price || 0).toLocaleString('ru-RU') + ' ₽</span>';
-        return '<div class="card listing-card">' +
+        return '<div class="card listing-card" style="position:relative;">' +
+          '<button type="button" class="fav-btn' + (user && userFavs.indexOf(l.id) !== -1 ? ' on' : '') + '" data-listing-fav="' + esc(l.id) + '" title="В избранное">' + (user && userFavs.indexOf(l.id) !== -1 ? '❤️' : '🤍') + '</button>' +
           photoHtml +
           '<div class="listing-body">' +
             '<div class="listing-top">' + priceHtml + '<span class="seller-chip">' + esc(l.cat === 'other' ? '🎲 ' + (l.catCustom || 'Другое') : (MARKET_CATS[l.cat] || l.cat)) + '</span></div>' +
             '<h3 class="listing-title">' + esc(l.title) + '</h3>' +
+            '<div>' +
+              (l.cond ? '<span class="cond-badge">' + esc(condLabel37(l)) + '</span>' : '') +
+              (l.place ? '<span class="place-badge">📍 ' + esc(placeLabel37(l)) + '</span>' : '') +
+              (Number(l.qty) > 1 ? '<span class="stock-badge">В наличии: ' + Math.max(0, l.qtyLeft !== undefined ? Number(l.qtyLeft) : Number(l.qty)) + ' шт.</span>' : '') +
+              (l.urgent ? '<span class="urgent-badge">🔥 Срочно</span>' : '') +
+              (l.bargain ? '<span class="bargain-badge">🤝 Торг уместен</span>' : '') +
+              (soldOut ? '<span class="reserved-badge">📦 ' + (l.reserved ? 'Забронировано' : 'Продано') + '</span>' : '') +
+            '</div>' +
             (l.desc ? '<p class="listing-desc">' + esc(l.desc) + '</p>' : '') +
             '<div class="listing-meta">' +
-              '<span class="seller-chip">🎒 ' + esc(l.sellerClassId || '') + ' · ' + esc(l.sellerName || '') + '</span>' +
+              '<span class="seller-chip">🎒 ' + esc(l.sellerClassId || '') + ' · ' + esc(l.sellerName || '') + (rating ? ' <span class="seller-rating">' + rating + '</span>' : '') + '</span>' +
+              '<span class="views-badge">👁️ ' + viewsOf(l) + '</span>' +
               '<span>' + fmtDateTime(l.createdAt) + '</span>' +
             '</div>' +
             '<div class="listing-actions">' +
+              (!mine && user && !soldOut ? '<button type="button" class="btn btn-primary btn-sm" data-listing-buy="' + esc(l.id) + '">🛒 Купить</button>' : '') +
               '<button type="button" class="btn btn-outline btn-sm" data-pchat="' + esc(l.id) + '">💬 Написать продавцу</button>' +
+              ((mine || admin) ? '<button type="button" class="btn btn-outline btn-sm" data-listing-reserve="' + esc(l.id) + '">' + (l.reserved ? '📦 Снять бронь' : '📦 Забронировать') + '</button>' : '') +
               ((mine || admin) ? '<button type="button" class="btn btn-outline btn-sm" data-listing-edit="' + esc(l.id) + '">✏️ Редактировать</button>' : '') +
               ((mine || admin) ? '<button type="button" class="btn btn-danger btn-sm" data-listing-del="' + esc(l.id) + '">🗑️ Снять с продажи</button>' : '') +
+              (!mine && user ? '<button type="button" class="btn btn-ghost btn-sm" data-listing-report="' + esc(l.id) + '">🚫 Пожаловаться</button>' : '') +
             '</div>' +
           '</div>' +
         '</div>';
@@ -6512,6 +6836,20 @@
     try {
   document.getElementById('market-search').addEventListener('input', function () {
         marketQuery = this.value;
+        renderMarket();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('market-sort').addEventListener('change', function () {
+        marketSort37 = this.value;
+        renderMarket();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('market-fav-btn').addEventListener('click', function () {
+        marketFavOnly37 = !marketFavOnly37;
         renderMarket();
       });
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
@@ -6549,6 +6887,16 @@
         }
         const pchatBtn = e.target.closest('[data-pchat]');
         if (pchatBtn) { openProductChat(pchatBtn.dataset.pchat); return; }
+        const favBtn = e.target.closest('[data-listing-fav]');
+        if (favBtn) { toggleListingFav37(favBtn.dataset.listingFav); return; }
+        const buyBtn = e.target.closest('[data-listing-buy]');
+        if (buyBtn) { buyListing37(buyBtn.dataset.listingBuy); return; }
+        const resBtn = e.target.closest('[data-listing-reserve]');
+        if (resBtn) { toggleListingReserve37(resBtn.dataset.listingReserve); return; }
+        const repBtn = e.target.closest('[data-listing-report]');
+        if (repBtn) { openReportModal37({ kind: 'listing', id: repBtn.dataset.listingReport }); return; }
+        const galView = e.target.closest('[data-gal]');
+        if (galView && galView.dataset.gal.indexOf('|') !== -1) { countListingView37(galView.dataset.gal.split('|')[0]); }
         const delBtn = e.target.closest('[data-listing-del]');
         if (delBtn) {
           const user = getCurrentUser();
@@ -6642,6 +6990,20 @@
         if (title.length < 3) { showFormError('listing-error', 'Введи название (минимум 3 символа).'); return; }
         if (cat === 'other' && !catCustom) { showFormError('listing-error', 'Напиши название своей категории или выбери одну из списка.'); return; }
         if (listingDeal === 'price' && (!price || price <= 0)) { showFormError('listing-error', 'Укажи цену в рублях или выбери «Бесплатно» / «Обмен».'); return; }
+        const condEl = document.getElementById('li-cond');
+        const condOtherEl = document.getElementById('li-cond-other');
+        const placeEl = document.getElementById('li-place');
+        const placeOtherEl = document.getElementById('li-place-other');
+        const qtyEl = document.getElementById('li-qty');
+        const cond = condEl ? condEl.value : 'good';
+        const condCustom = cond === 'other' && condOtherEl ? condOtherEl.value.trim().slice(0, 40) : '';
+        if (cond === 'other' && !condCustom) { showFormError('listing-error', 'Опиши своё состояние вещи или выбери вариант из списка.'); return; }
+        const place = placeEl ? placeEl.value : 'hall';
+        const placeCustom = place === 'other' && placeOtherEl ? placeOtherEl.value.trim().slice(0, 40) : '';
+        if (place === 'other' && !placeCustom) { showFormError('listing-error', 'Укажи своё место встречи или выбери из списка.'); return; }
+        const qty = Math.max(1, Math.min(99, Number(qtyEl && qtyEl.value) || 1));
+        const urgent = !!(document.getElementById('li-urgent') || {}).checked;
+        const bargain = !!(document.getElementById('li-bargain') || {}).checked;
         const list = getList('listings');
         const item = {
           id: makeId('li'), sellerId: user.id, sellerName: user.name,
@@ -6649,6 +7011,9 @@
           title: title, cat: cat, catCustom: catCustom, deal: listingDeal,
           price: listingDeal === 'price' ? price : null,
           desc: desc, photos: listingPhotos.slice(),
+          cond: cond, condCustom: condCustom, place: place, placeCustom: placeCustom,
+          qty: qty, qtyLeft: qty, urgent: urgent, bargain: bargain,
+          reserved: false, views: 0, viewedBy: [],
           active: true, createdAt: Date.now()
         };
         list.push(item);
@@ -6667,10 +7032,25 @@
       });
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
+    try {
+  document.getElementById('li-cond').addEventListener('change', function () {
+        const other = document.getElementById('li-cond-other');
+        if (other) other.style.display = this.value === 'other' ? 'block' : 'none';
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
+  document.getElementById('li-place').addEventListener('change', function () {
+        const other = document.getElementById('li-place-other');
+        if (other) other.style.display = this.value === 'other' ? 'block' : 'none';
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
     function openProductChat(listingId) {
       const item = getList('listings').find(function (l) { return l.id === listingId; });
       if (!item) return;
       openListingId = listingId;
+      try { countListingView37(listingId); } catch (eV37) {}
       const photos = Array.isArray(item.photos) && item.photos.length ? item.photos : [];
       const priceHtml = item.deal === 'free'
         ? '<span class="badge-free">🎁 Бесплатно</span>'
@@ -6794,6 +7174,10 @@
       if (!pu) { toast('Пользователь не найден.', 'error'); return; }
       currentDmPartner = partnerId;
       clearDmCompose();
+      try {
+        const draftInp = document.getElementById('dm-input');
+        if (draftInp && !editingDmId) draftInp.value = getDmDraft37(user.id, partnerId) || '';
+      } catch (eDr37) {}
       const withEl = document.getElementById('dm-with');
       if (withEl) {
         withEl.innerHTML = '<span class="dm-name-line">' + esc(pu.name) + userVerifiedSpan(pu) + ' <span class="user-class">' + esc(classIdOf(pu.grade, pu.letter)) + '</span></span>' +
@@ -6898,6 +7282,7 @@
       saveDmMsgs(user.id, currentDmPartner, arr);
       instantSend('row', { key: dmCloudKey(user.id, currentDmPartner) });
       input.value = '';
+      try { clearDmDraft37(user.id, currentDmPartner); } catch (eCd37) {}
       clearDmCompose();
       renderDmMessages();
     }
@@ -7080,11 +7465,23 @@
       const user = getCurrentUser();
       const wrap = document.getElementById('dm-list-modal');
       if (!wrap || !currentDmPartner || !user) return;
+      try {
+        if (!user.hideReadMarks) {
+          const arrAll = getDmMsgs(user.id, currentDmPartner);
+          let changed37 = false;
+          arrAll.forEach(function (m) { if (m.from !== user.id && !m.read) { m.read = true; changed37 = true; } });
+          if (changed37) saveDmMsgs(user.id, currentDmPartner, arrAll);
+        }
+      } catch (eMr37) {}
       updateDmHeaderStatus();
       const messages = visibleDmMsgs(user.id, currentDmPartner).slice(-80);
+      let lastDayKey37 = '';
       wrap.innerHTML = messages.length
         ? messages.map(function (m) {
             const mine = m.from === user.id;
+            const dayKey37 = mskDayKey37(m.ts);
+            const dayPill37 = dayKey37 !== lastDayKey37 ? '<div class="dm-date-pill"><span>' + dmDayLabel37(m.ts) + '</span></div>' : '';
+            lastDayKey37 = dayKey37;
             const reacts = m.reactions || {};
             const reactHtml = Object.keys(reacts).filter(function (em) { return reacts[em] && reacts[em].length; }).map(function (em) {
               const on = reacts[em].indexOf(user.id) !== -1;
@@ -7092,10 +7489,10 @@
             }).join('');
             const quoteHtml = m.replyTo ? '<div class="dm-quote"><b>↩️ ' + esc(m.replyTo.name) + '</b> · ' + esc(String(m.replyTo.text || '📷 Фото').slice(0, 60)) + '</div>' : '';
             const fwdHtml = m.fwdFrom ? '<div class="dm-fwd">↪️ Переслано от ' + esc(m.fwdFrom) + '</div>' : '';
-            return '<div class="mini-msg' + (mine ? ' own' : '') + '">' +
+            return dayPill37 + '<div class="mini-msg' + (mine ? ' own' : '') + '">' +
               msgAvatarHtml(m.avatar, 'mini-ava') +
               '<div class="mini-bubble" data-dm-msg="' + esc(m.id) + '">' +
-                '<div class="mini-head"><span class="mini-author">' + esc(m.name) + '</span><span>' + fmtDateTime(m.ts) + (m.edited ? ' · изменено' : '') + '</span></div>' +
+                '<div class="mini-head"><span class="mini-author">' + esc(m.name) + '</span><span>' + fmtDateTime(m.ts) + (m.edited ? ' · изменено' : '') + '</span>' + (mine ? dmTickHtml37(m) : '') + '</div>' +
                 fwdHtml +
                 quoteHtml +
                 (m.photo ? '<img class="dm-photo" data-dm-photo="' + esc(m.id) + '" src="' + m.photo + '" alt="Фото">' : '') +
@@ -7153,6 +7550,7 @@
               '<div style="min-width:0; flex:1;">' +
                 '<div style="font-weight:700;">' + esc(pu ? pu.name : 'Пользователь') + (pu ? ' <span class="user-class">' + esc(classIdOf(pu.grade, pu.letter)) + '</span>' : '') + '</div>' +
                 '<div class="field-hint" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + (fromMe ? 'Ты: ' : '') + esc(last.text || '📷 Фото') + '</div>' +
+                (getDmDraft37(user.id, partnerId) ? '<div class="dm-draft-hint">Черновик: ' + esc(getDmDraft37(user.id, partnerId).slice(0, 40)) + '</div>' : '') +
               '</div>' +
               '<button type="button" class="btn btn-outline btn-sm" data-dm-open="' + esc(partnerId) + '">Открыть</button>' +
               '<button type="button" class="btn btn-ghost btn-sm" data-dm-archive="' + esc(partnerId) + '" title="В архив">📥</button>' +
@@ -7361,6 +7759,7 @@
     function closeDmFull() {
       const mdm = document.getElementById('modal-dm');
       if (mdm) mdm.classList.remove('dm-full');
+      try { saveDmDraftFromInput37(); } catch (eSd37) {}
       currentDmPartner = null;
       clearDmCompose();
       closeModal('modal-dm');
@@ -7609,6 +8008,7 @@
         if (dmClose) {
           const mdm = document.getElementById('modal-dm');
           if (mdm) mdm.classList.remove('dm-full');
+          try { saveDmDraftFromInput37(); } catch (eSd37) {}
           currentDmPartner = null;
           clearDmCompose();
           return;
@@ -7813,7 +8213,7 @@
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     function renderSocial() {
-      if (socialSub === 'feed') { renderFeed(); renderPeople(); }
+      if (socialSub === 'feed') { renderFeed(); renderPeople(); try { renderFriendRequests37(); } catch (eFr37) {} }
       else if (socialSub === 'dms') renderDms();
       else if (socialSub === 'channels') renderChannels();
       else renderVolunteers();
@@ -7829,14 +8229,32 @@
       if (guestBox) guestBox.style.display = user ? 'none' : 'block';
       const wrap = document.getElementById('feed-list');
       if (!wrap) return;
-      const posts = getList('posts').slice().sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); }).slice(0, 50);
+      const tagBar = document.getElementById('feed-tag-filter-bar');
+      if (tagBar) {
+        tagBar.innerHTML = feedTagFilter37
+          ? '<span>Фильтр по хэштегу: <b>#' + esc(feedTagFilter37) + '</b></span><button type="button" class="btn btn-ghost btn-sm" id="feed-tag-reset">✕ Сбросить фильтр тега</button>'
+          : '';
+        tagBar.style.display = feedTagFilter37 ? 'flex' : 'none';
+      }
+      let posts = getList('posts').slice().sort(function (a, b) { return (b.ts || 0) - (a.ts || 0); }).slice(0, 50);
+      if (feedTagFilter37) {
+        const tagLow = feedTagFilter37.toLowerCase();
+        posts = posts.filter(function (p) { return extractTags37(p.text).indexOf(tagLow) !== -1; });
+      }
+      if (!posts.length && feedTagFilter37) {
+        wrap.innerHTML = '<div class="card stub-card"><div class="stub-icon">#' + esc(feedTagFilter37) + '</div><h3>Постов с этим тегом пока нет</h3><p>Попробуй другой хэштег или сбрось фильтр.</p><button type="button" class="btn btn-primary btn-sm" id="feed-tag-reset">✕ Сбросить фильтр тега</button></div>';
+        return;
+      }
       if (!posts.length) {
         wrap.innerHTML = '<div class="card stub-card"><div class="stub-icon">📰</div><h3>Лента пока пуста</h3><p>Опубликуй первый пост о жизни Лицея №37!</p></div>';
         return;
       }
       wrap.innerHTML = posts.map(function (p) {
         const mine = user && (p.userId === user.id || canModerateAll(user));
+        const foreign = !!(user && p.userId !== user.id);
         const pAuthor = getUserById(p.userId);
+        const booked = !!(user && postBookmarked37(user.id, p.id));
+        const views = Number(p.views || 0) + (Array.isArray(p.viewedBy) ? p.viewedBy.length : 0);
         const liked = user && (p.likes || []).indexOf(user.id) !== -1;
         const comments = Array.isArray(p.comments) ? p.comments : [];
         const open = !!openPostComments[p.id];
@@ -7844,15 +8262,25 @@
           '<div class="post-head">' +
             avatarHtml(p.avatar) +
             '<div style="min-width:0;">' +
-              '<div style="font-weight:700;">' + esc(p.name) + userVerifiedSpan(pAuthor) + ' <span class="user-class">' + esc(p.classId || '') + '</span></div>' +
-              '<div class="field-hint">' + fmtDateTime(p.ts) + (p.edited ? ' · (изменено)' : '') + '</div>' +
+              '<div style="font-weight:700;">' + esc(p.name) + userVerifiedSpan(pAuthor) + roleBadges37(pAuthor, p.classId) + ' <span class="user-class">' + esc(p.classId || '') + '</span></div>' +
+              '<div class="field-hint">' + fmtDateTime(p.ts) + (p.edited ? ' · (изменено)' : '') + (p.repostFrom ? ' · ↪️ Репост от ' + esc(p.repostFrom) : '') + '</div>' +
             '</div>' +
           '</div>' +
-          '<div class="post-text">' + esc(p.text) + '</div>' +
+          '<div class="post-text">' + renderHashtags37(p.text) + '</div>' +
+          (p.repostText ? '<div class="dm-quote" style="margin:8px 0 2px;">↪️ <b>' + esc(p.repostFrom || 'Пост') + '</b> · ' + esc(String(p.repostText || '').slice(0, 300)) + '</div>' : '') +
+          (p.repostPhoto ? '<img class="post-photo" src="' + p.repostPhoto + '" alt="">' : '') +
           (p.photo ? '<img class="post-photo" src="' + p.photo + '" alt="">' : '') +
           '<div class="post-foot">' +
             '<button type="button" class="btn btn-ghost btn-sm" data-post-like="' + esc(p.id) + '">' + (liked ? '❤️' : '🤍') + ' ' + (p.likes || []).length + '</button>' +
             '<button type="button" class="btn btn-ghost btn-sm" data-post-comments="' + esc(p.id) + '">💬 ' + comments.length + '</button>' +
+            (user
+              ? '<button type="button" class="btn btn-ghost btn-sm" data-post-bookmark="' + esc(p.id) + '" title="В закладки">' + (booked ? '🔖' : '🔖') + '</button>' +
+                '<button type="button" class="btn btn-ghost btn-sm" data-post-repost="' + esc(p.id) + '" title="Репост">↪️</button>'
+              : '') +
+            (foreign
+              ? '<button type="button" class="btn btn-ghost btn-sm" data-post-report="' + esc(p.id) + '" title="Пожаловаться">🚫</button>'
+              : '') +
+            '<span class="views-badge" style="margin-left:auto;">👁️ ' + views + '</span>' +
             (mine
               ? '<button type="button" class="btn btn-ghost btn-sm" data-post-edit="' + esc(p.id) + '">✏️ Изменить</button>' +
                 '<button type="button" class="btn btn-ghost btn-sm" data-post-del="' + esc(p.id) + '">🗑️ Удалить</button>'
@@ -7901,6 +8329,38 @@
         if (comBtn) {
           openPostComments[comBtn.dataset.postComments] = !openPostComments[comBtn.dataset.postComments];
           renderFeed();
+          return;
+        }
+        const hashEl = e.target.closest('.hashtag');
+        if (hashEl) {
+          feedTagFilter37 = (hashEl.dataset.hashtag || '').trim();
+          renderFeed();
+          const fl = document.getElementById('feed-tag-filter-bar');
+          if (fl) fl.style.display = 'flex';
+          return;
+        }
+        const tagReset = e.target.closest('#feed-tag-reset');
+        if (tagReset) {
+          feedTagFilter37 = '';
+          renderFeed();
+          return;
+        }
+        const bmBtn = e.target.closest('[data-post-bookmark]');
+        if (bmBtn) {
+          if (!user) { openModal('modal-login'); toast('Войди, чтобы добавить в закладки.', 'info'); return; }
+          toggleBookmark37(user.id, bmBtn.dataset.postBookmark);
+          return;
+        }
+        const rpBtn = e.target.closest('[data-post-repost]');
+        if (rpBtn) {
+          if (!user) { openModal('modal-login'); toast('Войди, чтобы сделать репост.', 'info'); return; }
+          openRepostModal37(rpBtn.dataset.postRepost);
+          return;
+        }
+        const rprtBtn = e.target.closest('[data-post-report]');
+        if (rprtBtn) {
+          if (!user) { openModal('modal-login'); toast('Войди, чтобы отправить жалобу.', 'info'); return; }
+          openReportModal37({ kind: 'post', id: rprtBtn.dataset.postReport });
           return;
         }
         const editBtn = e.target.closest('[data-post-edit]');
@@ -8020,13 +8480,16 @@
         if (text.length < 3) { toast('Напиши текст поста (минимум 3 символа).', 'error'); return; }
         if (!antispamCheck('post', text)) return;
         const posts = getList('posts');
-        posts.push({
+        const newPost = {
           id: makeId('post'), userId: user.id, name: user.name,
           classId: classIdOf(user.grade, user.letter), avatar: user.avatar,
           text: text, photo: postPhoto, likes: [], comments: [],
-          ts: Date.now(), edited: false
-        });
+          ts: Date.now(), edited: false,
+          views: 0, viewedBy: []
+        };
+        posts.push(newPost);
         dbSave('posts', posts);
+        try { notifyMentions37(newPost.text, newPost); } catch (eM37) {}
         input.value = '';
         postPhoto = null;
         renderPostPreview();
@@ -8071,15 +8534,21 @@
       wrap.innerHTML = users.map(function (u) {
         const self = user && u.id === user.id;
         const st = statusFor(u.points || 0);
+        const fState = self ? null : friendStatus37(user, u);
+        const tags = Array.isArray(u.itags) ? u.itags.slice(0, 3) : [];
         return '<div class="card person-card">' +
           avatarHtml(u.avatar) +
-          '<div style="font-weight:700;">' + esc(u.name) + userVerifiedSpan(u) + '</div>' +
+          '<div style="font-weight:700;">' + esc(u.name) + userVerifiedSpan(u) + roleBadges37(u, classIdOf(u.grade, u.letter)) + '</div>' +
           '<span class="user-class">' + esc(classIdOf(u.grade, u.letter)) + '</span>' +
           (u.mood ? '<span class="dm-mood">🎵 ' + esc(u.mood) + '</span>' : '') +
+          (tags.length ? '<div class="itags-row">' + tags.map(function (t) { return '<span class="itag-chip">' + esc(t) + '</span>'; }).join('') + '</div>' : '') +
           '<span class="field-hint">' + st.icon + ' ' + esc(st.title) + ' · 💎 ' + Number(u.points || 0) + '</span>' +
           (self
             ? '<span class="field-hint">Это ты 🙂</span>'
-            : '<button type="button" class="btn btn-outline btn-sm" data-dm-open="' + esc(u.id) + '">💬 Написать в ЛС</button>') +
+            : '<div class="field-row" style="width:100%;">' +
+                '<button type="button" class="btn btn-outline btn-sm" data-dm-open="' + esc(u.id) + '">💬 Написать в ЛС</button>' +
+                '<button type="button" class="btn btn-ghost btn-sm" data-friend-act="' + esc(u.id) + '">' + esc(fState.label) + '</button>' +
+              '</div>') +
         '</div>';
       }).join('');
     }
@@ -9031,7 +9500,7 @@ try {
 
 
     /* ---- Кнопки админки по глобальным узлам ---- */
-    const ADM_NODE_BTN = { tables: 'tables', log: 'log', pets: 'pets', scripts: 'scripts', rewards: 'rewards', verified: 'verify', broadcast: 'broadcast', points: 'xp', analytics: 'tables' };
+    const ADM_NODE_BTN = { tables: 'tables', log: 'log', pets: 'pets', scripts: 'scripts', rewards: 'rewards', verified: 'verify', broadcast: 'broadcast', points: 'xp', analytics: 'tables', complaints: 'moderation' };
     function applyAdminButtonPermissions() {
       try {
         const panel = document.getElementById('admin-panel');
@@ -9068,6 +9537,7 @@ try {
           const b = getBroadcast();
           if (b && b.text) toast('📣 ' + b.text, 'info');
           markBroadcastSeen();
+          try { toggleNotifPanel37(); return; } catch (eNb37) {}
         }
       });
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
@@ -9227,7 +9697,7 @@ try {
         return '<button type="button" class="wg-color' + (c === curColor ? ' selected' : '') + '" data-wg-color="' + c + '" style="background:' + c + ';" title="' + c + '"></button>';
       }).join('');
       body.innerHTML =
-        '<div class="field"><label>Текст виджета</label><input id="wg-text" type="text" maxlength="300" value="' + esc(w.text || '') + '" placeholder="Например: Лицей №37 — школа лидеров!"></div>' +
+        '<div class="field"><label>Текст виджета (можно многострочно)</label><textarea id="wg-text" rows="3" maxlength="600" placeholder="Например: Лицей №37 — школа лидеров!">' + esc(w.text || '') + '</textarea></div>' +
         '<div class="field"><label>Стиль</label><div class="field-row">' + styleBtns + '</div></div>' +
         '<div class="field"><label>Место размещения</label><div class="field-row">' + placeBtns + '</div>' +
         '<p class="field-hint">' + esc(WIDGET_PLACE_HINT[w.place] || '') + '</p></div>' +
@@ -10350,7 +10820,8 @@ try {
     const RING_LIMITS = {
       chat: 300, pchat: 300, dms: 300, dmArchive: 300, listings: 200,
       posts: 200, ideas: 200, applications: 300, compliments: 200,
-      adminLog: 300, customScripts: 100, shopCustomRewards: 100, capsule: 200
+      adminLog: 300, customScripts: 100, shopCustomRewards: 100, capsule: 200,
+      complaints: 200, reviews: 500, purchases: 500, notifications: 300, friends: 500, bookmarks: 300
     };
     const lastSendAt = {};
 
@@ -10594,6 +11065,8 @@ try {
       }
       const wb = document.getElementById('adm-widget-btn');
       if (wb) wb.style.display = on ? '' : 'none';
+      const fab = document.getElementById('adm-widget-fab');
+      if (fab) fab.style.display = on ? '' : 'none';
       if (on) toast('✏️ Режим включён — кликни по любому тексту с пунктирной рамкой.', 'info');
     }
 
@@ -10716,7 +11189,7 @@ try {
     /* ---- Инструменты админки (Журнал / Права / Призы / Пароль) ---- */
     function openAdminTool(mode) {
       adminToolsMode = mode;
-      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pets: '🐾 Талисманы классов', classreset: '🗑 Очистка данных класса', pass: '🔑 Смена пароля админа', ticker: '📰 Плашка новостей', verified: '☑️ Верификация', broadcast: '📣 Срочная рассылка', points: '💎 Баллы ученикам и опыт классам', analytics: '📊 Аналитика портала', backup: '💾 Бэкап и восстановление' };
+      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pets: '🐾 Талисманы классов', classreset: '🗑 Очистка данных класса', pass: '🔑 Смена пароля админа', ticker: '📰 Плашка новостей', verified: '☑️ Верификация', broadcast: '📣 Срочная рассылка', points: '💎 Баллы ученикам и опыт классам', analytics: '📊 Аналитика портала', backup: '💾 Бэкап и восстановление', complaints: '🚨 Жалобы учеников' };
       document.getElementById('admin-tools-title').textContent = titles[mode] || 'Администрирование';
       openModal('modal-admin-tools');
       if (mode === 'log') renderAdminLog();
@@ -10731,6 +11204,7 @@ try {
       if (mode === 'points') renderAdminPoints('');
       if (mode === 'analytics') renderAdminAnalytics();
       if (mode === 'backup') renderAdminBackup();
+      if (mode === 'complaints' && typeof renderAdminComplaints === 'function') renderAdminComplaints();
     }
 
     function renderAdminClassReset() {
@@ -11080,7 +11554,7 @@ try {
           return;
         }
         if (b.id === 'adm-live-edit-btn') { setLiveEdit(!liveEditOn); return; }
-        if (b.id === 'adm-widget-btn') { openWidgetEditor(null); return; }
+        if (b.id === 'adm-widget-btn' || b.id === 'adm-widget-fab') { openWidgetEditor(null); return; }
         if (b.id === 'adm-exit-btn') { setAdminActive(false); toast('🚪 Ты вышел из админки.', 'info'); return; }
         const t = b.getAttribute('data-adm');
         if (t === 'tables') openAdminTables('applications');
@@ -11094,6 +11568,7 @@ try {
         if (t === 'analytics') openAdminTool('analytics');
         if (t === 'backup') openAdminTool('backup');
         if (t === 'wires') openWireEditor('global', null);
+        if (t === 'complaints') openAdminTool('complaints');
         if (t === 'pets') openAdminTool('pets');
         if (t === 'classreset') openAdminTool('classreset');
         if (t === 'ticker') openAdminTool('ticker');
@@ -11830,6 +12305,1278 @@ try {
       window.renderBellSchedule = renderBellSchedule;
       window.updateBellTimer = updateBellTimer;
     } catch (eW37) { try { console.error(eW37); } catch (e2) {} }
+
+
+    /* ============================================================
+       ФИНАЛЬНЫЙ МОДУЛЬ 37: жалобы, барахолка, друзья, репосты,
+       уведомления, галочки, черновики, учителя, актив класса, правила
+       ============================================================ */
+
+    let marketSort37 = 'new';
+    let marketFavOnly37 = false;
+    let feedTagFilter37 = '';
+    let reportTarget37 = null;
+    let reviewTarget37 = null;
+    let reviewStars37 = 0;
+    let repostPostId37 = null;
+    let regRole37 = 'student';
+    let loginRole37 = 'student';
+    let pfItagsDraft37 = [];
+    let councilPick37 = null;
+    let mentionTarget37 = null;
+
+    const ITAGS37 = ['📐 Физмат', '🧬 Химбио', '💻 IT / Python', '📚 Гуманитарий', '⚽ Спортсмен', '🤝 Волонтёр'];
+
+    const COUNCIL_ROLES37 = [
+      { id: 'starosta', label: '⭐ Староста класса' },
+      { id: 'study', label: '📚 Учебный сектор' },
+      { id: 'sport', label: '🏆 Спорт-сектор' }
+    ];
+
+    /* ---- МСК-помощники ---- */
+    function mskParts37(ts) {
+      const d = new Date((ts || Date.now()) + 3 * 3600000);
+      return { y: d.getUTCFullYear(), mo: d.getUTCMonth(), d: d.getUTCDate() };
+    }
+    function mskDayKey37(ts) {
+      const p = mskParts37(ts);
+      return p.y + '-' + String(p.mo + 1).padStart(2, '0') + '-' + String(p.d).padStart(2, '0');
+    }
+    function dmDayLabel37(ts) {
+      try {
+        const today = mskDayKey37(Date.now());
+        const yest = mskDayKey37(Date.now() - 86400000);
+        const key = mskDayKey37(ts);
+        if (key === today) return 'Сегодня';
+        if (key === yest) return 'Вчера';
+        const p = mskParts37(ts);
+        const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+        return p.d + ' ' + months[p.mo] + (p.y !== mskParts37(Date.now()).y ? ' ' + p.y : '');
+      } catch (eD37) { return ''; }
+    }
+    function dmTickHtml37(m) {
+      const read = !!m.read;
+      return '<span class="dm-tick' + (read ? ' read' : '') + '">' + (read ? '✓✓' : '✓') + '</span>';
+    }
+
+    /* ---- Хэштеги и упоминания ---- */
+    function extractTags37(text) {
+      const out = [];
+      String(text || '').replace(/#([0-9A-Za-zА-Яа-яЁё_]{2,30})/g, function (_, tag) {
+        out.push(tag.toLowerCase());
+        return _;
+      });
+      return out;
+    }
+    function renderHashtags37(text) {
+      let safe = esc(text);
+      safe = safe.replace(/#([0-9A-Za-zА-Яа-яЁё_]{2,30})/g, function (all, tag) {
+        return '<span class="hashtag" data-hashtag="' + tag.toLowerCase() + '">#' + tag + '</span>';
+      });
+      safe = safe.replace(/@([0-9A-Za-zА-Яа-яЁё_]{2,32})/g, function (all, nick) {
+        return '<span class="hashtag" data-mention="' + nick + '">@' + nick + '</span>';
+      });
+      return safe;
+    }
+    function notifyMentions37(text, ctx) {
+      const user = getCurrentUser();
+      if (!user || !text) return;
+      const nicks = [];
+      String(text).replace(/@([0-9A-Za-zА-Яа-яЁё_]{2,32})/g, function (_, nick) {
+        if (nicks.indexOf(nick.toLowerCase()) === -1) nicks.push(nick.toLowerCase());
+        return _;
+      });
+      if (!nicks.length) return;
+      const users = getUsers();
+      let notified = 0;
+      nicks.forEach(function (nick) {
+        const target = users.find(function (u) { return String(u.name || '').toLowerCase() === nick; });
+        if (!target || target.id === user.id) return;
+        pushNotif37(target.id, {
+          type: 'mention',
+          text: '🔔 ' + user.name + ' упомянул(а) тебя: «' + String(ctx && ctx.text ? ctx.text : '').slice(0, 80) + '»',
+          go: 'social'
+        });
+        notified++;
+      });
+      if (notified) updateNotifBell37();
+    }
+
+    /* ---- Уведомления (колокольчик) ---- */
+    function getNotifsMap37() {
+      const map = dbLoad('notifications', {});
+      return (map && typeof map === 'object' && !Array.isArray(map)) ? map : {};
+    }
+    function pushNotif37(userId, notif) {
+      if (!userId) return;
+      const map = getNotifsMap37();
+      const arr = Array.isArray(map[userId]) ? map[userId] : [];
+      arr.push(Object.assign({ id: makeId('ntf'), ts: Date.now(), seen: false, type: 'info', go: 'social' }, notif));
+      if (arr.length > 100) arr.splice(0, arr.length - 100);
+      map[userId] = arr;
+      dbSave('notifications', map);
+      const me = getCurrentUser();
+      if (me && me.id === userId) updateNotifBell37();
+      try { instantSend('row', { key: 'notifications' }); } catch (eN37) {}
+    }
+    function myNotifications37(user) {
+      if (!user) return [];
+      const arr = getNotifsMap37()[user.id];
+      return (Array.isArray(arr) ? arr : []).slice().reverse();
+    }
+    function notifSeenTs37(userId) {
+      const v = readLs('notifs_seen_' + userId);
+      return typeof v === 'number' ? v : 0;
+    }
+    function updateNotifBell37() {
+      const user = getCurrentUser();
+      const bell = document.getElementById('bell-btn');
+      if (!bell || !user) return;
+      const seen = notifSeenTs37(user.id);
+      const unread = myNotifications37(user).filter(function (n) { return (n.ts || 0) > seen; }).length;
+      bell.classList.toggle('has-unread', unread > 0);
+    }
+    function toggleNotifPanel37() {
+      const user = getCurrentUser();
+      let panel = document.getElementById('notif-panel37');
+      if (!panel) {
+        panel = document.createElement('div');
+        panel.id = 'notif-panel37';
+        panel.style.cssText = 'display:none; position:fixed; top:64px; right:12px; z-index:9600; width:min(340px, 92vw); max-height:60vh; overflow:auto; background:#fff; border-radius:16px; box-shadow:0 18px 44px rgba(15,23,42,0.25); padding:14px;';
+        document.body.appendChild(panel);
+      }
+      if (panel.style.display !== 'none') { panel.style.display = 'none'; return; }
+      if (!user) {
+        panel.innerHTML = '<b>🔔 Уведомления</b><p class="empty-line">Войди, чтобы получать уведомления об упоминаниях, заявках в друзья и ответах.</p>';
+        panel.style.display = 'block';
+        return;
+      }
+      const seen = notifSeenTs37(user.id);
+      const items = myNotifications37(user).slice(0, 30);
+      panel.innerHTML = '<b style="display:block; margin-bottom:8px;">🔔 Уведомления</b>' +
+        (items.length
+          ? items.map(function (n) {
+              const fresh = (n.ts || 0) > seen;
+              return '<div class="notif-line' + (fresh ? ' fresh' : '') + '" data-ntf-go="' + esc(n.go || 'social') + '" data-ntf-id="' + esc(n.id) + '">' +
+                '<div style="min-width:0;">' + esc(n.text || 'Новое уведомление') + '<div class="field-hint">' + fmtDateTime(n.ts) + '</div></div>' +
+                (fresh ? '<span>🆕</span>' : '') +
+              '</div>';
+            }).join('')
+          : '<p class="empty-line">Пока тихо. Упомяни друга через @ник — и он получит уведомление!</p>');
+      panel.style.display = 'block';
+    }
+
+    /* ---- Друзья ---- */
+    function friendsData37() {
+      const map = dbLoad('friends', {});
+      return (map && typeof map === 'object' && !Array.isArray(map)) ? map : {};
+    }
+    function friendEntry37(map, uid) {
+      if (!map[uid]) map[uid] = { friends: [], incoming: [], outgoing: [] };
+      if (!Array.isArray(map[uid].friends)) map[uid].friends = [];
+      if (!Array.isArray(map[uid].incoming)) map[uid].incoming = [];
+      if (!Array.isArray(map[uid].outgoing)) map[uid].outgoing = [];
+      return map[uid];
+    }
+    function isFriend37(a, b) {
+      if (!a || !b) return false;
+      const map = friendsData37();
+      return !!(map[a] && Array.isArray(map[a].friends) && map[a].friends.indexOf(b) !== -1);
+    }
+    function friendStatus37(user, target) {
+      if (!user || !target || user.id === target.id) return { state: 'self', label: 'Это ты' };
+      const map = friendsData37();
+      const mine = map[user.id] || {};
+      const theirs = map[target.id] || {};
+      if (isFriend37(user.id, target.id)) return { state: 'friends', label: '✅ В друзьях' };
+      if (Array.isArray(theirs.outgoing) && theirs.outgoing.some(function (x) { return x.id === user.id; })) return { state: 'incoming', label: '✅ Принять заявку' };
+      if (Array.isArray(mine.outgoing) && mine.outgoing.some(function (x) { return x.id === target.id; })) return { state: 'outgoing', label: '⏳ Заявка отправлена' };
+      return { state: 'none', label: '🤝 Добавить в друзья' };
+    }
+    function handleFriendAction37(action, targetId) {
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); toast('Войди, чтобы добавлять друзей.', 'info'); return; }
+      const target = getUserById(targetId);
+      if (!target || target.id === user.id) return;
+      const map = friendsData37();
+      const mine = friendEntry37(map, user.id);
+      const theirs = friendEntry37(map, target.id);
+      const listHas = function (arr, uid) { return arr.some(function (x) { return x.id === uid; }); };
+      const listDrop = function (arr, uid) { return arr.filter(function (x) { return x.id !== uid; }); };
+      if (action === 'add') {
+        if (listHas(theirs.outgoing, user.id)) {
+          mine.friends.push(target.id); theirs.friends.push(user.id);
+          theirs.outgoing = listDrop(theirs.outgoing, user.id);
+          pushNotif37(target.id, { type: 'friend_ok', text: '🤝 ' + user.name + ' принял твою заявку в друзья!', go: 'social' });
+          toast('🤝 Теперь вы друзья!', 'success');
+        } else {
+          if (listHas(mine.outgoing, target.id) || mine.friends.indexOf(target.id) !== -1) return;
+          mine.outgoing.push({ id: target.id, ts: Date.now() });
+          theirs.incoming.push({ id: user.id, ts: Date.now(), name: user.name, classId: classIdOf(user.grade, user.letter) });
+          pushNotif37(target.id, { type: 'friend_req', text: '🤝 ' + user.name + ' (' + classIdOf(user.grade, user.letter) + ') хочет добавить тебя в друзья.', go: 'social' });
+          toast('⏳ Заявка в друзья отправлена!', 'success');
+        }
+      } else if (action === 'accept') {
+        mine.incoming = listDrop(mine.incoming, target.id);
+        theirs.outgoing = listDrop(theirs.outgoing, user.id);
+        if (mine.friends.indexOf(target.id) === -1) mine.friends.push(target.id);
+        if (theirs.friends.indexOf(user.id) === -1) theirs.friends.push(user.id);
+        pushNotif37(target.id, { type: 'friend_ok', text: '🤝 ' + user.name + ' принял твою заявку в друзья!', go: 'social' });
+        toast('🤝 Заявка принята!', 'success');
+      } else if (action === 'reject') {
+        mine.incoming = listDrop(mine.incoming, target.id);
+        theirs.outgoing = listDrop(theirs.outgoing, user.id);
+        toast('Заявка отклонена.', 'info');
+      } else if (action === 'cancel') {
+        mine.outgoing = listDrop(mine.outgoing, target.id);
+        theirs.incoming = listDrop(theirs.incoming, user.id);
+        toast('Заявка отменена.', 'info');
+      } else if (action === 'remove') {
+        if (!confirm('Убрать ' + target.name + ' из друзей?')) return;
+        mine.friends = mine.friends.filter(function (x) { return x !== target.id; });
+        theirs.friends = theirs.friends.filter(function (x) { return x !== user.id; });
+        toast('Убрано из друзей.', 'info');
+      } else return;
+      dbSave('friends', map);
+      renderPeople();
+      try { renderFriendRequests37(); } catch (eFr37) {}
+      updateNotifBell37();
+    }
+    function renderFriendRequests37() {
+      const card = document.getElementById('friend-req-card');
+      if (!card) return;
+      const user = getCurrentUser();
+      const map = user ? friendsData37() : {};
+      const mine = user && map[user.id] ? map[user.id] : null;
+      const incoming = mine && Array.isArray(mine.incoming) ? mine.incoming : [];
+      if (!user || !incoming.length) { card.style.display = 'none'; card.innerHTML = ''; return; }
+      card.style.display = 'block';
+      card.innerHTML = '<h3 class="info-title">🤝 Заявки в друзья (' + incoming.length + ')</h3>' +
+        incoming.map(function (req) {
+          const u = getUserById(req.id);
+          return '<div class="friend-req-row">' +
+            avatarHtml(u ? u.avatar : null, 'mini-ava') +
+            '<div style="min-width:0; flex:1;">' +
+              '<b>' + esc(u ? u.name : 'Ученик') + '</b>' +
+              (u ? ' <span class="user-class">' + esc(classIdOf(u.grade, u.letter)) + '</span>' : '') +
+            '</div>' +
+            '<button type="button" class="btn btn-primary btn-sm" data-friend-accept="' + esc(req.id) + '">✅ Принять</button>' +
+            '<button type="button" class="btn btn-ghost btn-sm" data-friend-reject="' + esc(req.id) + '">✕ Отклонить</button>' +
+          '</div>';
+        }).join('');
+    }
+
+    /* ---- Закладки ---- */
+    function bookmarksMap37() {
+      const map = dbLoad('bookmarks', {});
+      return (map && typeof map === 'object' && !Array.isArray(map)) ? map : {};
+    }
+    function postBookmarked37(userId, postId) {
+      if (!userId) return false;
+      const map = bookmarksMap37();
+      return !!(Array.isArray(map[userId]) && map[userId].indexOf(postId) !== -1);
+    }
+    function toggleBookmark37(userId, postId) {
+      const user = getCurrentUser();
+      if (!user || user.id !== userId) return;
+      const map = bookmarksMap37();
+      const arr = Array.isArray(map[userId]) ? map[userId] : [];
+      const idx = arr.indexOf(postId);
+      if (idx === -1) { arr.push(postId); toast('🔖 Пост сохранён в закладки!', 'success'); }
+      else { arr.splice(idx, 1); toast('Убрано из закладок.', 'info'); }
+      map[userId] = arr;
+      dbSave('bookmarks', map);
+      renderFeed();
+      try { renderPfBookmarks37(); } catch (ePb37) {}
+    }
+
+    /* ---- Репосты ---- */
+    function openRepostModal37(postId) {
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); toast('Войди, чтобы делиться постами.', 'info'); return; }
+      const post = getList('posts').find(function (p) { return p.id === postId; });
+      if (!post) { toast('Пост не найден.', 'error'); return; }
+      repostPostId37 = postId;
+      const hint = document.getElementById('repost-hint');
+      if (hint) hint.textContent = 'Пост от ' + (post.name || 'ученика') + ': «' + String(post.text || '').slice(0, 80) + '…»';
+      const comment = document.getElementById('repost-comment');
+      if (comment) comment.value = '';
+      const fr = document.getElementById('repost-friends');
+      if (fr) {
+        const map = friendsData37();
+        const mine = friendEntry37(map, user.id);
+        const friends = Array.isArray(mine.friends) ? mine.friends : [];
+        fr.innerHTML = friends.length
+          ? '<p class="info-desc" style="margin:8px 0 6px;">Отправить другу в личные сообщения:</p>' + friends.map(function (fid) {
+              const fu = getUserById(fid);
+              if (!fu) return '';
+              return '<button type="button" class="btn btn-outline btn-sm" data-repost-dm="' + esc(fid) + '" style="margin:0 6px 6px 0;">' + esc(fu.name) + ' · ' + esc(classIdOf(fu.grade, fu.letter)) + '</button>';
+            }).join('')
+          : '<p class="info-desc" style="margin:8px 0 0;">Пока нет друзей — добавь их во вкладке «💬 Соцсеть»!</p>';
+      }
+      openModal('modal-repost');
+    }
+    function doWallRepost37() {
+      const user = getCurrentUser();
+      if (!user || !repostPostId37) return;
+      const orig = getList('posts').find(function (p) { return p.id === repostPostId37; });
+      if (!orig) { toast('Пост не найден.', 'error'); return; }
+      const commentEl = document.getElementById('repost-comment');
+      const comment = commentEl ? commentEl.value.trim() : '';
+      const posts = getList('posts');
+      const newPost = {
+        id: makeId('post'), userId: user.id, name: user.name,
+        classId: classIdOf(user.grade, user.letter), avatar: user.avatar,
+        text: comment, photo: null, likes: [], comments: [], ts: Date.now(),
+        views: 0, viewedBy: [],
+        repostFrom: orig.name || 'ученик', repostText: orig.text || '', repostPhoto: orig.photo || null
+      };
+      posts.push(newPost);
+      dbSave('posts', posts);
+      try { notifyMentions37(newPost.text, newPost); } catch (eM37) {}
+      repostPostId37 = null;
+      closeModal('modal-repost');
+      renderFeed();
+      toast('↪️ Пост опубликован на твоей стене!', 'success');
+    }
+    function repostDm37(friendId) {
+      const user = getCurrentUser();
+      if (!user || !repostPostId37) return;
+      const orig = getList('posts').find(function (p) { return p.id === repostPostId37; });
+      if (!orig) { toast('Пост не найден.', 'error'); return; }
+      const fu = getUserById(friendId);
+      if (!fu) { toast('Друг не найден.', 'error'); return; }
+      const arr = getDmMsgs(user.id, friendId);
+      arr.push({
+        id: makeId('dm'), key: dmKey(user.id, friendId), from: user.id, name: user.name, avatar: user.avatar,
+        text: (orig.text || '').slice(0, 1400), photo: orig.photo || null,
+        fwdFrom: 'Репост · ' + (orig.name || 'ученик'),
+        replyTo: null, ts: Date.now()
+      });
+      saveDmMsgs(user.id, friendId, arr);
+      instantSend('row', { key: dmCloudKey(user.id, friendId) });
+      repostPostId37 = null;
+      closeModal('modal-repost');
+      try { renderDms(); } catch (eRd37) {}
+      toast('↪️ Пост отправлен другу в личные сообщения!', 'success');
+    }
+
+    /* ---- Жалобы ---- */
+    const COMPL_REASONS37 = { spam: 'Спам / шутка', forbidden: 'Запрещённый предмет', fraud: 'Обман', insult: 'Оскорбления', other: 'Другое' };
+    function openReportModal37(target) {
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); toast('Войди, чтобы отправить жалобу.', 'info'); return; }
+      if (!target || !target.id) return;
+      reportTarget37 = { kind: target.kind, id: target.id };
+      const hint = document.getElementById('report-target-hint');
+      if (hint) hint.textContent = target.kind === 'listing' ? 'Жалоба на объявление Барахолки' : 'Жалоба на пост в Соцсети';
+      const sel = document.getElementById('report-reason');
+      if (sel) sel.value = 'spam';
+      const other = document.getElementById('report-reason-other');
+      if (other) { other.value = ''; other.style.display = 'none'; }
+      showFormError('report-error', null);
+      openModal('modal-report');
+    }
+    function sendComplaint37() {
+      const user = getCurrentUser();
+      if (!user || !reportTarget37) { closeModal('modal-report'); return; }
+      const sel = document.getElementById('report-reason');
+      const other = document.getElementById('report-reason-other');
+      let reason = sel ? sel.value : 'other';
+      const reasonText = reason === 'other' && other && other.value.trim() ? other.value.trim() : (COMPL_REASONS37[reason] || 'Другое');
+      let targetAuthorId = null, targetAuthorName = '', targetTitle = '', targetQuote = '';
+      if (reportTarget37.kind === 'listing') {
+        const l = getList('listings').find(function (x) { return x.id === reportTarget37.id; });
+        if (!l) { showFormError('report-error', 'Объявление уже не найдено.'); return; }
+        targetAuthorId = l.sellerId; targetAuthorName = l.sellerName || '';
+        targetTitle = l.title || ''; targetQuote = String(l.desc || '').slice(0, 200);
+      } else {
+        const p = getList('posts').find(function (x) { return x.id === reportTarget37.id; });
+        if (!p) { showFormError('report-error', 'Пост уже не найден.'); return; }
+        targetAuthorId = p.userId; targetAuthorName = p.name || '';
+        targetTitle = 'Пост в Соцсети'; targetQuote = String(p.text || '').slice(0, 200);
+      }
+      const complaints = getList('complaints');
+      const dup = complaints.find(function (c) {
+        return c.status === 'open' && c.kind === reportTarget37.kind && c.targetId === reportTarget37.id && c.fromId === user.id;
+      });
+      if (dup) { showFormError('report-error', 'Ты уже отправил жалобу на этот контент — администрация рассмотрит её.'); return; }
+      complaints.push({
+        id: makeId('compl'), kind: reportTarget37.kind, targetId: reportTarget37.id,
+        fromId: user.id, fromName: user.name, fromClass: classIdOf(user.grade, user.letter),
+        targetAuthorId: targetAuthorId, targetAuthorName: targetAuthorName,
+        targetTitle: targetTitle, targetQuote: targetQuote,
+        reason: reasonText, ts: Date.now(), status: 'open'
+      });
+      dbSave('complaints', complaints);
+      updateComplaintsBadge37();
+      reportTarget37 = null;
+      closeModal('modal-report');
+      toast('🚫 Жалоба отправлена администрации Лицея №37.', 'success');
+    }
+    function updateComplaintsBadge37() {
+      const badge = document.getElementById('adm-compl-badge');
+      if (!badge) return;
+      const open = getList('complaints').filter(function (c) { return c && c.status === 'open'; }).length;
+      badge.textContent = String(open);
+      badge.style.display = open ? 'inline-block' : 'none';
+    }
+    function renderAdminComplaints() {
+      const body = document.getElementById('admin-tools-body');
+      if (!body) return;
+      const complaints = getList('complaints');
+      const open = complaints.filter(function (c) { return c && c.status === 'open'; });
+      const resolved = complaints.filter(function (c) { return c && c.status !== 'open'; });
+      updateComplaintsBadge37();
+      body.innerHTML =
+        '<p class="info-desc">Жалобы от учеников на посты и объявления. Удаление нарушающего контента записывается в Журнал действий.</p>' +
+        (open.length
+          ? open.map(function (c) {
+              const when = c.ts ? fmtDateTime(c.ts) : '';
+              return '<div class="card complaint-card">' +
+                '<b>' + esc(c.fromName || 'Ученик') + ' · ' + esc(c.fromClass || '') + '</b> пожаловался на <b>' + esc(c.targetAuthorName || 'пользователя') + '</b>' +
+                '<div class="complaint-quote">' + esc(c.kind === 'listing' ? 'Объявление: ' + (c.targetTitle || '') : 'Пост: ' + (c.targetTitle || '')) +
+                (c.targetQuote ? '<br>«' + esc(c.targetQuote) + '»' : '') + '</div>' +
+                '<div>Причина: <b>' + esc(c.reason || '') + '</b> · ' + esc(when) + '</div>' +
+                '<div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;">' +
+                  (c.fromId ? '<button type="button" class="btn btn-outline btn-sm" data-compl-dm="' + esc(c.fromId) + '">💬 Написать ученику</button>' : '') +
+                  (c.targetAuthorId ? '<button type="button" class="btn btn-outline btn-sm" data-compl-dm="' + esc(c.targetAuthorId) + '">💬 Написать автору</button>' : '') +
+                  '<button type="button" class="btn btn-danger btn-sm" data-compl-del="' + esc(c.id) + '">🗑️ Удалить нарушающий контент</button>' +
+                  '<button type="button" class="btn btn-ghost btn-sm" data-compl-dismiss="' + esc(c.id) + '">✅ Отклонить жалобу</button>' +
+                '</div></div>';
+            }).join('')
+          : '<p class="info-desc">🎉 Открытых жалоб нет — все рассмотрены.</p>') +
+        (resolved.length
+          ? '<h3 class="info-title" style="margin-top:14px;">Рассмотренные (' + resolved.length + ')</h3>' +
+            resolved.slice(-20).reverse().map(function (c) {
+              return '<div class="card complaint-card" style="opacity:.7;"><b>' + esc(c.fromName || '') + '</b> → <b>' + esc(c.targetAuthorName || '') + '</b> · ' + esc(c.reason || '') + ' · ' + (c.status === 'resolved_del' ? 'контент удалён' : 'отклонена') + '</div>';
+            }).join('')
+          : '');
+    }
+
+    /* ---- Барахолка: просмотры, состояние, место, избранное, покупка, отзывы ---- */
+    function viewsOf(l) {
+      if (!l) return 0;
+      return Number(l.views || 0) + (Array.isArray(l.viewedBy) ? l.viewedBy.length : 0);
+    }
+    function condLabel37(l) {
+      const map = { new: 'Новое', likenew: 'Как новое', good: 'Хорошее', worn: 'Есть следы носки' };
+      if (l.cond === 'other') return l.condCustom || 'Другое';
+      return map[l.cond] || '';
+    }
+    function placeLabel37(l) {
+      const map = { hall: 'Холл 1 этажа у охраны', canteen: 'Возле столовой', library: 'Библиотека', physics: '2 этаж у кабинета физики', gym: 'Спортзал' };
+      if (l.place === 'other') return l.placeCustom || 'Другое место';
+      return map[l.place] || '';
+    }
+    function getPurchases37() { return getList('purchases'); }
+    function getReviews37() { return getList('reviews'); }
+    function sellerRating37(sellerId) {
+      if (!sellerId) return '';
+      const revs = getReviews37().filter(function (r) { return r.sellerId === sellerId; });
+      if (!revs.length) return '';
+      const avg = revs.reduce(function (s, r) { return s + Number(r.stars || 0); }, 0) / revs.length;
+      return '★ ' + (Math.round(avg * 10) / 10).toFixed(1) + ' (' + revs.length + ' ' + (revs.length % 10 === 1 && revs.length % 100 !== 11 ? 'отзыв' : 'отзывов') + ')';
+    }
+    function getUserFavs37(userId) {
+      if (!userId) return [];
+      const map = dbLoad('market_favs', {});
+      const arr = map && typeof map === 'object' && !Array.isArray(map) ? map[userId] : null;
+      return Array.isArray(arr) ? arr : [];
+    }
+    function toggleListingFav37(listingId) {
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); toast('Войди, чтобы добавлять в избранное.', 'info'); return; }
+      const map = dbLoad('market_favs', {});
+      const arr = Array.isArray(map[user.id]) ? map[user.id] : [];
+      const idx = arr.indexOf(listingId);
+      if (idx === -1) { arr.push(listingId); toast('❤️ Добавлено в избранное!', 'success'); }
+      else { arr.splice(idx, 1); toast('Убрано из избранного.', 'info'); }
+      map[user.id] = arr;
+      dbSave('market_favs', map);
+      renderMarket();
+    }
+    function countListingView37(listingId) {
+      const user = getCurrentUser();
+      const items = getList('listings');
+      const l = items.find(function (x) { return x.id === listingId; });
+      if (!l) return;
+      if (!Array.isArray(l.viewedBy)) l.viewedBy = [];
+      if (user) {
+        if (l.viewedBy.indexOf(user.id) === -1) { l.viewedBy.push(user.id); dbSave('listings', items); }
+      } else {
+        l.views = Number(l.views || 0) + 1;
+        dbSave('listings', items);
+      }
+    }
+    function toggleListingReserve37(listingId) {
+      const user = getCurrentUser();
+      if (!user) return;
+      const items = getList('listings');
+      const l = items.find(function (x) { return x.id === listingId; });
+      if (!l) return;
+      if (l.sellerId !== user.id && !canModerateAll(user)) { toast('Это не твоё объявление.', 'error'); return; }
+      l.reserved = !l.reserved;
+      dbSave('listings', items);
+      renderMarket();
+      toast(l.reserved ? '📦 Объявление помечено «Забронировано».' : '📦 Бронь снята.', 'success');
+    }
+    function buyListing37(listingId) {
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); toast('Войди, чтобы покупать.', 'info'); return; }
+      const items = getList('listings');
+      const l = items.find(function (x) { return x.id === listingId; });
+      if (!l || l.active === false) { toast('Объявление не найдено.', 'error'); return; }
+      if (l.sellerId === user.id) { toast('Это твоё объявление 🙂', 'info'); return; }
+      const left = l.qtyLeft !== undefined ? Number(l.qtyLeft) : Number(l.qty || 1);
+      if (left <= 0 || l.reserved) { toast('📦 Товар уже забронирован/продан.', 'info'); return; }
+      if (!confirm('Купить «' + (l.title || '') + '»? Место встречи: ' + (placeLabel37(l) || 'по договорённости') + '. После подтверждения количество уменьшится на 1.')) return;
+      l.qtyLeft = left - 1;
+      if (l.qtyLeft <= 0) { l.qtyLeft = 0; l.reserved = true; }
+      if (!Array.isArray(l.buyers)) l.buyers = [];
+      if (l.buyers.indexOf(user.id) === -1) l.buyers.push(user.id);
+      dbSave('listings', items);
+      const purchases = getPurchases37();
+      purchases.push({
+        id: makeId('pur'), listingId: l.id, sellerId: l.sellerId, sellerName: l.sellerName || '',
+        buyerId: user.id, buyerName: user.name, title: l.title || '',
+        price: l.deal === 'price' ? Number(l.price || 0) : 0,
+        deal: l.deal || 'price', ts: Date.now()
+      });
+      dbSave('purchases', purchases);
+      pushNotif37(l.sellerId, {
+        type: 'bought', text: '🛒 ' + user.name + ' (' + classIdOf(user.grade, user.letter) + ') купил «' + (l.title || '') + '». Свяжись с покупателем!', go: 'market'
+      });
+      renderMarket();
+      try { renderPfPurchases37(); } catch (ePp37) {}
+      try { launchConfetti(); } catch (eLc37) {}
+      toast('🛒 Покупка зафиксирована! Не забудь оставить отзыв продавцу.', 'success');
+    }
+    function openReviewModal37(sellerId) {
+      const user = getCurrentUser();
+      if (!user) { openModal('modal-login'); return; }
+      if (!sellerId || sellerId === user.id) return;
+      const bought = getPurchases37().find(function (p) { return p.buyerId === user.id && p.sellerId === sellerId; });
+      if (!bought) { toast('Отзыв можно оставить только после покупки «🛒 Купить»!', 'error'); return; }
+      if (getReviews37().find(function (r) { return r.sellerId === sellerId && r.buyerId === user.id; })) {
+        toast('Ты уже оставлял отзыв этому продавцу.', 'info'); return;
+      }
+      reviewTarget37 = sellerId;
+      reviewStars37 = 5;
+      const hint = document.getElementById('review-hint');
+      const su = getUserById(sellerId);
+      if (hint) hint.textContent = 'Оценка продавца: ' + (su ? su.name : 'ученик');
+      renderReviewStars37();
+      const txt = document.getElementById('review-text');
+      if (txt) txt.value = '';
+      showFormError('review-error', null);
+      openModal('modal-review');
+    }
+    function renderReviewStars37() {
+      const box = document.getElementById('review-stars');
+      if (!box) return;
+      let html = '';
+      for (let i = 1; i <= 5; i++) {
+        html += '<button type="button" class="review-star-btn" data-review-star="' + i + '" style="font-size:26px; background:none; border:none; cursor:pointer; ' + (i <= reviewStars37 ? 'filter:grayscale(0);' : 'filter:grayscale(1); opacity:.45;') + '">⭐</button>';
+      }
+      box.innerHTML = html;
+    }
+    function submitReview37() {
+      const user = getCurrentUser();
+      if (!user || !reviewTarget37) { closeModal('modal-review'); return; }
+      const bought = getPurchases37().find(function (p) { return p.buyerId === user.id && p.sellerId === reviewTarget37; });
+      if (!bought) { showFormError('review-error', 'Отзыв можно оставить только после покупки.'); return; }
+      if (getReviews37().find(function (r) { return r.sellerId === reviewTarget37 && r.buyerId === user.id; })) {
+        showFormError('review-error', 'Ты уже оставлял отзыв этому продавцу.'); return;
+      }
+      const txtEl = document.getElementById('review-text');
+      const text = txtEl ? txtEl.value.trim() : '';
+      const reviews = getReviews37();
+      reviews.push({
+        id: makeId('rev'), sellerId: reviewTarget37, buyerId: user.id, buyerName: user.name,
+        stars: reviewStars37, text: text, ts: Date.now()
+      });
+      dbSave('reviews', reviews);
+      pushNotif37(reviewTarget37, { type: 'review', text: '⭐ ' + user.name + ' оставил отзыв (' + reviewStars37 + '/5) о твоей продаже!', go: 'market' });
+      reviewTarget37 = null;
+      closeModal('modal-review');
+      renderMarket();
+      try { renderPfPurchases37(); } catch (ePr37) {}
+      toast('⭐ Отзыв отправлен!', 'success');
+    }
+
+    /* ---- Черновики личных сообщений (локальные на устройстве) ---- */
+    function dmDraftsMap37() {
+      const map = readLs('dm_drafts');
+      return (map && typeof map === 'object' && !Array.isArray(map)) ? map : {};
+    }
+    function getDmDraft37(uid, partnerId) {
+      if (!uid || !partnerId) return '';
+      const map = dmDraftsMap37();
+      return map[uid + '|' + partnerId] || '';
+    }
+    function setDmDraft37(uid, partnerId, text) {
+      if (!uid || !partnerId) return;
+      const map = dmDraftsMap37();
+      const key = uid + '|' + partnerId;
+      if (text) map[key] = text; else delete map[key];
+      writeLs('dm_drafts', map);
+    }
+    function clearDmDraft37(uid, partnerId) { setDmDraft37(uid, partnerId, ''); }
+    function saveDmDraftFromInput37() {
+      try {
+        if (typeof currentDmPartner === 'undefined' || !currentDmPartner) return;
+        if (typeof editingDmId !== 'undefined' && editingDmId) return;
+        const user = getCurrentUser();
+        if (!user) return;
+        const input = document.getElementById('dm-input');
+        if (!input) return;
+        setDmDraft37(user.id, currentDmPartner, input.value.trim());
+        try { renderDms(); } catch (eRd37) {}
+      } catch (eSd37) {}
+    }
+
+    /* ---- Староста и актив класса ---- */
+    function councilData37() {
+      const map = dbLoad('council', {});
+      return (map && typeof map === 'object' && !Array.isArray(map)) ? map : {};
+    }
+    function canManageCouncil37(user, classId) {
+      if (!user || !classId) return false;
+      try { if (sessionStorage.getItem('lp37_admin_full') === '1') return true; } catch (eS37) {}
+      if (user.isAdmin) return true;
+      if (hasGlobalNode(user, 'moderation')) return true;
+      return user.role === 'teacher' && user.homeroom === classId;
+    }
+    function councilUserFor37(classId, role) {
+      const map = councilData37();
+      const uid = map[classId] ? map[classId][role] : null;
+      return uid ? getUserById(uid) : null;
+    }
+    function renderCouncil37() {
+      const card = document.getElementById('council-card');
+      if (!card) return;
+      const user = getCurrentUser();
+      const classId = typeof currentClass !== 'undefined' && currentClass ? currentClass : (user ? classIdOf(user.grade, user.letter) : '');
+      if (!classId) { card.style.display = 'none'; return; }
+      card.style.display = 'block';
+      const canManage = canManageCouncil37(user, classId);
+      if (councilPick37 && canManage) {
+        const students = getUsers().filter(function (u) { return u.role !== 'teacher' && classIdOf(u.grade, u.letter) === classId; });
+        const role = COUNCIL_ROLES37.find(function (r) { return r.id === councilPick37; });
+        card.innerHTML = '<h3 class="info-title">🗳️ Назначить: ' + (role ? role.label : '') + ' · ' + esc(classId) + '</h3>' +
+          '<button type="button" class="btn btn-ghost btn-sm" data-council-cancel="1" style="margin-bottom:8px;">✕ Отмена</button>' +
+          (students.length
+            ? students.map(function (u) {
+                return '<div class="council-row">' + avatarHtml(u.avatar, 'mini-ava') +
+                  '<div style="flex:1; min-width:0;"><b>' + esc(u.name) + '</b> <span class="user-class">' + esc(classId) + '</span></div>' +
+                  '<button type="button" class="btn btn-primary btn-sm" data-council-set="' + esc(councilPick37) + '|' + esc(u.id) + '">Назначить</button></div>';
+              }).join('')
+            : '<p class="info-desc">В этом классе пока нет зарегистрированных учеников.</p>');
+        return;
+      }
+      const map = councilData37();
+      const row = map[classId] || {};
+      const canPick = canManage;
+      card.innerHTML = '<h3 class="info-title">🗳️ Староста и актив класса ' + esc(classId) + '</h3>' +
+        COUNCIL_ROLES37.map(function (r) {
+          const u = row[r.id] ? getUserById(row[r.id]) : null;
+          return '<div class="council-row">' +
+            '<div style="flex:1; min-width:0;"><b>' + r.label + ':</b> ' +
+              (u ? '<span class="' + (r.id === 'starosta' ? 'starosta-name-glow' : '') + '">' + esc(u.name) + '</span>' : '<span style="opacity:.6;">свободно</span>') +
+            '</div>' +
+            (canPick ? '<button type="button" class="btn btn-outline btn-sm" data-council-pick="' + r.id + '">🗳️ Выбрать</button>' : '') +
+          '</div>';
+        }).join('') +
+        (canPick ? '<p class="info-desc" style="margin-top:6px;">Назначать может классный руководитель или главный админ.</p>' : '');
+    }
+    function setCouncilRole37(classId, role, userId) {
+      const user = getCurrentUser();
+      if (!user || !canManageCouncil37(user, classId)) { toast('Назначать актив может только классный руководитель или админ.', 'error'); return; }
+      const roleDef = COUNCIL_ROLES37.find(function (r) { return r.id === role; });
+      if (!roleDef) return;
+      const map = councilData37();
+      const before = JSON.parse(JSON.stringify(map));
+      if (!map[classId]) map[classId] = {};
+      if (userId) map[classId][role] = userId; else delete map[classId][role];
+      dbSave('council', map);
+      const target = getUserById(userId);
+      adminLogAction('council', roleDef.label + ' · ' + classId + ' → ' + (target ? target.name : 'свободно'), { kind: 'list', key: 'council', before: before });
+      councilPick37 = null;
+      renderCouncil37();
+      try { renderChat(); } catch (eRc37) {}
+      toast('✅ ' + roleDef.label + ' обновлён для ' + classId + '!', 'success');
+    }
+
+    /* ---- Бейджи ролей (учитель / староста) ---- */
+    function roleBadges37(u, classIdHint) {
+      if (!u) return '';
+      let html = '';
+      const classId = classIdHint || classIdOf(u.grade, u.letter);
+      if (u.role === 'teacher') {
+        html += '<span class="teacher-badge">👩‍🏫 Учитель</span>';
+        if (u.homeroom) html += ' <span class="homeroom-label">Кл. руководитель ' + esc(u.homeroom) + '</span>';
+      }
+      const map = councilData37();
+      const row = classId ? map[classId] : null;
+      if (row && row.starosta && row.starosta === u.id) {
+        html += ' <span class="starosta-badge">⭐ Староста ' + esc(classId) + '</span>';
+      }
+      return html;
+    }
+
+    /* ---- 100 правил сообщества ---- */
+    const RULES_SECTIONS37 = [
+      [1, 25, 'Уважение и культура общения'],
+      [26, 50, 'Безопасность и защита данных'],
+      [51, 70, 'Учёба и академическая честность'],
+      [71, 85, 'Честная Барахолка и Бюро находок'],
+      [86, 100, 'Каналы, сообщества, питомцы и ответственность']
+    ];
+    const RULES37 = [
+      'Уважай одноклассников, учителей и гостей Лицея №37 в любом общении.',
+      'Запрещено оскорблять и унижать учеников за внешность, оценки или увлечения: сообщение удаляется, автор получает предупреждение администрации.',
+      'Общайся вежливо: без мата, капса и грубых шуток в чатах и комментариях.',
+      'Конфликты решай словами, а не ссорой в комментариях: если диалог зашёл в тупик, обратись к классному руководителю или администрации портала.',
+      'Приветствуй новых учеников и помогай им освоиться на портале.',
+      'Запрещена травля и групповые нападки: жалобы на травлю рассматриваются в первую очередь, организаторы теряют доступ к чатам и постам.',
+      'Относись с уважением к чужому мнению, даже если оно не совпадает с твоим.',
+      'Споры о политике и религии на школьном портале неуместны: это место для учёбы, дружбы и школьных новостей, такие темы обсуждаются только офлайн.',
+      'Не публикуй чужие фотографии без согласия человека, который на них изображён.',
+      'Запрещено распространять слухи об учениках и учителях: непроверенная информация удаляется из ленты, повторные случаи обсуждаются с администрацией.',
+      'Шутки должны быть добрыми и не задевать никого лично.',
+      'Запрещены мат и оскорбления в чатах, постах и комментариях портала: такие сообщения удаляются, а за повторный мат аккаунт блокируется.',
+      'Запрещены нецензурная лексика, завуалированный мат и оскорбления в любых чатах.',
+      'Запрещены угрозы и давление в личных сообщениях: любой скриншот с угрозой становится основанием для разбирательства администрацией портала.',
+      'Поддерживай добрую атмосферу: хвали за успехи и поддержи в неудачах.',
+      'Запрещены материалы с признаками вражды: такие посты удаляются немедленно, а автор получает бан чата до разбирательства с администрацией.',
+      'Не тролль и не перебивай одноклассников в общем чате класса.',
+      'Ирония допустима, пока не стала насмешкой над конкретным учеником: если человек попросил остановиться — остановись сразу, это правило уважения.',
+      'Обращайся к учителям уважительно: на «вы» и по имени-отчеству.',
+      'Запрещено выдавать себя за другого ученика или учителя: фейки удаляются, аккаунт блокируется до выяснения личности через классного руководителя.',
+      'Помогай ученикам младших классов осваивать портал и отвечай на их вопросы.',
+      'Критикуй поступки и работы, а не самого человека, и всегда предлагай, как сделать лучше, — иначе это уже не критика, а грубость.',
+      'Не порти сюрпризы и события класса заблаговременными спойлерами в чате.',
+      'Лицей — территория равных возможностей: каждый ученик любого класса имеет равные права на общение, помощь и участие в жизни портала.',
+      'Будь примером культуры общения для младших лицеистов.',
+      'Не публикуй домашний адрес, телефон и пароли: эти данные видят мошенники, личные контакты передавай только с разрешения родителей.',
+      'Никому не сообщай свой пароль от портала, даже друзьям.',
+      'Запрещено публиковать чужие адреса, телефоны и личные данные: за это контент удаляется немедленно, а аккаунт нарушителя блокируется администрацией.',
+      'Не переходи по подозрительным ссылкам из чатов и постов.',
+      'Если кто-то выпрашивает твой пароль — сообщи администрации: взлом и использование чужих аккаунтов запрещены и ведут к удалению аккаунта нарушителя.',
+      'Скачивай файлы из Барахолки и чатов только после проверки.',
+      'Запрещены фото и видео с драками и опасными ситуациями: такой контент удаляется, а виновники приглашаются на разговор с администрацией лицея.',
+      'Не встречайся с незнакомцами по контактам из интернета.',
+      'Об угрозе или шантаже в чатах немедленно сообщай администрации: скриншоты помогают быстрее разобраться, а сообщение можно отправить анонимно.',
+      'Выходи из аккаунта на чужих телефонах и компьютерах.',
+      'Запрещены фейковые аккаунты и вход под чужим именем: обман быстро раскрывается, а владелец фейка теряет доступ ко всем разделам портала.',
+      'Не фотографируй и не выкладывай страницы чужого дневника.',
+      'Запрещено публиковать скриншоты чужой переписки без согласия собеседника — исключение только для жалоб администрации на нарушение.',
+      'Замечен взлом аккаунта — сообщай администрации сразу же.',
+      'Не используй чужие аватарки и личные фото без разрешения: администрация удаляет такие материалы по первому обращению владельца изображения.',
+      'Не добавляй в чаты и сообщества класса посторонних людей.',
+      'Запрещены массовые рассылки спама и попытки обойти защиту портала: система фиксирует их автоматически и блокирует аккаунт нарушителя.',
+      'Храни личные вещи и телефоны под присмотром в школе.',
+      'При потере вещи публикуй заявку в «🆘 Бюро находок»: нашедший обязан вернуть находку владельцу, а присвоение чужих вещей разбирается с родителями.',
+      'Нашёл чужую вещь — сдай её дежурному учителю или в бюро находок.',
+      'Даже шуточные угрозы воспринимаются всерьёз: они фиксируются в журнале администрации и обсуждаются с классным руководителем и психологом.',
+      'Не оставляй открытыми личные переписки на уроках в школе.',
+      'Не отправляй сообщения чаще одного раза в пять секунд: антиспам защищает чаты от флуда, а повторный флуд временно закрывает отправку.',
+      'Не пересылай закрытый чат класса посторонним людям.',
+      'Если аккаунт взломан — сразу выйди и сообщи администрации: пароль будет сброшен, а подозрительные действия в журнале проверяются и отменяются.',
+      'Списывать на контрольных, викторинах и в тестах запрещено.',
+      'Запрещено выкладывать ответы на контрольные и олимпиады: это обесценивает честные результаты, такие посты удаляются, автор теряет баллы.',
+      'Выполняй домашку честно и вовремя отмечай на доске дедлайнов.',
+      'Отметка «Сделано ✓» на доске дедлайнов с несделанной домашкой снимает баллы, а систематический обман обсуждается с классным руководителем.',
+      'Пользуйся Банком взаимопомощи для объяснения, а не списывания.',
+      'Волонтёр объясняет тему и показывает пример, но не решает работу целиком: цель помощи — понимание предмета, а не готовые ответы.',
+      'Не выкладывай чужие проекты и рефераты под своим именем.',
+      'Указывай источники и авторов идей в постах и проектах: скопированные работы удаляются, за плагиат снимаются баллы портала.',
+      'Пропустил урок — узнай домашку у одноклассников в чате.',
+      'Калькулятор оценок помогает планировать отметки: считай, сколько пятёрок нужно получить, и средний балл вырастет честно и предсказуемо.',
+      'Не засоряй чаты класса во время уроков и самоподготовки.',
+      'Не сливай ответы викторин «Игровой Лицея 37» заранее: честная игра интереснее, а за слив результатов победитель лишается баллов раунда.',
+      'Учись планировать время: дедлайн — не за ночь до сдачи.',
+      'Вместо просьбы «решите за меня» задавай конкретный вопрос: так тебе быстрее помогут, а волонтёры видят, что ты стараешься понять сам.',
+      'Библиотека и учебники из Барахолки возвращай вовремя.',
+      'Продавая учебники, честно указывай предмет и класс: покупатель должен знать, что книга подходит его программе и есть в школьном списке.',
+      'Олимпиады и конкурсы анонсируй через раздел Мероприятия.',
+      'Подавай заявки на мероприятия честно: одно имя, настоящий класс и реальный контакт — фейковые заявки проверяются и мешают другим ученикам.',
+      'Не забывай благодарить волонтёров, которые помогли с учёбой.',
+      'За постоянное списание ученик теряет право на награды и звания портала: честные баллы ценнее накруток и являются основой репутации в лицее.',
+      'Продавай на Барахолке только свои вещи по честной цене.',
+      'Запрещена продажа опасных и запрещённых предметов: объявление удаляется немедленно, а продавец получает блокировку Барахолки.',
+      'Фотографии товара должны быть настоящими, а не картинками из интернета.',
+      'Продавец на Барахолке обязан указывать реальное состояние вещи и прикладывать настоящие фотографии без обмана покупателей.',
+      'Указывай честное состояние: новое, хорошее или с дефектами.',
+      'Назначай место встречи только на территории лицея: холл, столовая, библиотека или спортзал — и передавайте вещи при других учениках.',
+      'Обман покупателя — самая строгая причина для бана.',
+      'Деньги передавайте лично из рук в руки: портал не проводит платежи и не восстанавливает переводы, совершённые без личной встречи.',
+      'Кнопку «🛒 Купить» нажимай только с настоящим намерением.',
+      'Если нажал «Купить» — свяжись с продавцом в течение двух дней, иначе бронь снимается, а ложные покупки закрывают доступ к Барахолке.',
+      'Отзыв оставляй только после реальной покупки у продавца.',
+      'Отзывы должны быть честными и по делу: отзывы без реальной покупки удаляются, а оскорбления в отзывах обсуждаются администрацией.',
+      'Кнопку «Пожаловаться» используй только по настоящей причине.',
+      'Ложные жалобы на конкурентов отслеживаются: за жалобу ради срыва чужой продажи автор получает предупреждение, при повторе — блокировку раздела.',
+      'Нашёл вещь через бюро находок — верни её владельцу.',
+      'Владелец канала отвечает за порядок: нарушающие посты удаляются в течение суток после жалобы, иначе канал скрывается из рекомендаций администрацией.',
+      'Название и описание канала должны быть понятными и честными.',
+      'Каналы с травлей и запрещённым контентом удаляются вместе с постами, а создатель теряет право создавать сообщества до разбирательства.',
+      'Публикуй в сообществе посты строго по его теме и разделу.',
+      'Права помощников канала («🔌 Провода») выдаются за конкретные задачи: если помощник перестал справляться, владелец снимает провод.',
+      'Уведомления и рассылки от администрации обязательны к прочтению.',
+      'Питомец класса — общий талисман: кормите и играйте с ним по очереди, ведь честный уровень питомца отражает вклад всего класса.',
+      'Помни: ночью с 22:00 до 08:00 МСК питомец класса спит.',
+      'Кличку и вид талисмана меняет классный руководитель или админ: решение класса обсудите в чате и подайте своему руководителю.',
+      'Звания «Легенда школы» питомец получает только честно.',
+      'Баллы начисляются за реальные заслуги и активность: любые попытки накрутить их обнуляют счёт и разбираются администрацией лицея.',
+      'Выдача админки и прав без согласия владельца запрещена.',
+      'Журнал администрации хранит 300 последних действий: каждое удаление и правку можно отменить, спорные ситуации разбираются по фактам журнала.',
+      'Незнание правил не освобождает от ответственности.',
+      'Портал Лицея №37 создан для дружбы, учёбы и честной игры: уважай друг друга, помогай младшим, а лучшие идеи учеников воплощаются в жизнь!'
+    ];
+    function openRules37() {
+      const search = document.getElementById('rules-search');
+      if (search) search.value = '';
+      renderRules37('');
+      openModal('modal-rules');
+    }
+    function renderRules37(query) {
+      const box = document.getElementById('rules-list');
+      if (!box) return;
+      const q = normText(query || '');
+      let html = '';
+      let num = 0;
+      RULES_SECTIONS37.forEach(function (sec) {
+        let sectionHtml = '';
+        for (let i = sec[0]; i <= sec[1]; i++) {
+          const text = RULES37[i - 1];
+          if (!text) continue;
+          if (q && normText(text).indexOf(q) === -1) continue;
+          sectionHtml += '<div class="rule-item"><b>' + i + '.</b> ' + esc(text) + '</div>';
+        }
+        if (sectionHtml) {
+          html += '<div class="rules-section-title">' + esc(sec[2]) + '</div>' + sectionHtml;
+        }
+      });
+      if (!html) {
+        html = '<div class="rules-hidden">Ничего не найдено — попробуй другой запрос.</div>';
+      }
+      box.innerHTML = html;
+    }
+
+    /* ---- Переключатель роли ученик/учитель ---- */
+    let hrFilled37 = false;
+    let itagDraftUser37 = null;
+    function setRegRole37(role) {
+      regRole37 = role === 'teacher' ? 'teacher' : 'student';
+      const isTeacher = regRole37 === 'teacher';
+      const st = document.getElementById('reg-role-student');
+      const th = document.getElementById('reg-role-teacher');
+      if (st && th) {
+        st.classList.toggle('btn-primary', !isTeacher);
+        st.classList.toggle('btn-ghost', isTeacher);
+        th.classList.toggle('btn-primary', isTeacher);
+        th.classList.toggle('btn-ghost', !isTeacher);
+      }
+      const classField = document.getElementById('reg-class-field');
+      if (classField) classField.style.display = isTeacher ? 'none' : 'block';
+      const hrField = document.getElementById('reg-homeroom-field');
+      if (hrField) hrField.style.display = isTeacher ? 'block' : 'none';
+      const grade = document.getElementById('reg-grade');
+      const letter = document.getElementById('reg-letter');
+      if (grade) grade.required = !isTeacher;
+      if (letter) letter.required = !isTeacher;
+      const nameEl = document.getElementById('reg-name');
+      const nameLabel = document.getElementById('reg-name-label');
+      const nameHint = document.getElementById('reg-name-hint');
+      if (nameLabel) nameLabel.textContent = isTeacher ? 'ФИО полностью' : 'Имя и фамилия / никнейм';
+      if (nameHint) nameHint.textContent = isTeacher ? 'Ровно 3 слова: Фамилия Имя Отчество (например: Иванова Елена Сергеевна)' : 'Как тебя будут видеть другие ученики';
+      if (nameEl) nameEl.placeholder = isTeacher ? 'Иванова Елена Сергеевна' : 'Например: Альфия';
+      const passLabel = document.getElementById('reg-pass-label');
+      if (passLabel) passLabel.textContent = isTeacher ? 'Пароль (от 6 символов)' : 'Пароль (от 4 символов)';
+      if (isTeacher && !hrFilled37) {
+        hrFilled37 = true;
+        try { fillClassSelect(document.getElementById('reg-hr-grade'), document.getElementById('reg-hr-letter')); } catch (eF37) {}
+      }
+    }
+    function setLoginRole37(role) {
+      loginRole37 = role === 'teacher' ? 'teacher' : 'student';
+      const st = document.getElementById('login-role-student');
+      const th = document.getElementById('login-role-teacher');
+      if (st && th) {
+        st.classList.toggle('btn-primary', loginRole37 !== 'teacher');
+        st.classList.toggle('btn-ghost', loginRole37 === 'teacher');
+        th.classList.toggle('btn-primary', loginRole37 === 'teacher');
+        th.classList.toggle('btn-ghost', loginRole37 !== 'teacher');
+      }
+    }
+
+    /* ---- Профиль: теги интересов, закладки, покупки ---- */
+    function renderPfItags37() {
+      const box = document.getElementById('pf-itags');
+      if (!box) return;
+      const user = getCurrentUser();
+      if (!user) { box.innerHTML = ''; return; }
+      if (itagDraftUser37 !== user.id) {
+        itagDraftUser37 = user.id;
+        pfItagsDraft37 = Array.isArray(user.itags) ? user.itags.slice(0, 3) : [];
+      }
+      box.innerHTML = '<p class="info-desc" style="margin:0 0 6px;">Выбери до 3 направлений — они видны в профиле и поиске людей:</p>' +
+        ITAGS37.map(function (tag, i) {
+          const sel = pfItagsDraft37.indexOf(tag) !== -1;
+          return '<button type="button" class="itag-chip' + (sel ? ' selected' : '') + '" data-pf-itag="' + i + '">' + esc(tag) + '</button>';
+        }).join('');
+    }
+    function renderPfBookmarks37() {
+      const box = document.getElementById('pf-bookmarks');
+      if (!box) return;
+      const user = getCurrentUser();
+      const arr = user ? (bookmarksMap37()[user.id] || []) : [];
+      if (!user || !arr.length) {
+        box.innerHTML = '<p class="info-desc">Пока нет закладок — жми 🔖 под постами в ленте, чтобы сохранить их здесь.</p>';
+        return;
+      }
+      const posts = getList('posts');
+      box.innerHTML = arr.map(function (pid) {
+        const p = posts.find(function (x) { return x.id === pid; });
+        if (!p) return '';
+        return '<div class="review-row"><div style="flex:1; min-width:0;">' +
+          '<b>' + esc(p.name || '') + '</b> <span class="user-class">' + esc(p.classId || '') + '</span>' +
+          '<div style="opacity:.85;">' + esc(String(p.text || '').slice(0, 90)) + '</div></div>' +
+          '<button type="button" class="btn btn-ghost btn-sm" data-bm-open="' + esc(p.id) + '">📰 Открыть</button>' +
+          '<button type="button" class="btn btn-outline btn-sm" data-pf-bm-del="' + esc(p.id) + '">✕</button></div>';
+      }).join('') || '<p class="info-desc">Закладки пусты.</p>';
+    }
+    function renderPfPurchases37() {
+      const box = document.getElementById('pf-purchases');
+      if (!box) return;
+      const user = getCurrentUser();
+      const arr = user ? getPurchases37().filter(function (p) { return p.buyerId === user.id; }) : [];
+      if (!user || !arr.length) {
+        box.innerHTML = '<p class="info-desc">Покупок пока нет — жми «🛒 Купить» на Барахолке. После покупки можно оценить продавца!</p>';
+        return;
+      }
+      box.innerHTML = arr.slice().reverse().map(function (p) {
+        const reviewed = getReviews37().find(function (r) { return r.sellerId === p.sellerId && r.buyerId === user.id; });
+        return '<div class="review-row"><div style="flex:1; min-width:0;">' +
+          '<b>' + esc(p.title || 'Товар') + '</b> · ' + esc(p.sellerName || '') +
+          '<div style="opacity:.85;">' + esc(fmtDateTime(p.ts)) + ' · ' + (Number(p.price) > 0 ? Number(p.price) + ' ₽' : 'даром/обмен') + '</div></div>' +
+          (reviewed
+            ? '<span class="seller-rating">★ ' + reviewed.stars + '/5</span>'
+            : '<button type="button" class="btn btn-primary btn-sm" data-review-open="' + esc(p.sellerId) + '">⭐ Оставить отзыв</button>') +
+          '</div>';
+      }).join('');
+    }
+
+    /* ---- Автодополнение @упоминаний ---- */
+    function hideMentionPop37() {
+      const pop = document.getElementById('mention-pop37');
+      if (pop) pop.remove();
+      mentionTarget37 = null;
+    }
+    function handleMentionInput37(el) {
+      try {
+        if (!el || el.type === 'file') return;
+        const pos = el.selectionStart == null ? el.value.length : el.selectionStart;
+        const before = el.value.slice(0, pos);
+        const m = before.match(/@([0-9A-Za-zА-Яа-яЁё_]{0,24})$/);
+        if (!m) { hideMentionPop37(); return; }
+        const token = m[1].toLowerCase();
+        const me = getCurrentUser();
+        const users = getUsers().filter(function (u) {
+          if (!me || u.id === me.id) return false;
+          return String(u.name || '').toLowerCase().indexOf(token) !== -1;
+        }).slice(0, 6);
+        if (!users.length) { hideMentionPop37(); return; }
+        mentionTarget37 = { el: el, token: m[1], pos: pos };
+        let pop = document.getElementById('mention-pop37');
+        if (!pop) {
+          pop = document.createElement('div');
+          pop.id = 'mention-pop37';
+          pop.className = 'mention-pop';
+          document.body.appendChild(pop);
+        }
+        pop.innerHTML = users.map(function (u) {
+          return '<button type="button" data-mention-pick="' + esc(u.name) + '">' + esc(u.name) + ' · ' + esc(classIdOf(u.grade, u.letter)) + '</button>';
+        }).join('');
+        const rect = el.getBoundingClientRect();
+        pop.style.left = Math.max(8, rect.left) + 'px';
+        pop.style.top = (rect.bottom + 6) + 'px';
+        pop.style.display = 'block';
+      } catch (eHm37) {}
+    }
+    function pickMention37(name) {
+      const t = mentionTarget37;
+      hideMentionPop37();
+      if (!t || !t.el) return;
+      const el = t.el;
+      const start = t.pos - (t.token.length + 1);
+      el.value = el.value.slice(0, start) + '@' + name + ' ' + el.value.slice(t.pos);
+      try { el.focus(); el.selectionStart = el.selectionEnd = start + name.length + 2; } catch (ePm37) {}
+    }
+
+    function hideNotifPanel37() {
+      const panel = document.getElementById('notif-panel37');
+      if (panel) panel.style.display = 'none';
+    }
+
+    /* ---- Инициализация слушателей финального модуля ---- */
+    try {
+      const rs = document.getElementById('reg-role-student');
+      if (rs) rs.addEventListener('click', function () { setRegRole37('student'); });
+    } catch (errInit37) { try { console.error('Инициализация модуля:', errInit37); } catch (eI37) {} }
+    try {
+      const rt = document.getElementById('reg-role-teacher');
+      if (rt) rt.addEventListener('click', function () { setRegRole37('teacher'); });
+    } catch (errInit37) { try { console.error('Инициализация модуля:', errInit37); } catch (eI37) {} }
+    try {
+      const ls = document.getElementById('login-role-student');
+      if (ls) ls.addEventListener('click', function () { setLoginRole37('student'); });
+    } catch (errInit37) { try { console.error('Инициализация модуля:', errInit37); } catch (eI37) {} }
+    try {
+      const lt = document.getElementById('login-role-teacher');
+      if (lt) lt.addEventListener('click', function () { setLoginRole37('teacher'); });
+    } catch (errInit37) { try { console.error('Инициализация модуля:', errInit37); } catch (eI37) {} }
+    try {
+      const noHr = document.getElementById('reg-no-homeroom');
+      if (noHr) noHr.addEventListener('change', function () {
+        const g = document.getElementById('reg-hr-grade');
+        const l = document.getElementById('reg-hr-letter');
+        if (g) g.disabled = this.checked;
+        if (l) l.disabled = this.checked;
+      });
+    } catch (errInit37) { try { console.error('Инициализация модуля:', errInit37); } catch (eI37) {} }
+    try {
+      const rl = document.getElementById('rules-open-link');
+      if (rl) rl.addEventListener('click', function (e) { e.preventDefault(); openRules37(); });
+    } catch (errInit37) { try { console.error('Инициализация модуля:', errInit37); } catch (eI37) {} }
+    try {
+      const rsearch = document.getElementById('rules-search');
+      if (rsearch) rsearch.addEventListener('input', function () { renderRules37(this.value); });
+    } catch (errInit37) { try { console.error('Инициализация модуля:', errInit37); } catch (eI37) {} }
+    try {
+      const rsel = document.getElementById('report-reason');
+      if (rsel) rsel.addEventListener('change', function () {
+        const other = document.getElementById('report-reason-other');
+        if (other) {
+          other.style.display = this.value === 'other' ? 'block' : 'none';
+          if (this.value !== 'other') other.value = '';
+        }
+      });
+    } catch (errInit37) { try { console.error('Инициализация модуля:', errInit37); } catch (eI37) {} }
+    try {
+      document.getElementById('report-form').addEventListener('submit', function (e) { e.preventDefault(); sendComplaint37(); });
+    } catch (errInit37) { try { console.error('Инициализация модуля:', errInit37); } catch (eI37) {} }
+    try {
+      document.getElementById('review-form').addEventListener('submit', function (e) { e.preventDefault(); submitReview37(); });
+    } catch (errInit37) { try { console.error('Инициализация модуля:', errInit37); } catch (eI37) {} }
+    try {
+      const rw = document.getElementById('repost-wall');
+      if (rw) rw.addEventListener('click', doWallRepost37);
+    } catch (errInit37) { try { console.error('Инициализация модуля:', errInit37); } catch (eI37) {} }
+    try {
+      const dmi = document.getElementById('dm-input');
+      if (dmi) dmi.addEventListener('input', function () {
+        saveDmDraftFromInput37();
+        handleMentionInput37(dmi);
+      });
+    } catch (errInit37) { try { console.error('Инициализация модуля:', errInit37); } catch (eI37) {} }
+    try {
+      document.addEventListener('input', function (e) {
+        const t = e.target;
+        if (t && (t.id === 'post-text' || (t.matches && t.matches('[data-comment-input]')))) {
+          handleMentionInput37(t);
+        }
+      });
+    } catch (errInit37) { try { console.error('Инициализация модуля:', errInit37); } catch (eI37) {} }
+
+    try {
+      document.addEventListener('click', function (e) {
+        const pick = e.target.closest('[data-mention-pick]');
+        if (pick) { pickMention37(pick.dataset.mentionPick); return; }
+        const men = e.target.closest('[data-mention]');
+        if (men) {
+          const user = getCurrentUser();
+          if (!user) { openModal('modal-login'); return; }
+          const target = getUsers().find(function (u) { return String(u.name || '').toLowerCase() === String(men.dataset.mention).toLowerCase(); });
+          if (target) openDm(target.id);
+          return;
+        }
+        const rdm = e.target.closest('[data-repost-dm]');
+        if (rdm) { repostDm37(rdm.dataset.repostDm); return; }
+        const fa = e.target.closest('[data-friend-act]');
+        if (fa) {
+          const user = getCurrentUser();
+          const target = getUserById(fa.dataset.friendAct);
+          if (user && target) {
+            const st = friendStatus37(user, target).state;
+            const actMap = { friends: 'remove', incoming: 'accept', outgoing: 'cancel', none: 'add' };
+            handleFriendAction37(actMap[st] || 'add', target.id);
+          }
+          return;
+        }
+        const facc = e.target.closest('[data-friend-accept]');
+        if (facc) { handleFriendAction37('accept', facc.dataset.friendAccept); return; }
+        const frej = e.target.closest('[data-friend-reject]');
+        if (frej) { handleFriendAction37('reject', frej.dataset.friendReject); return; }
+        const cpick = e.target.closest('[data-council-pick]');
+        if (cpick) { councilPick37 = cpick.dataset.councilPick; renderCouncil37(); return; }
+        const ccan = e.target.closest('[data-council-cancel]');
+        if (ccan) { councilPick37 = null; renderCouncil37(); return; }
+        const cset = e.target.closest('[data-council-set]');
+        if (cset) {
+          const sep = cset.dataset.councilSet.indexOf('|');
+          const role = cset.dataset.councilSet.slice(0, sep);
+          const uid = cset.dataset.councilSet.slice(sep + 1);
+          const user = getCurrentUser();
+          const classId = typeof currentClass !== 'undefined' && currentClass ? currentClass : (user ? classIdOf(user.grade, user.letter) : '');
+          setCouncilRole37(classId, role, uid);
+          return;
+        }
+        const itag = e.target.closest('[data-pf-itag]');
+        if (itag) {
+          const tag = ITAGS37[Number(itag.dataset.pfItag)];
+          if (tag) {
+            const idx = pfItagsDraft37.indexOf(tag);
+            if (idx !== -1) pfItagsDraft37.splice(idx, 1);
+            else if (pfItagsDraft37.length < 3) pfItagsDraft37.push(tag);
+            else toast('Можно выбрать не более 3 тегов.', 'info');
+            renderPfItags37();
+          }
+          return;
+        }
+        const bmd = e.target.closest('[data-pf-bm-del]');
+        if (bmd) {
+          const user = getCurrentUser();
+          if (user) toggleBookmark37(user.id, bmd.dataset.pfBmDel);
+          return;
+        }
+        const bmo = e.target.closest('[data-bm-open]');
+        if (bmo) { switchTab('social'); return; }
+        const rvo = e.target.closest('[data-review-open]');
+        if (rvo) { openReviewModal37(rvo.dataset.reviewOpen); return; }
+        const rstar = e.target.closest('[data-review-star]');
+        if (rstar) { reviewStars37 = Number(rstar.dataset.reviewStar) || 5; renderReviewStars37(); return; }
+        const cdm = e.target.closest('[data-compl-dm]');
+        if (cdm) {
+          const user = getCurrentUser();
+          if (!user) { openModal('modal-login'); return; }
+          openDm(cdm.dataset.complDm);
+          return;
+        }
+        const cdel = e.target.closest('[data-compl-del]');
+        if (cdel) {
+          const user = getCurrentUser();
+          if (!user || !canModerateAll(user)) { toast('Удаление контента доступно только администрации.', 'error'); return; }
+          const complaints = getList('complaints');
+          const c = complaints.find(function (x) { return x.id === cdel.dataset.complDel; });
+          if (!c) return;
+          if (!confirm('Удалить нарушающий ' + (c.kind === 'listing' ? 'объявление' : 'пост') + ' и закрыть жалобу?')) return;
+          if (c.kind === 'listing') {
+            const before = getList('listings');
+            dbSave('listings', before.filter(function (l) { return l.id !== c.targetId; }));
+            adminLogAction('complaint_del', 'Удалено объявление по жалобе от ' + (c.fromName || ''), { kind: 'list', key: 'listings', before: before });
+            renderMarket();
+          } else {
+            const before = getList('posts');
+            dbSave('posts', before.filter(function (p) { return p.id !== c.targetId; }));
+            adminLogAction('complaint_del', 'Удалён пост по жалобе от ' + (c.fromName || ''), { kind: 'list', key: 'posts', before: before });
+            renderFeed();
+          }
+          c.status = 'resolved_del';
+          dbSave('complaints', complaints);
+          renderAdminComplaints();
+          toast('🗑️ Контент удалён, жалоба закрыта.', 'success');
+          return;
+        }
+        const cdis = e.target.closest('[data-compl-dismiss]');
+        if (cdis) {
+          const complaints = getList('complaints');
+          const c = complaints.find(function (x) { return x.id === cdis.dataset.complDismiss; });
+          if (c) {
+            c.status = 'resolved_ok';
+            dbSave('complaints', complaints);
+            renderAdminComplaints();
+            toast('✅ Жалоба отклонена.', 'info');
+          }
+          return;
+        }
+        const ntf = e.target.closest('[data-ntf-go]');
+        if (ntf) {
+          const user = getCurrentUser();
+          if (user) { writeLs('notifs_seen_' + user.id, Date.now()); updateNotifBell37(); }
+          hideNotifPanel37();
+          const go = ntf.dataset.ntfGo;
+          if (go) switchTab(go);
+          return;
+        }
+        if (!e.target.closest('#mention-pop37') && !e.target.closest('#post-text') && !e.target.closest('[data-comment-input]') && !e.target.closest('#dm-input')) {
+          hideMentionPop37();
+        }
+        if (!e.target.closest('#notif-panel37') && !e.target.closest('#bell-btn')) {
+          hideNotifPanel37();
+        }
+      });
+    } catch (errInit37) { try { console.error('Инициализация модуля:', errInit37); } catch (eI37) {} }
+
+    try { updateNotifBell37(); } catch (eBoot37) {}
+    try { updateComplaintsBadge37(); } catch (eBoot37) {}
+    try { setRegRole37('student'); } catch (eBoot37) {}
+    try { setLoginRole37('student'); } catch (eBoot37) {}
+
+    try {
+      window.extractTags37 = extractTags37;
+      window.renderHashtags37 = renderHashtags37;
+      window.notifyMentions37 = notifyMentions37;
+      window.pushNotif37 = pushNotif37;
+      window.updateNotifBell37 = updateNotifBell37;
+      window.toggleNotifPanel37 = toggleNotifPanel37;
+      window.friendsData37 = friendsData37;
+      window.friendStatus37 = friendStatus37;
+      window.handleFriendAction37 = handleFriendAction37;
+      window.renderFriendRequests37 = renderFriendRequests37;
+      window.toggleBookmark37 = toggleBookmark37;
+      window.postBookmarked37 = postBookmarked37;
+      window.openRepostModal37 = openRepostModal37;
+      window.doWallRepost37 = doWallRepost37;
+      window.repostDm37 = repostDm37;
+      window.openReportModal37 = openReportModal37;
+      window.sendComplaint37 = sendComplaint37;
+      window.renderAdminComplaints = renderAdminComplaints;
+      window.updateComplaintsBadge37 = updateComplaintsBadge37;
+      window.viewsOf = viewsOf;
+      window.condLabel37 = condLabel37;
+      window.placeLabel37 = placeLabel37;
+      window.sellerRating37 = sellerRating37;
+      window.getUserFavs37 = getUserFavs37;
+      window.toggleListingFav37 = toggleListingFav37;
+      window.countListingView37 = countListingView37;
+      window.toggleListingReserve37 = toggleListingReserve37;
+      window.buyListing37 = buyListing37;
+      window.openReviewModal37 = openReviewModal37;
+      window.submitReview37 = submitReview37;
+      window.getDmDraft37 = getDmDraft37;
+      window.setDmDraft37 = setDmDraft37;
+      window.clearDmDraft37 = clearDmDraft37;
+      window.saveDmDraftFromInput37 = saveDmDraftFromInput37;
+      window.councilData37 = councilData37;
+      window.renderCouncil37 = renderCouncil37;
+      window.setCouncilRole37 = setCouncilRole37;
+      window.roleBadges37 = roleBadges37;
+      window.RULES37 = RULES37;
+      window.openRules37 = openRules37;
+      window.renderRules37 = renderRules37;
+      window.setRegRole37 = setRegRole37;
+      window.setLoginRole37 = setLoginRole37;
+      window.renderPfItags37 = renderPfItags37;
+      window.renderPfBookmarks37 = renderPfBookmarks37;
+      window.renderPfPurchases37 = renderPfPurchases37;
+      window.handleMentionInput37 = handleMentionInput37;
+      window.hideMentionPop37 = hideMentionPop37;
+      window.pickMention37 = pickMention37;
+      window.hideNotifPanel37 = hideNotifPanel37;
+    } catch (eExp37) {}
 
     window.__lp37Ready = true;
 
