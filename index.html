@@ -5565,12 +5565,7 @@
         const back37 = await sb37.from(TABLE).select('value').eq('key', DIAG_PROBE_KEY37).maybeSingle();
         if (back37.error) throw back37.error;
         const rawVal37 = back37.data && back37.data.value !== undefined && back37.data.value !== null ? back37.data.value : null;
-        let probeVal = rawVal37;
-        let unwrap37 = 0;
-        while (typeof probeVal === 'string' && unwrap37 < 5) {
-          try { probeVal = JSON.parse(probeVal); } catch (ePj37) { break; }
-          unwrap37++;
-        }
+        const probeVal = parseCloudVal(rawVal37);
         if (!((probeVal && typeof probeVal === 'object' && probeVal.probe === probe37) || String(rawVal37 === null ? '' : rawVal37).indexOf(probe37) !== -1)) throw { code: 'MISMATCH', message: 'Записанное значение не совпало с прочитанным: записано ' + probe37 + ', прочитано ' + JSON.stringify(rawVal37) };
       } catch (e37) {
         fails37.push({ op: 'UPSERT+SELECT', key: DIAG_PROBE_KEY37, err: e37 });
@@ -5602,7 +5597,7 @@
       try {
         const fresh = await sb37.from(TABLE).select('value').eq('key', key).maybeSingle();
         if (fresh.error) throw fresh.error;
-        cloud = fresh.data ? fresh.data.value : null;
+        cloud = fresh.data ? parseCloudVal(fresh.data.value) : null;
         l37DiagOk37('SELECT ' + key);
       } catch (eSel) {
         l37DiagFail37('SELECT', key, eSel);
@@ -5682,10 +5677,11 @@
           .maybeSingle();
         if (answer.error) throw answer.error;
         if (answer.data && answer.data.value !== undefined && answer.data.value !== null) {
+          const parsedVal37 = parseCloudVal(answer.data.value);
           try {
-            localStorage.setItem(LS_PREFIX + key, JSON.stringify(answer.data.value));
+            localStorage.setItem(LS_PREFIX + key, JSON.stringify(parsedVal37));
           } catch (e) { /* ignore */ }
-          return answer.data.value;
+          return parsedVal37;
         }
       } catch (e) {
         l37DiagFail37('SELECT', key, e);
@@ -5720,8 +5716,22 @@
       try { return JSON.parse(localStorage.getItem(LS_PREFIX + key)); } catch (e) { return null; }
     }
 
+    /* Единая универсальная распаковка ответов Supabase: колонка value (text/jsonb)
+       может прийти как многократно сериализованная JSON-строка — раскрываем в цикле,
+       иначе строка считается «пустой» и затирает данные. */
+    function parseCloudVal(raw) {
+      let v = raw;
+      let guard = 0;
+      while (typeof v === 'string' && guard < 5) {
+        try { v = JSON.parse(v); } catch (e) { break; }
+        guard++;
+      }
+      return v;
+    }
+
     function mergeIntoStorage(key, cloudData) {
       if (DEVICE_LOCAL_KEYS.indexOf(key) !== -1) return;
+      if (typeof cloudData === 'string') cloudData = parseCloudVal(cloudData);
       const local = readLs(key);
       let merged = cloudData;
       if (Array.isArray(cloudData)) {
