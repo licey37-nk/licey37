@@ -5741,7 +5741,18 @@
           merged = l37TombFilter37(key, l37MergeCollection37(key, local, cloudData));
         } else if (Array.isArray(local) && local.length) {
           merged = mergeLists(local, cloudData);
+          if (typeof key === 'string' && key.indexOf('dm__') === 0) {
+            const freshCut37 = Date.now() - 15000;
+            local.forEach(function (m37) {
+              if (!m37 || m37.id === undefined || Number(m37.ts || 0) < freshCut37) return;
+              const dup37 = merged.some(function (x37) { return x37 && x37.id === m37.id; });
+              if (!dup37) merged.push(m37);
+            });
+            merged.sort(function (x37, y37) { return (x37.ts || 0) - (y37.ts || 0); });
+          }
         }
+      } else if (Array.isArray(local) && local.length && (cloudData === null || cloudData === undefined || cloudData === '')) {
+        merged = local;
       } else if (cloudData && typeof cloudData === 'object' && local && typeof local === 'object' && !Array.isArray(local)) {
         if (key === 'pets') {
           merged = Object.assign({}, local);
