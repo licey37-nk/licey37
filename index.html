@@ -1039,6 +1039,15 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
+    footer .footer-privacy {
+      max-width: 720px;
+      margin: 10px auto 0;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: var(--muted);
+      opacity: 0.85;
+    }
+
     footer .footer-logo {
       width: 34px;
       height: 34px;
@@ -3340,6 +3349,12 @@
       font-size: 0.72rem; font-weight: 800; margin-left: 6px; vertical-align: middle;
     }
     .starosta-name-glow { text-shadow: 0 0 8px rgba(245, 158, 11, 0.55); }
+    .director-badge {
+      display: inline-block; padding: 3px 12px; border-radius: 999px;
+      background: linear-gradient(135deg, #d4af37, #059669); color: #fff;
+      font-size: 0.74rem; font-weight: 800; margin-left: 6px; vertical-align: middle;
+      box-shadow: 0 2px 10px rgba(212, 175, 55, 0.45);
+    }
     .council-row {
       display: flex; justify-content: space-between; align-items: center; gap: 10px;
       padding: 10px 0; border-bottom: 1px dashed var(--border, #e2e8f0); flex-wrap: wrap;
@@ -3892,6 +3907,7 @@
       МБОУ «Лицей №37» г. Нижнекамск
     </div>
     <div>Республика Татарстан · Портал учеников · 2025</div>
+    <div class="footer-privacy">Учебно-информационный портал сообщества МБОУ «Лицей №37» г. Нижнекамск. Портал не запрашивает и не хранит номера телефонов, адреса, паспортные данные и электронную почту учащихся.</div>
   </footer>
 
   <!-- МОДАЛКА: ВХОД -->
@@ -4024,8 +4040,8 @@
           <div class="field-hint">Цифра 1–11, буква строго А, Б, В, Г или Д.</div>
         </div>
         <div class="field">
-          <label for="apply-contact">Контакт (телефон, Telegram или email)</label>
-          <input type="text" id="apply-contact" placeholder="Как с тобой связаться?" maxlength="64" required>
+          <label for="apply-contact">Контакт для связи (Telegram или ник на портале)</label>
+          <input type="text" id="apply-contact" placeholder="Например: @nickname" maxlength="64" required>
         </div>
         <button type="submit" class="btn btn-primary btn-block">Отправить заявку</button>
       </form>
@@ -4356,6 +4372,7 @@
         <h3>Правила сообщества МБОУ «Лицей №37»</h3>
         <p>100 пунктов · уважение, безопасность, учёба и честная Барахолка</p>
       </div>
+      <p class="field-hint" style="margin:0 0 10px;">Учебно-информационный портал сообщества МБОУ «Лицей №37» г. Нижнекамск. Портал не запрашивает и не хранит номера телефонов, адреса, паспортные данные и электронную почту учащихся.</p>
       <input type="text" class="search-input rules-search" id="rules-search" placeholder="🔍 Поиск по правилам...">
       <div class="rules-list" id="rules-list"></div>
     </div>
@@ -4384,6 +4401,7 @@
       <button data-adm="scripts">💻 Скрипты</button>
       <button data-adm="rewards">🎁 Призы</button>
       <button data-adm="verified">☑️ Галочки</button>
+      <button data-adm="director">🏛️ Директор</button>
       <button data-adm="broadcast">📣 Рассылка</button>
       <button data-adm="points">💎 Баллы</button>
       <button data-adm="analytics">📊 Аналитика</button>
@@ -5249,6 +5267,11 @@
             createdAt: new Date().toISOString()
           };
 
+          if (isTeacher && isDirectorName37(name)) {
+            user.honor = 'director';
+            user.verified = true;
+          }
+
           users.push(user);
           saveUsers(users);
           setSessionUserId(user.id);
@@ -5299,6 +5322,12 @@
           if (user.passwordHash !== hash) {
             showFormError('login-error', 'Неверный пароль. Попробуй ещё раз.');
             return;
+          }
+
+          if (user.role === 'teacher' && user.honor !== 'director' && isDirectorName37(user.name)) {
+            user.honor = 'director';
+            user.verified = true;
+            saveUsers(users);
           }
 
           setSessionUserId(user.id);
@@ -5980,7 +6009,7 @@
         const contact = document.getElementById('apply-contact').value.trim();
         if (fio.length < 3) { showFormError('apply-error', 'Введи ФИО (минимум 3 символа).'); return; }
         if (!isValidClass(grade, letter)) { showFormError('apply-error', 'Класс: цифра 1–11 и буква только А, Б, В, Г или Д.'); return; }
-        if (contact.length < 3) { showFormError('apply-error', 'Введи контакт для связи (телефон, Telegram или email).'); return; }
+        if (contact.length < 3) { showFormError('apply-error', 'Введи контакт для связи (Telegram или ник на портале).'); return; }
         const list = getList('applications');
         list.push({ id: makeId('app'), event: applyEventTitle, fio: fio, classId: classIdOf(grade, letter), contact: contact, createdAt: Date.now() });
         dbSave('applications', list);
@@ -11189,7 +11218,7 @@ try {
     /* ---- Инструменты админки (Журнал / Права / Призы / Пароль) ---- */
     function openAdminTool(mode) {
       adminToolsMode = mode;
-      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pets: '🐾 Талисманы классов', classreset: '🗑 Очистка данных класса', pass: '🔑 Смена пароля админа', ticker: '📰 Плашка новостей', verified: '☑️ Верификация', broadcast: '📣 Срочная рассылка', points: '💎 Баллы ученикам и опыт классам', analytics: '📊 Аналитика портала', backup: '💾 Бэкап и восстановление', complaints: '🚨 Жалобы учеников' };
+      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pets: '🐾 Талисманы классов', classreset: '🗑 Очистка данных класса', pass: '🔑 Смена пароля админа', ticker: '📰 Плашка новостей', verified: '☑️ Верификация', broadcast: '📣 Срочная рассылка', points: '💎 Баллы ученикам и опыт классам', analytics: '📊 Аналитика портала', backup: '💾 Бэкап и восстановление', complaints: '🚨 Жалобы учеников', director: '🏛️ Статус Директора Лицея №37' };
       document.getElementById('admin-tools-title').textContent = titles[mode] || 'Администрирование';
       openModal('modal-admin-tools');
       if (mode === 'log') renderAdminLog();
@@ -11205,6 +11234,7 @@ try {
       if (mode === 'analytics') renderAdminAnalytics();
       if (mode === 'backup') renderAdminBackup();
       if (mode === 'complaints' && typeof renderAdminComplaints === 'function') renderAdminComplaints();
+      if (mode === 'director' && typeof renderAdminDirector === 'function') renderAdminDirector();
     }
 
     function renderAdminClassReset() {
@@ -11569,6 +11599,7 @@ try {
         if (t === 'backup') openAdminTool('backup');
         if (t === 'wires') openWireEditor('global', null);
         if (t === 'complaints') openAdminTool('complaints');
+        if (t === 'director') openAdminTool('director');
         if (t === 'pets') openAdminTool('pets');
         if (t === 'classreset') openAdminTool('classreset');
         if (t === 'ticker') openAdminTool('ticker');
@@ -13013,6 +13044,9 @@ try {
       if (!u) return '';
       let html = '';
       const classId = classIdHint || classIdOf(u.grade, u.letter);
+      if (u.honor === 'director') {
+        html += '<span class="director-badge">🏛️ Директор Лицея №37</span>';
+      }
       if (u.role === 'teacher') {
         html += '<span class="teacher-badge">👩‍🏫 Учитель</span>';
         if (u.homeroom) html += ' <span class="homeroom-label">Кл. руководитель ' + esc(u.homeroom) + '</span>';
@@ -13577,6 +13611,70 @@ try {
       window.pickMention37 = pickMention37;
       window.hideNotifPanel37 = hideNotifPanel37;
     } catch (eExp37) {}
+
+    /* ---- 🏛️ Почётный статус «Директор Лицея №37» (без доступа к Супер-Админке) ---- */
+    function normalizeFio37(s) {
+      return String(s || '').toLowerCase().replace(/ё/g, 'е').trim().split(/\s+/).sort().join(' ');
+    }
+    const DIRECTOR_FIO_HASH37 = '2874b7a5177b0b962dbe19334b7659af2232cd65307714bef74813ad4e8b19bd';
+    function isDirectorName37(name) {
+      try {
+        const n = normalizeFio37(name);
+        if (!n || n.split(' ').length !== 3) return false;
+        if (typeof sha256Hex === 'function') {
+          const h = sha256Hex(n);
+          return !!h && String(h).toLowerCase() === DIRECTOR_FIO_HASH37;
+        }
+      } catch (eDir37) { try { console.warn('Директор: ошибка проверки ФИО', eDir37); } catch (eD37) {} }
+      return false;
+    }
+    function isFullAdmin37() {
+      const user = getCurrentUser();
+      let full = !!(user && user.isAdmin);
+      try { full = full || sessionStorage.getItem('lp37_admin_full') === '1'; } catch (eF37) {}
+      return full;
+    }
+    function toggleDirectorStatus37(userId) {
+      if (!isFullAdmin37()) { toast('Статус Директора назначает только Главный Админ.', 'error'); return; }
+      const users = getUsers();
+      const u = users.find(function (x) { return x.id === userId; });
+      if (!u) return;
+      const before = JSON.parse(JSON.stringify(users));
+      if (u.honor === 'director') {
+        delete u.honor;
+      } else {
+        u.honor = 'director';
+        u.verified = true;
+      }
+      saveUsers(users);
+      adminLogAction('director', (u.honor === 'director' ? '🏛️ Назначен статус Директора: ' : '🏛️ Снят статус Директора: ') + u.name, { kind: 'users', before: before });
+      try { renderAdminDirector(); } catch (eR37) {}
+      try { renderProfileTab(); } catch (eP37) {}
+      toast(u.honor === 'director' ? '🏛️ ' + u.name + ' — Директор Лицея №37!' : 'Статус Директора снят: ' + u.name, 'success');
+    }
+    function renderAdminDirector() {
+      const body = document.getElementById('admin-tools-body');
+      if (!body) return;
+      const teachers = getUsers().filter(function (u) { return u.role === 'teacher'; });
+      let html = '<p class="info-desc">Почётный статус «🏛️ Директор Лицея №37»: золотисто-изумрудный бейдж и синяя галочка ☑️ в чатах, постах и профиле. Доступ к Супер-Админке НЕ выдаётся. При регистрации учителя с ФИО директора статус присваивается автоматически.</p>';
+      if (!teachers.length) html += '<p class="empty-line">Учителей пока нет — статус присвоится автоматически после регистрации с ФИО директора.</p>';
+      teachers.forEach(function (u) {
+        const isDir = u.honor === 'director';
+        html += '<div class="admin-row"><div class="admin-row-main"><b>' + esc(u.name) + (isDir ? ' <span class="director-badge">🏛️ Директор Лицея №37</span>' : '') + userVerifiedSpan(u) + '</b><small>' + (u.homeroom ? 'Кл. руководитель ' + esc(u.homeroom) : 'Учитель-предметник') + '</small></div>' +
+          '<div class="admin-row-actions"><button class="btn ' + (isDir ? 'btn-ghost' : 'btn-primary') + ' btn-sm" data-dir-user="' + esc(u.id) + '">' + (isDir ? 'Снять статус' : '🏛️ Назначить Директором') + '</button></div></div>';
+      });
+      body.innerHTML = html;
+    }
+    try {
+  document.addEventListener('click', function (e) {
+        const db37 = e.target.closest('[data-dir-user]');
+        if (db37) { toggleDirectorStatus37(db37.getAttribute('data-dir-user')); }
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+    window.isDirectorName37 = isDirectorName37;
+    window.normalizeFio37 = normalizeFio37;
+    window.toggleDirectorStatus37 = toggleDirectorStatus37;
+    window.renderAdminDirector = renderAdminDirector;
 
     window.__lp37Ready = true;
 
