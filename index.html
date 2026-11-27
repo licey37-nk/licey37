@@ -5908,6 +5908,27 @@
         } else if (Array.isArray(local) && local.length) {
           merged = mergeLists(local, cloudData);
           if (typeof key === 'string' && key.indexOf('dm__') === 0) {
+            const localById37 = {};
+            local.forEach(function (m37) { if (m37 && m37.id !== undefined) localById37[m37.id] = m37; });
+            merged = merged.map(function (c37) {
+              const l37 = c37 && c37.id !== undefined ? localById37[c37.id] : null;
+              if (!l37) return c37;
+              const out37 = Object.assign({}, c37);
+              if (l37.read) out37.read = true;
+              if (l37.edited) { out37.edited = true; if (l37.text && !out37.text) out37.text = l37.text; }
+              if (l37.pinned) out37.pinned = true;
+              if (l37.reactions && typeof l37.reactions === 'object' && !Array.isArray(l37.reactions)) {
+                const rr37 = Object.assign({}, out37.reactions || {});
+                Object.keys(l37.reactions).forEach(function (em37) {
+                  const set37 = {};
+                  (Array.isArray(rr37[em37]) ? rr37[em37] : []).forEach(function (u37) { set37[u37] = 1; });
+                  (Array.isArray(l37.reactions[em37]) ? l37.reactions[em37] : []).forEach(function (u37) { set37[u37] = 1; });
+                  rr37[em37] = Object.keys(set37);
+                });
+                out37.reactions = rr37;
+              }
+              return out37;
+            });
             const freshCut37 = Date.now() - 15000;
             local.forEach(function (m37) {
               if (!m37 || m37.id === undefined || Number(m37.ts || 0) < freshCut37) return;
@@ -8647,6 +8668,10 @@
       if (mdm) mdm.classList.add('dm-full');
       setAiFabVisible(false);
       updateDmControls();
+      try {
+        const lmEl37 = document.getElementById('dm-list-modal');
+        if (lmEl37) { lmEl37.dataset.lastSig37 = ''; lmEl37.dataset.lastPeer37 = ''; lmEl37.dataset.lastMsgCount37 = '0'; }
+      } catch (eRs37) { /* тихо */ }
       renderDmPlate();
       renderDmMessages();
       openModal('modal-dm');
@@ -16582,6 +16607,15 @@ try {
           if (changed37 && typeof l37SyncSend === 'function') { try { l37SyncSend('chat_read', { chatKey: dmCloudKey(user.id, currentDmPartner), reader: user.id, ts: Date.now() }); } catch (eCrR37) {} }
         }
       } catch (eMr37) {}
+      updateDmHeaderStatus();
+      const messages = visibleDmMsgs(user.id, currentDmPartner).slice(-80);
+      const q = ((document.getElementById('dm-search-input') || {}).value) || '';
+      const lastId37 = messages.length ? (messages[messages.length - 1].id || '') : '';
+      const sig37 = String(currentDmPartner) + '|' + messages.length + '|' + lastId37 + '|' + q + '|' + messages.map(function (m) {
+        return (m.read ? '1' : '0') + (m.text || '').length + (m.edited ? 'e1' : 'e0') + (m.pinned ? 'p1' : 'p0') + (m.photo ? 'ph1' : 'ph0') + JSON.stringify(m.reactions || {});
+      }).join(',');
+      if (sig37 === wrap.dataset.lastSig37) return;
+      if (!messages.length && wrap.dataset.lastPeer37 === String(currentDmPartner) && Number(wrap.dataset.lastMsgCount37 || '0') > 0) return;
       try {
         const seenKey = 'dm_seen_' + user.id + '_' + currentDmPartner;
         const prevSeen = Number(polishLsGet(seenKey, 0));
@@ -16595,13 +16629,12 @@ try {
           return m.from !== user.id && m.ts > (Date.now() - 120000) && !m.read && !(Array.isArray(m.deletedFor) && m.deletedFor.indexOf(user.id) !== -1);
         }).length;
       } catch (eUn37) { firstUnreadTs37 = Infinity; lastUnreadCount37 = 0; }
-      updateDmHeaderStatus();
-      const messages = visibleDmMsgs(user.id, currentDmPartner).slice(-80);
-      const q = ((document.getElementById('dm-search-input') || {}).value) || '';
       let lastDayKey37 = '';
       let lastFrom37 = null;
       let lastTs37 = 0;
       let dividerDone37 = false;
+      const nearBottom37 = wrap.scrollHeight - wrap.scrollTop - wrap.clientHeight < 160;
+      const savedTop37 = wrap.scrollTop;
       wrap.innerHTML = messages.length
         ? messages.map(function (m) {
             const mine = m.from === user.id;
@@ -16642,7 +16675,11 @@ try {
       renderDmPinBar37();
       updateDmScrollBtn37();
       updateDmSearchCount37(messages, q);
-      wrap.scrollTop = wrap.scrollHeight;
+      if (nearBottom37) wrap.scrollTop = wrap.scrollHeight;
+      else wrap.scrollTop = savedTop37;
+      wrap.dataset.lastSig37 = sig37;
+      wrap.dataset.lastPeer37 = String(currentDmPartner);
+      wrap.dataset.lastMsgCount37 = String(messages.length);
     }
     renderDmMessages = renderDmMessagesPolish37;
 
