@@ -3860,6 +3860,28 @@
     }
     .ns-toggle37.on .ns-knob37 { left: 22px; }
 
+    /* ---- 🔒 Приватность: кто может мне писать ---- */
+    .pv-modes37 { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    .pv-mode37 {
+      border: 1px solid var(--border); background: var(--card); color: var(--text);
+      border-radius: 999px; padding: 7px 13px; font-size: 0.78rem; font-weight: 600; cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .pv-mode37.on { background: linear-gradient(135deg, #1d4ed8, #059669); color: #fff; border-color: transparent; box-shadow: 0 6px 18px rgba(29, 78, 216, 0.3); }
+    .pv-cols37 { display: flex; gap: 12px; flex-wrap: wrap; }
+    .pv-col37 { flex: 1 1 240px; min-width: 0; border: 1px solid var(--border); border-radius: 14px; padding: 10px 12px; }
+    .pv-col-title37 { font-weight: 700; font-size: 0.84rem; margin-bottom: 8px; }
+    .pv-list37 { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+    .pv-row37 { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); }
+    .pv-row-name37 { flex: 1; min-width: 0; font-size: 0.84rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pv-row-cls37 { font-size: 0.72rem; color: var(--muted); font-weight: 500; }
+    .pv-act37 { border: none; border-radius: 999px; padding: 5px 11px; font-size: 0.72rem; font-weight: 700; cursor: pointer; flex-shrink: 0; transition: transform 0.15s; }
+    .pv-act37:active { transform: scale(0.94); }
+    .pv-act37.allow { background: rgba(5, 150, 105, 0.12); color: #059669; }
+    .pv-act37.allow.on { background: linear-gradient(135deg, #059669, #10b981); color: #fff; box-shadow: 0 3px 10px rgba(5, 150, 105, 0.35); }
+    .pv-act37.deny { background: rgba(239, 68, 68, 0.10); color: #ef4444; }
+    .pv-act37.deny.on { background: linear-gradient(135deg, #ef4444, #f97316); color: #fff; box-shadow: 0 3px 10px rgba(239, 68, 68, 0.35); }
+
     /* ---- Лента: табы, опросы, сворачивание, стекло ---- */
     .feed-tabs { display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 2px; }
     .feed-tabs button {
@@ -6980,6 +7002,28 @@
             '<label class="toggle-row"><input type="checkbox" id="pf-vol"' + (user.volunteer ? ' checked' : '') + '> 🤝 Готов помогать с предметами в Банке взаимопомощи</label>' +
             '<button class="btn btn-primary btn-block" id="pf-save" style="margin-top:12px;">💾 Сохранить изменения</button>' +
           '</div>' +
+          '<div class="card" id="pf-privacy-card37">' +
+            '<h3 class="info-title">🔒 Настройки приватности — кто может мне писать</h3>' +
+            '<div class="pv-modes37">' +
+              '<button type="button" class="' + pvModeCls37(user, 'all') + '" data-pv-mode37="all">🌍 Все пользователи</button>' +
+              '<button type="button" class="' + pvModeCls37(user, 'list') + '" data-pv-mode37="list">✅ Только выбранные люди</button>' +
+              '<button type="button" class="' + pvModeCls37(user, 'none') + '" data-pv-mode37="none">🔒 Никто</button>' +
+            '</div>' +
+            '<p class="field-hint" id="pv-mode-hint37">' + pvHintText37(user) + '</p>' +
+            '<div class="pv-cols37">' +
+              '<div class="pv-col37">' +
+                '<div class="pv-col-title37">✅ Кто МОЖЕТ мне писать (белый список)</div>' +
+                '<input type="text" class="search-input" id="pv-wl-search" placeholder="🔍 Найти ученика или учителя..." style="width:100%; margin-bottom:8px;">' +
+                '<div class="pv-list37" id="pv-wl-list">' + renderPrivacyListHtml37('wl') + '</div>' +
+              '</div>' +
+              '<div class="pv-col37">' +
+                '<div class="pv-col-title37">🚫 Кто НЕ МОЖЕТ мне писать (чёрный список)</div>' +
+                '<input type="text" class="search-input" id="pv-bl-search" placeholder="🔍 Найти ученика или учителя..." style="width:100%; margin-bottom:8px;">' +
+                '<div class="pv-list37" id="pv-bl-list">' + renderPrivacyListHtml37('bl') + '</div>' +
+              '</div>' +
+            '</div>' +
+            '<p class="field-hint">Настройки сохраняются в облаке автоматически — нажатие на кнопку сразу действует.</p>' +
+          '</div>' +
           '<div class="card">' +
             '<h3 class="info-title">📜 История начисления Квантов</h3>' +
             (history.length
@@ -8921,10 +8965,180 @@
 
 
 
+    /* ============================================================
+       🔒 L37 DM PRIVACY v1 — «Кто может мне писать»
+       Режимы: all / list (белый список) / none. Чёрный список всегда активен.
+       Настройки хранятся в объекте пользователя (user.privacy) и сохраняются
+       в Supabase через saveUsers (Cloud-First Atomic Merge).
+       Ни один существующий движок не изменён и не удалён.
+       ============================================================ */
+    function pvModeCls37(user, mode) {
+      try { return 'pv-mode37' + (getPrivacy37(user).mode === mode ? ' on' : ''); }
+      catch (e) { return 'pv-mode37'; }
+    }
+    function pvHintText37(user) {
+      try {
+        const m = getPrivacy37(user).mode;
+        return m === 'none' ? 'Твой личный чат закрыт: никто не может написать тебе первым.' : m === 'list' ? 'Писать тебе могут только люди из белого списка (чёрный список всегда запрещает).' : 'Писать тебе могут все, кроме людей из чёрного списка.';
+      } catch (e) { return ''; }
+    }
+
+    function getPrivacy37(u) {
+      try {
+        const p = (u && u.privacy) || {};
+        return {
+          mode: (p.mode === 'list' || p.mode === 'none') ? p.mode : 'all',
+          allow: Array.isArray(p.allow) ? p.allow.slice() : [],
+          deny: Array.isArray(p.deny) ? p.deny.slice() : []
+        };
+      } catch (e) { return { mode: 'all', allow: [], deny: [] }; }
+    }
+
+    function l37CanWriteTo37(senderId, recipientId) {
+      try {
+        if (!senderId || !recipientId || senderId === recipientId) return true;
+        const ru = getUserById(recipientId);
+        if (!ru) return true;
+        const pr = getPrivacy37(ru);
+        if (pr.mode === 'none') return false;
+        if (pr.deny.indexOf(senderId) !== -1) return false;
+        if (pr.mode === 'list') return pr.allow.indexOf(senderId) !== -1;
+        return true;
+      } catch (e) { return true; }
+    }
+
+    function l37PrivacyBlockedToast37() {
+      try { toast('🔒 Пользователь ограничил круг лиц, которые могут отправлять ему личные сообщения.', 'error'); } catch (e) {}
+    }
+
+    function saveMyPrivacy37(mut) {
+      try {
+        const me = getCurrentUser();
+        if (!me) return null;
+        const users = getUsers();
+        const u = users.find(function (x) { return x.id === me.id; });
+        if (!u) return null;
+        const pr = getPrivacy37(u);
+        mut(pr);
+        u.privacy = pr;
+        saveUsers(users);
+        return pr;
+      } catch (e) { return null; }
+    }
+
+    function setPrivacyMode37(mode) {
+      if (['all', 'list', 'none'].indexOf(mode) === -1) return;
+      saveMyPrivacy37(function (pr) { pr.mode = mode; });
+      try { updatePrivacyCard37(); } catch (eUp37) {}
+      try {
+        toast(mode === 'none' ? '🔒 Личные сообщения закрыты: никто не может написать тебе.' : mode === 'list' ? '✅ Писать тебе могут только люди из белого списка.' : '🌍 Писать тебе могут все, кроме чёрного списка.', 'success');
+      } catch (eT37) {}
+    }
+
+    function togglePrivacyUser37(kind, uid) {
+      if (!uid || (kind !== 'wl' && kind !== 'bl')) return;
+      saveMyPrivacy37(function (pr) {
+        const other = kind === 'wl' ? pr.deny : pr.allow;
+        const arr = kind === 'wl' ? pr.allow : pr.deny;
+        const oi = other.indexOf(uid);
+        if (oi !== -1) other.splice(oi, 1);
+        const i = arr.indexOf(uid);
+        if (i !== -1) arr.splice(i, 1); else arr.push(uid);
+      });
+      try { updatePrivacyCard37(); } catch (eUp37) {}
+    }
+
+    function pvUsers37(q) {
+      try {
+        const me = getCurrentUser();
+        if (!me) return [];
+        let us = getUsers().filter(function (u) { return u && u.id && u.id !== me.id; });
+        if (q) us = us.filter(function (u) { return fuzzyHit37(u.name || '', q) || fuzzyHit37(classIdOf(u.grade, u.letter), q); });
+        us.sort(function (a, b) { return String(a.name || '').localeCompare(String(b.name || ''), 'ru'); });
+        return us;
+      } catch (e) { return []; }
+    }
+
+    function renderPrivacyListHtml37(kind) {
+      try {
+        pvRefreshUsers37();
+        const me = getCurrentUser();
+        if (!me) return '<p class="empty-line">Войди, чтобы настроить приватность.</p>';
+        const pr = getPrivacy37(me);
+        const input = document.getElementById(kind === 'wl' ? 'pv-wl-search' : 'pv-bl-search');
+        const q = input ? input.value.trim() : '';
+        const list = pvUsers37(q);
+        const arr = kind === 'wl' ? pr.allow : pr.deny;
+        if (!list.length) return '<p class="empty-line">' + (q ? 'Никого не найдено.' : 'Пока нет пользователей.') + '</p>';
+        const cls = kind === 'wl' ? 'allow' : 'deny';
+        const lblOn = kind === 'wl' ? '✅ Может писать' : '🚫 Запрещён';
+        const lblOff = kind === 'wl' ? '➕ Разрешить' : '⛔ Запретить';
+        return list.map(function (u) {
+          const on = arr.indexOf(u.id) !== -1;
+          return '<div class="pv-row37">' +
+            '<div class="pv-row-name37">' + esc(u.name) + ' <span class="pv-row-cls37">' + esc(classIdOf(u.grade, u.letter)) + '</span></div>' +
+            '<button type="button" class="pv-act37 ' + cls + (on ? ' on' : '') + '" data-pv-toggle37="' + kind + ':' + esc(u.id) + '">' + (on ? lblOn : lblOff) + '</button>' +
+          '</div>';
+        }).join('');
+      } catch (e) { return ''; }
+    }
+
+    function renderPrivacyLists37() {
+      try {
+        const wl = document.getElementById('pv-wl-list');
+        const bl = document.getElementById('pv-bl-list');
+        if (wl) wl.innerHTML = renderPrivacyListHtml37('wl');
+        if (bl) bl.innerHTML = renderPrivacyListHtml37('bl');
+      } catch (e) {}
+    }
+
+    function updatePrivacyCard37() {
+      try {
+        const me = getCurrentUser();
+        const mode = me ? getPrivacy37(me).mode : 'all';
+        document.querySelectorAll('#pf-privacy-card37 [data-pv-mode37]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-pv-mode37') === mode); });
+        const hint = document.getElementById('pv-mode-hint37');
+        if (hint) hint.textContent = mode === 'none' ? 'Твой личный чат закрыт: никто не может написать тебе первым.' : mode === 'list' ? 'Писать тебе могут только люди из белого списка (чёрный список всегда запрещает).' : 'Писать тебе могут все, кроме людей из чёрного списка.';
+        renderPrivacyLists37();
+      } catch (e) {}
+    }
+
+    let pvLastPull37 = 0;
+    function pvRefreshUsers37() {
+      try {
+        const now = Date.now();
+        if (now - pvLastPull37 < 30000) return;
+        pvLastPull37 = now;
+        if (typeof pullKeys === 'function' && sb37) {
+          pullKeys(['users']).then(function () { try { renderPrivacyLists37(); } catch (e) {} }).catch(function () {});
+        }
+      } catch (e) {}
+    }
+
+    try {
+      const pbox37 = document.getElementById('profile-box');
+      if (pbox37) {
+        pbox37.addEventListener('click', function (e) {
+          const mb = e.target.closest ? e.target.closest('[data-pv-mode37]') : null;
+          if (mb) { setPrivacyMode37(mb.getAttribute('data-pv-mode37')); return; }
+          const tb = e.target.closest ? e.target.closest('[data-pv-toggle37]') : null;
+          if (tb) {
+            const parts = String(tb.getAttribute('data-pv-toggle37') || '').split(':');
+            if (parts.length === 2) togglePrivacyUser37(parts[0], parts[1]);
+          }
+        });
+        pbox37.addEventListener('input', function (e) {
+          const t = e.target;
+          if (t && (t.id === 'pv-wl-search' || t.id === 'pv-bl-search')) renderPrivacyLists37();
+        });
+      }
+    } catch (ePv37) { try { console.error('Privacy module:', ePv37); } catch (e2) {} }
+
     function sendDm() {
       const user = getCurrentUser();
       if (!user || !currentDmPartner) return;
       if (isUserBlocked(currentDmPartner)) { toast('🚫 Пользователь заблокирован — отправка недоступна.', 'error'); return; }
+      if (!l37CanWriteTo37(user.id, currentDmPartner)) { l37PrivacyBlockedToast37(); return; }
       const input = document.getElementById('dm-input');
       const text = input.value.trim();
       if (editingDmId) {
@@ -9407,6 +9621,7 @@
     function forwardDmTo(targetId) {
       const user = getCurrentUser();
       if (!user || !forwardMsg || !targetId || targetId === user.id) return;
+      if (!l37CanWriteTo37(user.id, targetId)) { l37PrivacyBlockedToast37(); return; }
       const arr = getDmMsgs(user.id, targetId);
       arr.push({
         id: makeId('dm'), key: dmKey(user.id, targetId), from: user.id, name: user.name, avatar: user.avatar,
@@ -15277,6 +15492,7 @@ try {
     function repostDm37(friendId) {
       const user = getCurrentUser();
       if (!user || !repostPostId37) return;
+      if (friendId && !l37CanWriteTo37(user.id, friendId)) { l37PrivacyBlockedToast37(); return; }
       const orig = getList('posts').find(function (p) { return p.id === repostPostId37; });
       if (!orig) { toast('Пост не найден.', 'error'); return; }
       const fu = getUserById(friendId);
