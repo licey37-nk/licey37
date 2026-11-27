@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script>
     /* ============ 🛡️ L37 ANTI-COPY & DOMAIN SHIELD v2 — защита авторских прав МБОУ «Лицей №37» ============ */
     (function () {
@@ -20866,12 +20867,22 @@ try {
                 '<div style="background:#fff; border-radius:12px; padding:8px; text-align:center;"><div class="field-hint" style="margin:0;">📊 Активность</div><b>' + (String(online).indexOf('🟢') === 0 ? 'в сети' : 'был(а)') + '</b></div></div>' +
               '<div style="background:#fff; border-radius:16px; padding:14px; text-align:center;">' +
                 '<canvas id="l37-qr-canvas37" width="220" height="220" style="max-width:100%;"></canvas>' +
+                '<div id="l37-qr-lib37" style="padding:12px; background:#ffffff; border-radius:12px; display:none;"></div>' +
                 '<div class="field-hint" style="margin-top:6px;">Наведи камеру телефона — откроется профиль</div>' +
                 '<button type="button" class="btn btn-outline btn-sm" id="l37-qr-share37" style="margin-top:6px;">🔗 Скопировать ссылку на паспорт</button></div>' +
               '<button type="button" id="l37-pass-close37" class="btn btn-ghost btn-sm" style="width:100%; margin-top:10px;">✖ Закрыть</button>' +
             '</div></div>', 2147482300);
         const cv = document.getElementById('l37-qr-canvas37');
         if (cv) l37QrDraw37(cv, url);
+        const qbox = document.getElementById('l37-qr-lib37');
+        if (qbox && typeof window.QRCode === 'function') {
+          try {
+            qbox.innerHTML = '';
+            new window.QRCode(qbox, { text: url, width: 180, height: 180, colorDark: '#000000', colorLight: '#ffffff', correctLevel: window.QRCode.CorrectLevel.M });
+            qbox.style.display = 'inline-block';
+            if (cv) cv.style.display = 'none';
+          } catch (eQrL37) { /* фолбэк: остаётся встроенный рендер */ }
+        }
       } catch (eOp37) { /* тихо */ }
     }
 
