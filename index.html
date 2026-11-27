@@ -5899,6 +5899,25 @@
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     /* ============ ШАПКА: кнопки входа или бейдж ученика ============ */
+    function cleanupShopThemes37() {
+      try {
+        const user = getCurrentUser();
+        if (!user || !user.theme) return;
+        const users = getUsers();
+        const u = users.find(function (x) { return x.id === user.id; });
+        if (!u) return;
+        const price = u.theme === 'neon' ? 60 : (u.theme === 'tatar' ? 50 : 0);
+        u.theme = null;
+        u.owned = (u.owned || []).filter(function (id) { return id !== 'theme-light' && id !== 'theme-neon' && id !== 'theme-tatar'; });
+        u.history = u.history || [];
+        if (price > 0 && !u.history.some(function (h) { return String(h.reason || '').indexOf('Возврат: тема') !== -1; })) {
+          u.points = (u.points || 0) + price;
+          u.history.push({ ts: Date.now(), delta: price, reason: '↩️ Возврат: тема убрана из Магазина' });
+        }
+        saveUsers(users);
+        dbSave('users', users);
+      } catch (eCt37) {}
+    }
     function avatarHtml(avatar, extraClass) {
       if (avatar && avatar.type === 'image' && avatar.value) {
         return '<div class="user-avatar ' + (extraClass || '') + '" style="background-image:url(\'' + avatar.value + '\')"></div>';
@@ -5925,8 +5944,11 @@
         return;
       }
 
-      const wantedTheme = user && user.theme ? 'theme-' + user.theme : null;
-      if (wantedTheme && document.body.className !== wantedTheme) document.body.className = wantedTheme;
+      if (document.body.classList.contains('theme-neon') || document.body.classList.contains('theme-tatar')) {
+        document.body.classList.remove('theme-neon', 'theme-tatar');
+        document.body.classList.add('theme-light');
+      }
+      cleanupShopThemes37();
 
       area.innerHTML =
         '<div class="user-badge">' +
@@ -6044,7 +6066,7 @@
         '</div>' +
         '<div class="card" style="margin-top:20px;">' +
           '<h3 class="info-title" data-editable="shop-title">🎨 Магазин наград за баллы</h3>' +
-          '<p class="info-desc">Покупай рамки аватара, уникальные статусы и темы оформления сайта — активируются мгновенно!</p>' +
+          '<p class="info-desc">Покупай рамки аватара и уникальные статусы — украшают только твой профиль!</p>' +
           '<div class="shop-grid" id="shop-grid"></div>' +
         '</div>' +
         '<div class="danger-zone">' +
@@ -6070,9 +6092,6 @@
       { id: 'status-python', kind: 'status', name: '⚡ Гений Python', icon: '🐍', price: 35, value: '⚡ Гений Python', desc: 'Уникальный статус' },
       { id: 'status-pride', kind: 'status', name: '🏆 Гордость Лицея 37', icon: '🏆', price: 45, value: '🏆 Гордость Лицея 37', desc: 'Уникальный статус' },
       { id: 'status-activist', kind: 'status', name: '🔥 Активист Лицея', icon: '🔥', price: 30, value: '🔥 Активист Лицея', desc: 'Уникальный статус' },
-      { id: 'theme-light', kind: 'theme', name: 'Светлая классика', icon: '☀️', price: 0, value: 'light', desc: 'Тема всего сайта' },
-      { id: 'theme-neon', kind: 'theme', name: 'Ночной неон', icon: '🌃', price: 60, value: 'neon', desc: 'Тема всего сайта' },
-      { id: 'theme-tatar', kind: 'theme', name: 'Изумрудный Татарстан', icon: '💚', price: 50, value: 'tatar', desc: 'Тема всего сайта' }
     ];
 
     function frameClass(id) {
@@ -6106,13 +6125,10 @@
       const mainHtml = SHOP_ITEMS.map(function (item) {
         const isOwned = owned.indexOf(item.id) !== -1;
         const active = (item.kind === 'frame' && user.frame === item.id) ||
-          (item.kind === 'status' && user.customStatus === item.value) ||
-          (item.kind === 'theme' && (user.theme || 'light') === item.value);
+          (item.kind === 'status' && user.customStatus === item.value);
         let action;
         if (!isOwned) {
           action = '<button type="button" class="btn btn-primary btn-sm" data-shop-buy="' + item.id + '"' + ((user.points || 0) < item.price ? ' disabled' : '') + '>Купить · 💎 ' + item.price + '</button>';
-        } else if (item.kind === 'theme') {
-          action = active ? '<span class="own-badge">✅ Активна</span>' : '<button type="button" class="btn btn-outline btn-sm" data-shop-use="' + item.id + '">Активировать</button>';
         } else {
           action = active ? '<span class="own-badge">✅ Надето</span>' : '<button type="button" class="btn btn-outline btn-sm" data-shop-use="' + item.id + '">Надеть</button>';
         }
@@ -6173,10 +6189,6 @@
       } else if (item.kind === 'status') {
         u.customStatus = justBought || u.customStatus !== item.value ? item.value : null;
         toast(u.customStatus ? 'Статус «' + item.name + '» активирован!' : 'Статус снят.', 'success');
-      } else if (item.kind === 'theme') {
-        u.theme = item.value;
-        document.body.className = 'theme-' + item.value;
-        toast('🎨 Тема «' + item.name + '» активирована для всего сайта!', 'success');
       }
       saveUsers(users);
       updateAuthUI();
