@@ -217,6 +217,63 @@
     .sb-modal-card { max-width: none; border-radius: 22px 22px 0 0; max-height: 86dvh; padding: 14px 14px calc(16px + env(safe-area-inset-bottom)); }
     .sb-sym { min-width: 38px; padding: 9px 10px; font-size: 13px; }
   }
+  .sb-theme {
+    display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
+    padding: 9px 14px; border-radius: 999px; cursor: pointer; font-family: inherit;
+    background: rgba(30, 38, 56, 0.85); border: 1px solid rgba(129, 140, 248, 0.35); color: #c7d2fe;
+    font-size: 13px; font-weight: 800; white-space: nowrap;
+    transition: border-color 0.2s ease, color 0.2s ease, transform 0.12s ease, box-shadow 0.2s ease;
+  }
+  .sb-theme:hover { border-color: #818cf8; box-shadow: 0 0 18px rgba(99, 102, 241, 0.35); }
+  .sb-theme:active { transform: scale(0.97); }
+  /* ==== ☀️ Светлая дневная тема (body.sb-day) — для работы на уроках ==== */
+  body.sb-day {
+    background:
+      radial-gradient(1100px 720px at 88% -12%, rgba(14, 165, 233, 0.10), transparent 60%),
+      radial-gradient(900px 640px at -12% 108%, rgba(99, 102, 241, 0.08), transparent 55%),
+      #eef2f9;
+    background-attachment: fixed;
+    color: #1c2333;
+  }
+  body.sb-day .sb-top { background: rgba(255, 255, 255, 0.78); border-bottom-color: rgba(99, 102, 241, 0.22); }
+  body.sb-day .sb-titles h1 { color: #101728; }
+  body.sb-day .sb-titles p { color: #5b6478; }
+  body.sb-day .sb-back, body.sb-day .sb-theme { background: #ffffff; border-color: rgba(99, 102, 241, 0.35); color: #4338ca; box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08); }
+  body.sb-day .sb-back:hover, body.sb-day .sb-theme:hover { border-color: #6366f1; color: #312e81; }
+  body.sb-day .sb-lang-tab { background: #ffffff; border-color: rgba(15, 23, 42, 0.14); color: #5b6478; box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06); }
+  body.sb-day .sb-lang-tab.active { color: #312e81; border-color: rgba(99, 102, 241, 0.65); background: linear-gradient(135deg, rgba(99, 102, 241, 0.14), rgba(14, 165, 233, 0.12)); box-shadow: inset 0 0 12px rgba(99, 102, 241, 0.10); }
+  body.sb-day .sb-lang-tab:not(.active):hover { color: #1c2333; border-color: rgba(99, 102, 241, 0.5); }
+  body.sb-day .sb-tmpls span.lbl { color: #5b6478; }
+  body.sb-day .sb-tmpl { background: #ffffff; border-color: rgba(15, 23, 42, 0.14); color: #4338ca; box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06); }
+  body.sb-day .sb-tmpl.active { background: rgba(99, 102, 241, 0.14); border-color: #6366f1; color: #312e81; box-shadow: none; }
+  body.sb-day .sb-btn.ghost { background: #ffffff; color: #1c2333; border-color: rgba(15, 23, 42, 0.14); box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06); }
+  body.sb-day .sb-btn.ghost:hover { border-color: #6366f1; color: #312e81; }
+  body.sb-day .sb-editor, body.sb-day .sb-termwrap { background: rgba(255, 255, 255, 0.86); border-color: rgba(99, 102, 241, 0.30); box-shadow: 0 14px 34px rgba(15, 23, 42, 0.10); }
+  body.sb-day .sb-editor:focus-within { border-color: rgba(99, 102, 241, 0.65); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.14), 0 14px 34px rgba(15, 23, 42, 0.10); }
+  body.sb-day .sb-ed-head, body.sb-day .sb-term-head { background: rgba(244, 246, 251, 0.9); border-bottom-color: rgba(15, 23, 42, 0.10); }
+  body.sb-day .sb-term-head { color: #5b6478; }
+  body.sb-day .sb-gutter { background: rgba(244, 246, 251, 0.8); color: #9aa3b8; border-right-color: rgba(15, 23, 42, 0.10); }
+  body.sb-day .sb-code { color: #1c2333; }
+  body.sb-day .sb-file { color: #4338ca; background: rgba(99, 102, 241, 0.12); border-color: rgba(99, 102, 241, 0.30); }
+  body.sb-day .sb-mini { background: #ffffff; border-color: rgba(15, 23, 42, 0.14); color: #3b4256; box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06); }
+  body.sb-day .sb-mini:hover { border-color: #6366f1; color: #312e81; }
+  body.sb-day .sb-line.out { color: #334155; }
+  body.sb-day .sb-line.err { color: #dc2626; }
+  body.sb-day .sb-line.sys { color: #0369a1; }
+  body.sb-day .sb-line.ok { color: #15803d; }
+  body.sb-day .sb-status { color: #15803d; }
+  body.sb-day .sb-status.busy { color: #b45309; }
+  body.sb-day .sb-status.err { color: #dc2626; }
+  body.sb-day .sb-sym { background: #ffffff; border-color: rgba(15, 23, 42, 0.14); color: #4338ca; box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06); }
+  body.sb-day .sb-modal { background: rgba(15, 23, 42, 0.35); }
+  body.sb-day .sb-modal-card { background: #ffffff; border-color: rgba(99, 102, 241, 0.30); box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22); }
+  body.sb-day .sb-modal-head { color: #101728; }
+  body.sb-day .sb-save-row input { background: #f6f8fc; border-color: rgba(15, 23, 42, 0.16); color: #1c2333; }
+  body.sb-day .sb-save-row input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.14); }
+  body.sb-day .sb-prog-item { background: #f6f8fc; border-color: rgba(15, 23, 42, 0.10); }
+  body.sb-day .sb-prog-meta b { color: #101728; }
+  body.sb-day .sb-prog-meta small { color: #5b6478; }
+  body.sb-day .sb-progs-empty { color: #5b6478; }
   .sb-spin { display: inline-block; animation: sbRot 1s linear infinite; }
   @keyframes sbRot { to { transform: rotate(360deg); } }
   @media (max-width: 768px) {
@@ -239,6 +296,7 @@
       <p>Автономный тренажёр: работает только в твоём браузере, база портала не затрагивается</p>
     </div>
     <a class="sb-back" id="sb-back" href="index.html">← В Лицей №37</a>
+    <button type="button" class="sb-theme" id="sb-theme" title="Переключить тему">🌙 Ночь</button>
   </div>
 
   <div class="sb-langs" id="sb-langs">
@@ -367,6 +425,21 @@
       var f = $('sb-file');
       if (f) f.textContent = FILE_NAMES[state.lang] || 'main.txt';
     }
+
+    /* ==== 🌙/☀️ Переключатель темы (100% локально, localStorage) ==== */
+    var THEME_KEY = 'l37_sandbox_theme';
+    function applyTheme37(t) {
+      var day = t === 'day';
+      document.body.classList.toggle('sb-day', day);
+      var btn = $('sb-theme');
+      if (btn) { btn.textContent = day ? '☀️ День' : '🌙 Ночь'; btn.title = day ? 'Переключить на тёмную тему' : 'Переключить на светлую тему'; }
+      try { localStorage.setItem(THEME_KEY, day ? 'day' : 'night'); } catch (e) {}
+    }
+    function toggleTheme37() {
+      applyTheme37(document.body.classList.contains('sb-day') ? 'night' : 'day');
+    }
+    try { applyTheme37((localStorage.getItem(THEME_KEY) || 'night') === 'day' ? 'day' : 'night'); } catch (e) { applyTheme37('night'); }
+    $('sb-theme').addEventListener('click', toggleTheme37);
 
     var PYODIDE_URL = 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js';
     var PISTON_URL = 'https://emkc.org/api/v2/piston/execute';
@@ -709,7 +782,8 @@
       termText: function () { return term.textContent; },
       code: function () { return codeEl.value; },
       programs: loadProgs37,
-      openProgs: openProgs37
+      openProgs: openProgs37,
+      theme37: function () { return document.body.classList.contains('sb-day') ? 'day' : 'night'; }
     };
 
     sysMsg('💻 Код-песочница Лицеиста готова. Выбери язык, шаблон — и жми «▶️ Запустить» (или Ctrl+Enter).');
