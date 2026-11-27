@@ -3085,6 +3085,20 @@
     #wire-svg .wire-path { fill:none; stroke:#3b82f6; stroke-width:3; stroke-linecap:round; pointer-events:stroke; cursor:pointer; filter:drop-shadow(0 0 5px rgba(59,130,246,0.7)); }
     #wire-svg .wire-path:hover { stroke:#ef4444; filter:drop-shadow(0 0 6px rgba(239,68,68,0.8)); }
     #wire-svg .wire-temp { fill:none; stroke:#38bdf8; stroke-width:3; stroke-dasharray:7 6; pointer-events:none; }
+    .wire-toolbar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:10px 0 6px; }
+    #wire-lasso-btn.active { outline:2px solid #ef4444; color:#ef4444; font-weight:700; }
+    #wire-del-btn { background:#ef4444; color:#fff; border-color:#ef4444; }
+    .wire-cats { margin-bottom:8px; }
+    .wire-cat-tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+    .wire-cat { border:1.5px solid #e2e8f0; background:#fff; color:#1e293b; border-radius:999px; padding:5px 12px; font-size:0.78rem; font-weight:600; cursor:pointer; transition:transform 0.12s ease; }
+    .wire-cat:hover { transform:translateY(-1px); }
+    .wire-cat.active { background:linear-gradient(135deg,#1d4ed8,#059669); color:#fff; border-color:transparent; }
+    .wire-cat small { opacity:0.75; }
+    .wire-board.lasso { touch-action:none; user-select:none; }
+    .wire-board.lasso .wire-path { stroke-width:12; cursor:crosshair; }
+    #wire-svg .wire-path.marked { stroke:#ef4444; stroke-width:5; filter:drop-shadow(0 0 8px rgba(239,68,68,0.95)); }
+    body.theme-neon .wire-cat { background:rgba(15,23,42,0.65); color:#e2e8f0; border-color:rgba(56,189,248,0.35); }
+    body.theme-neon .wire-cat.active { color:#fff; }
     .chm-grid { display:grid; gap:12px; }
     .chm-sec { border:1.5px solid #e2e8f0; border-radius:14px; padding:14px; background:#fff; }
     .chm-sec h4 { margin:0 0 10px; font-size:0.95rem; }
@@ -3996,19 +4010,19 @@
         <div class="card card-hover feature-card">
           <div class="feature-icon">🎮</div>
           <h3>Игры Первых</h3>
-          <p>Викторины, интеллектуальные игры и челленджи «Движения Первых» с баллами.</p>
+          <p>Викторины, интеллектуальные игры и челленджи «Движения Первых» с ⚡ Квантами.</p>
           <button class="btn btn-outline btn-sm" data-tab="games">Перейти →</button>
         </div>
         <div class="card card-hover feature-card">
           <div class="feature-icon">👤</div>
           <h3>Профиль</h3>
-          <p>Твой аватар, класс, статус и накопленные баллы за активности портала.</p>
+          <p>Твой аватар, класс, статус и накопленные ⚡ Кванты за активности портала.</p>
           <button class="btn btn-outline btn-sm" data-tab="profile">Перейти →</button>
         </div>
         <div class="card card-hover feature-card">
-          <div class="feature-icon">💎</div>
+          <div class="feature-icon">⚡</div>
           <h3>Баллы и награды</h3>
-          <p>Зарабатывай баллы за участие в жизни лицея и обменивай их на награды и темы оформления.</p>
+          <p>Зарабатывай ⚡ Кванты за участие в жизни лицея и обменивай их на награды и темы оформления.</p>
           <button class="btn btn-outline btn-sm" data-tab="profile">Мой счёт →</button>
         </div>
       </div>
@@ -4335,13 +4349,13 @@
         <div class="section-icon">🎮</div>
         <div>
           <h2 data-editable="games-title">Игровая Лицея 37</h2>
-          <p data-editable="games-desc">Викторина, тренажёр реакции и почта комплиментов — зарабатывай баллы!</p>
+          <p data-editable="games-desc">Викторина, тренажёр реакции и почта комплиментов — зарабатывай ⚡ Кванты!</p>
         </div>
       </div>
 
       <div class="card" style="margin-bottom:20px;">
         <h3 class="info-title" data-editable="quiz-title">🧠 Умная викторина Лицея №37</h3>
-        <p class="info-desc" data-editable="quiz-desc">10 случайных вопросов о лицее, Нижнекамске, Татарстане, Python, физике, математике и логике. +10 баллов за каждый правильный ответ!</p>
+        <p class="info-desc" data-editable="quiz-desc">10 случайных вопросов о лицее, Нижнекамске, Татарстане, Python, физике, математике и логике. +10 ⚡ Q за каждый правильный ответ!</p>
         <div id="quiz-intro">
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <button class="btn btn-primary" id="quiz-start-btn">🚀 Начать раунд (10 вопросов)</button>
@@ -4362,7 +4376,7 @@
 
       <div class="card" style="margin-bottom:20px;">
         <h3 class="info-title" data-editable="reaction-title">⚡ Мини-тренажёр скорости реакции — «Поймай импульс Лицея 37»</h3>
-        <p class="info-desc">Нажми на зону, приготовься, а когда она загорится зелёным — кликай как можно быстрее! Замер в миллисекундах, за школьный рекорд — +15 баллов.</p>
+        <p class="info-desc">Нажми на зону, приготовься, а когда она загорится зелёным — кликай как можно быстрее! Замер в миллисекундах, за школьный рекорд — +15 ⚡ Квантов.</p>
         <div class="reaction-zone idle" id="reaction-zone">Нажми, чтобы начать</div>
         <div class="reaction-result" id="reaction-result"></div>
         <h4 style="margin:16px 0 10px;">🏆 Топ-10 рекордов учеников</h4>
@@ -4400,7 +4414,7 @@
         <div class="section-icon">👤</div>
         <div>
           <h2 data-editable="profile-title">Мой профиль</h2>
-          <p data-editable="profile-desc">Аватар, статус, баллы, Магазин наград и настройки аккаунта</p>
+          <p data-editable="profile-desc">Аватар, статус, ⚡ Кванты, Магазин наград и настройки аккаунта</p>
         </div>
       </div>
       <div id="profile-box"></div>
@@ -4461,7 +4475,7 @@
       <div class="modal-head">
         <div class="modal-icon">🎓</div>
         <h3>Регистрация</h3>
-        <p>Присоединяйся к порталу и получи <strong>💎 +50 баллов</strong> на старт!</p>
+        <p>Присоединяйся к порталу и получи <strong>⚡ +50 Квантов</strong> на старт!</p>
       </div>
       <div class="form-error" id="register-error"></div>
       <form id="register-form">
@@ -4514,7 +4528,7 @@
           </label>
         </div>
         <a id="rules-open-link" style="display:block; text-align:center; margin-bottom:10px; cursor:pointer; font-weight:700; color:var(--accent, #1d4ed8);">📜 Правила сообщества МБОУ «Лицей №37» (100 пунктов)</a>
-        <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться · 💎 +50</button>
+        <button type="submit" class="btn btn-primary btn-block">Зарегистрироваться · ⚡ +50 Q</button>
       </form>
       <div class="modal-footer-link">
         Уже есть аккаунт? <a id="go-to-login">Войти</a>
@@ -4775,6 +4789,11 @@
         <h3 id="wires-title">Узлы и провода</h3>
         <p id="wires-subtitle">Визуальный конструктор прав</p>
       </div>
+      <div class="wire-toolbar">
+        <button type="button" class="btn btn-ghost btn-sm" id="wire-lasso-btn">✂️ Выделить и удалить провода</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="wire-del-btn" style="display:none;">🗑️ Удалить выделенные права (0)</button>
+      </div>
+      <div class="wire-cats" id="wire-cats"></div>
       <div class="wire-board" id="wire-board">
         <svg id="wire-svg" xmlns="http://www.w3.org/2000/svg"></svg>
         <div class="wire-cols">
@@ -4909,7 +4928,7 @@
       <button data-adm="director">🏛️ Директор</button>
       <button data-adm="users">👥 Пользователи</button>
       <button data-adm="broadcast">📣 Рассылка</button>
-      <button data-adm="points">💎 Баллы</button>
+      <button data-adm="points">⚡ Кванты</button>
       <button data-adm="analytics">📊 Аналитика</button>
       <button data-adm="backup">💾 Бэкап</button>
       <button data-adm="wires">🔌 Права (Провода)</button>
@@ -5394,7 +5413,107 @@
 
     /* ============ ПОЛЬЗОВАТЕЛИ И СЕССИЯ ============ */
     function getUsers() { return dbLoad('users', []); }
-    function saveUsers(users) { dbSave('users', users); }
+
+    /* ==== ⚡ КВАНТЫ: журнал транзакций, лимиты, защита от читеров ==== */
+    const Q_LIMITS37 = { game: 50, homework: 30 };
+    let qLedgerCache37 = null;
+
+    function qfmt37(n) { return '⚡ ' + Number(n || 0) + ' Q'; }
+    function qword37(n) {
+      const v = Math.abs(Number(n || 0));
+      const m10 = v % 10, m100 = v % 100;
+      if (m10 === 1 && m100 !== 11) return 'Квант';
+      if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return 'Кванта';
+      return 'Квантов';
+    }
+    function qDay37(ts) {
+      try { return new Date(Number(ts || Date.now()) + 3 * 3600000).toISOString().slice(0, 10); } catch (eQd37) { return todayStr(); }
+    }
+    function qSig37(userId, ts, delta, source) {
+      let h = 5381;
+      const s = String(userId) + '|' + String(ts) + '|' + String(delta) + '|' + String(source) + '|l37-quantum';
+      for (let i = 0; i < s.length; i++) { h = ((h << 5) + h + s.charCodeAt(i)) | 0; }
+      return 'q' + (h >>> 0).toString(36);
+    }
+    function qLedger37() {
+      if (!qLedgerCache37) {
+        const raw = dbLoad('quantum_ledger', {});
+        qLedgerCache37 = raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
+      }
+      return qLedgerCache37;
+    }
+    function qLedgerSave37(map) {
+      qLedgerCache37 = map;
+      dbSave('quantum_ledger', map);
+    }
+    function qLedgerPush37(u, delta, source, reason) {
+      if (!u || !u.id || !delta) return;
+      const map = qLedger37();
+      const arr = Array.isArray(map[u.id]) ? map[u.id] : [];
+      if (!arr.length && Number(u.points || 0) !== START_POINTS) {
+        const baseTs = Date.now();
+        const base = Number(u.points || 0) - START_POINTS;
+        arr.push({ ts: baseTs, delta: base, source: 'baseline', reason: '📊 Перенос текущего баланса в журнал Квантов', sig: qSig37(u.id, baseTs, base, 'baseline') });
+      }
+      const ts = Date.now();
+      arr.push({ ts: ts, delta: delta, source: source || 'other', reason: reason || '⚡ Кванты', sig: qSig37(u.id, ts, delta, source || 'other') });
+      map[u.id] = arr.length > 400 ? arr.slice(-400) : arr;
+      qLedgerSave37(map);
+    }
+    function qValidSum37(u) {
+      const arr = qLedger37()[u.id];
+      if (!Array.isArray(arr) || !arr.length) return null;
+      let sum = 0, ok = false;
+      arr.forEach(function (e) {
+        if (!e || typeof e.sig !== 'string') return;
+        if (qSig37(u.id, e.ts, e.delta, e.source) !== e.sig) return;
+        sum += Number(e.delta || 0); ok = true;
+      });
+      return ok ? START_POINTS + sum : null;
+    }
+    function qDaySpent37(userId, source, dayKey) {
+      const arr = qLedger37()[userId];
+      if (!Array.isArray(arr)) return 0;
+      return arr.reduce(function (s, e) {
+        if (!e || e.source !== source || qDay37(e.ts) !== dayKey) return s;
+        return s + Math.max(0, Number(e.delta || 0));
+      }, 0);
+    }
+    function qSanitizeUsers37(users) {
+      if (!Array.isArray(users)) return users;
+      users.forEach(function (u) {
+        const expected = qValidSum37(u);
+        if (expected === null) return;
+        const cur = Math.round(Number(u.points || 0));
+        if (Math.abs(cur - expected) >= 1) u.points = Math.round(expected);
+      });
+      return users;
+    }
+    function qAnomalies37() {
+      const out = [];
+      getUsers().forEach(function (u) {
+        const expected = qValidSum37(u);
+        if (expected === null) return;
+        if (Math.round(Number(u.points || 0)) !== Math.round(expected)) out.push({ u: u, points: Math.round(Number(u.points || 0)), expected: Math.round(expected) });
+      });
+      return out;
+    }
+    function qResetBalance37(userId) {
+      const users = getUsers();
+      const u = users.find(function (x) { return x.id === userId; });
+      if (!u) return;
+      const expected = qValidSum37(u);
+      if (expected === null) { toast('У ученика нет журнала транзакций — сброс не требуется.', 'info'); return; }
+      const before = u.points;
+      u.points = Math.round(expected);
+      saveUsers(users);
+      adminLogAction('points', '🧯 Сброс накрутки: ' + u.name + ' (' + before + ' → ' + u.points + ' Q)', { kind: 'points', userId: userId, delta: Number(before) - Math.round(expected) });
+      updateAuthUI();
+      toast('🧯 Баланс ученика ' + u.name + ' восстановлен по журналу: ' + qfmt37(u.points) + '.', 'success');
+    }
+    function saveUsers(users) {
+      dbSave('users', qSanitizeUsers37(Array.isArray(users) ? users : []));
+    }
 
     function getSessionUserId() { return dbLoad('session', null); }
     function setSessionUserId(id) { dbSave('session', id); }
@@ -5809,7 +5928,7 @@
             theme: null,
             about: '',
             volunteer: false,
-            history: [{ ts: Date.now(), delta: START_POINTS, reason: '🎁 Стартовые баллы за регистрацию' }],
+            history: [{ ts: Date.now(), delta: START_POINTS, reason: '🎁 Стартовые Кванты за регистрацию' }],
             createdAt: new Date().toISOString()
           };
 
@@ -5819,6 +5938,7 @@
           }
 
           users.push(user);
+          qLedgerPush37(user, START_POINTS, 'start', '🎁 Стартовые Кванты за регистрацию');
           saveUsers(users);
           setSessionUserId(user.id);
           closeModal('modal-register');
@@ -5826,7 +5946,7 @@
           updateAuthUI();
           updateStats();
           renderProfileTab();
-          toast('Добро пожаловать в Лицей №37, ' + user.name + '! Начислено 💎 ' + START_POINTS + ' баллов.', 'success');
+          toast('Добро пожаловать в Лицей №37, ' + user.name + '! Начислено ⚡ ' + START_POINTS + ' Квантов.', 'success');
         } catch (err) {
           console.warn('Регистрация: ошибка', err);
           showFormError('register-error', 'Что-то пошло не так. Попробуй ещё раз — данные сохранятся локально даже без сети.');
@@ -5911,6 +6031,7 @@
         u.owned = (u.owned || []).filter(function (id) { return id !== 'theme-light' && id !== 'theme-neon' && id !== 'theme-tatar'; });
         u.history = u.history || [];
         if (price > 0 && !u.history.some(function (h) { return String(h.reason || '').indexOf('Возврат: тема') !== -1; })) {
+          qLedgerPush37(u, price, 'refund', '↩️ Возврат: тема убрана из Магазина');
           u.points = (u.points || 0) + price;
           u.history.push({ ts: Date.now(), delta: price, reason: '↩️ Возврат: тема убрана из Магазина' });
         }
@@ -5958,7 +6079,7 @@
             '<div class="user-meta"><span class="user-class">' + esc(classLabel(user)) + '</span>' +
             '<span>' + esc(displayStatus(user)) + '</span></div>' +
           '</div>' +
-          '<div class="user-points">💎 ' + Number(user.points || 0) + ' б.</div>' +
+          '<div class="user-points">' + qfmt37(user.points) + '</div>' +
           '<button class="btn btn-ghost btn-sm" id="logout-btn" title="Выйти">Выйти</button>' +
         '</div>';
 
@@ -5978,7 +6099,7 @@
       const stats = [
         { icon: '🧑‍🎓', value: String(users.length), label: 'Учеников на портале' },
         { icon: '🏫', value: '55', label: 'Классов: 1–11, буквы А–Д' },
-        { icon: '💎', value: String(totalPoints), label: 'Баллов заработано' },
+        { icon: '⚡', value: String(totalPoints), label: 'Квантов заработано' },
         { icon: '🧩', value: '6', label: 'Разделов портала' }
       ];
       document.getElementById('home-stats').innerHTML = stats.map(function (s) {
@@ -5999,7 +6120,7 @@
           '<div class="card stub-card">' +
             '<div class="stub-icon">👤</div>' +
             '<h3>Личный профиль</h3>' +
-            '<p>Войди или зарегистрируйся, чтобы увидеть свой профиль, баллы, историю начислений и Магазин наград.</p>' +
+            '<p>Войди или зарегистрируйся, чтобы увидеть свой профиль, ⚡ Кванты, историю начислений и Магазин наград.</p>' +
             '<div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">' +
               '<button class="btn btn-primary" id="profile-login-btn">Войти</button>' +
               '<button class="btn btn-outline" id="profile-register-btn">Регистрация</button>' +
@@ -6026,7 +6147,7 @@
               (Number(user.streak || 0) > 0 ? '<span class="streak-badge" title="Дней подряд">🔥 ' + Number(user.streak) + '</span>' : '') +
               roleBadges37(user, classIdOf(user.grade, user.letter)) +
             '</div>' +
-            '<div class="user-points" style="font-size:1.15rem; margin-top:10px;">💎 ' + Number(user.points || 0) + ' баллов</div>' +
+            '<div class="user-points" style="font-size:1.15rem; margin-top:10px;">⚡ ' + Number(user.points || 0) + ' ' + qword37(user.points) + '</div>' +
             (user.about ? '<p class="info-desc" style="margin-top:8px;">' + esc(user.about) + '</p>' : '') +
             (user.volunteer ? '<div style="margin-top:10px;"><span class="vol-tag">🤝 Волонтёр Банка взаимопомощи</span></div>' : '') +
             (createdStr ? '<div class="field-hint" style="margin-top:6px;">На портале с ' + esc(createdStr) + '</div>' : '') +
@@ -6049,7 +6170,7 @@
             '<button class="btn btn-primary btn-block" id="pf-save" style="margin-top:12px;">💾 Сохранить изменения</button>' +
           '</div>' +
           '<div class="card">' +
-            '<h3 class="info-title">📜 История начисления баллов</h3>' +
+            '<h3 class="info-title">📜 История начисления Квантов</h3>' +
             (history.length
               ? '<div class="hist-list">' + history.map(function (h) {
                   return '<div class="hist-row"><span>' + fmtDateTime(h.ts) + ' · ' + esc(h.reason || 'Баллы') + '</span><span class="' + (h.delta >= 0 ? 'hist-plus' : 'hist-minus') + '">' + (h.delta >= 0 ? '+' : '') + Number(h.delta) + '</span></div>';
@@ -6065,13 +6186,13 @@
           '<div id="pf-purchases"></div>' +
         '</div>' +
         '<div class="card" style="margin-top:20px;">' +
-          '<h3 class="info-title" data-editable="shop-title">🎨 Магазин наград за баллы</h3>' +
+          '<h3 class="info-title" data-editable="shop-title">🎨 Магазин наград за Кванты</h3>' +
           '<p class="info-desc">Покупай рамки аватара и уникальные статусы — украшают только твой профиль!</p>' +
           '<div class="shop-grid" id="shop-grid"></div>' +
         '</div>' +
         '<div class="danger-zone">' +
           '<b>⚠️ Опасная зона</b>' +
-          '<p class="info-desc">Удаление аккаунта необратимо: пропадут профиль, баллы и все покупки.</p>' +
+          '<p class="info-desc">Удаление аккаунта необратимо: пропадут профиль, Кванты и все покупки.</p>' +
           '<button class="btn btn-danger btn-sm" id="pf-delete-btn">🗑️ Удалить мой аккаунт</button>' +
         '</div>';
 
@@ -6128,7 +6249,7 @@
           (item.kind === 'status' && user.customStatus === item.value);
         let action;
         if (!isOwned) {
-          action = '<button type="button" class="btn btn-primary btn-sm" data-shop-buy="' + item.id + '"' + ((user.points || 0) < item.price ? ' disabled' : '') + '>Купить · 💎 ' + item.price + '</button>';
+          action = '<button type="button" class="btn btn-primary btn-sm" data-shop-buy="' + item.id + '"' + ((user.points || 0) < item.price ? ' disabled' : '') + '>Купить · ' + qfmt37(item.price) + '</button>';
         } else {
           action = active ? '<span class="own-badge">✅ Надето</span>' : '<button type="button" class="btn btn-outline btn-sm" data-shop-use="' + item.id + '">Надеть</button>';
         }
@@ -6136,7 +6257,7 @@
           '<div class="shop-ico">' + item.icon + '</div>' +
           '<div class="shop-name">' + esc(item.name) + '</div>' +
           '<div class="field-hint">' + esc(item.desc) + '</div>' +
-          '<div class="shop-price">💎 ' + item.price + '</div>' +
+          '<div class="shop-price">' + qfmt37(item.price) + '</div>' +
           action +
         '</div>';
       }).join('');
@@ -6147,7 +6268,7 @@
           '<div class="shop-ico">' + esc(r.icon || '🎁') + '</div>' +
           '<div class="shop-name">' + esc(r.name) + '</div>' +
           (r.desc ? '<div class="field-hint">' + esc(r.desc) + '</div>' : '') +
-          '<div class="shop-price">💎 ' + Number(r.price || 0) + '</div>' +
+          '<div class="shop-price">' + qfmt37(r.price || 0) + '</div>' +
           (stock <= 0 ? '<span class="own-badge">Распродано</span>' : '<span class="field-hint">Осталось: ' + stock + ' шт.</span>') +
         '</div>';
       }).join('') : '';
@@ -6163,7 +6284,8 @@
       if (!u) return;
       u.owned = u.owned || [];
       if (u.owned.indexOf(id) !== -1) return;
-      if ((u.points || 0) < item.price) { toast('Не хватает баллов: нужно 💎 ' + item.price + '.', 'error'); return; }
+      if ((u.points || 0) < item.price) { toast('Не хватает Квантов: нужно ' + qfmt37(item.price) + '.', 'error'); return; }
+      qLedgerPush37(u, -item.price, 'shop', '🛍️ Покупка: ' + item.name);
       u.points = (u.points || 0) - item.price;
       u.owned.push(id);
       u.history = u.history || [];
@@ -6409,14 +6531,27 @@
       return String(grade) + String(letter || '').toUpperCase();
     }
 
-    function addPointsToUser(userId, delta, reason) {
+    function addPointsToUser(userId, delta, reason, source) {
       const users = getUsers();
       const u = users.find(function (x) { return x.id === userId; });
       if (!u) return;
-      u.points = (u.points || 0) + delta;
+      const src = source || 'other';
+      let final = Number(delta || 0);
+      if (final > 0 && (src === 'game' || src === 'homework')) {
+        const dayKey37 = qDay37(Date.now());
+        const spent = qDaySpent37(u.id, src, dayKey37);
+        const limit = Q_LIMITS37[src] || 0;
+        if (limit > 0 && spent >= limit) {
+          toast('⏳ Суточный лимит исчерпан: в этой активности можно заработать ' + limit + ' ⚡ Q в день. Возвращайся завтра!', 'info');
+          return;
+        }
+        if (limit > 0 && spent + final > limit) final = limit - spent;
+      }
+      u.points = (u.points || 0) + final;
       u.history = u.history || [];
-      u.history.push({ ts: Date.now(), delta: delta, reason: reason || 'Баллы' });
+      u.history.push({ ts: Date.now(), delta: final, reason: reason || 'Баллы' });
       if (u.history.length > 100) u.history = u.history.slice(-100);
+      try { qLedgerPush37(u, final, src, reason || '⚡ Кванты'); } catch (eQ43) {}
       saveUsers(users);
       updateAuthUI();
       updateStats();
@@ -7169,9 +7304,9 @@
         item.doneBy.push(user.id);
         dbSave('homework', list);
         if (getPet(currentClass)) addPetXp(currentClass, 5);
-        addPointsToUser(user.id, 5);
+        addPointsToUser(user.id, 5, '✅ Домашка сделана: ' + (item.subject || 'задание'), 'homework');
         renderHomework();
-        toast('✅ Готово! +5 баллов в профиль и +5 XP питомцу.', 'success');
+        toast('✅ Готово! +5 ⚡ Q в профиль и +5 XP питомцу.', 'success');
       });
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
@@ -9198,7 +9333,7 @@
           '<span class="user-class">' + esc(classIdOf(u.grade, u.letter)) + '</span>' +
           (u.mood ? '<span class="dm-mood">🎵 ' + esc(u.mood) + '</span>' : '') +
           (tags.length ? '<div class="itags-row">' + tags.map(function (t) { return '<span class="itag-chip">' + esc(t) + '</span>'; }).join('') + '</div>' : '') +
-          '<span class="field-hint">' + st.icon + ' ' + esc(st.title) + ' · 💎 ' + Number(u.points || 0) + '</span>' +
+          '<span class="field-hint">' + st.icon + ' ' + esc(st.title) + ' · ' + qfmt37(u.points) + '</span>' +
           (self
             ? '<span class="field-hint">Это ты 🙂</span>'
             : '<div class="field-row" style="width:100%;">' +
@@ -9527,28 +9662,252 @@ try {
 
     /* ==== УЗЛЫ И ПРОВОДА + УПРАВЛЕНИЕ КАНАЛАМИ + ВЕРИФИКАЦИЯ + РАССЫЛКА ==== */
     const CHANNEL_CATS = ['Учеба и ОГЭ/ЕГЭ', 'IT и программирование', 'Спорт и игры', 'Творчество и медиа', 'Жизнь класса', 'Общение'];
-    const CH_NODES = [
-      { id: 'post', label: '✍️ Выкладывание постов' },
-      { id: 'edit_others', label: '✏️ Редактирование чужих постов' },
-      { id: 'delete', label: '🗑️ Удаление постов и комментариев' },
-      { id: 'pin', label: '📌 Закрепление постов и комментариев' },
-      { id: 'ban', label: '🚫 Бан/разбан участников в канале' },
-      { id: 'settings', label: '⚙️ Изменение названия, темы и описания канала' }
+    const WIRE_CATS = [
+      { id: 'content', name: '📝 Контент и посты', nodes: [
+        { id: 'cp_post_create', label: '✍️ Публикация постов в ленте', impl: ['moderation'] },
+        { id: 'cp_post_photo', label: '📷 Посты с фотографиями', impl: ['moderation'] },
+        { id: 'cp_post_edit_own', label: '✏️ Редактирование своих постов', impl: ['moderation'] },
+        { id: 'cp_post_edit_any', label: '✏️ Редактирование любых постов', impl: ['moderation'] },
+        { id: 'cp_post_del', label: '🗑️ Удаление постов в ленте', impl: ['moderation'] },
+        { id: 'cp_post_pin', label: '📌 Закрепление постов в ленте', impl: ['moderation'] },
+        { id: 'cp_post_repost', label: '↪️ Репосты и шеринг записей', impl: ['moderation'] },
+        { id: 'cp_post_bookmark', label: '🔖 Закладки постов', impl: ['moderation'] },
+        { id: 'cp_post_views', label: '👁️ Счётчики просмотров постов', impl: ['moderation'] },
+        { id: 'cp_poll_create', label: '🗳️ Создание опросов в постах', impl: ['moderation'] },
+        { id: 'cp_poll_vote', label: '✅ Голосование в опросах', impl: ['moderation'] },
+        { id: 'cp_hashtag', label: '#️⃣ Хэштеги и фильтры ленты', impl: ['moderation'] },
+        { id: 'cp_mention', label: '🔔 Упоминания @ник', impl: ['moderation'] },
+        { id: 'cp_widgets', label: '🧩 Мини-виджеты в постах', impl: ['liveedit'] },
+        { id: 'cp_archive', label: '🗄️ Архивация постов', impl: ['moderation'] },
+        { id: 'cp_restore', label: '♻️ Восстановление удалённых постов', impl: ['moderation'] },
+        { id: 'cp_announce', label: '📣 Посты-объявления от класса', impl: ['moderation'] },
+        { id: 'cp_longread', label: '📜 Длинные посты без сворачивания', impl: ['moderation'] },
+        { id: 'cp_schedule', label: '⏰ Отложенная публикация постов', impl: ['moderation'] },
+        { id: 'cp_cover', label: '🖼️ Смена обложек постов', impl: ['liveedit'] },
+        { id: 'cp_import', label: '📥 Импорт постов из бэкапа', impl: ['moderation'] }
+      ] },
+      { id: 'chat', name: '💬 Комментарии и чаты', nodes: [
+        { id: 'cc_write', label: '💬 Написание комментариев', impl: ['moderation'] },
+        { id: 'cc_edit_own', label: '✏️ Правка своих комментариев', impl: ['moderation'] },
+        { id: 'cc_edit_any', label: '✏️ Правка чужих комментариев', impl: ['moderation'] },
+        { id: 'cc_del', label: '🗑️ Удаление любых комментариев', impl: ['moderation'] },
+        { id: 'cc_pin', label: '📌 Закрепление лучших комментариев', impl: ['moderation'] },
+        { id: 'cc_dm_read', label: '✉️ Чтение личных сообщений', impl: ['moderation'] },
+        { id: 'cc_dm_moderate', label: '🛡️ Модерация личных сообщений', impl: ['moderation'] },
+        { id: 'cc_react', label: '❤️ Реакции на сообщения', impl: ['moderation'] },
+        { id: 'cc_reply', label: '↩️ Ответы на сообщения', impl: ['moderation'] },
+        { id: 'cc_forward', label: '↪️ Пересылка сообщений', impl: ['moderation'] },
+        { id: 'cc_photo', label: '📷 Фото в личных чатах', impl: ['moderation'] },
+        { id: 'cc_typing', label: '✍️ Индикатор «печатает...»', impl: ['moderation'] },
+        { id: 'cc_online', label: '● Статус «в сети»', impl: ['moderation'] },
+        { id: 'cc_read_marks', label: '✓✓ Галочки прочтения', impl: ['moderation'] },
+        { id: 'cc_block', label: '🚫 Блокировка пользователей в чатах', impl: ['moderation'] },
+        { id: 'cc_archive', label: '📥 Архив переписок', impl: ['moderation'] },
+        { id: 'cc_draft', label: '📝 Черновики сообщений', impl: ['moderation'] },
+        { id: 'cc_pin_chat', label: '📌 Закрепление сообщений в чате', impl: ['moderation'] },
+        { id: 'cc_search', label: '🔍 Поиск по переписке', impl: ['moderation'] },
+        { id: 'cc_group', label: '👥 Групповые чаты классов', impl: ['moderation'] },
+        { id: 'cc_copystar', label: '📋 Копирование текста сообщений', impl: ['moderation'] }
+      ] },
+      { id: 'bazaar', name: '🛍️ Барахолка и сделки', nodes: [
+        { id: 'bb_create', label: '🛍️ Публикация объявлений', impl: ['moderation'] },
+        { id: 'bb_edit_own', label: '✏️ Редактирование своих объявлений', impl: ['moderation'] },
+        { id: 'bb_edit_any', label: '✏️ Редактирование любых объявлений', impl: ['moderation'] },
+        { id: 'bb_del_any', label: '🗑️ Удаление любых объявлений', impl: ['moderation'] },
+        { id: 'bb_photo4', label: '🖼️ До 4 фото в объявлении', impl: ['moderation'] },
+        { id: 'bb_price', label: '💰 Цена и торг уместен', impl: ['moderation'] },
+        { id: 'bb_free', label: '🎁 Отдам даром', impl: ['moderation'] },
+        { id: 'bb_buy', label: '🛒 Покупка товаров', impl: ['moderation'] },
+        { id: 'bb_reserve', label: '📦 Брони и «Забронировано»', impl: ['moderation'] },
+        { id: 'bb_review', label: '★ Отзывы после покупки', impl: ['moderation'] },
+        { id: 'bb_fav', label: '❤️ Избранные объявления', impl: ['moderation'] },
+        { id: 'bb_views', label: '👁️ Счётчик просмотров товаров', impl: ['moderation'] },
+        { id: 'bb_sort', label: '🔀 Сортировка и фильтры', impl: ['moderation'] },
+        { id: 'bb_meet', label: '📍 Точки передачи в Лицее', impl: ['moderation'] },
+        { id: 'bb_tags', label: '🔥 Метки «Срочно» и «Торг»', impl: ['moderation'] },
+        { id: 'bb_report', label: '🚫 Жалобы на объявления', impl: ['moderation'] },
+        { id: 'bb_hide', label: '🙈 Скрытие объявлений', impl: ['moderation'] },
+        { id: 'bb_restore', label: '♻️ Восстановление объявлений', impl: ['moderation'] },
+        { id: 'bb_stats', label: '📊 Статистика продаж', impl: ['tables'] },
+        { id: 'bb_found', label: '🔎 Бюро находок', impl: ['moderation'] },
+        { id: 'bb_boost', label: '🚀 Продвижение объявлений', impl: ['moderation'] }
+      ] },
+      { id: 'channels', name: '📢 Каналы и сообщества', nodes: [
+        { id: 'post', label: '✍️ Выкладывание постов' },
+        { id: 'edit_others', label: '✏️ Редактирование чужих постов' },
+        { id: 'delete', label: '🗑️ Удаление постов и комментариев' },
+        { id: 'pin', label: '📌 Закрепление постов и комментариев' },
+        { id: 'ban', label: '🚫 Бан/разбан участников в канале' },
+        { id: 'settings', label: '⚙️ Изменение названия, темы и описания канала' },
+        { id: 'ch_photo', label: '📷 Посты с фото в канале', impl: ['post'] },
+        { id: 'ch_polls', label: '🗳️ Опросы в канале', impl: ['post'] },
+        { id: 'ch_stats', label: '📊 Статистика канала', impl: ['tables'] },
+        { id: 'ch_subs', label: '👥 Управление подписчиками', impl: ['ban'] },
+        { id: 'ch_transfer', label: '👑 Передача прав владельца', impl: ['settings'] },
+        { id: 'ch_clean', label: '🧹 Очистка постов канала', impl: ['delete'] },
+        { id: 'ch_delete', label: '🗑️ Удаление канала', impl: ['settings'] },
+        { id: 'ch_notify', label: '🔔 Настройки уведомлений канала', impl: ['settings'] },
+        { id: 'ch_recommend', label: '🙈 Скрытие из рекомендаций', impl: ['settings'] },
+        { id: 'ch_verify', label: '☑️ Верификация канала', impl: ['verify'] },
+        { id: 'ch_blacklist', label: '⛔ Чёрный список канала', impl: ['ban'] },
+        { id: 'ch_cover', label: '🖼️ Обложка и аватар канала', impl: ['settings'] },
+        { id: 'ch_repost', label: '↪️ Репосты записей канала', impl: ['post'] },
+        { id: 'ch_pinned', label: '📌 Главный пост канала', impl: ['pin'] },
+        { id: 'ch_broadcast', label: '📣 Рассылка по подписчикам', impl: ['broadcast'] }
+      ] },
+      { id: 'pets', name: '🐾 Талисманы и классы', nodes: [
+        { id: 'pets', label: '🐾 Управление талисманами классов' },
+        { id: 'pt_choose', label: '🦁 Выбор вида талисмана', impl: ['pets'] },
+        { id: 'pt_name', label: '🏷️ Смена клички питомца', impl: ['pets'] },
+        { id: 'pt_feed', label: '🍖 Кормление питомцев', impl: ['pets'] },
+        { id: 'pt_xp50', label: '➕ Начисление +50 XP классу', impl: ['xp'] },
+        { id: 'pt_xp150', label: '➕ Начисление +150 XP классу', impl: ['xp'] },
+        { id: 'pt_level', label: '🎉 Повышение уровня класса', impl: ['pets'] },
+        { id: 'pt_sleep', label: '🌙 Режим сна 22:00–08:00 МСК', impl: ['pets'] },
+        { id: 'pt_top', label: '🏆 Таблица Топ-5 классов', impl: ['tables'] },
+        { id: 'pt_class_edit', label: '🏫 Название и профиль класса', impl: ['pets'] },
+        { id: 'pt_avatar', label: '🖼️ Аватарка класса', impl: ['pets'] },
+        { id: 'pt_headman', label: '⭐ Назначение старосты', impl: ['pets'] },
+        { id: 'pt_active', label: '📚 Назначение актива класса', impl: ['pets'] },
+        { id: 'pt_cleanup', label: '🧹 Сброс данных класса', impl: ['pets'] },
+        { id: 'pt_gradewall', label: '📐 Стена класса', impl: ['moderation'] },
+        { id: 'pt_pet_stats', label: '📈 Статистика питомцев', impl: ['tables'] },
+        { id: 'pt_award', label: '🏅 Награды классу', impl: ['rewards'] },
+        { id: 'pt_mood', label: '😊 Настроение питомца', impl: ['pets'] },
+        { id: 'pt_history', label: '📜 История питомца класса', impl: ['log'] },
+        { id: 'pt_transfer', label: '🔀 Перенос питомца между классами', impl: ['pets'] },
+        { id: 'pt_lesson', label: '🏫 Индикатор «Сейчас на уроке»', impl: ['pets'] }
+      ] },
+      { id: 'economy', name: '⚡ Экономика и Кванты', nodes: [
+        { id: 'xp', label: '⚡ Начисление Квантов и опыта' },
+        { id: 'rewards', label: '🎁 Управление призами Магазина' },
+        { id: 'ec_give', label: '⚡ Начисление Квантов ученикам', impl: ['xp'] },
+        { id: 'ec_take', label: '➖ Списание Квантов', impl: ['xp'] },
+        { id: 'ec_transfer', label: '🔁 Переводы Квантов по ID', impl: ['xp'] },
+        { id: 'ec_limits', label: '🛡️ Суточные лимиты Игровой', impl: ['xp'] },
+        { id: 'ec_ledger', label: '📒 Журнал транзакций Квантов', impl: ['log'] },
+        { id: 'ec_radar', label: '🚨 Античит-радар балансов', impl: ['moderation'] },
+        { id: 'ec_reset', label: '🧯 Сброс накрутки баланса', impl: ['moderation'] },
+        { id: 'ec_shop_add', label: '➕ Добавление призов', impl: ['rewards'] },
+        { id: 'ec_shop_edit', label: '✏️ Редактирование призов', impl: ['rewards'] },
+        { id: 'ec_shop_del', label: '🗑️ Удаление призов', impl: ['rewards'] },
+        { id: 'ec_stock', label: '📦 Склад призов (шт.)', impl: ['rewards'] },
+        { id: 'ec_shop_buy', label: '🛍️ Покупка призов в Магазине', impl: ['rewards'] },
+        { id: 'ec_refund', label: '↩️ Возвраты за покупку', impl: ['rewards'] },
+        { id: 'ec_start', label: '🎁 Стартовые Кванты новичкам', impl: ['xp'] },
+        { id: 'ec_homework', label: '✅ Начисление за домашку', impl: ['xp'] },
+        { id: 'ec_game', label: '🎮 Начисление за Игровую', impl: ['xp'] },
+        { id: 'ec_streak', label: '🔥 Бонусы Огонёк', impl: ['xp'] },
+        { id: 'ec_export', label: '⬇️ Экспорт истории Квантов', impl: ['tables'] },
+        { id: 'ec_analytics', label: '📈 Аналитика экономики', impl: ['tables'] }
+      ] },
+      { id: 'liveedit', name: '✏️ Живой редактор и виджеты', nodes: [
+        { id: 'liveedit', label: '✏️ Живое редактирование текстов и картинок сайта' },
+        { id: 'le_toggle', label: '🎛️ Переключатель живого редактора', impl: ['liveedit'] },
+        { id: 'le_text', label: '🔤 Редактирование текстов', impl: ['liveedit'] },
+        { id: 'le_images', label: '🖼️ Замена картинок', impl: ['liveedit'] },
+        { id: 'le_widgets', label: '➕ Создание текстовых виджетов', impl: ['liveedit'] },
+        { id: 'le_widget_edit', label: '✏️ Правка любых виджетов', impl: ['liveedit'] },
+        { id: 'le_widget_del', label: '🗑️ Удаление любых виджетов', impl: ['liveedit'] },
+        { id: 'le_palette', label: '🎨 Палитра 60 цветов', impl: ['liveedit'] },
+        { id: 'le_size', label: '📏 Размер и стиль виджетов', impl: ['liveedit'] },
+        { id: 'le_script', label: '⚡ Привязка скриптов к виджетам', impl: ['scripts'] },
+        { id: 'le_place', label: '📍 Выбор места виджета', impl: ['liveedit'] },
+        { id: 'le_preview', label: '👁️ Живой предпросмотр', impl: ['liveedit'] },
+        { id: 'le_header', label: '🧭 Редактирование шапки сайта', impl: ['liveedit'] },
+        { id: 'le_banner', label: '🎊 Редактирование баннера', impl: ['liveedit'] },
+        { id: 'le_schedule', label: '⏰ Правка расписания звонков', impl: ['liveedit'] },
+        { id: 'le_footer', label: '🦶 Правка подвала сайта', impl: ['liveedit'] },
+        { id: 'le_ticker', label: '📡 Верхняя плашка-бегущая строка', impl: ['liveedit'] },
+        { id: 'le_themes', label: '🎨 Темы оформления (3 шт.)', impl: ['liveedit'] },
+        { id: 'le_undo', label: '↩️ Отмена правок редактора', impl: ['log'] },
+        { id: 'le_move', label: '🔀 Перетаскивание виджетов', impl: ['liveedit'] },
+        { id: 'le_backup', label: '💾 Бэкап виджетов', impl: ['liveedit'] }
+      ] },
+      { id: 'scripts', name: '💻 Скрипты и оформление', nodes: [
+        { id: 'scripts', label: '💻 Доступ к Библиотеке скриптов' },
+        { id: 'sc_js', label: '📜 Вставка JS-скриптов', impl: ['scripts'] },
+        { id: 'sc_css', label: '🎨 Вставка CSS-оформления', impl: ['scripts'] },
+        { id: 'sc_run', label: '▶️ Запуск и остановка скриптов', impl: ['scripts'] },
+        { id: 'sc_rename', label: '✏️ Переименование скриптов', impl: ['scripts'] },
+        { id: 'sc_delete', label: '🗑️ Удаление скриптов', impl: ['scripts'] },
+        { id: 'sc_auto', label: '🏷️ Автоимена скриптов', impl: ['scripts'] },
+        { id: 'sc_snow', label: '❄️ Скрипт «Снегопад»', impl: ['scripts'] },
+        { id: 'sc_salut', label: '🎆 Скрипт «Салют»', impl: ['scripts'] },
+        { id: 'sc_timer', label: '⏱ Скрипт «Таймер»', impl: ['scripts'] },
+        { id: 'sc_banner', label: '📢 Скрипт «Баннер»', impl: ['scripts'] },
+        { id: 'sc_theme', label: '🧴 Кастомное оформление темы', impl: ['scripts'] },
+        { id: 'sc_anim', label: '✨ Пользовательские анимации', impl: ['scripts'] },
+        { id: 'sc_stop', label: '⏹ Аварийная остановка всех скриптов', impl: ['scripts'] },
+        { id: 'sc_logs', label: '📜 Логи запусков скриптов', impl: ['log'] },
+        { id: 'sc_share', label: '🔗 Экспорт скрипта в файл', impl: ['scripts'] },
+        { id: 'sc_guard', label: '🛡️ Защита скриптов от изменений', impl: ['scripts'] },
+        { id: 'sc_confetti', label: '🎉 Конфетти на событиях', impl: ['scripts'] },
+        { id: 'sc_dark', label: '🌙 Тёмные вариации скриптов', impl: ['scripts'] },
+        { id: 'sc_music', label: '🔊 Звуковые эффекты', impl: ['scripts'] },
+        { id: 'sc_debug', label: '🧪 Тестовые скрипты (dev)', impl: ['scripts'] }
+      ] },
+      { id: 'mail', name: '📣 Рассылки и верификация', nodes: [
+        { id: 'broadcast', label: '📣 Отправка срочной рассылки' },
+        { id: 'verify', label: '☑️ Выдача синей галочки верификации' },
+        { id: 'ml_schedule', label: '⏰ Рассылка по таймеру (МСК)', impl: ['broadcast'] },
+        { id: 'ml_edit', label: '✏️ Редактирование рассылок', impl: ['broadcast'] },
+        { id: 'ml_stop', label: '⏹ Остановка рассылок', impl: ['broadcast'] },
+        { id: 'ml_del', label: '🗑️ Удаление рассылок', impl: ['broadcast'] },
+        { id: 'ml_list', label: '📜 Список активных рассылок', impl: ['broadcast'] },
+        { id: 'ml_bell', label: '🔔 Колокольчик уведомлений', impl: ['broadcast'] },
+        { id: 'ml_banner', label: '🪧 Всплывающий баннер рассылки', impl: ['broadcast'] },
+        { id: 'ml_verify_users', label: '👤 Галочки ученикам', impl: ['verify'] },
+        { id: 'ml_verify_channels', label: '📢 Галочки каналам', impl: ['verify'] },
+        { id: 'ml_verify_remove', label: '❌ Снятие галочки', impl: ['verify'] },
+        { id: 'ml_dnd', label: '🔕 Режим «Не беспокоить»', impl: ['broadcast'] },
+        { id: 'ml_mentions', label: '🔔 Уведомления об упоминаниях', impl: ['broadcast'] },
+        { id: 'ml_friend', label: '🤝 Уведомления о заявках в друзья', impl: ['broadcast'] },
+        { id: 'ml_pet', label: '🐾 Уведомления питомцев класса', impl: ['broadcast'] },
+        { id: 'ml_shop', label: '🛍️ Уведомления о покупках', impl: ['broadcast'] },
+        { id: 'ml_dms', label: '✉️ Уведомления о сообщениях', impl: ['broadcast'] },
+        { id: 'ml_history', label: '📜 История рассылок', impl: ['log'] },
+        { id: 'ml_test', label: '🧪 Тестовая рассылка себе', impl: ['broadcast'] },
+        { id: 'ml_archive', label: '📧 Архив копий рассылок', impl: ['log'] }
+      ] },
+      { id: 'mod', name: '🛡️ Жалобы, логи и модерация', nodes: [
+        { id: 'tables', label: '📊 Таблицы заявок и идей' },
+        { id: 'log', label: '📜 Журнал действий и отмена правок' },
+        { id: 'moderation', label: '🛡️ Полная модерация Барахолки и Соцсети' },
+        { id: 'md_reports', label: '🚨 Вкладка «Жалобы»', impl: ['moderation'] },
+        { id: 'md_report_reply', label: '💬 Ответ на жалобу ученику', impl: ['moderation'] },
+        { id: 'md_report_del', label: '🗑️ Удаление нарушающего контента', impl: ['moderation'] },
+        { id: 'md_report_close', label: '✅ Отклонение жалоб', impl: ['moderation'] },
+        { id: 'md_log_undo', label: '↩️ Отмена действий из Журнала', impl: ['log'] },
+        { id: 'md_log_export', label: '⬇️ Экспорт журнала', impl: ['tables'] },
+        { id: 'md_apps', label: '📥 Заявки на мероприятия', impl: ['tables'] },
+        { id: 'md_ideas', label: '💡 Ящик идей', impl: ['tables'] },
+        { id: 'md_csv', label: '📄 Скачивание CSV', impl: ['tables'] },
+        { id: 'md_approve', label: '✅ Одобрение заявок', impl: ['tables'] },
+        { id: 'md_users', label: '👥 Управление пользователями', impl: ['moderation'] },
+        { id: 'md_user_del', label: '🗑️ Удаление аккаунтов', impl: ['moderation'] },
+        { id: 'md_cleanup', label: '🧹 Очистка тестовых аккаунтов', impl: ['moderation'] },
+        { id: 'md_backup', label: '💾 Бэкап и восстановление', impl: ['log'] },
+        { id: 'md_pass', label: '🔑 Смена пароля админа', impl: ['log'] },
+        { id: 'md_stats', label: '📈 Аналитика портала', impl: ['tables'] },
+        { id: 'md_antispam', label: '🤖 Антиспам-контроль', impl: ['moderation'] },
+        { id: 'md_director', label: '🏛️ Статус «Директор»', impl: ['verify'] }
+      ] }
     ];
-    const GLOBAL_NODES = [
-      { id: 'liveedit', label: '✏️ Живое редактирование текстов и картинок сайта' },
-      { id: 'tables', label: '📊 Таблицы заявок и идей' },
-      { id: 'log', label: '📜 Журнал действий и отмена правок' },
-      { id: 'pets', label: '🐾 Управление талисманами классов' },
-      { id: 'scripts', label: '💻 Доступ к Библиотеке скриптов' },
-      { id: 'rewards', label: '🎁 Управление призами Магазина' },
-      { id: 'verify', label: '☑️ Выдача синей галочки верификации' },
-      { id: 'broadcast', label: '📣 Отправка срочной рассылки' },
-      { id: 'moderation', label: '🛡️ Полная модерация Барахолки и Соцсети' },
-      { id: 'xp', label: '💎 Начисление баллов и опыта' }
-    ];
+    const WIRE_NODE_INDEX37 = {};
+    WIRE_CATS.forEach(function (c) { c.nodes.forEach(function (n) { WIRE_NODE_INDEX37[n.id] = n; }); });
+    function nodeImpls37(nodeId) {
+      const n = WIRE_NODE_INDEX37[nodeId];
+      return n && Array.isArray(n.impl) && n.impl.length ? n.impl : [nodeId];
+    }
 
     let wireCtx = { mode: 'global', chId: null };
+    let wireCat37 = 'all';
+    let wireQ37 = '';
+    let wireLasso37 = false;
+    let wireLassoDraw37 = false;
+    let wireLassoLast37 = null;
+    let wireMarked37 = [];
     let wireArmed = null;
     let wireDrag = null;
     let mngChId = null;
@@ -9560,12 +9919,13 @@ try {
       if (!u) return false;
       if (u.isAdmin) return true;
       try { if (sessionStorage.getItem('lp37_admin_full') === '1') return true; } catch (eAdminFull37) {}
-      return userGnodes(u).indexOf(node) !== -1;
+      const gn37 = userGnodes(u);
+      return gn37.some(function (g) { return nodeImpls37(g).indexOf(node) !== -1; });
     }
     function canModerateAll(u) { return hasGlobalNode(u, 'moderation'); }
     function chHasNode(ch, userId, node) {
       if (!ch || !Array.isArray(ch.nodes)) return false;
-      return ch.nodes.some(function (n) { return n.userId === userId && n.node === node; });
+      return ch.nodes.some(function (n) { return n && n.userId === userId && nodeImpls37(n.node).indexOf(node) !== -1; });
     }
     function chCanManage(u, ch) { return !!u && !!ch && (ch.ownerId === u.id || u.isAdmin || chHasNode(ch, u.id, 'settings')); }
     function chCanBan(u, ch) { return !!u && !!ch && (ch.ownerId === u.id || u.isAdmin || chHasNode(ch, u.id, 'ban')); }
@@ -9612,26 +9972,52 @@ try {
       }
       wireArmed = null;
       wireDrag = null;
+      wireCat37 = 'all';
+      wireQ37 = '';
+      setLasso37(false);
       renderWireBoard();
       openModal('modal-wires');
       setTimeout(drawWires, 80);
       setTimeout(drawWires, 320);
     }
 
+    function wireCatsFor37() {
+      return wireCtx.mode === 'channel' ? WIRE_CATS.filter(function (c) { return c.id === 'channels'; }) : WIRE_CATS;
+    }
+    function wireCurrentNodes37() {
+      let pool = [];
+      wireCatsFor37().forEach(function (c) {
+        if (wireCat37 !== 'all' && wireCat37 !== c.id) return;
+        pool = pool.concat(c.nodes);
+      });
+      const q = String(wireQ37 || '').toLowerCase().trim();
+      if (q) pool = pool.filter(function (n) { return String(n.label || '').toLowerCase().indexOf(q) !== -1 || String(n.id || '').toLowerCase().indexOf(q) !== -1; });
+      return pool;
+    }
+    function renderWireNodes37() {
+      const right = document.getElementById('wire-right');
+      if (!right) return;
+      const conns = currentWireConns();
+      const nodes = wireCurrentNodes37();
+      right.innerHTML = nodes.map(function (n) {
+        const cnt = conns.filter(function (c) { return c.node === n.id; }).length;
+        return '<div class="wire-node"><button type="button" class="wport wport-in" data-wport_in="' + esc(n.id) + '" title="Порт права — соедини провод сюда"></button>' +
+          '<div style="min-width:0;"><b>' + esc(n.label) + '</b><small>подключено: ' + cnt + '</small></div></div>';
+      }).join('') || '<p class="empty-line">Узлы не найдены.</p>';
+    }
     function renderWireBoard() {
       const left = document.getElementById('wire-left');
       const right = document.getElementById('wire-right');
       if (!left || !right) return;
+      wireMarked37 = [];
+      updateDelBtn37();
       let users = [];
-      let nodes = [];
       if (wireCtx.mode === 'channel') {
         const ch = getList('channels').find(function (x) { return x.id === wireCtx.chId; });
         if (!ch) { closeModal('modal-wires'); return; }
         users = getUsers().filter(function (u) { return (ch.subs || []).indexOf(u.id) !== -1 || u.id === ch.ownerId; });
-        nodes = CH_NODES;
       } else {
         users = getUsers().slice();
-        nodes = GLOBAL_NODES;
       }
       const conns = currentWireConns();
       left.innerHTML = users.map(function (u) {
@@ -9639,11 +10025,22 @@ try {
           '<div style="min-width:0;"><b>' + esc(u.name) + '</b>' + userVerifiedSpan(u) + '<small>' + esc(classIdOf(u.grade, u.letter)) + '</small></div></div>' +
           '<button type="button" class="wport wport-out" data-wport_out="' + esc(u.id) + '" title="Порт ника — начни провод отсюда"></button></div>';
       }).join('') || '<p class="empty-line">Участников пока нет.</p>';
-      right.innerHTML = nodes.map(function (n) {
-        const cnt = conns.filter(function (c) { return c.node === n.id; }).length;
-        return '<div class="wire-node"><button type="button" class="wport wport-in" data-wport_in="' + esc(n.id) + '" title="Порт права — соедини провод сюда"></button>' +
-          '<div style="min-width:0;"><b>' + esc(n.label) + '</b><small>подключено: ' + cnt + '</small></div></div>';
-      }).join('');
+      const catsBox = document.getElementById('wire-cats');
+      if (catsBox) {
+        const cats = wireCatsFor37();
+        let th = '<div class="wire-cat-tabs">';
+        cats.forEach(function (c) {
+          th += '<button type="button" class="wire-cat' + (wireCat37 === c.id ? ' active' : '') + '" data-wire-cat="' + c.id + '">' + esc(c.name) + ' <small>' + c.nodes.length + '</small></button>';
+        });
+        th += '</div><input type="text" id="wire-search" class="input-field" placeholder="🔍 Поиск узла по названию…" value="' + esc(wireQ37) + '">';
+        catsBox.innerHTML = th;
+        catsBox.querySelectorAll('[data-wire-cat]').forEach(function (b) {
+          b.addEventListener('click', function () { wireCat37 = b.getAttribute('data-wire-cat'); renderWireBoard(); });
+        });
+        const ws = document.getElementById('wire-search');
+        if (ws) ws.addEventListener('input', function () { wireQ37 = ws.value; renderWireNodes37(); drawWires(); });
+      }
+      renderWireNodes37();
       drawWires();
     }
 
@@ -9674,6 +10071,13 @@ try {
       });
       if (tempPts) html += '<path class="wire-temp" d="' + wirePathD(tempPts.x1, tempPts.y1, tempPts.x2, tempPts.y2) + '"></path>';
       svg.innerHTML = html;
+      if (wireMarked37.length) {
+        const paths37 = svg.querySelectorAll('.wire-path');
+        paths37.forEach(function (pth) {
+          const key37 = pth.getAttribute('data-wconn');
+          if (key37 && wireMarked37.indexOf(key37) !== -1) pth.classList.add('marked');
+        });
+      }
     }
 
     function wireConnect(userId, node) {
@@ -9726,10 +10130,74 @@ try {
       document.querySelectorAll('.wport.armed').forEach(function (el) { el.classList.remove('armed'); });
     }
 
+    function updateDelBtn37() {
+      const delBtn = document.getElementById('wire-del-btn');
+      if (!delBtn) return;
+      delBtn.style.display = wireMarked37.length ? '' : 'none';
+      delBtn.textContent = '🗑️ Удалить выделенные права (' + wireMarked37.length + ')';
+    }
+    function setLasso37(on) {
+      wireLasso37 = !!on;
+      wireMarked37 = [];
+      const board = document.getElementById('wire-board');
+      if (board) board.classList.toggle('lasso', wireLasso37);
+      const lassoBtn = document.getElementById('wire-lasso-btn');
+      if (lassoBtn) {
+        lassoBtn.classList.toggle('active', wireLasso37);
+        lassoBtn.textContent = wireLasso37 ? '✂️ Режим выделения: ВКЛ — проведи по проводам' : '✂️ Выделить и удалить провода';
+      }
+      updateDelBtn37();
+      drawWires();
+    }
+    function markAt37(cx, cy) {
+      if (typeof document.elementFromPoint !== 'function') return;
+      const el = document.elementFromPoint(cx, cy);
+      const wire = el && el.closest ? el.closest('[data-wconn]') : null;
+      if (!wire) return;
+      const key = wire.getAttribute('data-wconn');
+      if (!key || wireMarked37.indexOf(key) !== -1) return;
+      wireMarked37.push(key);
+      wire.classList.add('marked');
+      updateDelBtn37();
+    }
+    function deleteMarkedWires37() {
+      if (!wireMarked37.length) return;
+      const n = wireMarked37.length;
+      if (wireCtx.mode === 'channel') {
+        const list = getList('channels');
+        const ch = list.find(function (x) { return x.id === wireCtx.chId; });
+        if (!ch || !ch.nodes) return;
+        ch.nodes = ch.nodes.filter(function (m) { return wireMarked37.indexOf(m.userId + '|' + m.node) === -1; });
+        dbSave('channels', list);
+      } else {
+        const users = getUsers();
+        users.forEach(function (u) {
+          if (!Array.isArray(u.gnodes) || !u.gnodes.length) return;
+          u.gnodes = u.gnodes.filter(function (g) { return wireMarked37.indexOf(u.id + '|' + g) === -1; });
+        });
+        saveUsers(users);
+        applyAdminButtonPermissions();
+      }
+      wireMarked37 = [];
+      updateDelBtn37();
+      renderWireBoard();
+      toast('🗑️ Удалено прав: ' + n + '.', 'success');
+    }
     function initWireBoard() {
       const board = document.getElementById('wire-board');
       if (!board) return;
+      const lassoBtn = document.getElementById('wire-lasso-btn');
+      if (lassoBtn) lassoBtn.addEventListener('click', function () { setLasso37(!wireLasso37); });
+      const delBtn = document.getElementById('wire-del-btn');
+      if (delBtn) delBtn.addEventListener('click', deleteMarkedWires37);
       board.addEventListener('pointerdown', function (e) {
+        if (wireLasso37) {
+          wireLassoDraw37 = true;
+          wireLassoLast37 = { x: e.clientX, y: e.clientY };
+          e.preventDefault();
+          markAt37(e.clientX, e.clientY);
+          return;
+        }
         const out = e.target.closest('[data-wport_out]');
         if (!out) return;
         e.preventDefault();
@@ -9739,11 +10207,22 @@ try {
         wireDrag = { x1: p.x, y1: p.y };
       });
       board.addEventListener('pointermove', function (e) {
+        if (wireLasso37) {
+          if (!wireLassoDraw37) return;
+          const a = wireLassoLast37 || { x: e.clientX, y: e.clientY };
+          for (let i = 1; i <= 6; i++) {
+            const t = i / 6;
+            markAt37(a.x + (e.clientX - a.x) * t, a.y + (e.clientY - a.y) * t);
+          }
+          wireLassoLast37 = { x: e.clientX, y: e.clientY };
+          return;
+        }
         if (!wireDrag) return;
         const b = board.getBoundingClientRect();
         drawWires({ x1: wireDrag.x1, y1: wireDrag.y1, x2: e.clientX - b.left, y2: e.clientY - b.top });
       });
       board.addEventListener('pointerup', function (e) {
+        if (wireLasso37) { wireLassoDraw37 = false; wireLassoLast37 = null; return; }
         if (!wireArmed) { wireDrag = null; return; }
         const el = document.elementFromPoint(e.clientX, e.clientY);
         const target = el && el.closest ? el.closest('[data-wport_in]') : null;
@@ -9752,6 +10231,7 @@ try {
         drawWires();
       });
       board.addEventListener('click', function (e) {
+        if (wireLasso37) return;
         const outTap = e.target.closest('[data-wport_out]');
         if (outTap) {
           wireArmed = outTap.getAttribute('data-wport_out');
@@ -10219,7 +10699,7 @@ try {
       });
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
-    /* ==== Модуль 22: Инспектор прав, волнистые диаграммы, конструктор виджетов, баллы/XP, бэкап, аналитика ==== */
+    /* ==== Модуль 22: Инспектор прав, волнистые диаграммы, конструктор виджетов, Кванты/XP, бэкап, аналитика ==== */
 
     const WIDGET_COLORS = ['#e11d48','#be123c','#f43f5e','#fb7185','#fda4af','#fecdd3','#dc2626','#b91c1c','#ef4444','#f87171','#fca5a5','#fecaca','#ea580c','#c2410c','#f97316','#fb923c','#fdba74','#fed7aa','#d97706','#b45309','#f59e0b','#fbbf24','#fcd34d','#fde68a','#ca8a04','#a16207','#eab308','#facc15','#fde047','#fef08a','#65a30d','#4d7c0f','#84cc16','#a3e635','#bef264','#d9f99d','#166534','#15803d','#22c55e','#4ade80','#86efac','#bbf7d0','#0f766e','#115e59','#14b8a6','#2dd4bf','#5eead4','#99f6e4','#0e7490','#155e75','#06b6d4','#22d3ee','#67e8f9','#a5f3fc','#1d4ed8','#1e40af','#3b82f6','#60a5fa','#93c5fd','#bfdbfe'];
     const WIDGET_STYLES = [
@@ -10268,7 +10748,7 @@ try {
       verify: { label: '☑️ Выдача галочки верификации', cons: ['В верхней панели откроется кнопка «☑️ Галочки»'] },
       broadcast: { label: '📣 Срочная рассылка', cons: ['В верхней панели откроется кнопка «📣 Рассылка»'] },
       moderation: { label: '🛡️ Полная модерация', cons: ['Право удалять посты, объявления и комментарии по всему порталу'] },
-      xp: { label: '💎 Начисление баллов и опыта', cons: ['В верхней панели откроется кнопка «💎 Баллы»', 'Право выдавать баллы ученикам и XP классам'] }
+      xp: { label: '⚡ Начисление Квантов и опыта', cons: ['В верхней панели откроется кнопка «⚡ Кванты»', 'Право выдавать Кванты ученикам и XP классам'] }
     };
 
     function getWidgets() {
@@ -10440,9 +10920,9 @@ try {
 
     function adminGivePoints(userId, delta, reason) {
       const me = getCurrentUser();
-      if (!(adminActive === true || (me && (me.isAdmin || hasGlobalNode(me, 'xp'))))) { toast('Нет доступа к начислению баллов.', 'error'); return; }
-      addPointsToUser(userId, delta, reason || 'Начисление админом');
-      adminLogAction('points', (delta >= 0 ? 'Начислено ' + delta + ' б. ученику' : 'Списано ' + Math.abs(delta) + ' б. у ученика'), { kind: 'points', userId: userId, delta: delta });
+      if (!(adminActive === true || (me && (me.isAdmin || hasGlobalNode(me, 'xp'))))) { toast('Нет доступа к начислению Квантов.', 'error'); return; }
+      addPointsToUser(userId, delta, reason || 'Начисление админом', 'admin');
+      adminLogAction('points', (delta >= 0 ? 'Начислено ' + delta + ' Q ученику' : 'Списано ' + Math.abs(delta) + ' Q у ученика'), { kind: 'points', userId: userId, delta: delta });
     }
 
     function renderAdminPoints(filter) {
@@ -10458,7 +10938,7 @@ try {
         '<div class="field"><label>Поиск ученика (ник или класс)</label><input id="adm-pts-search" type="text" placeholder="Например: Вадим или 9Б" value="' + esc(filter || '') + '"></div>' +
         '<div id="adm-pts-list">' +
           (users.length ? users.map(function (u) {
-            return '<div class="chm-sec"><b>' + esc(u.name) + '</b> <small>' + esc(classIdOf(u.grade, u.letter)) + ' · 💎 ' + (u.points || 0) + ' б.</small>' +
+            return '<div class="chm-sec"><b>' + esc(u.name) + '</b> <small>' + esc(classIdOf(u.grade, u.letter)) + ' · ' + qfmt37(u.points || 0) + '</small>' +
               '<div class="field-row" style="margin-top:6px;">' +
                 '<button class="btn btn-sm btn-ghost" data-pts-quick="' + esc(u.id) + '|10">+10</button>' +
                 '<button class="btn btn-sm btn-ghost" data-pts-quick="' + esc(u.id) + '|25">+25</button>' +
@@ -10468,12 +10948,12 @@ try {
               '</div></div>';
           }).join('') : '<p class="empty-line">Ученики не найдены.</p>') +
         '</div>' +
-        '<div class="chm-sec" style="margin-top:10px;"><b>💎 Произвольное начисление</b>' +
+        '<div class="chm-sec" style="margin-top:10px;"><b>⚡ Произвольное начисление</b>' +
           '<div class="field-row" style="margin-top:6px;">' +
             '<select id="adm-pts-user">' + users.map(function (u) { return '<option value="' + esc(u.id) + '">' + esc(u.name) + ' (' + esc(classIdOf(u.grade, u.letter)) + ')</option>'; }).join('') + '</select>' +
             '<input id="adm-pts-amount" type="number" placeholder="Баллы" style="max-width:110px;">' +
             '<input id="adm-pts-reason" type="text" placeholder="Причина" style="max-width:180px;">' +
-            '<button class="btn btn-sm btn-primary" data-pts-apply>💎 Начислить</button>' +
+            '<button class="btn btn-sm btn-primary" data-pts-apply>⚡ Начислить</button>' +
           '</div></div>';
       const search = document.getElementById('adm-pts-search');
       if (search) search.addEventListener('input', function () { renderAdminPoints(search.value); });
@@ -10819,7 +11299,8 @@ try {
       const box = document.getElementById('wire-inspector');
       if (!box) return;
       const isCh = wireCtx.mode === 'channel';
-      const info = isCh ? CH_NODE_INFO[nodeId] : GLOBAL_NODE_INFO[nodeId];
+      const idx37 = WIRE_NODE_INDEX37[nodeId];
+      const info = (isCh ? CH_NODE_INFO[nodeId] : GLOBAL_NODE_INFO[nodeId]) || (idx37 ? { label: idx37.label, cons: ['У ученика появятся кнопки и разделы: «' + idx37.label + '»', 'Право действует строго в своей вкладке портала'] } : null);
       const u = getUsers().find(function (x) { return x.id === userId; });
       if (!info || !u) { box.innerHTML = ''; return; }
       const list = info.cons.map(function (c) { return '<li>' + esc(c) + '</li>'; }).join('');
@@ -10869,7 +11350,7 @@ try {
           const uid = uidEl ? uidEl.value : '';
           const amount = amountEl ? Number(amountEl.value) : 0;
           const reason = reasonEl ? reasonEl.value : '';
-          if (!uid || !amount) { toast('Выбери ученика и укажи число баллов.', 'error'); return; }
+          if (!uid || !amount) { toast('Выбери ученика и укажи число Квантов.', 'error'); return; }
           adminGivePoints(uid, amount, reason || 'Начисление админом');
           renderAdminPoints('');
           return;
@@ -11200,9 +11681,9 @@ try {
         });
         if (picked === q.correct) {
           quizScore++;
-          document.getElementById('quiz-hint').textContent = '✅ Верно! +10 баллов';
+          document.getElementById('quiz-hint').textContent = '✅ Верно! +10 ⚡ Q';
           const user = getCurrentUser();
-          if (user) addPointsToUser(user.id, 10, '🧠 Викторина: правильный ответ');
+          if (user) addPointsToUser(user.id, 10, '🧠 Викторина: правильный ответ', 'game');
         } else {
           document.getElementById('quiz-hint').textContent = '❌ Не совсем... Правильный ответ подсвечен зелёным.';
         }
@@ -11223,7 +11704,7 @@ try {
         '<div class="quiz-result-box">' +
           '<div style="font-size:2.2rem;">' + (quizScore >= 8 ? '🏆' : quizScore >= 5 ? '🎯' : '💪') + '</div>' +
           '<h3>Результат: ' + quizScore + ' из ' + quizRound.length + '</h3>' +
-          '<p class="info-desc">' + (user ? 'Начислено 💎 +' + (quizScore * 10) + ' баллов в твой профиль!' : 'Войди в аккаунт, чтобы получать баллы за ответы!') + '</p>' +
+          '<p class="info-desc">' + (user ? 'Начислено ⚡ +' + (quizScore * 10) + ' Q в твой профиль!' : 'Войди в аккаунт, чтобы получать Кванты за ответы!') + '</p>' +
           '<button class="btn btn-primary" id="quiz-again-btn">🔄 Ещё раунд</button>' +
         '</div>';
       if (quizScore >= 8) launchConfetti();
@@ -11317,9 +11798,9 @@ try {
       dbSave('reaction', list.slice(0, 50));
       renderReactionRecords();
       if (isRecord) {
-        addPointsToUser(user.id, 15, '⚡ Рекорд реакции: ' + ms + ' мс');
+        addPointsToUser(user.id, 15, '⚡ Рекорд реакции: ' + ms + ' мс', 'game');
         res.style.color = 'var(--accent)';
-        res.textContent = '⚡ ' + ms + ' мс — НОВЫЙ РЕКОРД ЛИЦЕЯ! +15 баллов в профиль!';
+        res.textContent = '⚡ ' + ms + ' мс — НОВЫЙ РЕКОРД ЛИЦЕЯ! +15 Квантов в профиль!';
       } else {
         res.style.color = '';
         res.textContent = '⚡ ' + ms + ' мс — отлично! Рекорд лицея пока: ' + best + ' мс.';
@@ -11857,7 +12338,7 @@ try {
     /* ---- Инструменты админки (Журнал / Права / Призы / Пароль) ---- */
     function openAdminTool(mode) {
       adminToolsMode = mode;
-      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pets: '🐾 Талисманы классов', classreset: '🗑 Очистка данных класса', pass: '🔑 Смена пароля админа', ticker: '📰 Плашка новостей', verified: '☑️ Верификация', broadcast: '📣 Срочная рассылка', points: '💎 Баллы ученикам и опыт классам', analytics: '📊 Аналитика портала', backup: '💾 Бэкап и восстановление', complaints: '🚨 Жалобы учеников', director: '🏛️ Статус Директора Лицея №37', users: '👥 Пользователи портала' };
+      const titles = { log: '📜 Журнал действий', rights: '👥 Управление правами', rewards: '🎁 Призы Магазина', pets: '🐾 Талисманы классов', classreset: '🗑 Очистка данных класса', pass: '🔑 Смена пароля админа', ticker: '📰 Плашка новостей', verified: '☑️ Верификация', broadcast: '📣 Срочная рассылка', points: '⚡ Кванты ученикам и опыт классам', analytics: '📊 Аналитика портала', backup: '💾 Бэкап и восстановление', complaints: '🚨 Жалобы учеников', director: '🏛️ Статус Директора Лицея №37', users: '👥 Пользователи портала' };
       document.getElementById('admin-tools-title').textContent = titles[mode] || 'Администрирование';
       openModal('modal-admin-tools');
       if (mode === 'log') renderAdminLog();
@@ -11883,7 +12364,7 @@ try {
       const grades = CLASS_GRADES.map(function (g) { return '<option value="' + g + '">' + g + '</option>'; }).join('');
       const letters = CLASS_LETTERS.map(function (l) { return '<option value="' + l + '">' + l + '</option>'; }).join('');
       body.innerHTML =
-        '<p class="info-desc">Полностью очищает данные выбранного класса: талисман (кличка, вид, аватар, XP, уровень, голод, веселье), доску дедлайнов и домашки, чат класса. Учеников и их баллы это не затрагивает. Действие можно отменить в 📜 Журнале.</p>' +
+        '<p class="info-desc">Полностью очищает данные выбранного класса: талисман (кличка, вид, аватар, XP, уровень, голод, веселье), доску дедлайнов и домашки, чат класса. Учеников и их Кванты это не затрагивает. Действие можно отменить в 📜 Журнале.</p>' +
         '<div class="field"><label>Класс</label><div class="field-row">' +
           '<select id="adm-cr-grade">' + grades + '</select>' +
           '<select id="adm-cr-letter">' + letters + '</select>' +
@@ -11971,7 +12452,7 @@ try {
       users.forEach(function (u) {
         const gn = userGnodes(u);
         html += '<div class="admin-row">' +
-          '<div class="admin-row-main"><b>' + esc(u.name) + userVerifiedSpan(u) + (u.isAdmin ? ' 👑' : '') + '</b><small>' + esc(classIdOf(u.grade, u.letter)) + ' · 💎 ' + Number(u.points || 0) + ' б. · узлов: ' + gn.length + '</small></div>' +
+          '<div class="admin-row-main"><b>' + esc(u.name) + userVerifiedSpan(u) + (u.isAdmin ? ' 👑' : '') + '</b><small>' + esc(classIdOf(u.grade, u.letter)) + ' · ' + qfmt37(u.points || 0) + ' · узлов: ' + gn.length + '</small></div>' +
           '<div class="admin-row-actions">' +
             (hasGlobalNode(me, 'verify') ? '<button type="button" class="btn btn-ghost btn-sm" data-verify-user="' + esc(u.id) + '">' + (u.verified ? '☑️ Снять галочку' : '☑️ Галочка') + '</button>' : '') +
             '<button class="btn ' + (u.isAdmin ? 'btn-ghost' : 'btn-primary') + ' btn-sm" data-toggle-admin="' + esc(u.id) + '">' + (u.isAdmin ? 'Снять права' : '👑 Выдать админку') + '</button>' +
@@ -12004,7 +12485,7 @@ try {
       let html =
         '<div class="field-row">' +
           '<input type="text" id="rw-icon" class="input-field" placeholder="Иконка (🎁)" maxlength="4">' +
-          '<input type="number" id="rw-price" class="input-field" placeholder="Цена в баллах" min="1">' +
+          '<input type="number" id="rw-price" class="input-field" placeholder="Цена в Квантах" min="1">' +
         '</div>' +
         '<input type="text" id="rw-name" class="input-field" placeholder="Название приза (например: Пицца от директора)" maxlength="64" style="margin:10px 0;">' +
         '<div class="field-row"><input type="number" id="rw-stock" class="input-field" placeholder="Сколько штук (stock)" min="0">' +
@@ -12013,7 +12494,7 @@ try {
       if (!items.length) html += '<p class="info-desc">Пока нет кастомных призов. Добавь первый — он сразу появится в Магазине наград у всех учеников!</p>';
       items.forEach(function (r) {
         html += '<div class="admin-row">' +
-          '<div class="admin-row-main"><b>' + esc(r.icon || '🎁') + ' ' + esc(r.name) + '</b><small>💎 ' + Number(r.price) + ' б. · на складе: ' + Number(r.stock) + ' шт.</small></div>' +
+          '<div class="admin-row-main"><b>' + esc(r.icon || '🎁') + ' ' + esc(r.name) + '</b><small>' + qfmt37(r.price) + ' · на складе: ' + Number(r.stock) + ' шт.</small></div>' +
           '<div class="admin-row-actions"><button class="btn btn-ghost btn-sm" data-del-reward="' + esc(r.id) + '">🗑️</button></div>' +
         '</div>';
       });
@@ -12028,7 +12509,7 @@ try {
       const price = Number(document.getElementById('rw-price').value);
       const stock = Number(document.getElementById('rw-stock').value);
       if (name.length < 3) { toast('Введи название приза.', 'error'); return; }
-      if (!(price > 0)) { toast('Введи цену в баллах.', 'error'); return; }
+      if (!(price > 0)) { toast('Введи цену в Квантах.', 'error'); return; }
       if (!(stock >= 0)) { toast('Укажи количество штук.', 'error'); return; }
       const items = getList('shopCustomRewards');
       const before = JSON.parse(JSON.stringify(items));
@@ -12781,8 +13262,8 @@ try {
       u.streak = u.lastVisit === yesterday ? Number(u.streak || 0) + 1 : 1;
       u.lastVisit = today;
       saveUsers(users);
-      addPointsToUser(uid, 5, '🔥 Огонёк Лицея: заход день №' + u.streak);
-      toast('🔥 Огонёк Лицея: ' + u.streak + ' дн. подряд! +5 баллов', 'success');
+      addPointsToUser(uid, 5, '🔥 Огонёк Лицея: заход день №' + u.streak, 'streak');
+      toast('🔥 Огонёк Лицея: ' + u.streak + ' дн. подряд! +5 Квантов', 'success');
       updateAuthUI();
       renderProfileTab();
     }
@@ -13759,17 +14240,17 @@ try {
       'Не пересылай закрытый чат класса посторонним людям.',
       'Если аккаунт взломан — сразу выйди и сообщи администрации: пароль будет сброшен, а подозрительные действия в журнале проверяются и отменяются.',
       'Списывать на контрольных, викторинах и в тестах запрещено.',
-      'Запрещено выкладывать ответы на контрольные и олимпиады: это обесценивает честные результаты, такие посты удаляются, автор теряет баллы.',
+      'Запрещено выкладывать ответы на контрольные и олимпиады: это обесценивает честные результаты, такие посты удаляются, автор теряет Кванты.',
       'Выполняй домашку честно и вовремя отмечай на доске дедлайнов.',
-      'Отметка «Сделано ✓» на доске дедлайнов с несделанной домашкой снимает баллы, а систематический обман обсуждается с классным руководителем.',
+      'Отметка «Сделано ✓» на доске дедлайнов с несделанной домашкой снимает Кванты, а систематический обман обсуждается с классным руководителем.',
       'Пользуйся Банком взаимопомощи для объяснения, а не списывания.',
       'Волонтёр объясняет тему и показывает пример, но не решает работу целиком: цель помощи — понимание предмета, а не готовые ответы.',
       'Не выкладывай чужие проекты и рефераты под своим именем.',
-      'Указывай источники и авторов идей в постах и проектах: скопированные работы удаляются, за плагиат снимаются баллы портала.',
+      'Указывай источники и авторов идей в постах и проектах: скопированные работы удаляются, за плагиат снимаются Кванты портала.',
       'Пропустил урок — узнай домашку у одноклассников в чате.',
       'Калькулятор оценок помогает планировать отметки: считай, сколько пятёрок нужно получить, и средний балл вырастет честно и предсказуемо.',
       'Не засоряй чаты класса во время уроков и самоподготовки.',
-      'Не сливай ответы викторин «Игровой Лицея 37» заранее: честная игра интереснее, а за слив результатов победитель лишается баллов раунда.',
+      'Не сливай ответы викторин «Игровой Лицея 37» заранее: честная игра интереснее, а за слив результатов победитель лишается Квантов раунда.',
       'Учись планировать время: дедлайн — не за ночь до сдачи.',
       'Вместо просьбы «решите за меня» задавай конкретный вопрос: так тебе быстрее помогут, а волонтёры видят, что ты стараешься понять сам.',
       'Библиотека и учебники из Барахолки возвращай вовремя.',
@@ -13777,7 +14258,7 @@ try {
       'Олимпиады и конкурсы анонсируй через раздел Мероприятия.',
       'Подавай заявки на мероприятия честно: одно имя, настоящий класс и реальный контакт — фейковые заявки проверяются и мешают другим ученикам.',
       'Не забывай благодарить волонтёров, которые помогли с учёбой.',
-      'За постоянное списание ученик теряет право на награды и звания портала: честные баллы ценнее накруток и являются основой репутации в лицее.',
+      'За постоянное списание ученик теряет право на награды и звания портала: честные Кванты ценнее накруток и являются основой репутации в лицее.',
       'Продавай на Барахолке только свои вещи по честной цене.',
       'Запрещена продажа опасных и запрещённых предметов: объявление удаляется немедленно, а продавец получает блокировку Барахолки.',
       'Фотографии товара должны быть настоящими, а не картинками из интернета.',
@@ -14325,14 +14806,23 @@ try {
         if (!q) return true;
         return String(u.name || '').toLowerCase().indexOf(q) !== -1 || String(classIdOf(u.grade, u.letter)).toLowerCase().indexOf(q) !== -1;
       });
-      let html = '<p class="info-desc">Полное удаление аккаунта: пользователь, его посты и комментарии, объявления Барахолки, заявки и личные сообщения. Действие можно отменить в 📜 Журнале.</p>';
+      let html = '';
+      const anomalies37 = qAnomalies37();
+      if (anomalies37.length) {
+        html += '<div class="admin-row q-anomaly-box"><div class="admin-row-main"><b>🚨 Аномалия баланса (' + anomalies37.length + ')</b><small>Баланс не совпадает с журналом транзакций Квантов — возможна подмена цифр через консоль.</small></div></div>';
+        anomalies37.forEach(function (a) {
+          html += '<div class="admin-row"><div class="admin-row-main"><b>' + esc(a.u.name) + '</b><small>' + esc(classIdOf(a.u.grade, a.u.letter)) + ' · сейчас: ' + qfmt37(a.points) + ' · по журналу: ' + qfmt37(a.expected) + '</small></div><div class="admin-row-actions"><button class="btn btn-ghost btn-sm" data-qreset-user="' + esc(a.u.id) + '">🧯 Сбросить накрутку</button></div></div>';
+        });
+      }
+      html += '<div class="admin-row"><div class="admin-row-main"><b>🧹 Очистка тестовых аккаунтов</b><small>Удаляет ВСЕ аккаунты, кроме Главного Админа, вместе с их постами, объявлениями, заявками и чатами. Сайт, настройки Админки, расписание звонков, талисманы, скрипты, виджеты и база знаний полностью сохраняются.</small></div><div class="admin-row-actions"><button class="btn btn-ghost btn-sm" id="adm-cleanup-users">🧹 Очистить все тестовые аккаунты</button></div></div>';
+      html += '<p class="info-desc">Полное удаление аккаунта: пользователь, его посты и комментарии, объявления Барахолки, заявки и личные сообщения. Действие можно отменить в 📜 Журнале.</p>';
       html += '<input type="text" id="adm-users-search" class="input-field" placeholder="🔍 Поиск по имени или классу…" value="' + esc(filter || '') + '" style="margin-bottom:12px;">';
       if (!users.length) html += '<p class="empty-line">Пользователи не найдены.</p>';
       users.forEach(function (u) {
         const role = u.role === 'teacher' ? '👩‍🏫 Учитель' : '🎒 Ученик';
         const cls = classIdOf(u.grade, u.letter);
         const st = u.isAdmin ? '👑 Главный Админ' : esc(displayStatus(u));
-        html += '<div class="admin-row"><div class="admin-row-main"><b>' + esc(u.name) + userVerifiedSpan(u) + roleBadges37(u, cls) + '</b><small>' + role + (cls ? ' · ' + esc(cls) + ' класс' : '') + ' · 💎 ' + Number(u.points || 0) + ' б. · ' + st + '</small></div>' +
+        html += '<div class="admin-row"><div class="admin-row-main"><b>' + esc(u.name) + userVerifiedSpan(u) + roleBadges37(u, cls) + '</b><small>' + role + (cls ? ' · ' + esc(cls) + ' класс' : '') + ' · ' + qfmt37(u.points || 0) + ' · ' + st + '</small></div>' +
           '<div class="admin-row-actions">' + (u.isAdmin ? '' : '<button class="btn btn-ghost btn-sm" data-del-user="' + esc(u.id) + '">🗑️ Удалить пользователя</button>') + '</div></div>';
       });
       body.innerHTML = html;
@@ -14399,10 +14889,100 @@ try {
       try { refreshChatViews(); } catch (eC37) {}
       toast('🗑️ Пользователь «' + u.name + '» и все его данные удалены.', 'success');
     }
+    function cleanupTestUsers37() {
+      if (!isFullAdmin37()) { toast('Очищать аккаунты может только Главный Админ.', 'error'); return; }
+      const users = getUsers();
+      const keep = users.filter(function (u) { return u.isAdmin; });
+      const removed = users.filter(function (u) { return !u.isAdmin; });
+      if (!removed.length) { toast('Тестовых аккаунтов нет — очищать нечего.', 'info'); return; }
+      if (!keep.length) { toast('Внутренняя ошибка: Главный Админ не найден.', 'error'); return; }
+      if (!confirm('Удалить все аккаунты, кроме Главного Админа? Будет удалено: ' + removed.length + ' шт. Сайт, настройки, талисманы, скрипты и виджеты сохранятся.')) return;
+      if (!confirm('Второе подтверждение: аккаунты, посты, объявления, заявки и личные сообщения этих пользователей будут удалены безвозвратно. Продолжить?')) return;
+      const posts = getList('posts');
+      const listings = getList('listings');
+      const applications = getList('applications');
+      const dms = getList('dms');
+      const channels = getList('channels');
+      const dmIndex = dbLoad('dm_index', {});
+      const ids = {};
+      removed.forEach(function (u) { ids[u.id] = true; });
+      const dmCloudKeys = [];
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.indexOf(LS_PREFIX + 'dm__') === 0) dmCloudKeys.push(k.slice(LS_PREFIX.length));
+        }
+      } catch (eK39) {}
+      const before = {
+        users: JSON.parse(JSON.stringify(users)),
+        posts: JSON.parse(JSON.stringify(posts)),
+        listings: JSON.parse(JSON.stringify(listings)),
+        applications: JSON.parse(JSON.stringify(applications)),
+        dms: JSON.parse(JSON.stringify(dms)),
+        dmIndex: JSON.parse(JSON.stringify(dmIndex)),
+        dmCloudKeys: dmCloudKeys.slice(),
+        dmBefore: {}
+      };
+      dmCloudKeys.forEach(function (k) { before.dmBefore[k] = dbLoad(k, []); });
+      const newPosts = posts.filter(function (p) { return !p || !ids[p.userId]; });
+      newPosts.forEach(function (p) {
+        if (Array.isArray(p.comments)) p.comments = p.comments.filter(function (c) { return c && !ids[c.userId] && !ids[c.from]; });
+        if (Array.isArray(p.likes)) p.likes = p.likes.filter(function (x) { return !ids[x]; });
+      });
+      const newListings = listings.filter(function (l) { return !l || !ids[l.sellerId]; });
+      const newApps = applications.filter(function (a) { return !a || !ids[a.userId]; });
+      const newDms = dms.filter(function (m) { return m && !ids[m.from] && !removed.some(function (u) { return String(m.key || '').indexOf(u.id) !== -1; }); });
+      const newIdx = {};
+      Object.keys(dmIndex).forEach(function (uid) {
+        if (ids[uid]) return;
+        newIdx[uid] = (dmIndex[uid] || []).filter(function (k) { return !removed.some(function (u) { return String(k).indexOf(u.id) !== -1; }); });
+      });
+      const newChannels = JSON.parse(JSON.stringify(channels));
+      newChannels.forEach(function (ch) {
+        if (Array.isArray(ch.subs)) ch.subs = ch.subs.filter(function (id) { return !ids[id]; });
+        if (Array.isArray(ch.nodes)) ch.nodes = ch.nodes.filter(function (n) { return n && !ids[n.userId]; });
+        if (Array.isArray(ch.posts)) {
+          ch.posts = ch.posts.filter(function (p) { return p && !ids[p.userId]; });
+          ch.posts.forEach(function (p) {
+            if (Array.isArray(p.comments)) p.comments = p.comments.filter(function (c) { return c && !ids[c.userId]; });
+            if (Array.isArray(p.likes)) p.likes = p.likes.filter(function (x) { return !ids[x]; });
+          });
+        }
+        if (ids[ch.ownerId] && keep.length) ch.ownerId = keep[0].id;
+      });
+      dbSave('posts', newPosts);
+      dbSave('listings', newListings);
+      dbSave('applications', newApps);
+      dbSave('dms', newDms);
+      dbSave('dm_index', newIdx);
+      dbSave('channels', newChannels);
+      dmCloudKeys.forEach(function (k) {
+        const cur = dbLoad(k, []);
+        if (Array.isArray(cur)) dbSave(k, cur.filter(function (m) { return m && !ids[m.from]; }));
+      });
+      saveUsers(keep);
+      adminLogAction('users', '🧹 Очистка тестовых аккаунтов: удалено ' + removed.length + ' шт.', { kind: 'user_delete', before: before });
+      if (ids[getSessionUserId()]) {
+        try { localStorage.removeItem(LS_PREFIX + 'session'); } catch (eS39) {}
+        updateAuthUI();
+        try { renderProfileTab(); } catch (eP39) {}
+      }
+      try { renderAdminUsers(''); } catch (eR39) {}
+      try { refreshChatViews(); } catch (eC39) {}
+      try { applyAdminButtonPermissions(); } catch (eA39) {}
+      toast('🧹 Удалено аккаунтов: ' + removed.length + '. Сайт и настройки сохранены.', 'success');
+    }
     try {
   document.addEventListener('click', function (e) {
         const du = e.target.closest('[data-del-user]');
-        if (du) { deleteUser37(du.getAttribute('data-del-user')); }
+        if (du) { deleteUser37(du.getAttribute('data-del-user')); return; }
+        if (e.target && e.target.id === 'adm-cleanup-users') { cleanupTestUsers37(); return; }
+        const qr = e.target.closest('[data-qreset-user]');
+        if (qr) {
+          qResetBalance37(qr.getAttribute('data-qreset-user'));
+          const si38 = document.getElementById('adm-users-search');
+          try { renderAdminUsers(si38 ? si38.value : ''); } catch (eR38) {}
+        }
       });
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
     window.renderAdminUsers = renderAdminUsers;
@@ -14786,6 +15366,20 @@ try {
     };
 
     const EMOJI37 = ['😀','😂','🥲','😍','😎','🤔','😅','😭','😡','🤯','😴','🤒','👍','👎','🙏','👏','💪','🔥','❤️','💜','✨','🎉','🎓','📚','✏️','📝','🧠','💻','⚽','🎨','🎵','🍕','☕','🤝','💯','✅','❌','⭐','🚀','🏆','🥳','🤗','😇','🫡','🤩','😱'];
+    function purgeDemoAccounts37() {
+      try {
+        const users = getUsers();
+        const isDemo37 = function (u) {
+          if (!u || u.isAdmin) return false;
+          if (u.demo === true) return true;
+          if (String(u.id || '').indexOf('demo') === 0) return true;
+          const nm = String(u.name || '').toLowerCase();
+          return nm.indexOf('демо') === 0 || nm.indexOf('тест') === 0 || nm.indexOf('test') === 0;
+        };
+        const kept = users.filter(function (u) { return !isDemo37(u); });
+        if (kept.length !== users.length) saveUsers(kept);
+      } catch (ePd39) {}
+    }
     function ensureDmExtras37() {
       try {
         const mdm = document.getElementById('modal-dm');
@@ -15166,11 +15760,11 @@ try {
             '<div><div class="tk-name">' + esc(user.name) + '</div>' +
             '<div class="tk-sub">' + esc(classIdOf(user.grade, user.letter)) + ' класс · Лицей №37 г. Нижнекамск</div>' +
             '<div class="tk-id">ID: ' + esc(user.id) + '</div>' +
-            '<div class="tk-sub">💎 Баллы: ' + Number(user.points || 0) + '</div></div>' +
+            '<div class="tk-sub">⚡ Кванты: ' + Number(user.points || 0) + '</div></div>' +
             ticketQrSvg37(user.id) +
           '</div>' +
           '<div class="field-row" style="margin-top:10px; align-items:flex-end;">' +
-            '<div class="field" style="margin:0;"><label for="tk-to-id">Перевести баллы по ID</label><input type="text" id="tk-to-id" placeholder="ID ученика"></div>' +
+            '<div class="field" style="margin:0;"><label for="tk-to-id">Перевести Кванты по ID</label><input type="text" id="tk-to-id" placeholder="ID ученика"></div>' +
             '<div class="field" style="margin:0;"><label for="tk-amount">Сколько</label><input type="number" id="tk-amount" min="1" value="10" style="width:90px;"></div>' +
             '<button type="button" class="btn btn-primary btn-sm" id="tk-send-btn">🎁 Перевести</button>' +
           '</div>';
@@ -15188,19 +15782,21 @@ try {
         const recv = users.find(function (u) { return u.id === toId.trim(); });
         if (!recv) { toast('Ученик с таким ID не найден.', 'error'); return; }
         if (recv.id === user.id) { toast('Себе переводить не нужно 😊', 'info'); return; }
-        if (amount < 1) { toast('Минимум 1 балл.', 'error'); return; }
+        if (amount < 1) { toast('Минимум 1 Квант.', 'error'); return; }
         const sender = users.find(function (u) { return u.id === user.id; });
-        if (!sender || Number(sender.points || 0) < amount) { toast('Не хватает баллов 💎', 'error'); return; }
+        if (!sender || Number(sender.points || 0) < amount) { toast('Не хватает Квантов ⚡', 'error'); return; }
+        qLedgerPush37(sender, -amount, 'transfer_out', '↪️ Перевод по ID для ' + recv.name);
+        qLedgerPush37(recv, amount, 'transfer_in', '🎁 Перевод по ID от ' + user.name);
         sender.points = Number(sender.points || 0) - amount;
         recv.points = Number(recv.points || 0) + amount;
         saveUsers(users);
-        pushNotif37(recv.id, { text: '🎁 Тебе перевели ' + amount + ' баллов от ' + user.name + '!', type: 'points', go: 'profile' });
+        pushNotif37(recv.id, { text: '🎁 Тебе перевели ' + amount + ' Квантов от ' + user.name + '!', type: 'points', go: 'profile' });
         instantSend('row', { key: 'users' });
         instantSend('row', { key: 'notifications' });
         ensureTicket37();
         renderProfileTab();
-        toast('✅ Переведено ' + amount + ' баллов для ' + recv.name + '!', 'success');
-      } catch (eTp37) { toast('Не удалось перевести баллы.', 'error'); }
+        toast('✅ Переведено ' + amount + ' Квантов для ' + recv.name + '!', 'success');
+      } catch (eTp37) { toast('Не удалось перевести Кванты.', 'error'); }
     }
 
     function ensureDndCard37() {
@@ -15996,6 +16592,7 @@ try {
     })();
 
 
+    try { purgeDemoAccounts37(); } catch (e37) {}
     try { ensureDmExtras37(); } catch (e37) {}
     try { ensureLessonIndicator37(); } catch (e37) {}
     try { ensureBottomNav37(); } catch (e37) {}
