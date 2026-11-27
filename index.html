@@ -5518,11 +5518,11 @@
       } catch (eDf37) {}
     }
 
-    function l37DiagOk37(what) {
+    function l37DiagOk37(what, label) {
       try {
         l37DiagEnsure37();
         if (l37DiagBanner37El.style.display === 'block') return;
-        l37DiagPill37El.textContent = '🟢 Облако OK';
+        l37DiagPill37El.textContent = label || '🟢 Облако OK';
         l37DiagPill37El.title = 'Последняя успешная операция: ' + what + ' · ' + new Date().toLocaleTimeString('ru-RU');
         l37DiagPill37El.style.display = 'block';
       } catch (eDo37) {}
@@ -5541,7 +5541,7 @@
         };
         try {
           ch37 = sb37.channel('l37-diag-probe', { config: { broadcast: { self: true } } });
-          const to37 = setTimeout(function () { finish37({ ok: false, err: { code: 'TIMEOUT', message: 'Realtime-канал не подтвердил подписку и эхо-сигнал за 6 сек' } }); }, 6000);
+          const to37 = setTimeout(function () { finish37({ ok: false, err: { code: 'TIMEOUT', message: 'Realtime-канал не подтвердил подписку и эхо-сигнал за 15 сек' } }); }, 15000);
           ch37
             .on('broadcast', { event: 'ping' }, function () { clearTimeout(to37); finish37({ ok: true }); })
             .subscribe(function (status) {
@@ -5554,10 +5554,13 @@
       });
     }
 
-    /* Сквозная самопроверка: UPSERT → SELECT → сверка → Realtime-эхо */
+    /* Сквозная самопроверка: UPSERT → SELECT → сверка → Realtime-эхо.
+       Красный баннер — ТОЛЬКО при реальной ошибке записи/чтения базы.
+       Если база жива, но WebSocket-канал задержался (медленный интернет,
+       VPN) — спокойный зелёный статус: доставку ведёт HTTP-синхронизация. */
     async function l37DiagRun37() {
       if (!sb37) { l37DiagFail37('SUPABASE', TABLE, { code: 'NO_SDK', message: 'Supabase SDK не загрузился (CDN недоступен) — облако отключено, работаем на localStorage.' }); return; }
-      const fails37 = [];
+      let dbErr37 = null;
       try {
         const probe37 = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
         const up37 = await sb37.from(TABLE).upsert({ key: DIAG_PROBE_KEY37, value: { ts: Date.now(), probe: probe37 } }, { onConflict: 'key' });
@@ -5568,16 +5571,19 @@
         const probeVal = parseCloudVal(rawVal37);
         if (!((probeVal && typeof probeVal === 'object' && probeVal.probe === probe37) || String(rawVal37 === null ? '' : rawVal37).indexOf(probe37) !== -1)) throw { code: 'MISMATCH', message: 'Записанное значение не совпало с прочитанным: записано ' + probe37 + ', прочитано ' + JSON.stringify(rawVal37) };
       } catch (e37) {
-        fails37.push({ op: 'UPSERT+SELECT', key: DIAG_PROBE_KEY37, err: e37 });
+        dbErr37 = e37;
+      }
+      if (dbErr37) {
+        l37DiagFail37('UPSERT+SELECT', DIAG_PROBE_KEY37, dbErr37);
+        return;
       }
       const rt37 = await l37DiagRealtime37();
-      if (!rt37.ok) fails37.push({ op: 'REALTIME', key: 'канал l37-diag-probe', err: rt37.err });
-      if (fails37.length) {
-        l37DiagFail37(fails37.map(function (f) { return f.op; }).join(' + '), fails37.map(function (f) { return f.key; }).join(', '), fails37[0].err);
-      } else {
-        l37DiagLastSig37 = '';
-        try { if (l37DiagBanner37El) l37DiagBanner37El.style.display = 'none'; } catch (eH37) {}
+      l37DiagLastSig37 = '';
+      try { if (l37DiagBanner37El) l37DiagBanner37El.style.display = 'none'; } catch (eH37) {}
+      if (rt37.ok) {
         l37DiagOk37('сквозная проверка UPSERT→SELECT→сверка→Realtime');
+      } else {
+        l37DiagOk37('UPSERT+SELECT успешны, Realtime задержан — доставку ведёт HTTP-сверка каждые 1,5 сек', '🟢 Облако OK · синхронизация активна');
       }
     }
 
