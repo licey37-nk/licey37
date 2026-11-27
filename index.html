@@ -3940,6 +3940,39 @@
       .admin-row { gap: 8px; }
     }
 
+    /* ---- L37 POLISH v14: bottom-sheet модалки, 16px поля, обложка, онлайн-точка, лайк-сердце ---- */
+    @media (max-width: 768px) {
+      input, textarea, select { font-size: 16px; }
+      .modal { padding: 0; align-items: flex-end; }
+      .modal > .modal-content {
+        width: 100%; max-width: 100vw; margin: 0;
+        border-radius: 22px 22px 0 0; border-left: none; border-right: none; border-bottom: none;
+        max-height: 92vh; overflow-y: auto;
+        animation: l37SheetUp37 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      #modal-dm.dm-full > .modal-content { border-radius: 0; max-height: 100vh; animation: none; }
+    }
+    @keyframes l37SheetUp37 { from { transform: translateY(46px); opacity: 0.35; } to { transform: translateY(0); opacity: 1; } }
+
+    .pf-cover37 { height: 88px; border-radius: 16px; margin-bottom: 12px; background: var(--accent-soft, #e0e7ff); }
+    .pf-cover-picker { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pf-cover-chip { width: 46px; height: 30px; border-radius: 9px; border: 2px solid transparent; cursor: pointer; padding: 0; transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.18s; }
+    .pf-cover-chip:hover { transform: scale(1.06); }
+    .pf-cover-chip.on { border-color: var(--accent, #2563eb); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18); }
+    .ava-online-wrap37 { position: relative; display: inline-flex; flex-shrink: 0; }
+    .ava-online-dot37 { position: absolute; right: -1px; bottom: -1px; width: 11px; height: 11px; border-radius: 50%; background: #22c55e; border: 2px solid var(--card, #fff); box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25); }
+    .like-burst37 {
+      position: fixed; z-index: 320; pointer-events: none; font-size: 62px; line-height: 1;
+      transform: translate(-50%, -50%);
+      animation: likeBurst37 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      filter: drop-shadow(0 6px 18px rgba(244, 63, 94, 0.45));
+    }
+    @keyframes likeBurst37 {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+      30% { opacity: 1; transform: translate(-50%, -60%) scale(1.22); }
+      100% { opacity: 0; transform: translate(-50%, -150%) scale(1); }
+    }
+
     /* ---- Тосты новых сообщений ---- */
     .msg-toast {
       display: flex; gap: 10px; align-items: center; margin-top: 8px; padding: 10px 14px;
@@ -4410,6 +4443,8 @@
 
         <div class="card" id="council-card" style="margin-bottom:20px;"></div>
 
+        <div class="card" id="bdays-card37" style="display:none; margin-bottom:20px;"></div>
+
         <div class="card" style="margin-bottom:20px;">
           <h3 class="info-title" data-editable="hw-title">📌 Доска дедлайнов и домашки</h3>
           <div class="hw-form">
@@ -4526,19 +4561,19 @@
           <p>Войди, чтобы публиковать посты, ставить лайки и комментировать. А пока — просто читай ленту ниже.</p>
         </div>
         <div id="feed-list"></div>
-
-        <div class="section-title" style="margin-top:36px;">
-          <div class="section-icon">🔎</div>
-          <div>
-            <h2>Найти одноклассников и учителей</h2>
-            <p>Поиск по имени и классу (1–11 и буквы А–Д)</p>
-          </div>
-        </div>
-        <input type="text" class="search-input" id="people-search" placeholder="🔍 Имя или класс, например: Артём или 9Б" style="width:100%; margin-bottom:14px;">
-        <div class="people-grid" id="people-grid"></div>
       </div>
 
       <div class="sub-panel" id="sub-dms">
+        <div class="card" id="dm-people-card37" style="margin-bottom:14px;">
+          <input type="text" class="search-input" id="dm-people-search" placeholder="🔍 Найти ученика, учителя или класс (например, 8А)..." style="width:100%; margin-bottom:10px;">
+          <div class="feed-tabs" id="dm-people-chips37">
+            <button type="button" data-dmp-filter="all" class="on">Все</button>
+            <button type="button" data-dmp-filter="mates">Одноклассники</button>
+            <button type="button" data-dmp-filter="teachers">Учителя</button>
+            <button type="button" data-dmp-filter="classes">🏫 Чаты классов</button>
+          </div>
+          <div class="people-grid" id="dm-people-results" style="margin-top:10px;"></div>
+        </div>
         <div class="archive-folder">
           <button type="button" class="archive-toggle" id="archive-toggle"><span>📥 Архив чатов (<span id="archive-count">0</span>)</span><span id="archive-arrow">▸</span></button>
           <div class="archive-list" id="archive-list"></div>
@@ -4891,6 +4926,10 @@
       </div>
       <div id="pchat-item"></div>
       <div class="chat-list modal-chat-list" id="pchat-list"></div>
+      <div class="pchat-quick" id="pchat-quick37" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+        <button type="button" class="btn btn-outline btn-sm" data-pq="Ещё актуально?">❓ Ещё актуально?</button>
+        <button type="button" class="btn btn-outline btn-sm" data-pq="Где встретимся на перемене?">📍 Где встретимся?</button>
+      </div>
       <div class="chat-form">
         <textarea id="pchat-input" rows="1" placeholder="Сообщение... (Enter — отправить)"></textarea>
         <button class="btn btn-primary" id="pchat-send">➤</button>
@@ -6162,6 +6201,12 @@
       arr.push({ ts: ts, delta: delta, source: source || 'other', reason: reason || '⚡ Кванты', sig: qSig37(u.id, ts, delta, source || 'other') });
       map[u.id] = arr.length > 400 ? arr.slice(-400) : arr;
       qLedgerSave37(map);
+      try {
+        if ((source || 'other') !== 'baseline' && typeof getCurrentUser === 'function' && typeof toast === 'function') {
+          const meQ37 = getCurrentUser();
+          if (meQ37 && meQ37.id === u.id) toast('⚡ ' + (delta > 0 ? '+' : '−') + Math.abs(Math.round(delta)) + ' Квантов · ' + (reason || 'Кванты'), delta > 0 ? 'success' : 'info');
+        }
+      } catch (eQt37) { /* тихо */ }
     }
     function qValidSum37(u) {
       const arr = qLedger37()[u.id];
@@ -6846,6 +6891,7 @@
       box.innerHTML =
         '<div class="profile-grid">' +
           '<div class="card" style="text-align:center;">' +
+            '<div class="pf-cover37" style="background:' + l37CoverGradient37(user.cover) + ';"></div>' +
             avatarHtml(user.avatar, frameClass(user.frame)) +
             '<h3 style="margin-top:10px;">' + esc(user.name) + '</h3>' +
             (user.mood ? '<div class="dm-mood" style="margin-top:4px; font-size:0.9rem;">🎵 ' + esc(user.mood) + '</div>' : '') +
@@ -6871,6 +6917,8 @@
             '</div>' +
             '<div class="field"><label for="pf-about">О себе</label><textarea id="pf-about" class="textarea-field" maxlength="200" placeholder="Мои увлечения, любимые предметы...">' + esc(user.about || '') + '</textarea></div>' +
             '<div class="field"><label for="pf-mood">🎵 Статус-настроение (видно под ником и в чатах)</label><input type="text" id="pf-mood" maxlength="80" placeholder="Например: Готовлюсь к контрольной 💻" value="' + esc(user.mood || '') + '"></div>' +
+            '<div class="field"><label for="pf-bday">🎂 День рождения (ДД.ММ — увидят одноклассники)</label><input type="text" id="pf-bday" maxlength="5" placeholder="Например: 14.03" value="' + esc(user.bday || '') + '"></div>' +
+            '<div class="field"><label>🎨 Обложка профиля (градиент)</label><div class="pf-cover-picker" id="pf-covers37"></div></div>' +
             '<label class="toggle-row"><input type="checkbox" id="pf-hidestatus"' + (user.hideStatus ? ' checked' : '') + '> 🕵️ Скрывать статус «В сети» и «Печатает...» от других</label>' +
             '<label class="toggle-row"><input type="checkbox" id="pf-hideread"' + (user.hideReadMarks ? ' checked' : '') + '> 🕵️ Скрывать отметку о прочтении (у других всегда остаётся 1 галочка ✓)</label>' +
             '<div class="field"><label>🏷️ Теги интересов (до 3)</label><div class="itags-row" id="pf-itags"></div><p class="field-hint">Будут видны в профиле и в поиске одноклассников.</p></div>' +
@@ -6910,6 +6958,7 @@
       renderPfAvatars();
       renderPfItags37();
       renderShop();
+      try { renderPfCovers37(); } catch (ePc37) { /* тихо */ }
       try { renderPfBookmarks37(); } catch (ePb37) {}
       try { renderPfPurchases37(); } catch (ePp37) {}
     }
@@ -7063,6 +7112,14 @@
       u.volunteer = volunteer;
       const moodVal = document.getElementById('pf-mood') ? document.getElementById('pf-mood').value.trim() : '';
       u.mood = moodVal.slice(0, 80);
+      u.cover = (Number(pfCoverDraft37) || 0) % 6;
+      const bdayEl37 = document.getElementById('pf-bday');
+      if (bdayEl37) {
+        const bRaw37 = bdayEl37.value.trim();
+        const bM37 = /^(\d{2})\.(\d{2})$/.exec(bRaw37);
+        if (bRaw37 && !bM37) { toast('🎂 День рождения — в формате ДД.ММ, например 14.03 (или очисти поле).', 'error'); return; }
+        u.bday = bM37 ? bM37[1] + '.' + bM37[2] : '';
+      }
       const hideVal = document.getElementById('pf-hidestatus');
       u.hideStatus = !!(hideVal && hideVal.checked);
       const hideReadVal = document.getElementById('pf-hideread');
@@ -7112,6 +7169,14 @@
 
     try {
   document.getElementById('profile-box').addEventListener('click', function (e) {
+        const coverBtn37 = e.target.closest('[data-pf-cover]');
+        if (coverBtn37) {
+          pfCoverDraft37 = Number(coverBtn37.getAttribute('data-pf-cover')) || 0;
+          document.querySelectorAll('#pf-covers37 .pf-cover-chip').forEach(function (x) { x.classList.toggle('on', Number(x.getAttribute('data-pf-cover')) === pfCoverDraft37); });
+          const cov37 = document.querySelector('.pf-cover37');
+          if (cov37) cov37.style.background = l37CoverGradient37(pfCoverDraft37);
+          return;
+        }
         const buyBtn = e.target.closest('[data-shop-buy]');
         if (buyBtn) { buyShopItem(buyBtn.dataset.shopBuy); return; }
         const useBtn = e.target.closest('[data-shop-use]');
@@ -7233,6 +7298,21 @@
       try {
         return new Date(ts).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
       } catch (e) { return ''; }
+    }
+
+    function fmtAgo37(ts) {
+      try {
+        ts = Number(ts || 0);
+        if (!ts) return '';
+        const diff = Date.now() - ts;
+        if (diff < 60 * 1000) return 'только что';
+        if (diff < 60 * 60 * 1000) return Math.floor(diff / 60000) + ' мин назад';
+        const d = new Date(ts), now = new Date();
+        const hm = d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+        if (d.toDateString() === now.toDateString()) return 'сегодня в ' + hm;
+        if (d.toDateString() === new Date(now.getTime() - 86400000).toDateString()) return 'вчера в ' + hm;
+        return fmtDateTime(ts);
+      } catch (e37) { return fmtDateTime(ts); }
     }
 
     function classIdOf(grade, letter) {
@@ -7523,6 +7603,7 @@
       renderPetTop();
       renderHomework();
       renderChat();
+      try { renderBdays37(); } catch (eBd37) { /* тихо */ }
     }
 
     try {
@@ -8575,6 +8656,18 @@
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     try {
+  const pchatQuickModal37 = document.getElementById('modal-pchat');
+  if (pchatQuickModal37) pchatQuickModal37.addEventListener('click', function (e) {
+        const pqBtn37 = e.target.closest('[data-pq]');
+        if (!pqBtn37) return;
+        const pqInp37 = document.getElementById('pchat-input');
+        if (!pqInp37) return;
+        pqInp37.value = pqBtn37.getAttribute('data-pq') || '';
+        sendProductChat();
+      });
+} catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
+
+    try {
   document.getElementById('pchat-list').addEventListener('click', function (e) {
         const user = getCurrentUser();
         if (!user) return;
@@ -8811,6 +8904,7 @@
       try { clearDmDraft37(user.id, currentDmPartner); } catch (eCd37) {}
       clearDmCompose();
       renderDmMessages();
+      try { playDmSound37('out'); } catch (eSn37) { /* тихо */ }
     }
 
 
@@ -9477,6 +9571,7 @@
           const ckRev37 = 'dm__' + b37 + '_' + a37;
           const keys = [ck, ckRev37, 'dm_index'];
           const before = dmSyncSnapshot(keys);
+          const lastMine37 = (function () { const aPre37 = getDmMsgs(user.id, currentDmPartner); return aPre37.length ? (aPre37[aPre37.length - 1].id || '') : ''; })();
           pullKeys(keys).then(function () {
             try {
               const altArr37 = readLs(ckRev37);
@@ -9489,12 +9584,16 @@
             const sig37 = l37DmFeedSig37();
             if (sig37 !== dmFastSig37 || dmSyncSnapshot(keys) !== before) {
               dmFastSig37 = sig37;
+              try {
+                const aNow37 = getDmMsgs(user.id, currentDmPartner);
+                if (aNow37.length && (aNow37[aNow37.length - 1].id || '') !== lastMine37 && aNow37[aNow37.length - 1].from !== user.id) playDmSound37('in');
+              } catch (eSn37) { /* тихо */ }
               try { renderActiveChatMessages(); } catch (eRa37) {}
               try { renderDms(); } catch (eRd37) {}
             }
           }).catch(function () {});
         } catch (eFt37) { /* тихо */ }
-      }, 500);
+      }, 400);
     }
 
     function startDmSync() {
@@ -9576,6 +9675,7 @@
         if (!user || !p || !p.msg || p.msg.from === user.id) return;
         const added = l37MergeIncomingDm37(p);
         if (!added) return;
+        try { playDmSound37('in'); } catch (eSn37) { /* тихо */ }
         try {
           if (typeof registerDmIndex === 'function') {
             const senderId = p.from || p.msg.from;
@@ -10097,7 +10197,7 @@
             avatarHtml(p.avatar) +
             '<div style="min-width:0;">' +
               '<div style="font-weight:700;">' + esc(p.name) + userVerifiedSpan(pAuthor) + roleBadges37(pAuthor, p.classId) + ' <span class="user-class">' + esc(p.classId || '') + '</span></div>' +
-              '<div class="field-hint">' + fmtDateTime(p.ts) + (p.edited ? ' · (изменено)' : '') + (p.repostFrom ? ' · ↪️ Репост от ' + esc(p.repostFrom) : '') + '</div>' +
+              '<div class="field-hint">' + fmtAgo37(p.ts) + (p.edited ? ' · (изменено)' : '') + (p.repostFrom ? ' · ↪️ Репост от ' + esc(p.repostFrom) : '') + '</div>' +
             '</div>' +
           '</div>' +
           renderPostBody37(p) +
@@ -10129,8 +10229,9 @@
                   return '<div class="comment">' +
                     avatarHtml(c.avatar) +
                     '<div class="comment-body">' +
-                      '<div class="mini-head"><span class="mini-author">' + esc(c.name) + '</span><span>' + fmtDateTime(c.ts) + '</span></div>' +
+                      '<div class="mini-head"><span class="mini-author">' + esc(c.name) + '</span><span>' + fmtAgo37(c.ts) + '</span></div>' +
                       '<div>' + esc(c.text) + '</div>' +
+                      (user && !mineC ? '<div class="mini-actions"><button type="button" data-cmt-reply="' + esc(p.id) + '|' + esc(c.id) + '|' + esc(c.name) + '" title="Ответить">↩️ Ответить</button></div>' : '') +
                       (canEditC ? '<div class="mini-actions"><button type="button" data-comment-edit="' + esc(p.id) + '|' + esc(c.id) + '">✏️</button><button type="button" data-comment-del="' + esc(p.id) + '|' + esc(c.id) + '">🗑️</button></div>' : '') +
                     '</div>' +
                   '</div>';
@@ -10148,6 +10249,45 @@
     try {
   document.getElementById('feed-list').addEventListener('click', function (e) {
         const user = getCurrentUser();
+        const replyBtn37 = e.target.closest('[data-cmt-reply]');
+        if (replyBtn37) {
+          const rp37 = (replyBtn37.getAttribute('data-cmt-reply') || '').split('|');
+          const rin37 = document.querySelector('[data-comment-input="' + (rp37[0] || '') + '"]');
+          if (rin37) { rin37.value = '@' + (rp37[2] || '') + ', '; openPostComments[rp37[0]] = true; rin37.focus(); }
+          return;
+        }
+        const photoTap37 = e.target.closest('.post-photo');
+        if (photoTap37) {
+          const pcard37 = photoTap37.closest('[data-post-id]');
+          const pid37 = pcard37 ? pcard37.getAttribute('data-post-id') : '';
+          const tapNow37 = Date.now();
+          if (lastPhotoTap37.id === pid37 && tapNow37 - lastPhotoTap37.ts < 350) {
+            lastPhotoTap37 = { id: null, ts: 0 };
+            if (user && pid37) {
+              const postsDbl37 = getList('posts');
+              const pDbl37 = postsDbl37.find(function (x) { return x.id === pid37; });
+              if (pDbl37) {
+                pDbl37.likes = pDbl37.likes || [];
+                if (pDbl37.likes.indexOf(user.id) === -1) pDbl37.likes.push(user.id);
+                dbSave('posts', postsDbl37);
+              }
+            }
+            try {
+              const burst37 = document.createElement('div');
+              burst37.className = 'like-burst37';
+              burst37.textContent = '❤️';
+              burst37.style.left = (e.clientX || window.innerWidth / 2) + 'px';
+              burst37.style.top = (e.clientY || window.innerHeight / 2) + 'px';
+              document.body.appendChild(burst37);
+              setTimeout(function () { try { burst37.remove(); } catch (e37) {} }, 950);
+            } catch (eBs37) { /* тихо */ }
+            try { playDmSound37('in'); } catch (eSn37) { /* тихо */ }
+            try { renderFeed(); } catch (eRf37) { /* тихо */ }
+            return;
+          }
+          lastPhotoTap37 = { id: pid37, ts: tapNow37 };
+          return;
+        }
         const likeBtn = e.target.closest('[data-post-like]');
         if (likeBtn) {
           if (!user) { openModal('modal-login'); toast('Войди, чтобы ставить лайки.', 'info'); return; }
@@ -10317,6 +10457,11 @@
         const text = input.value.trim();
         if (text.length < 3) { toast('Напиши текст поста (минимум 3 символа).', 'error'); return; }
         if (!antispamCheck('post', text)) return;
+        const normDup37 = text.replace(/\s+/g, ' ').toLowerCase();
+        if (getList('posts').some(function (x) { return x.userId === user.id && String(x.text || '').replace(/\s+/g, ' ').toLowerCase() === normDup37 && Date.now() - (x.ts || 0) < 60000; })) {
+          toast('⏳ Точно такой же пост ты уже публиковал(а) минуту назад — не дублируй!', 'error');
+          return;
+        }
         const posts = getList('posts');
         const newPost = {
           id: makeId('post'), userId: user.id, name: user.name,
@@ -10340,7 +10485,8 @@
     /* ---- Поиск людей ---- */
 
     try {
-  document.getElementById('people-search').addEventListener('input', function () {
+  const peopleSearchEl37 = document.getElementById('people-search');
+  if (peopleSearchEl37) peopleSearchEl37.addEventListener('input', function () {
         peopleQuery = this.value;
         renderPeople();
         try {
@@ -10355,7 +10501,8 @@
 } catch (errInit37) { try { console.error("Инициализация модуля:", errInit37); } catch (eI37) {} }
 
     try {
-  document.getElementById('people-grid').addEventListener('click', function (e) {
+  const peopleGridEl37 = document.getElementById('people-grid');
+  if (peopleGridEl37) peopleGridEl37.addEventListener('click', function (e) {
         const dmBtn = e.target.closest('[data-dm-open]');
         if (dmBtn) { openDm(dmBtn.dataset.dmOpen); }
       });
@@ -10475,7 +10622,7 @@
               return '<div class="comment' + (p.pinned ? ' ch-pinned' : '') + '">' +
                 avatarHtml(p.avatar) +
                 '<div class="comment-body">' +
-                  '<div class="mini-head"><span class="mini-author">' + esc(p.name) + userVerifiedSpan(chpAuthor) + '</span><span>' + (p.pinned ? '📌 Закреплено · ' : '') + fmtDateTime(p.ts) + (p.edited ? ' · изменено' : '') + '</span></div>' +
+                  '<div class="mini-head"><span class="mini-author">' + esc(p.name) + userVerifiedSpan(chpAuthor) + '</span><span>' + (p.pinned ? '📌 Закреплено · ' : '') + fmtAgo37(p.ts) + (p.edited ? ' · изменено' : '') + '</span></div>' +
                   '<div>' + esc(p.text) + '</div>' +
                   (p.photo ? '<img class="post-photo" src="' + p.photo + '" alt="">' : '') +
                   '<div class="post-foot">' +
@@ -10494,8 +10641,9 @@
                           return '<div class="comment' + (c.pinned ? ' ch-pinned' : '') + '">' +
                             avatarHtml(c.avatar) +
                             '<div class="comment-body">' +
-                              '<div class="mini-head"><span class="mini-author">' + esc(c.name) + '</span><span>' + (c.pinned ? '📌 Лучший · ' : '') + fmtDateTime(c.ts) + '</span></div>' +
+                              '<div class="mini-head"><span class="mini-author">' + esc(c.name) + '</span><span>' + (c.pinned ? '📌 Лучший · ' : '') + fmtAgo37(c.ts) + '</span></div>' +
                               '<div>' + esc(c.text) + '</div>' +
+                              (user && !mineC ? '<div class="mini-actions"><button type="button" data-chp-cmt-reply="' + esc(chId) + '|' + esc(p.id) + '|' + esc(c.name) + '" title="Ответить">↩️ Ответить</button></div>' : '') +
                               ((mineC || canPinC || canDelC) ? '<div class="mini-actions">' + (canPinC ? '<button type="button" data-chpc-pin="' + esc(chId) + '|' + esc(p.id) + '|' + esc(c.id) + '">' + (c.pinned ? '📌 Открепить' : '📌 Лучший') + '</button>' : '') + (canDelC ? '<button type="button" data-chpc-del="' + esc(chId) + '|' + esc(p.id) + '|' + esc(c.id) + '">🗑️ Удалить</button>' : '') + '</div>' : '') +
                             '</div>' +
                           '</div>';
@@ -12957,7 +13105,7 @@ try {
             return '<div class="compliment-card">' +
               '<div class="comp-sticker">' + esc(c.sticker) + '</div>' +
               '<div style="min-width:0;">' +
-                '<div class="comp-head"><b>' + esc(c.toName) + '</b><span class="field-hint">от ' + esc(c.fromName) + (c.fromClass ? ' · ' + esc(c.fromClass) : '') + ' · ' + fmtDateTime(c.ts) + '</span></div>' +
+                '<div class="comp-head"><b>' + esc(c.toName) + '</b><span class="field-hint">от ' + esc(c.fromName) + (c.fromClass ? ' · ' + esc(c.fromClass) : '') + ' · ' + fmtAgo37(c.ts) + '</span></div>' +
                 '<div style="font-size:0.9rem;">' + esc(c.text) + '</div>' +
               '</div>' +
             '</div>';
@@ -14586,9 +14734,9 @@ try {
       Object.keys(seenClasses37).sort().forEach(function (cls) {
         if (res.length >= 20) return;
         res.push({ ico: '🏫', title: 'Класс ' + cls, sub: 'Ученики класса · Соцсеть', act: function () {
-          setTab('social'); setSocialSub('feed');
+          setTab('social'); setSocialSub('dms');
           setTimeout(function () {
-            const ps = document.getElementById('people-search');
+            const ps = document.getElementById('dm-people-search');
             if (ps) { ps.value = cls; ps.dispatchEvent(new Event('input', { bubbles: true })); }
           }, 150);
         } });
@@ -16935,7 +17083,7 @@ try {
             const fromMe = last.from === user.id;
             const unread = unreadCount37(user, getDmMsgs(user.id, partnerId));
             return '<div class="dm-row' + (isPinned(partnerId) ? ' pinned-chat' : '') + '">' +
-              msgAvatarHtml(pu ? pu.avatar : null, 'mini-ava ava-ring ' + (pu ? itagRing37(pu) : 'ring-def')) +
+              '<div class="ava-online-wrap37">' + msgAvatarHtml(pu ? pu.avatar : null, 'mini-ava ava-ring ' + (pu ? itagRing37(pu) : 'ring-def')) + (pu && dmIsOnline37(pu.id) ? '<span class="ava-online-dot37"></span>' : '') + '</div>' +
               '<div style="min-width:0; flex:1;">' +
                 '<div style="font-weight:700;">' + esc(pu ? pu.name : 'Пользователь') + (pu ? userVerifiedSpan(pu) + roleBadges37(pu, classIdOf(pu.grade, pu.letter)) : '') + (pu ? ' <span class="user-class">' + esc(classIdOf(pu.grade, pu.letter)) + '</span>' : '') + '</div>' +
                 '<div class="field-hint" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + (fromMe ? 'Вы: ' : '') + esc(last.text || '📷 Фото') + '</div>' +
@@ -18049,6 +18197,250 @@ try {
     try { ensureBottomNav37(); } catch (e37) {}
     try { ensureToTop37(); } catch (e37) {}
     try { applyEditableTexts(); } catch (e37) {}
+
+    /* ---- L37 POLISH v14: звук/вибро, поиск людей в «Мои чаты», дни рождения, обложки ---- */
+
+    let l37AudioCtx37 = null;
+    function playDmSound37(kind) {
+      try {
+        if (typeof window === 'undefined') return;
+        const AC37 = window.AudioContext || window.webkitAudioContext;
+        if (!AC37) return;
+        if (!l37AudioCtx37) l37AudioCtx37 = new AC37();
+        const ctx37 = l37AudioCtx37;
+        if (ctx37.state === 'suspended' && ctx37.resume) ctx37.resume().catch(function () {});
+        const t037 = ctx37.currentTime;
+        const tone37 = function (f, start, dur, gain) {
+          const o37 = ctx37.createOscillator();
+          const g37 = ctx37.createGain();
+          o37.type = 'sine';
+          o37.frequency.value = f;
+          g37.gain.setValueAtTime(0, t037 + start);
+          g37.gain.linearRampToValueAtTime(gain || 0.07, t037 + start + 0.015);
+          g37.gain.exponentialRampToValueAtTime(0.0001, t037 + start + dur);
+          o37.connect(g37);
+          g37.connect(ctx37.destination);
+          o37.start(t037 + start);
+          o37.stop(t037 + start + dur + 0.05);
+        };
+        if (kind === 'in') { tone37(660, 0, 0.12); tone37(880, 0.1, 0.16); }
+        else { tone37(520, 0, 0.1); }
+        if (navigator.vibrate) { try { navigator.vibrate(kind === 'in' ? [16, 40, 16] : 12); } catch (eV37) { /* тихо */ } }
+      } catch (eS37) { /* тихо */ }
+    }
+
+    function dmIsOnline37(uid) {
+      try {
+        const pres37 = lp37OnlineMap[uid];
+        if (pres37 && Date.now() - pres37.ts < 70000) return true;
+        const seen37 = lastSeenOf(uid);
+        return !!(seen37 && Date.now() - seen37 < 70000);
+      } catch (eO37) { return false; }
+    }
+
+    const L37_COVERS37 = [
+      'linear-gradient(135deg, #2563eb, #06b6d4)',
+      'linear-gradient(135deg, #7c3aed, #ec4899)',
+      'linear-gradient(135deg, #059669, #84cc16)',
+      'linear-gradient(135deg, #f59e0b, #ef4444)',
+      'linear-gradient(135deg, #0f172a, #475569)',
+      'linear-gradient(135deg, #0891b2, #22d3ee)'
+    ];
+    function l37CoverGradient37(idx) { return L37_COVERS37[(Number(idx) || 0) % L37_COVERS37.length]; }
+    let pfCoverDraft37 = 0;
+
+    function renderPfCovers37() {
+      try {
+        const box37 = document.getElementById('pf-covers37');
+        const meC37 = getCurrentUser();
+        if (!box37 || !meC37) return;
+        pfCoverDraft37 = Number(meC37.cover) || 0;
+        box37.innerHTML = L37_COVERS37.map(function (g37, i37) {
+          return '<button type="button" class="pf-cover-chip' + (i37 === pfCoverDraft37 ? ' on' : '') + '" data-pf-cover="' + i37 + '" style="background:' + g37 + ';" title="Обложка ' + (i37 + 1) + '" aria-label="Обложка ' + (i37 + 1) + '"></button>';
+        }).join('');
+      } catch (eRc37) { /* тихо */ }
+    }
+
+    function renderBdays37() {
+      try {
+        const card37 = document.getElementById('bdays-card37');
+        if (!card37) return;
+        const me37 = getCurrentUser();
+        const cls37 = me37 ? classIdOf(me37.grade, me37.letter) : (dbLoad('viewClass', null) || '');
+        if (!cls37) { card37.style.display = 'none'; return; }
+        const now37 = new Date();
+        const today37 = new Date(now37.getFullYear(), now37.getMonth(), now37.getDate());
+        const list37 = getUsers()
+          .filter(function (u37) { return u37.id !== (me37 && me37.id) && classIdOf(u37.grade, u37.letter) === cls37 && u37.bday; })
+          .map(function (u37) {
+            const p37 = String(u37.bday || '').split('.');
+            let next37 = null;
+            if (p37.length === 2) {
+              const dd37 = Number(p37[0]), mm37 = Number(p37[1]);
+              if (dd37 >= 1 && dd37 <= 31 && mm37 >= 1 && mm37 <= 12) {
+                next37 = new Date(now37.getFullYear(), mm37 - 1, dd37);
+                if (next37 < today37) next37 = new Date(now37.getFullYear() + 1, mm37 - 1, dd37);
+              }
+            }
+            return { u: u37, next: next37 };
+          })
+          .filter(function (x37) { return x37.next; })
+          .sort(function (a37, b37) { return a37.next - b37.next; })
+          .slice(0, 5);
+        if (!list37.length) { card37.style.display = 'none'; return; }
+        card37.style.display = 'block';
+        card37.innerHTML = '<h3 class="info-title">🎂 Дни рождения одноклассников</h3>' + list37.map(function (x37) {
+          const days37 = Math.round((x37.next - today37) / 86400000);
+          const when37 = days37 === 0 ? '<b style="color:#e11d48;">Сегодня! 🎉</b>' : (days37 === 1 ? 'завтра' : 'через ' + days37 + ' дн.');
+          return '<div class="hist-row"><span>' + esc(x37.u.name) + ' · 🎂 ' + esc(x37.u.bday) + '</span><span>' + when37 + '</span></div>';
+        }).join('');
+      } catch (eBd37) { /* тихо */ }
+    }
+
+    let dmpFilter37 = 'all';
+    let dmpTimer37 = null;
+    let lastPhotoTap37 = { id: null, ts: 0 };
+
+    function dmpRefreshUsers37() {
+      try {
+        if (!sb37 || typeof refreshUsersFromCloud !== 'function') return;
+        refreshUsersFromCloud().then(function (cloudUsers37) {
+          if (!Array.isArray(cloudUsers37) || !cloudUsers37.length) return;
+          const before37 = JSON.stringify(getUsers());
+          writeLs('users', l37TombFilter37('users', l37MergeCollection37('users', getUsers(), cloudUsers37)));
+          if (JSON.stringify(getUsers()) !== before37) renderDmPeople37();
+        }).catch(function () {});
+      } catch (eDp37) { /* тихо */ }
+    }
+
+    function renderDmPeople37() {
+      try {
+        const wrap37 = document.getElementById('dm-people-results');
+        const inp37 = document.getElementById('dm-people-search');
+        if (!wrap37 || !inp37) return;
+        const me37 = getCurrentUser();
+        const q37 = normText(inp37.value.trim());
+        let users37 = getUsers().slice();
+        if (dmpFilter37 === 'mates') {
+          users37 = me37 ? users37.filter(function (u37) { return u37.id !== me37.id && u37.role !== 'teacher' && classIdOf(u37.grade, u37.letter) === classIdOf(me37.grade, me37.letter); }) : [];
+        } else if (dmpFilter37 === 'teachers') {
+          users37 = users37.filter(function (u37) { return u37.role === 'teacher'; });
+        }
+        if (q37) {
+          users37 = users37.filter(function (u37) {
+            return fuzzyMatch(q37, u37.name) || normText(classIdOf(u37.grade, u37.letter)).indexOf(q37) !== -1 || normText(u37.homeroom || '').indexOf(q37) !== -1;
+          });
+        }
+        users37.sort(function (a37, b37) {
+          return classIdOf(a37.grade, a37.letter).localeCompare(classIdOf(b37.grade, b37.letter), 'ru') || String(a37.name || '').localeCompare(String(b37.name || ''), 'ru');
+        });
+        const classes37 = {};
+        getUsers().forEach(function (u37) {
+          if (u37.role === 'teacher') return;
+          const cid37 = classIdOf(u37.grade, u37.letter);
+          if (!cid37) return;
+          if (q37 && normText(cid37).indexOf(q37) === -1) return;
+          classes37[cid37] = (classes37[cid37] || 0) + 1;
+        });
+        const classList37 = Object.keys(classes37).sort(function (a37, b37) { return a37.localeCompare(b37, 'ru'); });
+        let html37 = '';
+        if (dmpFilter37 === 'classes') {
+          html37 = classList37.map(function (cid37) {
+            const mine37 = me37 && classIdOf(me37.grade, me37.letter) === cid37;
+            return '<div class="card person-card dm-people-card37" data-dmp-class="' + esc(cid37) + '" style="cursor:pointer;">' +
+              '<div class="mini-ava">🏫</div>' +
+              '<div style="min-width:0; flex:1;">' +
+                '<div style="font-weight:700;">Класс ' + esc(cid37) + (mine37 ? ' · твой' : '') + '</div>' +
+                '<span class="field-hint">' + classes37[cid37] + ' учеников · общий чат класса</span>' +
+              '</div>' +
+              '<button type="button" class="btn btn-outline btn-sm">💬 Открыть чат</button>' +
+            '</div>';
+          }).join('');
+          if (!html37) html37 = '<p class="empty-line">Классов пока не найдено.</p>';
+        } else {
+          html37 = users37.slice(0, 20).map(function (u37) {
+            const self37 = me37 && u37.id === me37.id;
+            return '<div class="card person-card dm-people-card37">' +
+              '<div class="ava-online-wrap37">' + msgAvatarHtml(u37.avatar, 'mini-ava ava-ring ' + itagRing37(u37)) + (dmIsOnline37(u37.id) ? '<span class="ava-online-dot37"></span>' : '') + '</div>' +
+              '<div style="min-width:0; flex:1;">' +
+                '<div style="font-weight:700;">' + esc(u37.name) + userVerifiedSpan(u37) + roleBadges37(u37, classIdOf(u37.grade, u37.letter)) + '</div>' +
+                '<span class="user-class">' + esc(classIdOf(u37.grade, u37.letter) || 'Сотрудник') + '</span>' +
+                (u37.mood ? '<span class="dm-mood">🎵 ' + esc(u37.mood) + '</span>' : '') +
+              '</div>' +
+              (self37
+                ? '<span class="field-hint">Это ты 🙂</span>'
+                : '<button type="button" class="btn btn-ghost btn-sm" data-dmp-profile="' + esc(u37.id) + '" title="Профиль" aria-label="Профиль">👤</button>' +
+                  '<button type="button" class="btn btn-outline btn-sm" data-dmp-open="' + esc(u37.id) + '" title="Написать" aria-label="Написать">💬</button>') +
+            '</div>';
+          }).join('');
+          if (dmpFilter37 === 'all' && q37) {
+            html37 += classList37.map(function (cid37) {
+              return '<div class="card person-card dm-people-card37" data-dmp-class="' + esc(cid37) + '" style="cursor:pointer;">' +
+                '<div class="mini-ava">🏫</div>' +
+                '<div style="min-width:0; flex:1;">' +
+                  '<div style="font-weight:700;">Класс ' + esc(cid37) + '</div>' +
+                  '<span class="field-hint">' + classes37[cid37] + ' учеников · общий чат класса</span>' +
+                '</div>' +
+                '<button type="button" class="btn btn-outline btn-sm">💬 Чат</button>' +
+              '</div>';
+            }).join('');
+          }
+          if (!html37) {
+            html37 = q37
+              ? '<p class="empty-line">Никого не найдено. Попробуй другой запрос.</p>'
+              : '<p class="empty-line">Начни вводить имя или класс — например «Мария» или «8А». Тап по карточке сразу откроет чат.</p>';
+          }
+        }
+        wrap37.innerHTML = html37;
+      } catch (eRdP37) { /* тихо */ }
+    }
+
+    function bindDmPeople37() {
+      try {
+        const wrap37 = document.getElementById('dm-people-results');
+        const inp37 = document.getElementById('dm-people-search');
+        if (!wrap37 || !inp37 || wrap37.dataset.dmpBound37) return;
+        wrap37.dataset.dmpBound37 = '1';
+        wrap37.addEventListener('click', function (e37) {
+          const prof37 = e37.target.closest('[data-dmp-profile]');
+          if (prof37) { openMiniProfileCard37(prof37.getAttribute('data-dmp-profile'), prof37); return; }
+          const open37 = e37.target.closest('[data-dmp-open]');
+          if (open37) { openDm(open37.getAttribute('data-dmp-open')); return; }
+          const cls37 = e37.target.closest('[data-dmp-class]');
+          if (cls37) {
+            const cid37 = cls37.getAttribute('data-dmp-class') || '';
+            if (cid37) {
+              dbSave('viewClass', cid37);
+              setTab('class');
+              toast('🏫 Открыт чат класса ' + cid37, 'success');
+            }
+          }
+        });
+        inp37.addEventListener('input', function () {
+          if (dmpTimer37) clearTimeout(dmpTimer37);
+          dmpTimer37 = setTimeout(function () { dmpTimer37 = null; renderDmPeople37(); dmpRefreshUsers37(); }, 200);
+        });
+        inp37.addEventListener('focus', function () { dmpRefreshUsers37(); });
+        document.querySelectorAll('#dm-people-chips37 button[data-dmp-filter]').forEach(function (b37) {
+          b37.addEventListener('click', function () {
+            dmpFilter37 = b37.getAttribute('data-dmp-filter');
+            document.querySelectorAll('#dm-people-chips37 button[data-dmp-filter]').forEach(function (x37) { x37.classList.toggle('on', x37 === b37); });
+            renderDmPeople37();
+          });
+        });
+      } catch (eBdP37) { /* тихо */ }
+    }
+
+    const renderDmsDmpBase37 = renderDms;
+    renderDms = function () {
+      renderDmsDmpBase37();
+      try { bindDmPeople37(); renderDmPeople37(); } catch (eDmP37) { /* тихо */ }
+    };
+
+    try {
+      bindDmPeople37();
+      renderDmPeople37();
+    } catch (eDpInit37) { try { console.error('dm-people init:', eDpInit37); } catch (e2) {} }
 
     window.__lp37Ready = true;
 
