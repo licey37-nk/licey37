@@ -21,7 +21,8 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     display: flex; flex-direction: column;
     min-height: 100dvh; min-height: 100vh;
-    overflow-x: hidden;
+    overflow-x: hidden; overflow-y: auto;
+    padding-bottom: 40px;
   }
   .sb-top {
     display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
@@ -75,6 +76,15 @@
   .sb-tmpl.active { background: rgba(49, 46, 129, 0.55); border-color: #818cf8; color: #fff; box-shadow: 0 0 12px rgba(99, 102, 241, 0.25); }
   .sb-tmpl:active { transform: scale(0.97); }
   .sb-main { flex: 1; display: flex; flex-direction: column; padding: 12px 18px 16px; gap: 12px; min-height: 0; }
+  .sb-cols { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .sb-col-l, .sb-col-r { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .sb-autochips:empty { display: none; }
+  @media (min-width: 769px) {
+    .sb-cols { display: grid; grid-template-columns: 55fr 45fr; align-items: start; gap: 14px; }
+    .sb-col-l .sb-editor { min-height: 480px; }
+    .sb-col-l .sb-ed-body { min-height: 420px; }
+    .sb-term { min-height: 220px; max-height: none; }
+  }
   .sb-actions { display: flex; gap: 8px; flex-wrap: wrap; }
   .sb-btn {
     padding: 11px 18px; border-radius: 13px; border: none; cursor: pointer;
@@ -136,13 +146,10 @@
   #sb-ed-host .CodeMirror-cursor { border-left: 2px solid #e6edf3; }
   #sb-ed-host .CodeMirror-selected { background: rgba(99, 102, 241, 0.32) !important; }
   #sb-ed-host .sb-gutter-err37 { color: #ef4444; font-weight: 800; }
-  .sb-cm-errline { background: rgba(239, 68, 68, 0.14) !important; }
-  .sb-cm-wavy { text-decoration: underline wavy #ef4444; }
-  .sb-cm-warn { text-decoration: underline dotted #f59e0b; }
+  body.sb-cm .sb-gutter, body.sb-cm .sb-code { display: none !important; }
   body.sb-day #sb-ed-host .CodeMirror { background: transparent; }
   body.sb-day #sb-ed-host .CodeMirror-gutters { background: rgba(244, 246, 251, 0.85); border-right-color: rgba(15, 23, 42, 0.10); }
   body.sb-day #sb-ed-host .CodeMirror-cursor { border-left-color: #1c2333; }
-  body.sb-day .sb-cm-errline { background: rgba(239, 68, 68, 0.10) !important; }
   .sb-gutter {
     display: none; padding: 14px 10px; text-align: right; user-select: none; white-space: pre;
     background: rgba(11, 15, 25, 0.5); color: #4b5570; border-right: 1px solid rgba(129, 140, 248, 0.16);
@@ -406,7 +413,7 @@
     .sb-langs, .sb-tmpls { padding-left: 12px; padding-right: 12px; }
     .sb-main { padding: 10px 12px 14px; }
     .sb-editor { min-height: 200px; }
-    .sb-term { max-height: 40dvh; }
+    .sb-term { min-height: 160px; max-height: 55dvh; }
     .sb-mentor-body { max-height: 150px; }
     .sb-sym { min-width: 38px; padding: 9px 10px; font-size: 13px; }
     .sb-btn { padding: 11px 14px; font-size: 13.5px; }
@@ -446,6 +453,8 @@
       <button type="button" class="sb-btn ghost" id="sb-explain">📖 Объяснить построчно</button>
       <button type="button" class="sb-btn ghost" id="sb-turtle">🐢 Черепашка (ЕГЭ №6)</button>
     </div>
+    <div class="sb-cols">
+    <div class="sb-col-l">
     <section class="sb-editor">
       <div class="sb-ed-head">
         <div class="sb-dots"><i></i><i></i><i></i></div>
@@ -487,6 +496,8 @@
       <div class="sb-mentor-head">🧠 Подсказки Наставника<span class="sb-mentor-count" id="sb-mentor-count">всё чисто ✨</span></div>
       <div class="sb-mentor-body" id="sb-mentor-body"></div>
     </section>
+    </div>
+    <div class="sb-col-r">
     <section class="sb-stdin open" id="sb-stdin">
       <button type="button" class="sb-stdin-head" id="sb-stdin-toggle">📥 Входные данные (input / cin)<span class="sb-stdin-badge" id="sb-stdin-badge"></span><span class="sb-stdin-caret">▾</span></button>
       <div class="sb-stdin-body" id="sb-stdin-body">
@@ -511,6 +522,8 @@
         <button type="button" class="sb-mini" id="sb-console-send">Enter ⏎</button>
       </div>
     </section>
+    </div>
+    </div>
   </div>
 
   <div class="sb-modal" id="sb-progs-modal">
@@ -633,7 +646,6 @@
     function sbTryUpgrade37() {
       if (Ed.cm || typeof window.CodeMirror === 'undefined') return;
       try {
-        var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
         Ed.cm = window.CodeMirror.fromTextArea(codeEl, {
           mode: SB_CM_MODES37[state.lang] || 'text/x-python',
           theme: document.body.classList.contains('sb-day') ? 'eclipse' : 'material-darker',
@@ -643,7 +655,7 @@
           autoCloseBrackets: true,
           matchBrackets: true,
           lineWrapping: true,
-          inputStyle: isMobile ? 'contenteditable' : 'textarea',
+          inputStyle: 'textarea',
           gutters: ['CodeMirror-linenumbers', 'sb-gutter-err37']
         });
         Ed.cm.setSize('100%', '100%');
@@ -1350,10 +1362,6 @@
       if (!Ed.cm) return;
       try {
         Ed.cm.operation(function () {
-          var l = Ed.cm.lineCount(), i;
-          for (i = 0; i < l; i++) Ed.cm.removeLineClass(i, 'background', 'sb-cm-errline');
-          for (i = 0; i < sbCmMarks37.length; i++) { try { sbCmMarks37[i].clear(); } catch (e) {} }
-          sbCmMarks37 = [];
           Ed.cm.clearGutter('sb-gutter-err37');
         });
       } catch (e) {}
@@ -1366,18 +1374,23 @@
             var it = issues[i];
             var ln = Math.max(0, (it.line || 1) - 1);
             if (ln >= Ed.cm.lineCount()) continue;
-            Ed.cm.addLineClass(ln, 'background', 'sb-cm-errline');
-            var lineTxt = Ed.cm.getLine(ln) || '';
-            var from = (lineTxt.match(/^\s*/) || [''])[0].length;
-            var to = Math.max(from + 1, lineTxt.replace(/\s+$/, '').length);
-            sbCmMarks37.push(Ed.cm.markText({ line: ln, ch: from }, { line: ln, ch: to }, { className: it.sev === 'err' ? 'sb-cm-wavy' : 'sb-cm-warn' }));
             var mark = document.createElement('span');
             mark.className = 'sb-gutter-err37';
             mark.textContent = '●';
+            mark.title = it.title || '';
             Ed.cm.setGutterMarker(ln, 'sb-gutter-err37', mark);
           }
         });
       } catch (e) {}
+    }
+    function sbScrollToTerm37() {
+      var tw = $('sb-termwrap');
+      if (!tw) return;
+      var r = tw.getBoundingClientRect();
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      if (r.top < 0 || r.bottom > vh) {
+        try { tw.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e37) { try { tw.scrollIntoView(true); } catch (e37b) {} }
+      }
     }
     function sbOnCodeChanged37() {
       sbSyncGutter37();
@@ -1629,6 +1642,7 @@
       if (btn) btn.disabled = true;
       termAdd('────────────────', 'sys');
       setStatus('● Выполняется…', 'busy');
+      sbScrollToTerm37();
       var done37 = function () { state.busy = false; if (btn) btn.disabled = false; };
       try {
         if (state.lang === 'python') runPython37(done37);
