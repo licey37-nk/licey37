@@ -1,5 +1,5 @@
 /* ============================================================
-   ai-engine.js — МОЗГ «ИИ-Наставника 37» (v4.0 Neural Engine)
+   ai-engine.js — МОЗГ «ИИ-Наставника 37» (v4.1 Neural Engine + Википедия)
    МБОУ «Лицей №37» г. Нижнекамска
    Вынесено из index.html. Подключается одной строкой:
    <script src="ai-engine.js"></script>
@@ -12,6 +12,10 @@
    уравнений, перевод систем счисления, проценты, визуальный
    рендер «как у Google»: таблицы с экспортом в CSV, callouts,
    маркер-выделение, пошаговые карточки, спойлеры, файлы.
+   Двухступенчатый поиск (v4.1): сначала локальная база и
+   калькулятор; если ответа нет или карточка короче 180 символов —
+   официальное API Русской Википедии (opensearch + REST summary,
+   origin=*, таймаут 8 с); офлайн — тихая деградация без ошибок.
    Все функции остаются глобальными — остальной код портала
    (викторины, глобальный поиск, уведомления) работает как раньше.
    ============================================================ */
@@ -212,6 +216,38 @@
       return res.text();
     }
 
+    /* v4.1 Двухступенчатый поиск: локальная база -> Русская Википедия (официальный бесплатный API, CORS через origin=*) */
+    const AI_WIKI_TIMEOUT37 = 8000;
+    async function aiWikiFetch37(url) {
+      const ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+      const timer = ctrl ? setTimeout(function () { try { ctrl.abort(); } catch (e37) {} }, AI_WIKI_TIMEOUT37) : null;
+      try {
+        const res = await fetch(url, ctrl ? { signal: ctrl.signal } : undefined);
+        if (!res.ok) return null;
+        return await res.json();
+      } catch (e37) {
+        return null;
+      } finally {
+        if (timer) clearTimeout(timer);
+      }
+    }
+    async function aiWikiAnswer37(query) {
+      const q = String(query || '').replace(/\s+/g, ' ').trim();
+      if (!q || q.length < 3) return '';
+      const found37 = await aiWikiFetch37('https://ru.wikipedia.org/w/api.php?action=opensearch&search=' + encodeURIComponent(q) + '&limit=1&format=json&origin=*');
+      let title37 = '';
+      if (found37 && Array.isArray(found37[1]) && found37[1].length) title37 = String(found37[1][0]);
+      if (!title37) return '';
+      const sum37 = await aiWikiFetch37('https://ru.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title37));
+      let extract37 = sum37 && typeof sum37.extract === 'string' ? sum37.extract.trim() : '';
+      if (!extract37) return '';
+      if (extract37.length > 700) extract37 = extract37.slice(0, 697).replace(/\s+\S*$/, '') + '…';
+      const url37 = (sum37 && sum37.content_urls && sum37.content_urls.desktop && sum37.content_urls.desktop.page)
+        ? sum37.content_urls.desktop.page
+        : 'https://ru.wikipedia.org/wiki/' + encodeURIComponent(title37);
+      return '**' + title37 + '** — ' + extract37 + '\n🔗 Читать полностью: ' + url37;
+    }
+
     async function aiWebSearch(query) {
       const out = [];
       try {
@@ -382,16 +418,45 @@
       }
       aiLastReasoning37 = aiAnalyzeQuery37(text);
       const local = aiSearchKnowledge(text, 3);
-      if (local.length) {
-        const coverage = local.length && aiLastReasoning37 && aiLastReasoning37.length ? Math.min(1, 0.6 + 0.4 * (local.length / 3)) : null;
-        const composed37 = aiReasoningLine37(coverage) + aiComposeAnswer(text, local);
+      const keys37 = aiLastReasoning37 || [];
+      const topT37 = local.length ? String(local[0].t || '') : '';
+      const lowTop37 = topT37.toLowerCase();
+      let rel37 = 1;
+      if (keys37.length && local.length) {
+        let relHits37 = 0;
+        keys37.forEach(function (k) {
+          if (lowTop37.indexOf(k.w) !== -1 || (k.stem.length >= 4 && lowTop37.indexOf(k.stem) !== -1)) relHits37++;
+        });
+        rel37 = relHits37 / keys37.length;
+      }
+      const schoolQ37 = /лицей/i.test(text);
+      const cover37 = local.length && keys37.length ? Math.min(1, 0.6 + 0.4 * (local.length / 3)) : null;
+      const composeLocal37 = function () {
+        const composed37 = aiReasoningLine37(cover37) + aiComposeAnswer(text, local);
         aiLastAnswer37 = composed37;
         aiLastFacts37 = local.slice();
         aiShownFacts37 = local.length;
         aiLastTopic37 = text.slice(0, 80);
         return composed37;
-      }
+      };
+      if (local.length && (schoolQ37 || (topT37.length >= 180 && rel37 >= 0.6))) return composeLocal37();
       if (typeof fetch === 'function') {
+        const wiki37 = await aiWikiAnswer37(text);
+        if (wiki37) {
+          if (local.length) {
+            const combined37 = composeLocal37() + '\n\n📚 Подробнее из энциклопедии\n\n' + wiki37;
+            aiLastAnswer37 = combined37;
+            return combined37;
+          }
+          const wikiMsg37 = (!aiGreeted ? aiPick(AI_HI).replace('{name}', aiName()) + ' ' : '')
+            + 'В моей базе точного ответа не нашлось, поэтому я заглянул в энциклопедию 🔍\n\n' + wiki37;
+          aiLastAnswer37 = wikiMsg37;
+          aiLastFacts37 = [{ s: 'wikipedia', t: wiki37 }];
+          aiShownFacts37 = 1;
+          aiLastTopic37 = text.slice(0, 80);
+          return wikiMsg37;
+        }
+        if (local.length) return composeLocal37();
         const web = await aiWebSearch(text);
         if (web.length) {
           aiLastFacts37 = web.map(function (w) { return { s: 'web', t: w }; });
