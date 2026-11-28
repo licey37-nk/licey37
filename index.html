@@ -21205,6 +21205,15 @@ try {
       });
       return ov;
     }
+    function l37CselNativeOpen37(sel) {
+      try { if (typeof sel.showPicker === 'function') { sel.showPicker(); return; } } catch (eP37) { /* тихо — фолбэк ниже */ }
+      try {
+        sel.classList.remove('l37-csel-native37');
+        sel.style.position = 'fixed'; sel.style.left = '0'; sel.style.top = '0'; sel.style.opacity = '0.01'; sel.style.zIndex = '2147483001';
+        try { sel.focus({ preventScroll: true }); } catch (eF237) { sel.focus(); }
+        setTimeout(function () { try { sel.style.position = ''; sel.style.left = ''; sel.style.top = ''; sel.style.opacity = ''; sel.style.zIndex = ''; sel.classList.add('l37-csel-native37'); } catch (eB37) { /* тихо */ } }, 800);
+      } catch (eF37) { /* тихо */ }
+    }
     function l37EnhanceSelect37(sel) {
       if (!sel || sel._l37Csel37) return;
       try { if (sel.closest('#l37-csel-ov37')) return; } catch (eX37) { /* тихо */ }
@@ -21218,7 +21227,7 @@ try {
       sel._l37Trg37 = trg;
       trg.addEventListener('click', function () {
         try {
-          openCustomSelect37({
+          const ovMade = openCustomSelect37({
             title: l37CselSelLabel37(sel),
             category: (L37_CSEL_META37[sel.id] || {}).cat || '',
             icon: (l37CselFindOpt37(sel, sel.value) || {}).icon || '✨',
@@ -21231,7 +21240,12 @@ try {
               l37CselTriggerSync37(sel);
             }
           });
-        } catch (eO37) { /* тихо */ }
+          if (!ovMade || !document.getElementById('l37-csel-ov37')) throw new Error('окно выбора не отрисовалось');
+        } catch (eO37) {
+          try { window.__l37cselErr37 = String((eO37 && eO37.message) || eO37); } catch (eE37) { /* тихо */ }
+          try { toast('⚠️ Окно выбора не открылось — показываю стандартный список. Причина: ' + window.__l37cselErr37, 'error'); } catch (eT37) { /* тихо */ }
+          try { l37CselNativeOpen37(sel); } catch (eN37) { /* тихо */ }
+        }
       });
       sel.addEventListener('change', function () { try { l37CselTriggerSync37(sel); } catch (eS37) { /* тихо */ } });
       try { l37CselTriggerSync37(sel); } catch (eS237) { /* тихо */ }
@@ -21257,7 +21271,7 @@ try {
           '.l37-csel-trg-val37 { font-size:15px; font-weight:800; color:#0f172a; letter-spacing:-0.02em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }' +
           '.l37-csel-trg-cat37 { font-size:11px; font-weight:700; color:#64748b; }' +
           '.l37-csel-trg-arrow37 { font-size:14px; color:#6366f1; transition:transform .22s cubic-bezier(0.22,1,0.36,1); }' +
-          '.l37-csel-ov37 { position:fixed; inset:0; width:100vw; height:100dvh; z-index:2147483000; background:rgba(15,23,42,0.45); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); display:flex; align-items:flex-end; justify-content:center; animation:l37CselFade37 .18s ease; }' +
+          '.l37-csel-ov37 { position:fixed; inset:0; width:100vw; height:100%; min-height:100vh; height:100dvh; z-index:2147483000; background:rgba(15,23,42,0.45); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); display:flex; align-items:flex-end; justify-content:center; animation:l37CselFade37 .18s ease; }' +
           '.l37-csel-lock37 { overflow:hidden !important; }' +
           '.l37-csel-sheet37 { width:100%; max-height:82dvh; background:#fff; border-radius:24px 24px 0 0; box-shadow:0 -18px 60px rgba(15,23,42,0.35); display:flex; flex-direction:column; padding:10px 16px calc(16px + env(safe-area-inset-bottom)); animation:l37CselUp37 .32s cubic-bezier(0.22,1,0.36,1); }' +
           '@keyframes l37CselFade37 { from { opacity:0; } to { opacity:1; } }' +
@@ -21273,7 +21287,7 @@ try {
           '.l37-csel-search37 { margin-bottom:10px; }' +
           '.l37-csel-search37 input { width:100%; box-sizing:border-box; padding:11px 14px; font-size:16px; border-radius:12px; border:1.5px solid rgba(15,23,42,0.14); background:#f8fafc; font-family:inherit; outline:none; }' +
           '.l37-csel-search37 input:focus { border-color:#6366f1; background:#fff; }' +
-          '.l37-csel-list37 { overflow-y:auto; -webkit-overflow-scrolling:touch; display:flex; flex-direction:column; gap:8px; padding-bottom:6px; max-height:68dvh; overscroll-behavior:contain; min-height:0; }' +
+          '.l37-csel-list37 { overflow-y:auto; -webkit-overflow-scrolling:touch; display:flex; flex-direction:column; gap:8px; padding-bottom:6px; max-height:60vh; max-height:68dvh; overscroll-behavior:contain; min-height:0; }' +
           '.l37-csel-opt37 { display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:11px 12px; border-radius:14px; border:1.5px solid rgba(15,23,42,0.10); background:#fff; cursor:pointer; font-family:inherit; transition:border-color .15s, background .15s, transform .12s; }' +
           '.l37-csel-opt37:active { transform:scale(0.985); }' +
           '.l37-csel-opt37.active { border-color:#6366f1; background:#eef2ff; }' +
@@ -21309,6 +21323,11 @@ try {
     function l37InitCustomSelects37() {
       l37InjectCselCss37();
       l37EnhanceAllSelects37();
+      try {
+        const healLock37 = function () { try { if (!document.getElementById('l37-csel-ov37')) document.body.classList.remove('l37-csel-lock37'); } catch (eH37) { /* тихо */ } };
+        window.addEventListener('pageshow', healLock37);
+        document.addEventListener('visibilitychange', healLock37);
+      } catch (eH237) { /* тихо */ }
       let moSched37 = false;
       try {
         const mo37 = new MutationObserver(function () {
@@ -21439,6 +21458,7 @@ try {
       return st;
     }
     window.l37OpenCustomSelect37 = openCustomSelect37;
+    window.l37CselNativeOpen37 = l37CselNativeOpen37;
     window.l37InitCustomSelects37 = l37InitCustomSelects37;
     window.l37EnhanceAllSelects37 = l37EnhanceAllSelects37;
     window.l37MaintCheck37 = l37MaintCheck37;
