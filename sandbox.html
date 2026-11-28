@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>💻 Код-песочница Лицеиста · МБОУ «Лицей №37»</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
@@ -16,9 +19,8 @@
     background-attachment: fixed;
     color: #e6edf3;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    min-height: 100dvh;
+    display: flex; flex-direction: column;
+    min-height: 100dvh; min-height: 100vh;
     overflow-x: hidden;
   }
   .sb-top {
@@ -84,10 +86,9 @@
   .sb-btn.run:hover { filter: brightness(1.08); box-shadow: 0 12px 30px rgba(16, 185, 129, 0.45), 0 0 20px rgba(6, 182, 212, 0.35); }
   .sb-btn.ghost { background: rgba(30, 38, 56, 0.85); color: #c9d1d9; border: 1px solid rgba(99, 112, 158, 0.35); }
   .sb-btn.ghost:hover { border-color: #818cf8; color: #fff; }
-  .sb-btn.init { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #fff; box-shadow: 0 8px 22px rgba(14, 165, 233, 0.30); }
   .sb-btn[disabled] { opacity: 0.55; cursor: wait; }
   .sb-editor {
-    display: flex; flex-direction: column; flex: 1; min-height: 220px;
+    display: flex; flex-direction: column; flex: 1; min-height: 260px;
     background: rgba(17, 23, 41, 0.72);
     -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
     border: 1px solid rgba(129, 140, 248, 0.28); border-radius: 18px; overflow: hidden;
@@ -125,50 +126,38 @@
   .sb-mini:hover { border-color: #818cf8; color: #fff; }
   .sb-mini:active { transform: scale(0.97); }
   .sb-ed-body { display: flex; flex: 1; min-height: 0; }
+  #sb-ed-host { flex: 1; min-width: 0; min-height: 0; display: flex; }
+  #sb-ed-host .CodeMirror {
+    flex: 1; height: 100%; min-height: 0;
+    font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace;
+    font-size: 16px; line-height: 1.6; background: transparent;
+  }
+  #sb-ed-host .CodeMirror-gutters { background: rgba(11, 15, 25, 0.5); border-right: 1px solid rgba(129, 140, 248, 0.16); }
+  #sb-ed-host .CodeMirror-cursor { border-left: 2px solid #e6edf3; }
+  #sb-ed-host .CodeMirror-selected { background: rgba(99, 102, 241, 0.32) !important; }
+  #sb-ed-host .sb-gutter-err37 { color: #ef4444; font-weight: 800; }
+  .sb-cm-errline { background: rgba(239, 68, 68, 0.14) !important; }
+  .sb-cm-wavy { text-decoration: underline wavy #ef4444; }
+  .sb-cm-warn { text-decoration: underline dotted #f59e0b; }
+  body.sb-day #sb-ed-host .CodeMirror { background: transparent; }
+  body.sb-day #sb-ed-host .CodeMirror-gutters { background: rgba(244, 246, 251, 0.85); border-right-color: rgba(15, 23, 42, 0.10); }
+  body.sb-day #sb-ed-host .CodeMirror-cursor { border-left-color: #1c2333; }
+  body.sb-day .sb-cm-errline { background: rgba(239, 68, 68, 0.10) !important; }
   .sb-gutter {
-    padding: 14px 10px; text-align: right; user-select: none;
+    display: none; padding: 14px 10px; text-align: right; user-select: none; white-space: pre;
     background: rgba(11, 15, 25, 0.5); color: #4b5570; border-right: 1px solid rgba(129, 140, 248, 0.16);
     font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace;
     font-size: 16px; line-height: 1.6; min-width: 52px; overflow: hidden;
   }
-  .sb-stack { position: relative; flex: 1; min-width: 0; display: flex; }
-  .sb-ed-wrap { position: relative; flex: 1; min-width: 0; display: flex; }
-  .sb-hl {
-    position: absolute; inset: 0; box-sizing: border-box; margin: 0; border: 0;
-    padding: 14px 16px;
-    font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace;
-    font-size: 16px; line-height: 1.6; tab-size: 4; white-space: pre; overflow: hidden;
-    pointer-events: none; color: #e6edf3; font-variant-ligatures: none;
-  }
-  .sb-ln { display: block; min-height: 1.6em; }
-  .sb-ln-err { background: rgba(239, 68, 68, 0.14); box-shadow: inset 3px 0 0 #ef4444; }
-  .sb-tok-kw { color: #c792ea; font-weight: 600; }
-  .sb-tok-fn { color: #7dd3fc; }
-  .sb-tok-str { color: #34d399; }
-  .sb-tok-num { color: #fbbf24; }
-  .sb-tok-com { color: #6b7280; font-style: italic; }
-  .sb-tok-op { color: #22d3ee; }
-  .sb-tok-pre { color: #f0abfc; font-style: italic; }
-  .sb-tok-bad { text-decoration: underline wavy #ef4444; }
+  body:not(.sb-cm) .sb-gutter { display: block; }
   .sb-code {
-    flex: 1; resize: none; border: none; outline: none; background: transparent;
-    color: transparent; caret-color: #e6edf3; padding: 14px 16px;
-    box-sizing: border-box; font-variant-ligatures: none;
+    flex: 1; width: 100%; resize: none; border: none; outline: none; background: transparent;
+    color: #e6edf3; caret-color: #e6edf3; padding: 14px 16px;
+    font-variant-ligatures: none;
     font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace;
     font-size: 16px; line-height: 1.6; tab-size: 4; white-space: pre; overflow: auto;
-    position: relative; z-index: 1;
   }
-  .sb-code::selection { background: rgba(99, 102, 241, 0.38); color: transparent; }
-  body.sb-day .sb-code { color: transparent; caret-color: #1c2333; }
-  body.sb-day .sb-code::selection { background: rgba(99, 102, 241, 0.25); color: transparent; }
-  body.sb-day .sb-hl { color: #1c2333; }
-  body.sb-day .sb-tok-kw { color: #7c3aed; }
-  body.sb-day .sb-tok-fn { color: #0284c7; }
-  body.sb-day .sb-tok-str { color: #059669; }
-  body.sb-day .sb-tok-num { color: #d97706; }
-  body.sb-day .sb-tok-com { color: #94a3b8; }
-  body.sb-day .sb-tok-op { color: #0891b2; }
-  body.sb-day .sb-tok-pre { color: #a21caf; }
+  body.sb-day .sb-code { color: #1c2333; caret-color: #1c2333; }
   .sb-mentor {
     background: rgba(17, 23, 41, 0.72);
     -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
@@ -194,22 +183,69 @@
   body.sb-day .sb-mentor-head { background: rgba(241, 245, 249, 0.8); color: #475569; }
   body.sb-day .sb-mentor-item { color: #1c2333; }
   body.sb-day .sb-mentor-item span { color: #64748b; }
-  .sb-turtle-card { max-width: 520px; }
-  #sb-turtle-src {
-    width: 100%; box-sizing: border-box; background: rgba(11, 15, 25, 0.6);
-    border: 1px solid rgba(129, 140, 248, 0.3); border-radius: 12px; color: #e6edf3;
-    font-family: ui-monospace, Consolas, monospace; font-size: 13px; line-height: 1.55;
-    padding: 10px 12px; resize: vertical;
+  .sb-stdin {
+    background: rgba(17, 23, 41, 0.72);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    border: 1px solid rgba(129, 140, 248, 0.28); border-radius: 18px; overflow: hidden;
+    box-shadow: 0 18px 44px rgba(2, 6, 23, 0.55);
   }
-  .sb-turtle-row { display: flex; align-items: center; gap: 10px; margin: 10px 0 8px; }
-  .sb-turtle-row .sb-btn { flex-shrink: 0; }
-  #sb-turtle-status { font: 700 12.5px Arial, sans-serif; color: #3fb950; }
-  #sb-turtle-canvas { width: 100%; max-width: 440px; border: 1px solid rgba(129, 140, 248, 0.3); border-radius: 12px; background: rgba(11, 15, 25, 0.5); }
-  .sb-turtle-hint { color: #8b93a7; font: 12px/1.6 Arial, sans-serif; }
-  body.sb-day #sb-turtle-src { background: rgba(255, 255, 255, 0.9); color: #1c2333; }
-  @media (max-width: 768px) {
-    .sb-mentor-body { max-height: 150px; }
+  .sb-stdin-head {
+    width: 100%; display: flex; align-items: center; gap: 8px; text-align: left;
+    padding: 10px 14px; background: rgba(11, 15, 25, 0.6); border: none; cursor: pointer; font-family: inherit;
+    font-size: 12px; font-weight: 800; color: #8b93a7; letter-spacing: 0.05em; text-transform: uppercase;
   }
+  .sb-stdin-head:hover { color: #c9d1d9; }
+  .sb-stdin-caret { margin-left: 6px; transition: transform 0.25s ease; }
+  .sb-stdin.open .sb-stdin-caret { transform: rotate(180deg); }
+  .sb-stdin-badge { margin-left: auto; font-size: 11px; color: #7dd3fc; font-weight: 800; text-transform: none; letter-spacing: 0; }
+  .sb-stdin-body { display: none; padding: 2px 14px 12px; }
+  .sb-stdin.open .sb-stdin-body { display: block; }
+  .sb-stdin-hint { font-size: 12px; color: #8b93a7; font-weight: 600; margin: 4px 0 8px; line-height: 1.5; }
+  #sb-stdin-field {
+    width: 100%; resize: vertical; min-height: 72px; outline: none;
+    background: rgba(11, 15, 25, 0.6); border: 1px solid rgba(129, 140, 248, 0.30); border-radius: 12px;
+    color: #e6edf3; caret-color: #e6edf3;
+    font-family: ui-monospace, Consolas, monospace; font-size: 16px; line-height: 1.5;
+    padding: 10px 12px;
+  }
+  #sb-stdin-field:focus { border-color: #818cf8; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.16); }
+  body.sb-day .sb-stdin { background: rgba(255, 255, 255, 0.86); border-color: rgba(99, 102, 241, 0.30); }
+  body.sb-day .sb-stdin-head { background: rgba(244, 246, 251, 0.9); color: #5b6478; }
+  body.sb-day .sb-stdin-hint { color: #5b6478; }
+  body.sb-day #sb-stdin-field { background: #f6f8fc; color: #1c2333; caret-color: #1c2333; }
+  .sb-turtlewrap {
+    display: none;
+    background: rgba(17, 23, 41, 0.72);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    border: 1px solid rgba(129, 140, 248, 0.28); border-radius: 18px; overflow: hidden;
+    box-shadow: 0 18px 44px rgba(2, 6, 23, 0.55);
+  }
+  .sb-turtlewrap.open { display: block; }
+  .sb-turtle-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; background: rgba(11, 15, 25, 0.6);
+    border-bottom: 1px solid rgba(129, 140, 248, 0.16);
+    font-size: 12px; font-weight: 800; color: #8b93a7; letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .sb-turtle-head .sb-mini { margin-left: auto; text-transform: none; letter-spacing: 0; }
+  #sb-turtle-canvas {
+    min-height: 300px; padding: 10px; display: flex; align-items: center; justify-content: center;
+    background:
+      linear-gradient(rgba(129, 140, 248, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(129, 140, 248, 0.06) 1px, transparent 1px),
+      #0b0f19;
+    background-size: 28px 28px, 28px 28px, auto;
+  }
+  #sb-turtle-canvas canvas { max-width: 100%; height: auto !important; }
+  body.sb-day #sb-turtle-canvas {
+    background:
+      linear-gradient(rgba(99, 102, 241, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99, 102, 241, 0.08) 1px, transparent 1px),
+      #eef2f9;
+    background-size: 28px 28px, 28px 28px, auto;
+  }
+  body.sb-day .sb-turtlewrap { background: rgba(255, 255, 255, 0.86); border-color: rgba(99, 102, 241, 0.30); }
+  body.sb-day .sb-turtle-head { background: rgba(244, 246, 251, 0.9); border-bottom-color: rgba(15, 23, 42, 0.10); color: #5b6478; }
   .sb-termwrap {
     background: rgba(17, 23, 41, 0.72);
     -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
@@ -238,6 +274,29 @@
   .sb-line.err { color: #ff7b72; font-weight: 600; }
   .sb-line.sys { color: #7dd3fc; }
   .sb-line.ok { color: #3fb950; font-weight: 700; }
+  .sb-line.warn { color: #f5d76e; }
+  body.sb-day .sb-termwrap { background: rgba(255, 255, 255, 0.86); border-color: rgba(99, 102, 241, 0.30); }
+  body.sb-day .sb-term-head { background: rgba(244, 246, 251, 0.9); border-bottom-color: rgba(15, 23, 42, 0.10); color: #5b6478; }
+  body.sb-day .sb-line.out { color: #334155; }
+  body.sb-day .sb-line.err { color: #dc2626; }
+  body.sb-day .sb-line.sys { color: #0369a1; }
+  body.sb-day .sb-line.ok { color: #15803d; }
+  body.sb-day .sb-line.warn { color: #b45309; }
+  body.sb-day .sb-status { color: #15803d; }
+  body.sb-day .sb-status.busy { color: #b45309; }
+  body.sb-day .sb-status.err { color: #dc2626; }
+  .sb-console-row { display: none; align-items: center; gap: 8px; padding: 0 14px 12px; }
+  .sb-console-row.open { display: flex; }
+  .sb-console-prompt { color: #3fb950; font-family: ui-monospace, Consolas, monospace; font-weight: 800; font-size: 15px; flex-shrink: 0; }
+  #sb-console-input {
+    flex: 1; min-width: 0; outline: none;
+    background: rgba(11, 15, 25, 0.6); border: 1px solid rgba(129, 140, 248, 0.30); border-radius: 10px;
+    color: #e6edf3; caret-color: #e6edf3;
+    font-family: ui-monospace, Consolas, monospace; font-size: 16px;
+    padding: 9px 12px;
+  }
+  #sb-console-input:focus { border-color: #818cf8; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.16); }
+  body.sb-day #sb-console-input { background: #f6f8fc; color: #1c2333; caret-color: #1c2333; }
   .sb-syms {
     display: flex; gap: 6px; overflow-x: auto; padding: 2px 2px;
     -webkit-overflow-scrolling: touch; scrollbar-width: none;
@@ -252,12 +311,25 @@
   }
   .sb-sym:active { transform: scale(0.94); border-color: #818cf8; box-shadow: 0 0 10px rgba(99, 102, 241, 0.35); }
   .sb-sym.wide { min-width: 52px; }
+  body.sb-day .sb-sym { background: #ffffff; border-color: rgba(15, 23, 42, 0.14); color: #4338ca; box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06); }
+  .sb-autochips { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .sb-chip {
+    flex: 0 0 auto; padding: 6px 12px; border-radius: 999px; cursor: pointer;
+    background: rgba(79, 70, 229, 0.16); border: 1px solid rgba(129, 140, 248, 0.45); color: #c7d2fe;
+    font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace;
+    font-size: 12.5px; font-weight: 700; white-space: nowrap; user-select: none;
+    transition: border-color 0.2s ease, color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  }
+  .sb-chip:hover { border-color: #818cf8; color: #fff; box-shadow: 0 0 12px rgba(99, 102, 241, 0.35); }
+  .sb-chip:active { transform: scale(0.96); }
+  body.sb-day .sb-chip { background: #ffffff; border-color: rgba(99, 102, 241, 0.40); color: #4338ca; box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06); }
   .sb-modal {
     position: fixed; inset: 0; z-index: 50; display: none;
     align-items: center; justify-content: center; padding: 18px;
     background: rgba(4, 7, 15, 0.66);
     -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
   }
+  .sb-modal.open { display: flex; }
   .sb-modal-card {
     width: 100%; max-width: 520px; max-height: 82dvh; overflow: auto;
     background: rgba(17, 23, 41, 0.92);
@@ -285,11 +357,14 @@
   .sb-prog-meta small { font-size: 11px; color: #8b93a7; font-weight: 600; }
   .sb-prog-actions { display: flex; gap: 6px; flex-shrink: 0; }
   .sb-progs-empty { font-size: 12.5px; color: #8b93a7; font-weight: 600; padding: 6px 2px; }
-  @media (max-width: 768px) {
-    .sb-modal { align-items: flex-end; padding: 0; }
-    .sb-modal-card { max-width: none; border-radius: 22px 22px 0 0; max-height: 86dvh; padding: 14px 14px calc(16px + env(safe-area-inset-bottom)); }
-    .sb-sym { min-width: 38px; padding: 9px 10px; font-size: 13px; }
-  }
+  body.sb-day .sb-modal { background: rgba(15, 23, 42, 0.35); }
+  body.sb-day .sb-modal-card { background: #ffffff; border-color: rgba(99, 102, 241, 0.30); box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22); }
+  body.sb-day .sb-modal-head { color: #101728; }
+  body.sb-day .sb-save-row input { background: #f6f8fc; border-color: rgba(15, 23, 42, 0.16); color: #1c2333; }
+  body.sb-day .sb-prog-item { background: #f6f8fc; border-color: rgba(15, 23, 42, 0.10); }
+  body.sb-day .sb-prog-meta b { color: #101728; }
+  body.sb-day .sb-prog-meta small { color: #5b6478; }
+  body.sb-day .sb-progs-empty { color: #5b6478; }
   .sb-theme {
     display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
     padding: 9px 14px; border-radius: 999px; cursor: pointer; font-family: inherit;
@@ -314,63 +389,31 @@
   body.sb-day .sb-back, body.sb-day .sb-theme { background: #ffffff; border-color: rgba(99, 102, 241, 0.35); color: #4338ca; box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08); }
   body.sb-day .sb-back:hover, body.sb-day .sb-theme:hover { border-color: #6366f1; color: #312e81; }
   body.sb-day .sb-lang-tab { background: #ffffff; border-color: rgba(15, 23, 42, 0.14); color: #5b6478; box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06); }
-  body.sb-day .sb-lang-tab.active { color: #312e81; border-color: rgba(99, 102, 241, 0.65); background: linear-gradient(135deg, rgba(99, 102, 241, 0.14), rgba(14, 165, 233, 0.12)); box-shadow: inset 0 0 12px rgba(99, 102, 241, 0.10); }
+  body.sb-day .sb-lang-tab.active { color: #312e81; border-color: rgba(99, 102, 241, 0.65); background: linear-gradient(135deg, rgba(99, 102, 241, 0.14), rgba(14, 165, 233, 0.12)); }
   body.sb-day .sb-lang-tab:not(.active):hover { color: #1c2333; border-color: rgba(99, 102, 241, 0.5); }
   body.sb-day .sb-tmpls span.lbl { color: #5b6478; }
-  body.sb-day .sb-tmpl { background: #ffffff; border-color: rgba(15, 23, 42, 0.14); color: #4338ca; box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06); }
-  body.sb-day .sb-tmpl.active { background: rgba(99, 102, 241, 0.14); border-color: #6366f1; color: #312e81; box-shadow: none; }
-  body.sb-day .sb-btn.ghost { background: #ffffff; color: #1c2333; border-color: rgba(15, 23, 42, 0.14); box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06); }
+  body.sb-day .sb-tmpl { background: #ffffff; border-color: rgba(15, 23, 42, 0.14); color: #4338ca; }
+  body.sb-day .sb-tmpl.active { background: rgba(99, 102, 241, 0.14); border-color: #6366f1; color: #312e81; }
+  body.sb-day .sb-btn.ghost { background: #ffffff; color: #1c2333; border-color: rgba(15, 23, 42, 0.14); }
   body.sb-day .sb-btn.ghost:hover { border-color: #6366f1; color: #312e81; }
-  body.sb-day .sb-editor, body.sb-day .sb-termwrap { background: rgba(255, 255, 255, 0.86); border-color: rgba(99, 102, 241, 0.30); box-shadow: 0 14px 34px rgba(15, 23, 42, 0.10); }
-  body.sb-day .sb-editor:focus-within { border-color: rgba(99, 102, 241, 0.65); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.14), 0 14px 34px rgba(15, 23, 42, 0.10); }
-  body.sb-day .sb-ed-head, body.sb-day .sb-term-head { background: rgba(244, 246, 251, 0.9); border-bottom-color: rgba(15, 23, 42, 0.10); }
-  body.sb-day .sb-term-head { color: #5b6478; }
-  body.sb-day .sb-gutter { background: rgba(244, 246, 251, 0.8); color: #9aa3b8; border-right-color: rgba(15, 23, 42, 0.10); }
-  body.sb-day .sb-code { color: #1c2333; }
+  body.sb-day .sb-editor { background: rgba(255, 255, 255, 0.86); border-color: rgba(99, 102, 241, 0.30); box-shadow: 0 14px 34px rgba(15, 23, 42, 0.10); }
+  body.sb-day .sb-ed-head { background: rgba(244, 246, 251, 0.9); border-bottom-color: rgba(15, 23, 42, 0.10); }
   body.sb-day .sb-file { color: #4338ca; background: rgba(99, 102, 241, 0.12); border-color: rgba(99, 102, 241, 0.30); }
-  body.sb-day .sb-mini { background: #ffffff; border-color: rgba(15, 23, 42, 0.14); color: #3b4256; box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06); }
+  body.sb-day .sb-mini { background: #ffffff; border-color: rgba(15, 23, 42, 0.14); color: #3b4256; }
   body.sb-day .sb-mini:hover { border-color: #6366f1; color: #312e81; }
-  body.sb-day .sb-line.out { color: #334155; }
-  body.sb-day .sb-line.err { color: #dc2626; }
-  body.sb-day .sb-line.sys { color: #0369a1; }
-  body.sb-day .sb-line.ok { color: #15803d; }
-  body.sb-day .sb-status { color: #15803d; }
-  body.sb-day .sb-status.busy { color: #b45309; }
-  body.sb-day .sb-status.err { color: #dc2626; }
-  body.sb-day .sb-sym { background: #ffffff; border-color: rgba(15, 23, 42, 0.14); color: #4338ca; box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06); }
-  body.sb-day .sb-modal { background: rgba(15, 23, 42, 0.35); }
-  body.sb-day .sb-modal-card { background: #ffffff; border-color: rgba(99, 102, 241, 0.30); box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22); }
-  body.sb-day .sb-modal-head { color: #101728; }
-  body.sb-day .sb-save-row input { background: #f6f8fc; border-color: rgba(15, 23, 42, 0.16); color: #1c2333; }
-  body.sb-day .sb-save-row input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.14); }
-  body.sb-day .sb-prog-item { background: #f6f8fc; border-color: rgba(15, 23, 42, 0.10); }
-  body.sb-day .sb-prog-meta b { color: #101728; }
-  body.sb-day .sb-prog-meta small { color: #5b6478; }
-  body.sb-day .sb-progs-empty { color: #5b6478; }
-  .sb-autochips { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-  .sb-chip {
-    flex: 0 0 auto; padding: 6px 12px; border-radius: 999px; cursor: pointer; font-family: inherit;
-    background: rgba(79, 70, 229, 0.16); border: 1px solid rgba(129, 140, 248, 0.45); color: #c7d2fe;
-    font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace;
-    font-size: 12.5px; font-weight: 700; white-space: nowrap; user-select: none;
-    transition: border-color 0.2s ease, color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
-  }
-  .sb-chip:hover { border-color: #818cf8; color: #fff; box-shadow: 0 0 12px rgba(99, 102, 241, 0.35); }
-  .sb-chip:active { transform: scale(0.96); }
-  body.sb-day .sb-chip { background: #ffffff; border-color: rgba(99, 102, 241, 0.40); color: #4338ca; box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06); }
-  body.sb-day .sb-chip:hover { border-color: #6366f1; color: #312e81; }
-  @media (max-width: 768px) { .sb-chip { padding: 8px 11px; font-size: 12px; } }
-  .sb-spin { display: inline-block; animation: sbRot 1s linear infinite; }
-  @keyframes sbRot { to { transform: rotate(360deg); } }
   @media (max-width: 768px) {
-    .sb-top { padding: 10px 12px; gap: 8px; }
-    .sb-titles h1 { font-size: 15px; }
+    .sb-top { padding: 10px 12px; }
     .sb-langs, .sb-tmpls { padding-left: 12px; padding-right: 12px; }
     .sb-main { padding: 10px 12px 14px; }
-    .sb-btn { padding: 11px 14px; font-size: 13px; }
-    .sb-editor { min-height: 180px; }
-    .sb-ed-actions .sb-mini { padding: 6px 9px; font-size: 11.5px; }
+    .sb-editor { min-height: 200px; }
     .sb-term { max-height: 40dvh; }
+    .sb-mentor-body { max-height: 150px; }
+    .sb-sym { min-width: 38px; padding: 9px 10px; font-size: 13px; }
+    .sb-btn { padding: 11px 14px; font-size: 13.5px; }
+  }
+  @media (max-width: 480px) {
+    .sb-titles p { display: none; }
+    .sb-lang-tab { padding: 8px 14px; font-size: 13px; }
   }
 </style>
 </head>
@@ -379,29 +422,25 @@
     <div class="sb-logo">💻</div>
     <div class="sb-titles">
       <h1>💻 Код-песочница</h1>
-      <p>Автономный тренажёр: работает только в твоём браузере, база портала не затрагивается</p>
+      <p>Автономный тренажёр: работает в твоём браузере, база портала не затрагивается</p>
     </div>
     <a class="sb-back" id="sb-back" href="index.html">← В Лицей №37</a>
     <button type="button" class="sb-theme" id="sb-theme" title="Переключить тему">🌙 Ночь</button>
   </div>
 
   <div class="sb-langs" id="sb-langs">
-    <button type="button" class="sb-lang-tab active" data-lang="python">🐍 Python 3</button>
-    <button type="button" class="sb-lang-tab" data-lang="cpp">⚙️ C++17</button>
+    <button type="button" class="sb-lang-tab active" data-lang="python">🐍 Python</button>
+    <button type="button" class="sb-lang-tab" data-lang="cpp">⚙️ C++</button>
     <button type="button" class="sb-lang-tab" data-lang="js">⚡ JavaScript</button>
   </div>
 
   <div class="sb-tmpls" id="sb-tmpls">
     <span class="lbl">Шаблоны:</span>
-    <button type="button" class="sb-tmpl active" data-tmpl="0">Квадратное уравнение</button>
-    <button type="button" class="sb-tmpl" data-tmpl="1">Списки и строки</button>
-    <button type="button" class="sb-tmpl" data-tmpl="2">Типовая задача ЕГЭ</button>
   </div>
 
   <div class="sb-main">
     <div class="sb-actions">
       <button type="button" class="sb-btn run" id="sb-run">▶️ Запустить</button>
-      <button type="button" class="sb-btn init" id="sb-py-init" style="display:none;">⚙️ Инициализировать Python (~6 МБ)</button>
       <button type="button" class="sb-btn ghost" id="sb-save">💾 Сохранить</button>
       <button type="button" class="sb-btn ghost" id="sb-progs">📂 Мои программы</button>
       <button type="button" class="sb-btn ghost" id="sb-explain">📖 Объяснить построчно</button>
@@ -418,12 +457,9 @@
         </div>
       </div>
       <div class="sb-ed-body">
-        <div class="sb-stack">
-          <div class="sb-gutter" id="sb-gutter">1</div>
-          <div class="sb-ed-wrap">
-            <pre class="sb-hl" id="sb-hl" aria-hidden="true"></pre>
-            <textarea class="sb-code" id="sb-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Редактор кода"></textarea>
-          </div>
+        <div class="sb-gutter" id="sb-gutter">1</div>
+        <div id="sb-ed-host">
+          <textarea class="sb-code" id="sb-code" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Редактор кода"></textarea>
         </div>
       </div>
     </section>
@@ -451,6 +487,17 @@
       <div class="sb-mentor-head">🧠 Подсказки Наставника<span class="sb-mentor-count" id="sb-mentor-count">всё чисто ✨</span></div>
       <div class="sb-mentor-body" id="sb-mentor-body"></div>
     </section>
+    <section class="sb-stdin open" id="sb-stdin">
+      <button type="button" class="sb-stdin-head" id="sb-stdin-toggle">📥 Входные данные (input / cin)<span class="sb-stdin-badge" id="sb-stdin-badge"></span><span class="sb-stdin-caret">▾</span></button>
+      <div class="sb-stdin-body" id="sb-stdin-body">
+        <div class="sb-stdin-hint">Если программа использует input() или cin — впиши значения по одному на каждой строке. Пустое поле: Python спросит ответ прямо в Terminal.</div>
+        <textarea id="sb-stdin-field" rows="4" placeholder="Например:&#10;1&#10;-3&#10;2"></textarea>
+      </div>
+    </section>
+    <section class="sb-turtlewrap" id="sb-turtlewrap">
+      <div class="sb-turtle-head">🐢 Черепашка (ЕГЭ №6)<button type="button" class="sb-mini" id="sb-turtle-clear">🧹 Очистить холст</button><button type="button" class="sb-mini" id="sb-turtle-hide">✕</button></div>
+      <div id="sb-turtle-canvas"></div>
+    </section>
     <section class="sb-termwrap">
       <div class="sb-term-head">
         <span class="sb-status" id="sb-status">● Готово</span>
@@ -458,6 +505,11 @@
         <button type="button" class="sb-mini" id="sb-term-clear">🧹 Очистить</button>
       </div>
       <div class="sb-term" id="sb-term" aria-live="polite"></div>
+      <div class="sb-console-row" id="sb-console-row">
+        <span class="sb-console-prompt">&gt;_</span>
+        <input id="sb-console-input" placeholder="Ответ для input()… (Enter — отправить, Esc — отмена)" autocomplete="off" autocapitalize="off">
+        <button type="button" class="sb-mini" id="sb-console-send">Enter ⏎</button>
+      </div>
     </section>
   </div>
 
@@ -466,502 +518,246 @@
       <div class="sb-modal-head">📂 Мои программы<button type="button" class="sb-mini" id="sb-progs-close">✕</button></div>
       <div class="sb-save-row">
         <input id="sb-prog-name" placeholder="Название программы (например, Домашка)" maxlength="60">
-        <button type="button" class="sb-btn init" id="sb-prog-save">💾 Сохранить</button>
+        <button type="button" class="sb-btn run" id="sb-prog-save">💾 Сохранить</button>
       </div>
       <div id="sb-prog-list"></div>
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/skulpt.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/skulpt-stdlib.js"></script>
 <script>
   /* ============================================================
-     КОД-ПЕСОЧНИЦА ЛИЦЕИСТА · МБОУ «Лицей №37»
-     ЖЕЛЕЗНОЕ ПРАВИЛО: файл полностью автономен — никаких ключей
-     Supabase, никаких обращений к базе site_content и профилям.
-     Единственные внешние вызовы: Pyodide (CDN) и Piston API (C++).
+     КОД-ПЕСОЧНИЦА ЛИЦЕИСТА · МБОУ «Лицей №37» · v34
+     ЖЕЛЕЗНОЕ ПРАВИЛО: файл полностью автономен — никакой связи с
+     базой портала, никаких профилей и настроек сайта.
+     Внешние CDN-библиотеки: CodeMirror 5 (редактор) и Skulpt
+     (мгновенный Python). C++ — облачный компилятор Piston API.
+     Резервный редактор (без CDN) встроен в сам файл.
      ============================================================ */
   (function () {
     'use strict';
 
-    var TEMPLATES = {
-      python: [
-        { name: 'Квадратное уравнение', code:
-'# Квадратное уравнение: a*x^2 + b*x + c = 0\nimport math\n\nprint("Решение квадратного уравнения ax^2 + bx + c = 0")\na = float(input("Введи a: ") or 1)\nb = float(input("Введи b: ") or -3)\nc = float(input("Введи c: ") or 2)\n\nif a == 0:\n    print("Это не квадратное уравнение: a = 0")\nelse:\n    d = b * b - 4 * a * c\n    print("Дискриминант D =", d)\n    if d > 0:\n        x1 = (-b + math.sqrt(d)) / (2 * a)\n        x2 = (-b - math.sqrt(d)) / (2 * a)\n        print("Два корня: x1 =", round(x1, 3), " x2 =", round(x2, 3))\n    elif d == 0:\n        print("Один корень: x =", round(-b / (2 * a), 3))\n    else:\n        print("Действительных корней нет (D < 0)")\n' },
-        { name: 'Списки и строки', code:
-'# Обработка списков и строк\nnums = [12, 5, 8, 21, 4, 17, 9, 30, 2]\nprint("Список:", nums)\nprint("Сумма:", sum(nums))\nprint("Максимум:", max(nums), " Минимум:", min(nums))\nprint("Отсортированный:", sorted(nums))\nprint("Чётные:", [n for n in nums if n % 2 == 0])\n\nphrase = "Лицей номер 37 город Нижнекамск"\nwords = phrase.split()\nprint("\\nФраза:", phrase)\nprint("Слов:", len(words))\nprint("Длина самого длинного слова:", len(max(words, key=len)))\nprint("Перевёрнутая:", phrase[::-1])\nprint("Заглавные первые буквы:", " ".join(w.capitalize() for w in words))\n' },
-        { name: 'Типовая задача ЕГЭ', code:
-'# Типовая задача ЕГЭ (информатика)\n# В файле строка: сначала N — количество чисел, затем сами числа.\n# Найти количество чисел, кратных 4, и максимальное из них.\ndata = "8\\n12\\n7\\n4\\n36\\n9\\n16\\n5\\n20"\n\nlines = data.split()\nn = int(lines[0])\nnums = [int(lines[i]) for i in range(1, n + 1)]\n\ncount4 = 0\nbest = None\nfor x in nums:\n    if x % 4 == 0:\n        count4 += 1\n        if best is None or x > best:\n            best = x\n\nprint("Всего чисел:", n)\nprint("Чисел, кратных 4:", count4)\nprint("Максимальное из них:", best)\n' }
-      ],
-      cpp: [
-        { name: 'Олимпиадная задача', code:
-'// Олимпиадный шаблон: C++17\n// Считать N чисел, отсортировать, вывести сумму и медиану.\n#include <iostream>\n#include <vector>\n#include <algorithm>\n\nint main() {\n    std::ios_base::sync_with_stdio(false);\n    std::cin.tie(nullptr);\n\n    int n;\n    std::cin >> n;\n    std::vector<long long> a(n);\n    for (int i = 0; i < n; ++i) std::cin >> a[i];\n\n    std::sort(a.begin(), a.end());\n\n    long long sum = 0;\n    for (long long x : a) sum += x;\n\n    long long median = a[n / 2];\n\n    std::cout << "Сумма: " << sum << "\\n";\n    std::cout << "Медиана: " << median << "\\n";\n    std::cout << "Минимум: " << a.front() << ", максимум: " << a.back() << "\\n";\n    return 0;\n}\n' },
-        { name: 'Ввод-вывод и циклы', code:
-'// Тренировка ввода-вывода и циклов\n#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n    long long fact = 1;\n    for (int i = 2; i <= n; ++i) fact *= i;\n    std::cout << n << "! = " << fact << "\\n";\n\n    for (int i = 1; i <= 5; ++i) {\n        for (int j = 0; j < i; ++j) std::cout << "*";\n        std::cout << "\\n";\n    }\n    return 0;\n}\n' },
-        { name: 'Строки и map', code:
-'// Частотный анализ символов строки\n#include <iostream>\n#include <string>\n#include <map>\n\nint main() {\n    std::string s;\n    std::getline(std::cin, s);\n\n    std::map<char, int> freq;\n    for (char c : s) {\n        if (c != \' \') freq[std::tolower(c)]++;\n    }\n\n    for (auto& p : freq) {\n        std::cout << p.first << " -> " << p.second << "\\n";\n    }\n    return 0;\n}\n' }
-      ],
-      js: [
-        { name: 'console.log и методы массивов', code:
-'// Методы массивов ES2023\nconst nums = [12, 5, 8, 21, 4, 17, 9, 30, 2];\nconsole.log("Исходный:", nums);\nconsole.log("Сумма:", nums.reduce((s, n) => s + n, 0));\nconsole.log("Отсортированный:", [...nums].sort((a, b) => a - b));\nconsole.log("Чётные:", nums.filter(n => n % 2 === 0));\nconsole.log("Последний:", nums.at(-1));\nconsole.log("Найден 21?", nums.find(n => n === 21));\n' },
-        { name: 'Строки и шаблонные литералы', code:
-'// Строки и шаблонные литералы\nconst name = "Лицей №37";\nconst city = "Нижнекамск";\nconst year = 2026;\n\nconsole.log(`${name}, ${city}, ${year} год`);\nconsole.log("Длина:", name.length);\nconsole.log("ВЕРХНИЙ регистр:", name.toUpperCase());\nconsole.log("Содержит 37:", name.includes("37"));\nconsole.log("Повтор:", "⚡".repeat(5));\n' },
-        { name: 'Алгоритм: поиск пары с суммой', code:
-'// Классическая задача: найти пару чисел с заданной суммой\nfunction findPair(arr, target) {\n  const seen = new Map();\n  for (let i = 0; i < arr.length; i++) {\n    const need = target - arr[i];\n    if (seen.has(need)) return [seen.get(need), i];\n    seen.set(arr[i], i);\n  }\n  return null;\n}\n\nconst arr = [2, 7, 11, 15, 3, 6];\nconsole.log("Массив:", arr);\nconsole.log("Пара с суммой 9:", findPair(arr, 9));\nconsole.log("Пара с суммой 18:", findPair(arr, 18));\nconsole.log("Пара с суммой 100:", findPair(arr, 100));\n' }
-      ]
-    };
-
-    var state = { lang: 'python', tmpl: 0, pyodide: null, pyLoading: false };
     var $ = function (id) { return document.getElementById(id); };
-    var codeEl = $('sb-code'), gutter = $('sb-gutter'), term = $('sb-term');
     var FILE_NAMES = { python: 'main.py', cpp: 'main.cpp', js: 'script.js' };
-    var statusEl = $('sb-status');
-    function setStatus37(kind, text) {
-      if (!statusEl) return;
-      statusEl.className = 'sb-status' + (kind ? ' ' + kind : '');
-      statusEl.textContent = text;
-    }
-    function syncFileBadge37() {
-      var f = $('sb-file');
-      if (f) f.textContent = FILE_NAMES[state.lang] || 'main.txt';
-    }
-
-    /* ==== 🌙/☀️ Переключатель темы (100% локально, localStorage) ==== */
-    var THEME_KEY = 'l37_sandbox_theme';
-    function applyTheme37(t) {
-      var day = t === 'day';
-      document.body.classList.toggle('sb-day', day);
-      var btn = $('sb-theme');
-      if (btn) { btn.textContent = day ? '☀️ День' : '🌙 Ночь'; btn.title = day ? 'Переключить на тёмную тему' : 'Переключить на светлую тему'; }
-      try { localStorage.setItem(THEME_KEY, day ? 'day' : 'night'); } catch (e) {}
-    }
-    function toggleTheme37() {
-      applyTheme37(document.body.classList.contains('sb-day') ? 'night' : 'day');
-    }
-    try { applyTheme37((localStorage.getItem(THEME_KEY) || 'night') === 'day' ? 'day' : 'night'); } catch (e) { applyTheme37('night'); }
-    $('sb-theme').addEventListener('click', toggleTheme37);
-
-    var PYODIDE_URL = 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js';
-    var PISTON_URL = 'https://emkc.org/api/v2/piston/execute';
+    var state = { lang: 'python', tmpl: 0, busy: false };
+    var codeEl = $('sb-code'), gutter = $('sb-gutter'), term = $('sb-term'), statusEl = $('sb-status');
+    var sbMentorMode37 = 'issues';
+    var sbLastIssues37 = [];
+    var sbDebounce37 = 0;
+    var stdinQueue = [];
+    var sbPendingInput37 = null;
 
     function escHtml(s) {
       return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
-    function tline(kind, text) {
+    function setStatus(text, cls) {
+      if (!statusEl) return;
+      statusEl.textContent = text;
+      statusEl.className = 'sb-status' + (cls ? ' ' + cls : '');
+    }
+    function termAdd(text, cls) {
+      if (!term) return;
       var d = document.createElement('div');
-      d.className = 'sb-line ' + kind;
-      d.textContent = text;
+      d.className = 'sb-line ' + (cls || 'out');
+      d.textContent = String(text == null ? '' : text);
       term.appendChild(d);
       term.scrollTop = term.scrollHeight;
+      return d;
     }
-    function sysMsg(t) { tline('sys', t); }
-    function errMsg(t) { tline('err', t); }
-    function outMsg(t) { tline('out', t); }
-    function okMsg(t) { tline('ok', t); }
-
-    function updateGutter() {
-      var n = codeEl.value.split('\n').length;
-      var html = '';
-      for (var i = 1; i <= n; i++) html += i + '\n';
-      gutter.textContent = html;
-      gutter.scrollTop = codeEl.scrollTop;
+    function sysMsg(t) { termAdd(t, 'sys'); }
+    function termText37() {
+      if (!term) return '';
+      var out = [];
+      for (var i = 0; i < term.children.length; i++) out.push(term.children[i].textContent);
+      return out.join('\n');
     }
+    function termLines37() { return term ? term.children.length : 0; }
+    function termClear() { if (term) term.innerHTML = ''; sysMsg('Терминал очищен.'); setStatus('● Готово', ''); }
 
-    function applyTemplate() {
-      codeEl.value = TEMPLATES[state.lang][state.tmpl].code;
-      updateGutter();
-      term.innerHTML = '';
-      sysMsg('Загружен шаблон: ' + TEMPLATES[state.lang][state.tmpl].name + ' (' + ({ python: 'Python 3', cpp: 'C++17', js: 'JavaScript' })[state.lang] + ')');
-      syncFileBadge37();
-      syncPyBtn();
+    /* ---------- 📥 Входные данные (stdin) ---------- */
+    function sbStdinBadge37() {
+      var f = $('sb-stdin-field'), b = $('sb-stdin-badge');
+      if (!f || !b) return;
+      var n = getStdinLines().length;
+      b.textContent = n ? n + ' ' + (n === 1 ? 'строка' : (n < 5 ? 'строки' : 'строк')) : '';
     }
-
-    function syncPyBtn() {
-      var b = $('sb-py-init');
-      b.style.display = (state.lang === 'python' && !state.pyodide) ? '' : 'none';
-      b.textContent = state.pyLoading ? '⏳ Python загружается...' : '⚙️ Инициализировать Python (~6 МБ)';
+    function getStdinText() {
+      var f = $('sb-stdin-field');
+      return f ? String(f.value || '') : '';
     }
-
-    function setBusy(on) {
-      $('sb-run').disabled = on;
-      $('sb-run').textContent = on ? '⏳ Выполняется...' : '▶️ Запустить';
-      if (on) setStatus37('busy', '● Выполняется…');
+    function getStdinLines() {
+      var parts = getStdinText().replace(/\r/g, '').split('\n');
+      if (parts.length && parts[parts.length - 1] === '') parts.pop();
+      return parts;
     }
-
-    function loadPyodide37() {
-      if (state.pyodide) return Promise.resolve(state.pyodide);
-      if (state.pyLoading) return Promise.reject(new Error('Python уже загружается, подожди...'));
-      state.pyLoading = true;
-      syncPyBtn();
-      sysMsg('⏳ Загружаю автономный Python (Pyodide ~6 МБ, только первый раз)...');
-      return new Promise(function (resolve, reject) {
-        var s = document.createElement('script');
-        s.src = PYODIDE_URL;
-        s.onload = function () {
-          window.loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/' }).then(function (py) {
-            state.pyodide = py;
-            state.pyLoading = false;
-            syncPyBtn();
-            okMsg('✅ Python 3 готов! Можно запускать код.');
-            resolve(py);
-          }).catch(reject);
-        };
-        s.onerror = function () {
-          state.pyLoading = false;
-          syncPyBtn();
-          reject(new Error('Не удалось загрузить Pyodide — проверь интернет (нужен один раз).'));
-        };
-        document.head.appendChild(s);
-      });
+    function sbOpenStdin37() { var s = $('sb-stdin'); if (s) s.classList.add('open'); }
+    function sbCloseStdin37() { var s = $('sb-stdin'); if (s) s.classList.remove('open'); }
+    function maybeAutoOpenStdin37(code) {
+      if (/\binput\s*\(|\bstd::cin\b|\bcin\s*>>/.test(code)) sbOpenStdin37();
     }
 
-    function runPython() {
-      setBusy(true);
-      loadPyodide37().then(function (py) {
-        term.innerHTML = '';
-        sysMsg('🐍 Python 3 · запускаю программу...');
-        py.setStdout({ batched: function (s) { outMsg(s); } });
-        py.setStderr({ batched: function (s) { errMsg(s); } });
-        var promptLine = '';
-        py.setStdin({ stdin: function () {
-          if (!promptLine) { promptLine = window.prompt('Ввод для программы (input):') || ''; }
-          var v = promptLine; promptLine = '';
-          outMsg('> ' + v);
-          return v;
-        } });
-        var t0 = performance.now();
-        return py.runPythonAsync(codeEl.value).then(function () {
-          okMsg('✅ Программа завершена за ' + (performance.now() - t0).toFixed(1) + ' мс');
-          setStatus37('ok', '● Готово');
-        });
-      }).catch(function (e) {
-        errMsg('❌ ' + (e && e.message ? e.message : String(e)));
-        setStatus37('err', '● Ошибка');
-      }).then(function () { setBusy(false); });
+    /* ---------- Редактор: CodeMirror 5 + встроенный резерв ---------- */
+    var Ed = {
+      cm: null,
+      fallback: true,
+      get: function () { return this.cm ? this.cm.getValue() : codeEl.value; },
+      set: function (v) {
+        var s = String(v == null ? '' : v);
+        if (this.cm) { this.cm.setValue(s); } else { codeEl.value = s; sbOnCodeChanged37(); }
+      },
+      insert: function (text) {
+        if (this.cm) { this.cm.replaceSelection(String(text), 'end'); try { this.cm.focus(); } catch (e) {} return; }
+        var s = codeEl.selectionStart || 0, e2 = codeEl.selectionEnd || 0, v = codeEl.value;
+        codeEl.value = v.slice(0, s) + String(text) + v.slice(e2);
+        codeEl.selectionStart = codeEl.selectionEnd = s + String(text).length;
+        try { codeEl.focus(); } catch (e) {}
+        sbOnCodeChanged37();
+      },
+      focus: function () { if (this.cm) { try { this.cm.focus(); } catch (e) {} } else { try { codeEl.focus(); } catch (e) {} } }
+    };
+    function sbSyncGutter37() {
+      if (Ed.cm || !gutter) return;
+      var n = Ed.get().split('\n').length;
+      var out = [];
+      for (var i = 1; i <= n; i++) out.push(i);
+      gutter.textContent = out.join('\n');
     }
-
-    function runCpp() {
-      setBusy(true);
-      term.innerHTML = '';
-      sysMsg('⚙️ C++17 · отправляю код в облачный компилятор Piston...');
-      var t0 = performance.now();
-      fetch(PISTON_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          language: 'c++',
-          version: '10.2.0',
-          files: [{ name: 'main.cpp', content: codeEl.value }],
-          stdin: '',
-          compile_timeout: 10000,
-          run_timeout: 5000
-        })
-      }).then(function (r) {
-        if (!r.ok) throw new Error('Piston API ответил: HTTP ' + r.status + ' (проверь интернет или попробуй позже)');
-        return r.json();
-      }).then(function (res) {
-        var comp = res.compile || {};
-        if (comp.code !== 0) {
-          errMsg('❌ Ошибка компиляции C++:');
-          outMsg((comp.stderr || 'неизвестная ошибка компилятора').trim());
-        } else {
-          var run = res.run || {};
-          if (run.stdout) outMsg(String(run.stdout).replace(/\n$/, ''));
-          if (run.stderr) errMsg(String(run.stderr).trim());
-          okMsg('✅ Программа завершена (код выхода ' + (run.code === undefined ? 0 : run.code) + ') за ' + (performance.now() - t0).toFixed(0) + ' мс, включая компиляцию в облаке');
-          setStatus37('ok', '● Готово');
-        }
-      }).catch(function (e) {
-        errMsg('❌ ' + (e && e.message ? e.message : String(e)));
-        setStatus37('err', '● Ошибка');
-      }).then(function () { setBusy(false); });
-    }
-
-    function runJs() {
-      setBusy(true);
-      term.innerHTML = '';
-      sysMsg('⚡ JavaScript ES2023 · мгновенный запуск в песочнице...');
-      var t0 = performance.now();
-      var logs = [];
-      var fakeConsole = {
-        log: function () { logs.push(['out', Array.prototype.map.call(arguments, function (a) {
-          return typeof a === 'object' ? JSON.stringify(a) : String(a);
-        }).join(' ')]); },
-        error: function () { logs.push(['err', Array.prototype.map.call(arguments, String).join(' ')]); },
-        warn: function () { logs.push(['err', Array.prototype.map.call(arguments, String).join(' ')]); },
-        info: function () { logs.push(['out', Array.prototype.map.call(arguments, String).join(' ')]); }
-      };
+    var SB_CM_MODES37 = { python: 'text/x-python', cpp: 'text/x-c++src', js: 'javascript' };
+    function sbTryUpgrade37() {
+      if (Ed.cm || typeof window.CodeMirror === 'undefined') return;
       try {
-        var fn = new Function('console', codeEl.value);
-        fn(fakeConsole);
-        logs.forEach(function (p) { (p[0] === 'err' ? errMsg : outMsg)(p[1]); });
-        okMsg('✅ Программа завершена за ' + (performance.now() - t0).toFixed(1) + ' мс');
-        setStatus37('ok', '● Готово');
-      } catch (e) {
-        logs.forEach(function (p) { (p[0] === 'err' ? errMsg : outMsg)(p[1]); });
-        errMsg('❌ Ошибка выполнения: ' + (e && e.message ? e.message : String(e)));
-        setStatus37('err', '● Ошибка');
-      }
-      setBusy(false);
-    }
-
-    function run() {
-      if (state.lang === 'python') return runPython();
-      if (state.lang === 'cpp') return runCpp();
-      return runJs();
-    }
-
-    $('sb-run').addEventListener('click', run);
-    $('sb-py-init').addEventListener('click', function () { loadPyodide37().catch(function (e) { errMsg('❌ ' + e.message); }); });
-    $('sb-clear').addEventListener('click', function () { codeEl.value = ''; updateGutter(); codeEl.focus(); sysMsg('Редактор очищен.'); });
-    $('sb-term-clear').addEventListener('click', function () { term.innerHTML = ''; sysMsg('Терминал очищен.'); });
-    $('sb-tmpl-btn').addEventListener('click', function () { applyTemplate(); });
-
-    /* ==== ⌨️ Панель быстрых символов (вставка в позицию курсора) ==== */
-    function insertSym37(sym) {
-      var text = sym === 'Tab' ? '    ' : sym;
-      var s = codeEl.selectionStart || 0;
-      var e = codeEl.selectionEnd || 0;
-      codeEl.value = codeEl.value.slice(0, s) + text + codeEl.value.slice(e);
-      codeEl.selectionStart = codeEl.selectionEnd = s + text.length;
-      codeEl.focus();
-      updateGutter();
-    }
-    (function () {
-      var symPanel = $('sb-syms');
-      if (!symPanel) return;
-      symPanel.addEventListener('mousedown', function (e) { e.preventDefault(); });
-      symPanel.addEventListener('click', function (e) {
-        var b = e.target.closest('button[data-sym]');
-        if (b) insertSym37(b.getAttribute('data-sym'));
-      });
-    })();
-
-    /* ==== 💾 Мои сохранённые программы (100% локально, только localStorage) ==== */
-    var PROG_KEY = 'l37_sandbox_programs';
-    var LANG_LABEL = { python: 'Python 3', cpp: 'C++17', js: 'JavaScript' };
-    function loadProgs37() {
-      try { var v = JSON.parse(localStorage.getItem(PROG_KEY) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; }
-    }
-    function storeProgs37(arr) {
-      try { localStorage.setItem(PROG_KEY, JSON.stringify(arr.slice(-50))); } catch (e) { errMsg('Не удалось сохранить: хранилище браузера недоступно.'); }
-    }
-    function renderProgs37() {
-      var box = $('sb-prog-list');
-      if (!box) return;
-      var arr = loadProgs37();
-      if (!arr.length) { box.innerHTML = '<p class="sb-progs-empty">Пока пусто — напиши код и нажми «💾 Сохранить».</p>'; return; }
-      box.innerHTML = arr.slice().reverse().map(function (p) {
-        return '<div class="sb-prog-item">' +
-          '<div class="sb-prog-meta"><b>' + escHtml(p.name) + '</b><small>' + escHtml(LANG_LABEL[p.lang] || p.lang) + ' · ' + new Date(p.ts).toLocaleString('ru-RU') + '</small></div>' +
-          '<div class="sb-prog-actions">' +
-          '<button type="button" class="sb-mini" data-prog-load="' + escHtml(p.id) + '">📂 Загрузить</button>' +
-          '<button type="button" class="sb-mini" data-prog-del="' + escHtml(p.id) + '">🗑️</button>' +
-          '</div></div>';
-      }).join('');
-      Array.prototype.forEach.call(box.querySelectorAll('[data-prog-load]'), function (b) {
-        b.addEventListener('click', function () { loadProg37(b.getAttribute('data-prog-load')); });
-      });
-      Array.prototype.forEach.call(box.querySelectorAll('[data-prog-del]'), function (b) {
-        b.addEventListener('click', function () {
-          var pid = b.getAttribute('data-prog-del');
-          storeProgs37(loadProgs37().filter(function (p) { return p.id !== pid; }));
-          renderProgs37();
-          sysMsg('🗑️ Программа удалена из локального хранилища.');
+        var isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+        Ed.cm = window.CodeMirror.fromTextArea(codeEl, {
+          mode: SB_CM_MODES37[state.lang] || 'text/x-python',
+          theme: document.body.classList.contains('sb-day') ? 'eclipse' : 'material-darker',
+          lineNumbers: true,
+          indentUnit: 4,
+          smartIndent: true,
+          autoCloseBrackets: true,
+          matchBrackets: true,
+          lineWrapping: true,
+          inputStyle: isMobile ? 'contenteditable' : 'textarea',
+          gutters: ['CodeMirror-linenumbers', 'sb-gutter-err37']
         });
-      });
-    }
-    function loadProg37(id) {
-      var p = loadProgs37().filter(function (x) { return x.id === id; })[0];
-      if (!p) return;
-      state.lang = (p.lang in TEMPLATES) ? p.lang : 'python';
-      state.tmpl = 0;
-      Array.prototype.forEach.call(document.querySelectorAll('.sb-lang-tab'), function (t2) {
-        t2.classList.toggle('active', t2.getAttribute('data-lang') === state.lang);
-      });
-      rebuildTmplChips();
-      syncFileBadge37();
-      syncPyBtn();
-      codeEl.value = p.code;
-      updateGutter();
-      closeProgs37();
-      sysMsg('📂 Загружена программа: ' + p.name + ' (' + LANG_LABEL[state.lang] + ')');
-    }
-    function openProgs37() {
-      renderProgs37();
-      $('sb-progs-modal').style.display = 'flex';
-      var inp = $('sb-prog-name');
-      if (inp) { inp.value = ''; setTimeout(function () { try { inp.focus(); } catch (e) {} }, 60); }
-    }
-    function closeProgs37() { $('sb-progs-modal').style.display = 'none'; }
-    $('sb-progs').addEventListener('click', openProgs37);
-    $('sb-save').addEventListener('click', openProgs37);
-    $('sb-progs-close').addEventListener('click', closeProgs37);
-    $('sb-progs-modal').addEventListener('click', function (e) { if (e.target === this) closeProgs37(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeProgs37(); });
-    $('sb-prog-save').addEventListener('click', function () {
-      var code = codeEl.value;
-      if (!code.trim()) { errMsg('⚠️ Редактор пуст — нечего сохранять.'); return; }
-      var name = ($('sb-prog-name').value || '').trim() || ('Программа · ' + new Date().toLocaleDateString('ru-RU'));
-      var arr = loadProgs37();
-      arr.push({ id: 'pr' + Date.now().toString(36), name: name, lang: state.lang, code: code, ts: Date.now() });
-      storeProgs37(arr);
-      $('sb-prog-name').value = '';
-      renderProgs37();
-      okMsg('💾 Сохранено локально в этом браузере: ' + name);
-    });
-    $('sb-copy').addEventListener('click', function () {
-      function fallback() {
-        codeEl.select();
-        try { document.execCommand('copy'); okMsg('📋 Код скопирован.'); } catch (e) { errMsg('Не удалось скопировать.'); }
+        Ed.cm.setSize('100%', '100%');
+        Ed.cm.on('change', function () { sbOnCodeChanged37(); });
+        Ed.fallback = false;
+        document.body.classList.add('sb-cm');
+        sbOnCodeChanged37();
+      } catch (e37) {
+        Ed.cm = null; Ed.fallback = true;
+        document.body.classList.remove('sb-cm');
       }
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(codeEl.value).then(function () { okMsg('📋 Код скопирован в буфер обмена.'); }, fallback);
-      } else fallback();
-    });
-    $('sb-back').addEventListener('click', function () {
-      try { if (history.length > 1) { history.back(); return; } } catch (e) {}
-    });
-    codeEl.addEventListener('input', updateGutter);
-    codeEl.addEventListener('scroll', function () { gutter.scrollTop = codeEl.scrollTop; });
-    codeEl.addEventListener('keydown', function (e) {
+    }
+    function sbFallbackInsert37(text) {
+      var s = codeEl.selectionStart || 0, e2 = codeEl.selectionEnd || 0, v = codeEl.value;
+      codeEl.value = v.slice(0, s) + text + v.slice(e2);
+      codeEl.selectionStart = codeEl.selectionEnd = s + text.length;
+    }
+    var SB_PAIRS37 = { '(': ')', '[': ']', '{': '}', '"': '"', "'": "'" };
+    function sbFallbackKeydown37(e) {
+      if (Ed.cm || state.busy) return;
+      var v = codeEl.value, s = codeEl.selectionStart || 0, e2 = codeEl.selectionEnd || 0;
+      var next = v.charAt(e2);
       if (e.key === 'Tab') {
-        e.preventDefault();
-        var s = codeEl.selectionStart, en = codeEl.selectionEnd;
-        codeEl.value = codeEl.value.slice(0, s) + '    ' + codeEl.value.slice(en);
-        codeEl.selectionStart = codeEl.selectionEnd = s + 4;
-        updateGutter();
+        e.preventDefault(); sbFallbackInsert37('    '); sbOnCodeChanged37(); return;
       }
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); run(); }
-    });
-
-    /* ==== 🪄 Умный авто-помощник ввода (100% локально) ==== */
-    var PAIRS37 = { '(': ')', '[': ']', '{': '}', '"': '"', "'": "'" };
-    function insertPair37(open, close) {
-      var s = codeEl.selectionStart || 0, en = codeEl.selectionEnd || 0;
-      var inner = codeEl.value.slice(s, en);
-      codeEl.value = codeEl.value.slice(0, s) + open + inner + close + codeEl.value.slice(en);
-      codeEl.selectionStart = s + 1;
-      codeEl.selectionEnd = s + 1 + inner.length;
-      codeEl.focus();
-      updateGutter();
-      syncAutoChips37();
-    }
-    function smartEnter37() {
-      var s = codeEl.selectionStart || 0, en = codeEl.selectionEnd || 0;
-      var before = codeEl.value.slice(0, s);
-      var lineStart = before.lastIndexOf('\n') + 1;
-      var curLine = before.slice(lineStart);
-      var indent = (curLine.match(/^[ \t]*/) || [''])[0];
-      var trimmed = curLine.trim();
-      var extra = '';
-      if (state.lang === 'python' && /:$/.test(trimmed)) extra = '    ';
-      if (state.lang !== 'python' && /\{\s*$/.test(trimmed)) extra = '    ';
-      var ins = '\n' + indent + extra;
-      codeEl.value = before + ins + codeEl.value.slice(en);
-      codeEl.selectionStart = codeEl.selectionEnd = s + ins.length;
-      updateGutter();
-      syncAutoChips37();
-    }
-    codeEl.addEventListener('keydown', function (e) {
-      if (PAIRS37[e.key]) { e.preventDefault(); insertPair37(e.key, PAIRS37[e.key]); return; }
-      if (e.key === 'Enter' && !e.ctrlKey && !e.metaKey && !e.shiftKey) { e.preventDefault(); smartEnter37(); return; }
-      if (e.key === ')' || e.key === ']' || e.key === '}' || e.key === '"' || e.key === "'") {
-        var s = codeEl.selectionStart || 0;
-        if (s === codeEl.selectionEnd && codeEl.value.charAt(s) === e.key) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        var lineStart = v.lastIndexOf('\n', s - 1) + 1;
+        var cur = v.slice(lineStart, s);
+        var indent = (cur.match(/^[ \t]*/) || [''])[0];
+        var add = 0;
+        if (state.lang === 'python' && /:\s*$/.test(cur)) add = 4;
+        if ((state.lang === 'cpp' || state.lang === 'js') && /{\s*$/.test(cur)) add = 4;
+        var ins = '\n' + indent + (add ? '    ' : '');
+        sbFallbackInsert37(ins);
+        sbOnCodeChanged37(); return;
+      }
+      if (SB_PAIRS37[e.key]) {
+        e.preventDefault();
+        if ((e.key === '"' || e.key === "'") && next === e.key && s === e2) { codeEl.selectionStart = codeEl.selectionEnd = s + 1; sbOnCodeChanged37(); return; }
+        if (s !== e2) {
+          var sel = v.slice(s, e2);
+          codeEl.value = v.slice(0, s) + e.key + sel + SB_PAIRS37[e.key] + v.slice(e2);
+          codeEl.selectionStart = s + 1; codeEl.selectionEnd = e2 + 1;
+        } else {
+          sbFallbackInsert37(e.key + SB_PAIRS37[e.key]);
+          codeEl.selectionStart = codeEl.selectionEnd = s + 1;
+        }
+        sbOnCodeChanged37(); return;
+      }
+      if (e.key === ')' || e.key === ']' || e.key === '}') {
+        if (s === e2 && next === e.key) {
           e.preventDefault();
           codeEl.selectionStart = codeEl.selectionEnd = s + 1;
-          syncAutoChips37();
         }
+        return;
       }
-    });
-    var AUTOCMDS37 = {
-      python: ['print()', 'input()', 'for i in range():', 'def ', 'len()', 'range()', 'import ', 'while '],
-      cpp: ['std::cout << ', 'std::cin >> ', 'int main()', '#include ', 'std::vector<int> ', 'using namespace std;', 'return 0;'],
-      js: ['console.log()', 'function ', 'const ', 'let ', 'document.querySelector()', 'Math.max()']
+      if (e.key === '"' || e.key === "'") {
+        if (s === e2 && next === e.key) { e.preventDefault(); codeEl.selectionStart = codeEl.selectionEnd = s + 1; }
+      }
+    }
+    try { codeEl.addEventListener('keydown', sbFallbackKeydown37); } catch (eKey37) {}
+    try { codeEl.addEventListener('input', function () { sbOnCodeChanged37(); }); } catch (eIn37) {}
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', sbTryUpgrade37);
+    } else { sbTryUpgrade37(); }
+    window.addEventListener('load', sbTryUpgrade37);
+
+    /* ---------- ☀️/🌙 Тема ---------- */
+    function applyTheme37() {
+      var day = document.body.classList.contains('sb-day');
+      var b = $('sb-theme');
+      if (b) b.textContent = day ? '☀️ День' : '🌙 Ночь';
+      if (Ed.cm) { try { Ed.cm.setOption('theme', day ? 'eclipse' : 'material-darker'); } catch (e) {} }
+    }
+    function toggleTheme37() {
+      var day = !document.body.classList.contains('sb-day');
+      if (day) document.body.classList.add('sb-day'); else document.body.classList.remove('sb-day');
+      try { localStorage.setItem('l37_sandbox_theme', day ? 'day' : 'night'); } catch (e) {}
+      applyTheme37();
+    }
+    try {
+      if (localStorage.getItem('l37_sandbox_theme') === 'day') document.body.classList.add('sb-day');
+    } catch (eT37) {}
+    var TEMPLATES = {
+      python: [
+      { name: 'Стартовый пример', code:
+'# 🐍 Добро пожаловать в Код-песочницу Лицея №37!\n# Нажми «▶️ Запустить» — этот пример выполнится сразу.\nimport math\n\nprint("Привет, Лицей №37!")\nnums = [12, 5, 8, 21, 4, 17, 9, 30, 2]\nprint("Список:", nums)\nprint("Сумма:", sum(nums))\nprint("Максимум:", max(nums), "· Минимум:", min(nums))\nprint("Корень из 144:", round(math.sqrt(144), 3))\nfor i in range(1, 6):\n    print("Квадрат числа", i, "=", i * i)\n' },
+      { name: 'Квадратное уравнение', code:
+'# Квадратное уравнение: a*x^2 + b*x + c = 0\nimport math\n\nprint("Решение квадратного уравнения ax^2 + bx + c = 0")\na = float(input("Введи a: ") or 1)\nb = float(input("Введи b: ") or -3)\nc = float(input("Введи c: ") or 2)\n\nif a == 0:\n    print("Это не квадратное уравнение: a = 0")\nelse:\n    d = b * b - 4 * a * c\n    print("Дискриминант D =", d)\n    if d > 0:\n        x1 = (-b + math.sqrt(d)) / (2 * a)\n        x2 = (-b - math.sqrt(d)) / (2 * a)\n        print("Два корня: x1 =", round(x1, 3), " x2 =", round(x2, 3))\n    elif d == 0:\n        print("Один корень: x =", round(-b / (2 * a), 3))\n    else:\n        print("Действительных корней нет (D < 0)")\n' },
+      { name: 'Списки и строки', code:
+'# Обработка списков и строк\nnums = [12, 5, 8, 21, 4, 17, 9, 30, 2]\nprint("Список:", nums)\nprint("Сумма:", sum(nums))\nprint("Максимум:", max(nums), " Минимум:", min(nums))\nprint("Отсортированный:", sorted(nums))\nprint("Чётные:", [n for n in nums if n % 2 == 0])\n\nphrase = "Лицей номер 37 город Нижнекамск"\nwords = phrase.split()\nprint("\\\nФраза:", phrase)\nprint("Слов:", len(words))\nlongest = ""\nfor w in words:\n    if len(w) > len(longest):\n        longest = w\nprint("Длина самого длинного слова:", len(longest))\nprint("Перевёрнутая:", phrase[::-1])\nprint("Заглавные первые буквы:", " ".join(w.capitalize() for w in words))\n' },
+      { name: 'Типовая задача ЕГЭ', code:
+'# Типовая задача ЕГЭ (информатика)\n# В файле строка: сначала N — количество чисел, затем сами числа.\n# Найти количество чисел, кратных 4, и максимальное из них.\ndata = "8\\\n12\\\n7\\\n4\\\n36\\\n9\\\n16\\\n5\\\n20"\n\nlines = data.split()\nn = int(lines[0])\nnums = [int(lines[i]) for i in range(1, n + 1)]\n\ncount4 = 0\nbest = None\nfor x in nums:\n    if x % 4 == 0:\n        count4 += 1\n        if best is None or x > best:\n            best = x\n\nprint("Всего чисел:", n)\nprint("Чисел, кратных 4:", count4)\nprint("Максимальное из них:", best)\n' },
+      { name: '🐢 Черепашка (ЕГЭ №6)', code:
+'# 🐢 Черепашка (ЕГЭ №6)\n# Команды можно писать по-русски:\n# вперёд 100 · направо 90 · налево 60 · назад 50\n# повтори N [ команды ]\n\nповтори 4 [ вперёд 100 направо 90 ]\nповтори 3 [ вперёд 80 налево 120 ]\nподнять перо\nвперёд 60\nопустить перо\nвперёд 40\n' },
+      ],
+      cpp: [
+      { name: 'Олимпиадная задача', code:
+'// Олимпиадный шаблон: C++17\n// Считать N чисел, отсортировать, вывести сумму и медиану.\n#include <iostream>\n#include <vector>\n#include <algorithm>\n\nint main() {\n    std::ios_base::sync_with_stdio(false);\n    std::cin.tie(nullptr);\n\n    int n;\n    std::cin >> n;\n    std::vector<long long> a(n);\n    for (int i = 0; i < n; ++i) std::cin >> a[i];\n\n    std::sort(a.begin(), a.end());\n\n    long long sum = 0;\n    for (long long x : a) sum += x;\n\n    long long median = a[n / 2];\n\n    std::cout << "Сумма: " << sum << "\\\n";\n    std::cout << "Медиана: " << median << "\\\n";\n    std::cout << "Минимум: " << a.front() << ", максимум: " << a.back() << "\\\n";\n    return 0;\n}\n' },
+      { name: 'Ввод-вывод и циклы', code:
+'// Тренировка ввода-вывода и циклов\n#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n    long long fact = 1;\n    for (int i = 2; i <= n; ++i) fact *= i;\n    std::cout << n << "! = " << fact << "\\\n";\n\n    for (int i = 1; i <= 5; ++i) {\n        for (int j = 0; j < i; ++j) std::cout << "*";\n        std::cout << "\\\n";\n    }\n    return 0;\n}\n' },
+      { name: 'Строки и map', code:
+'// Частотный анализ символов строки\n#include <iostream>\n#include <string>\n#include <map>\n\nint main() {\n    std::string s;\n    std::getline(std::cin, s);\n\n    std::map<char, int> freq;\n    for (char c : s) {\n        if (c != \' \') freq[std::tolower(c)]++;\n    }\n\n    for (auto& p : freq) {\n        std::cout << p.first << " -> " << p.second << "\\\n";\n    }\n    return 0;\n}\n' },
+      ],
+      js: [
+      { name: 'console.log и методы массивов', code:
+'// Методы массивов ES2023\nconst nums = [12, 5, 8, 21, 4, 17, 9, 30, 2];\nconsole.log("Исходный:", nums);\nconsole.log("Сумма:", nums.reduce((s, n) => s + n, 0));\nconsole.log("Отсортированный:", [...nums].sort((a, b) => a - b));\nconsole.log("Чётные:", nums.filter(n => n % 2 === 0));\nconsole.log("Последний:", nums.at(-1));\nconsole.log("Найден 21?", nums.find(n => n === 21));\n' },
+      { name: 'Строки и шаблонные литералы', code:
+'// Строки и шаблонные литералы\nconst name = "Лицей №37";\nconst city = "Нижнекамск";\nconst year = 2026;\n\nconsole.log(`${name}, ${city}, ${year} год`);\nconsole.log("Длина:", name.length);\nconsole.log("ВЕРХНИЙ регистр:", name.toUpperCase());\nconsole.log("Содержит 37:", name.includes("37"));\nconsole.log("Повтор:", "⚡".repeat(5));\n' },
+      { name: 'Алгоритм: поиск пары с суммой', code:
+'// Классическая задача: найти пару чисел с заданной суммой\nfunction findPair(arr, target) {\n  const seen = new Map();\n  for (let i = 0; i < arr.length; i++) {\n    const need = target - arr[i];\n    if (seen.has(need)) return [seen.get(need), i];\n    seen.set(arr[i], i);\n  }\n  return null;\n}\n\nconst arr = [2, 7, 11, 15, 3, 6];\nconsole.log("Массив:", arr);\nconsole.log("Пара с суммой 9:", findPair(arr, 9));\nconsole.log("Пара с суммой 18:", findPair(arr, 18));\nconsole.log("Пара с суммой 100:", findPair(arr, 100));\n' },
+      ]
     };
-    function syncAutoChips37() {
-      var box = $('sb-autochips');
-      if (!box) return;
-      var before = codeEl.value.slice(0, codeEl.selectionStart || 0);
-      var m = before.match(/[A-Za-z_:#.][A-Za-z0-9_:#.]*$/);
-      var token = m ? m[0].toLowerCase() : '';
-      var list = AUTOCMDS37[state.lang] || [];
-      var hits = [];
-      if (token) {
-        for (var i = 0; i < list.length && hits.length < 3; i++) {
-          if (list[i].toLowerCase().indexOf(token) === 0 && list[i].toLowerCase() !== token) hits.push(list[i]);
-        }
-      }
-      if (!hits.length) hits = list.slice(0, 3);
-      box.innerHTML = hits.map(function (c) {
-        return '<button type="button" class="sb-chip" data-cmd="' + escHtml(c) + '">' + escHtml(c) + '</button>';
-      }).join('');
-      Array.prototype.forEach.call(box.querySelectorAll('[data-cmd]'), function (b) {
-        b.addEventListener('click', function () { insertCmd37(b.getAttribute('data-cmd')); });
-      });
-    }
-    function insertCmd37(cmd) {
-      var s = codeEl.selectionStart || 0, en = codeEl.selectionEnd || 0;
-      var before = codeEl.value.slice(0, s);
-      var m = before.match(/[A-Za-z_:#.][A-Za-z0-9_:#.]*$/);
-      var start = m ? s - m[0].length : s;
-      codeEl.value = codeEl.value.slice(0, start) + cmd + codeEl.value.slice(en);
-      var pos = start + cmd.length;
-      if (/\(\)$/.test(cmd)) pos = start + cmd.length - 1;
-      codeEl.selectionStart = codeEl.selectionEnd = pos;
-      codeEl.focus();
-      updateGutter();
-      syncAutoChips37();
-    }
-    codeEl.addEventListener('input', syncAutoChips37);
-    Array.prototype.forEach.call(document.querySelectorAll('.sb-lang-tab'), function (tab) {
-      tab.addEventListener('click', syncAutoChips37);
-    });
-    syncAutoChips37();
-
-    Array.prototype.forEach.call(document.querySelectorAll('.sb-lang-tab'), function (tab) {
-      tab.addEventListener('click', function () {
-        Array.prototype.forEach.call(document.querySelectorAll('.sb-lang-tab'), function (t2) { t2.classList.remove('active'); });
-        tab.classList.add('active');
-        state.lang = tab.getAttribute('data-lang');
-        state.tmpl = 0;
-        rebuildTmplChips();
-        applyTemplate();
-      });
-    });
-
-    function rebuildTmplChips() {
-      var box = $('sb-tmpls');
-      var names = TEMPLATES[state.lang].map(function (t) { return t.name; });
-      var html = '<span class="lbl">Шаблоны:</span>';
-      names.forEach(function (nm, i) {
-        html += '<button type="button" class="sb-tmpl' + (i === state.tmpl ? ' active' : '') + '" data-tmpl="' + i + '">' + escHtml(nm) + '</button>';
-      });
-      box.innerHTML = html;
-      Array.prototype.forEach.call(box.querySelectorAll('.sb-tmpl'), function (chip) {
-        chip.addEventListener('click', function () {
-          state.tmpl = parseInt(chip.getAttribute('data-tmpl'), 10) || 0;
-          Array.prototype.forEach.call(box.querySelectorAll('.sb-tmpl'), function (c2) { c2.classList.remove('active'); });
-          chip.classList.add('active');
-          applyTemplate();
-        });
-      });
-    }
-    Array.prototype.forEach.call(document.querySelectorAll('#sb-tmpls .sb-tmpl'), function (chip) {
-      chip.addEventListener('click', function () {
-        state.tmpl = parseInt(chip.getAttribute('data-tmpl'), 10) || 0;
-        Array.prototype.forEach.call(document.querySelectorAll('#sb-tmpls .sb-tmpl'), function (c2) { c2.classList.remove('active'); });
-        chip.classList.add('active');
-        applyTemplate();
-      });
-    });
-
-    /* ============================================================
-       🕵️ СИНТАКС-РАДАР 37 v1.0 · движок подсветки синтаксиса, поиска
-       ошибок и умного наставника кода для Код-песочницы Лицеиста.
-       100% автономно: без доступа к базе портала, без внешних библиотек, без сети.
-       Архитектура: <textarea> с прозрачным текстом + синхронно
-       прокручиваемый <pre> с цветными токенами (символ в символ).
-       ============================================================ */
     function sbSet37(arr) {
       var o = {};
       for (var i = 0; i < arr.length; i++) o[arr[i]] = 1;
@@ -1141,21 +937,6 @@
       }
       return lines;
     }
-    function sbSegHtml37(seg) {
-      var cls = SB_COLORS37[seg.t];
-      var txt = escHtml(seg.v);
-      if (!cls) return txt;
-      return '<span class="sb-tok-' + cls + (seg.bad ? ' sb-tok-bad' : '') + '">' + txt + '</span>';
-    }
-    function sbLinesHtml37(lines) {
-      var out = '';
-      for (var i = 0; i < lines.length; i++) {
-        out += '<div class="sb-ln' + (lines[i].err ? ' sb-ln-err' : '') + '">';
-        for (var s = 0; s < lines[i].segs.length; s++) out += sbSegHtml37(lines[i].segs[s]);
-        out += '</div>';
-      }
-      return out;
-    }
     function sbDist37(a, b) {
       if (a === b) return 0;
       var m = a.length, nn = b.length;
@@ -1315,7 +1096,7 @@
           for (var nj2 = li + 1; nj2 < lineCount; nj2++) { if (lines[nj2].text.trim()) { nextNonEmpty = lines[nj2].text.trim(); break; } }
           var isBlockEnd = /[{}]\s*$|;\s*$|:\s*$|,\s*$|\\\s*$/.test(ln.text) || (lastMean && lastMean.t === 'op' && /^[{};,:]$/.test(lastMean.v));
           if (!ctrlHead && !isBlockEnd && !ln.cont && meaningful[0].t !== 'com' && !(nextNonEmpty && nextNonEmpty.indexOf('{') === 0)) {
-            if (/=|\(|\breturn\b|\+\+|--/.test(trimmed)) {
+            if (/=|\(|\breturn\b|\+\+|--|<<|>>/.test(trimmed)) {
               add(n, 'warn', 'Похоже, пропущена «;»', 'Инструкции в C++ заканчиваются точкой с запятой. Проверь конец строки ' + n + '.');
             }
           }
@@ -1471,7 +1252,7 @@
       return '';
     }
     function sbExplain37() {
-      var code = codeEl.value;
+      var code = Ed.get();
       if (!code.trim()) { sysMsg('✍️ Сначала напиши код — потом я его объясню.'); return; }
       var src = code.split('\n');
       var rows = [];
@@ -1527,6 +1308,7 @@
             continue;
           }
           var lw = tk.w.toLowerCase();
+    if (lw === 'перо') { pos++; continue; }
           var cmd = SB_TURTLE_WORDS37[lw];
           if (!cmd) throw { message: 'Неизвестная команда «' + tk.w + '»', line: tk.line };
           pos++;
@@ -1561,167 +1343,641 @@
       walk(cmds, 1);
       return out;
     }
-    function sbTurtleRun37() {
-      var src = $('sb-turtle-src'), cv = $('sb-turtle-canvas'), st = $('sb-turtle-status');
-      if (!src || !cv) return;
-      function say(t, bad) { if (st) { st.textContent = t; st.style.color = bad ? '#f87171' : '#3fb950'; } }
-      var ast, flat;
+
+    /* ---------- 🧠 Наставник: подсветка ошибок в редакторе ---------- */
+    var sbCmMarks37 = [];
+    function sbClearMarks37() {
+      if (!Ed.cm) return;
       try {
-        ast = sbTurtleParse37(src.value);
-        flat = sbTurtleFlatten37(ast);
-      } catch (eT) {
-        say('● Ошибка: ' + (eT && eT.message ? eT.message : 'не удалось разобрать программу') + (eT && eT.line ? ' (строка ' + eT.line + ')' : ''), true);
-        return;
-      }
-      var ctx = cv.getContext ? cv.getContext('2d') : null;
-      if (!ctx) { say('● Рисование недоступно в этом браузере', true); return; }
-      say('● Выполняется…', false);
-      var W = cv.width, H = cv.height;
-      var x = 0, y = 0, ang = 0, down = true, segs = [];
-      for (var i = 0; i < flat.length; i++) {
-        var c = flat[i];
-        if (c.cmd === 'rt') ang += c.arg;
-        else if (c.cmd === 'lt') ang -= c.arg;
-        else if (c.cmd === 'pu') down = false;
-        else if (c.cmd === 'pd') down = true;
-        else if (c.cmd === 'fw' || c.cmd === 'bk') {
-          var dd = c.cmd === 'fw' ? c.arg : -c.arg;
-          var nx = x + dd * Math.cos(ang * Math.PI / 180);
-          var ny = y + dd * Math.sin(ang * Math.PI / 180);
-          if (down) segs.push([x, y, nx, ny]);
-          x = nx; y = ny;
-        }
-      }
-      var minX = 0, maxX = 0, minY = 0, maxY = 0, s2;
-      for (var sI = 0; sI < segs.length; sI++) {
-        s2 = segs[sI];
-        minX = Math.min(minX, s2[0], s2[2]); maxX = Math.max(maxX, s2[0], s2[2]);
-        minY = Math.min(minY, s2[1], s2[3]); maxY = Math.max(maxY, s2[1], s2[3]);
-      }
-      var pad = 34;
-      var bw = Math.max(maxX - minX, 1), bh = Math.max(maxY - minY, 1);
-      var scale = Math.min((W - pad * 2) / bw, (H - pad * 2) / bh, 3);
-      if (!isFinite(scale) || scale <= 0) scale = 1;
-      var offX = W / 2 - (minX + maxX) / 2 * scale;
-      var offY = H / 2 + (minY + maxY) / 2 * scale;
-      ctx.clearRect(0, 0, W, H);
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = '#818cf8';
-      ctx.lineCap = 'round';
-      ctx.shadowColor = 'rgba(129, 140, 248, 0.8)';
-      ctx.shadowBlur = 6;
-      ctx.beginPath();
-      for (var dI = 0; dI < segs.length; dI++) {
-        s2 = segs[dI];
-        ctx.moveTo(offX + s2[0] * scale, offY - s2[1] * scale);
-        ctx.lineTo(offX + s2[2] * scale, offY - s2[3] * scale);
-      }
-      ctx.stroke();
-      ctx.shadowBlur = 0;
-      ctx.fillStyle = '#34d399';
-      ctx.beginPath();
-      ctx.arc(offX + x * scale, offY - y * scale, 4.5, 0, Math.PI * 2);
-      ctx.fill();
-      say('● Готово · линий: ' + segs.length + ' · Старт: (0, 0)', false);
+        Ed.cm.operation(function () {
+          var l = Ed.cm.lineCount(), i;
+          for (i = 0; i < l; i++) Ed.cm.removeLineClass(i, 'background', 'sb-cm-errline');
+          for (i = 0; i < sbCmMarks37.length; i++) { try { sbCmMarks37[i].clear(); } catch (e) {} }
+          sbCmMarks37 = [];
+          Ed.cm.clearGutter('sb-gutter-err37');
+        });
+      } catch (e) {}
     }
-    function sbTurtle37() {
-      var old = $('sb-turtle-modal');
-      var pre = '';
-      if (/вперёд|вперед|forward|направо|right|повтори/i.test(codeEl.value)) pre = codeEl.value;
-      else pre = 'повтори 5 [ повтори 4 [ вперёд 120 направо 90 ] направо 72 ]';
-      if (old) {
-        var s0 = $('sb-turtle-src');
-        if (s0 && pre) s0.value = pre;
-        old.style.display = 'flex';
-        try { sbTurtleRun37(); } catch (e0) {}
-        return;
-      }
-      var ov = document.createElement('div');
-      ov.id = 'sb-turtle-modal';
-      ov.className = 'sb-modal';
-      ov.style.display = 'flex';
-      ov.innerHTML = '<div class="sb-modal-card sb-turtle-card">'
-        + '<div class="sb-modal-head">🐢 Черепашка (ЕГЭ №6)<button type="button" class="sb-mini" id="sb-turtle-close">✕</button></div>'
-        + '<textarea id="sb-turtle-src" rows="6" spellcheck="false" autocapitalize="off" autocomplete="off">' + escHtml(pre) + '</textarea>'
-        + '<div class="sb-turtle-row"><button type="button" class="sb-btn run" id="sb-turtle-run">▶️ Выполнить</button><span id="sb-turtle-status">● Готово</span></div>'
-        + '<canvas id="sb-turtle-canvas" width="440" height="440"></canvas>'
-        + '<div class="sb-turtle-hint">Команды: вперёд N · назад N · направо N · налево N · поднять · опустить. Циклы: повтори N [ ... ]. Черепашка рисует фигуру — так решают задачу №6 ЕГЭ!</div>'
-        + '</div>';
-      document.body.appendChild(ov);
-      $('sb-turtle-close').addEventListener('click', function () { ov.style.display = 'none'; });
-      $('sb-turtle-run').addEventListener('click', function () { try { sbTurtleRun37(); } catch (eR37) {} });
-      ov.addEventListener('click', function (e37) { if (e37.target === ov) ov.style.display = 'none'; });
-      try { sbTurtleRun37(); } catch (e37) {}
+    function sbApplyMarks37(issues) {
+      if (!Ed.cm || !issues || !issues.length) return;
+      try {
+        Ed.cm.operation(function () {
+          for (var i = 0; i < issues.length && i < 60; i++) {
+            var it = issues[i];
+            var ln = Math.max(0, (it.line || 1) - 1);
+            if (ln >= Ed.cm.lineCount()) continue;
+            Ed.cm.addLineClass(ln, 'background', 'sb-cm-errline');
+            var lineTxt = Ed.cm.getLine(ln) || '';
+            var from = (lineTxt.match(/^\s*/) || [''])[0].length;
+            var to = Math.max(from + 1, lineTxt.replace(/\s+$/, '').length);
+            sbCmMarks37.push(Ed.cm.markText({ line: ln, ch: from }, { line: ln, ch: to }, { className: it.sev === 'err' ? 'sb-cm-wavy' : 'sb-cm-warn' }));
+            var mark = document.createElement('span');
+            mark.className = 'sb-gutter-err37';
+            mark.textContent = '●';
+            Ed.cm.setGutterMarker(ln, 'sb-gutter-err37', mark);
+          }
+        });
+      } catch (e) {}
     }
-    var hlEl = $('sb-hl');
-    var sbRafId37 = 0;
-    function sbSyncScroll37() {
-      if (hlEl) { hlEl.scrollTop = codeEl.scrollTop; hlEl.scrollLeft = codeEl.scrollLeft; }
-      gutter.scrollTop = codeEl.scrollTop;
+    function sbOnCodeChanged37() {
+      sbSyncGutter37();
+      if (sbDebounce37) clearTimeout(sbDebounce37);
+      sbDebounce37 = setTimeout(sbRefresh37, 250);
     }
     function sbRefresh37() {
-      if (!hlEl) return;
-      var code = codeEl.value;
-      if (code.length > 200000) { sysMsg(' Detective 37: файл слишком большой для подсветки (>200 000 символов) — подсветка приостановлена.'); return; }
-      var toks = sbScan37(code, state.lang);
-      var lines = sbSplitLines37(toks);
-      var issues = sbLint37(code, state.lang, lines, toks);
-      sbLastIssues37 = issues;
-      sbMentorMode37 = 'issues';
-      hlEl.innerHTML = sbLinesHtml37(lines);
-      sbMentorRender37(issues);
-      sbSyncScroll37();
-    }
-    function sbQueue37() {
-      if (sbRafId37) return;
-      if (typeof window.requestAnimationFrame === 'function') {
-        sbRafId37 = window.requestAnimationFrame(function () { sbRafId37 = 0; try { sbRefresh37(); } catch (e) {} });
-      } else {
-        sbRafId37 = setTimeout(function () { sbRafId37 = 0; try { sbRefresh37(); } catch (e) {} }, 16);
+      var code = Ed.get();
+      maybeAutoOpenStdin37(code);
+      buildAutochips37();
+      if (code.length > 200000) { sbMentorRender37([]); sbClearMarks37(); return; }
+      var lang = state.lang;
+      try {
+        var toks = sbScan37(code, lang);
+        var lines = sbSplitLines37(toks);
+        var issues = sbLint37(code, lang, lines, toks) || [];
+        sbLastIssues37 = issues;
+        sbMentorMode37 = 'issues';
+        sbMentorRender37(issues);
+        sbClearMarks37();
+        sbApplyMarks37(issues);
+      } catch (e) {
+        sbMentorRender37([]);
       }
     }
-    try { codeEl.addEventListener('input', sbQueue37); } catch (eIn37) {}
-    try { codeEl.addEventListener('scroll', sbSyncScroll37); } catch (eSc37b) {}
-    try {
-      Array.prototype.forEach.call(document.querySelectorAll('#sb-langs .sb-lang-tab'), function (tb) {
-        tb.addEventListener('click', function () { setTimeout(sbQueue37, 0); });
+
+    /* ---------- >_ Консольный ввод (без системных всплывающих окон) ---------- */
+    function sbShowConsole37() {
+      var r = $('sb-console-row');
+      if (r) r.classList.add('open');
+      var i = $('sb-console-input');
+      if (i) { try { i.focus({ preventScroll: true }); } catch (e) { try { i.focus(); } catch (e2) {} } }
+    }
+    function sbHideConsole37() {
+      var r = $('sb-console-row');
+      if (r) r.classList.remove('open');
+      var i = $('sb-console-input');
+      if (i) i.value = '';
+    }
+    function sbSubmitConsole37() {
+      var i = $('sb-console-input');
+      if (!i) return;
+      var v = i.value;
+      i.value = '';
+      termAdd('> ' + v, 'sys');
+      var fn = sbPendingInput37;
+      sbPendingInput37 = null;
+      sbHideConsole37();
+      if (fn) { try { fn(v); } catch (e) {} }
+    }
+    function sbCancelPendingInput37() {
+      var fn = sbPendingInput37;
+      sbPendingInput37 = null;
+      sbHideConsole37();
+      if (fn) { try { fn(''); } catch (e) {} }
+    }
+    function sbInputFun37(promptText) {
+      if (promptText) termAdd(String(promptText), 'sys');
+      if (stdinQueue.length) {
+        var v = stdinQueue.shift();
+        termAdd('> ' + v, 'sys');
+        return v;
+      }
+      return new Promise(function (resolve) {
+        sbPendingInput37 = function (val) { resolve(String(val == null ? '' : val)); };
+        sbShowConsole37();
       });
-    } catch (eTab37) {}
-    try {
-      var explainBtn37 = $('sb-explain');
-      if (explainBtn37) explainBtn37.addEventListener('click', function () { try { sbExplain37(); } catch (eE37) {} });
-      var turtleBtn37 = $('sb-turtle');
-      if (turtleBtn37) turtleBtn37.addEventListener('click', function () { try { sbTurtle37(); } catch (eT37b) {} });
-    } catch (eBtn37) {}
-    try {
-      var proto37 = Object.getPrototypeOf(codeEl);
-      var desc37 = Object.getOwnPropertyDescriptor(proto37, 'value') || Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value');
-      if (desc37 && desc37.get && desc37.set) {
-        Object.defineProperty(codeEl, 'value', {
-          configurable: true,
-          get: function () { return desc37.get.call(codeEl); },
-          set: function (v) { desc37.set.call(codeEl, v); try { sbQueue37(); } catch (eHook37) {} }
+    }
+
+    /* ---------- 🐍 Python (Skulpt) ---------- */
+    function nowMs37() { return (window.performance && performance.now) ? performance.now() : Date.now(); }
+    function sbRusTurtle37(code) {
+      var src = String(code == null ? '' : code);
+      if (!/повтори\s|вперёд|вперед|направо|налево|назад/i.test(src)) return src;
+      try {
+        var ast = sbTurtleParse37(src);
+        var out = ['import turtle', 'from turtle import *', ''];
+        var MAP = { fw: 'forward', bk: 'backward', rt: 'right', lt: 'left', pu: 'penup', pd: 'pendown' };
+        function gen(list, ind) {
+          var pad = new Array(ind + 1).join(' ');
+          for (var i = 0; i < list.length; i++) {
+            var it = list[i];
+            if (it.rep) {
+              out.push(pad + 'for _i37 in range(' + it.rep + '):');
+              if (it.body && it.body.length) gen(it.body, ind + 4);
+              else out.push(pad + '    pass');
+            } else {
+              if (it.cmd === 'pu' || it.cmd === 'pd') out.push(pad + MAP[it.cmd] + '()'); else out.push(pad + MAP[it.cmd] + '(' + it.arg + ')');
+            }
+          }
+        }
+        gen(ast, 0);
+        return out.join('\n') + '\n';
+      } catch (e) { return src; }
+    }
+    function runPython37(done) {
+      if (typeof window.Sk === 'undefined' || !window.Sk) {
+        setStatus('● Ошибка', 'err');
+        sysMsg('❌ Движок Python (Skulpt) ещё не загрузился. Проверь интернет и обнови страницу — остальная песочница работает автономно.');
+        done(); return;
+      }
+      var t0 = nowMs37();
+      var pyCode;
+      try { pyCode = sbRusTurtle37(Ed.get()); } catch (e) { pyCode = Ed.get(); }
+      var isTurtle = /\bimport\s+turtle\b|\bfrom\s+turtle\s+import\b/.test(pyCode);
+      if (isTurtle) {
+        showTurtle37();
+        window.Sk.TurtleGraphics = { target: 'sb-turtle-canvas', width: 640, height: 420 };
+      } else {
+        hideTurtle37();
+        try { delete window.Sk.TurtleGraphics; } catch (e) { window.Sk.TurtleGraphics = undefined; }
+      }
+      stdinQueue = getStdinLines();
+      setStatus('● Выполняется…', 'busy');
+      try {
+        window.Sk.configure({
+          output: function (t) { termAdd(t, 'out'); },
+          read: function (x) {
+            if (window.Sk.builtinFiles === undefined || window.Sk.builtinFiles['files'][x] === undefined) {
+              throw 'Модуль не найден: ' + x + ' (в песочнице доступны встроенные модули: math, random, turtle и другие)';
+            }
+            return window.Sk.builtinFiles['files'][x];
+          },
+          inputfun: sbInputFun37,
+          inputfunTakesPrompt: true,
+          __future__: window.Sk.python3,
+          execLimit: 15000
+        });
+        window.Sk.misceval.asyncToPromise(function () {
+          return window.Sk.importMainWithBody('<stdin>', false, pyCode, true);
+        }).then(function () {
+          setStatus('● Готово за ' + Math.max(1, Math.round(nowMs37() - t0)) + ' мс', '');
+          sbHideConsole37();
+          done();
+        }).catch(function (err) {
+          var msg = (err && err.toString) ? err.toString() : String(err);
+          if (/timeout|timed?\s*out|execLimit/i.test(msg)) msg = '⏱ Программа работала слишком долго (лимит 15 секунд) — похоже, внутри бесконечный цикл.';
+          termAdd('❌ ' + msg, 'err');
+          setStatus('● Ошибка', 'err');
+          sbHideConsole37();
+          done();
+        });
+      } catch (e) {
+        termAdd('❌ ' + (e && e.message ? e.message : String(e)), 'err');
+        setStatus('● Ошибка', 'err');
+        sbHideConsole37();
+        done();
+      }
+    }
+
+    /* ---------- ⚙️ C++ (Piston API) ---------- */
+    function runCpp37(done) {
+      if (typeof fetch !== 'function') {
+        setStatus('● Ошибка', 'err');
+        sysMsg('❌ В этом браузере недоступен сетевой API fetch — запуск C++ невозможен. Попробуй современный браузер или запусти Python/JavaScript.');
+        done(); return;
+      }
+      setStatus('● Компиляция и запуск C++…', 'busy');
+      termAdd('⚙️ Компиляция и запуск C++…', 'sys');
+      fetch('https://emkc.org/api/v2/piston/execute', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          language: 'c++', version: '10.2.0',
+          files: [{ name: 'main.cpp', content: Ed.get() }],
+          stdin: getStdinText()
+        })
+      }).then(function (res) { return res.json(); }).then(function (res) {
+        var cerr = res && res.compile && res.compile.stderr;
+        if (cerr && String(cerr).trim()) {
+          termAdd('🛠 Ошибка компиляции:', 'err');
+          termAdd(String(cerr).replace(/\n+$/, ''), 'err');
+          setStatus('● Ошибка компиляции', 'err');
+          done(); return;
+        }
+        var out = (res && res.run && res.run.stdout) || '';
+        var rerr = (res && res.run && res.run.stderr) || '';
+        var rc = res && res.run && res.run.code;
+        if (out) termAdd(String(out).replace(/\n$/, ''), 'out');
+        if (rerr) termAdd(String(rerr).replace(/\n$/, ''), 'err');
+        if (!out && !rerr) sysMsg('(программа завершилась без вывода)');
+        if (rc && rc !== 0) termAdd('⚠️ Программа завершилась с кодом ' + rc, 'warn');
+        setStatus('● Готово', '');
+        done();
+      }).catch(function () {
+        termAdd('❌ Не удалось связаться с облачным компилятором C++ (Piston). Похоже, нет интернета, либо VPN или школьная сеть блокирует сайт emkc.org. Попробуй ещё раз или запусти Python/JavaScript.', 'err');
+        setStatus('● Нет связи', 'err');
+        done();
+      });
+    }
+
+    /* ---------- ⚡ JavaScript ---------- */
+    function sbFmt37(v) {
+      if (typeof v === 'string') return v;
+      if (v === undefined) return 'undefined';
+      if (v === null) return 'null';
+      if (typeof v === 'number' || typeof v === 'boolean') return String(v);
+      if (typeof v === 'function') return '[function ' + (v.name || 'анонимная') + ']';
+      try { return JSON.stringify(v); } catch (e) { try { return String(v); } catch (e2) { return ''; } }
+    }
+    function jsLog37(cls) {
+      return function () {
+        var parts = [];
+        for (var i = 0; i < arguments.length; i++) parts.push(sbFmt37(arguments[i]));
+        termAdd(parts.join(' '), cls);
+      };
+    }
+    function jsPrompt37(text) {
+      if (text) termAdd(String(text), 'sys');
+      if (stdinQueue.length) {
+        var v = stdinQueue.shift();
+        termAdd('> ' + v, 'sys');
+        return v;
+      }
+      return null;
+    }
+    function runJs37(done) {
+      var t0 = nowMs37();
+      stdinQueue = getStdinLines();
+      var code = Ed.get();
+      var sandboxConsole = { log: jsLog37('out'), info: jsLog37('out'), debug: jsLog37('out'), warn: jsLog37('warn'), error: jsLog37('err') };
+      try {
+        var fn = new Function('console', 'prompt', 'confirm', 'alert', 'input', code + '\n//# sourceURL=sb37-run');
+        fn(sandboxConsole, jsPrompt37, function (t) { termAdd('🛑 подтверждение: ' + (t == null ? '' : t) + ' → ок', 'sys'); }, function (t) { termAdd('🔔 ' + (t == null ? '' : t), 'sys'); }, jsPrompt37);
+        setStatus('✅ Готово за ' + Math.max(1, Math.round(nowMs37() - t0)) + ' мс', '');
+        done();
+      } catch (err) {
+        termAdd('❌ ' + (err && err.message ? err.message : String(err)), 'err');
+        if (err && err.stack) {
+          var st = String(err.stack).split('\n');
+          for (var i = 1; i < Math.min(st.length, 5); i++) {
+            if (/sb37-run/.test(st[i])) { termAdd('   ' + st[i].trim(), 'err'); break; }
+          }
+        }
+        setStatus('● Ошибка', 'err');
+        done();
+      }
+    }
+
+    /* ---------- ▶️ Запуск ---------- */
+    function run37() {
+      if (state.busy) return;
+      var code = Ed.get();
+      if (!code.trim()) { sysMsg('✍️ Редактор пуст — выбери шаблон или напиши код.'); return; }
+      sbCancelPendingInput37();
+      maybeAutoOpenStdin37(code);
+      state.busy = true;
+      var btn = $('sb-run');
+      if (btn) btn.disabled = true;
+      termAdd('────────────────', 'sys');
+      setStatus('● Выполняется…', 'busy');
+      var done37 = function () { state.busy = false; if (btn) btn.disabled = false; };
+      try {
+        if (state.lang === 'python') runPython37(done37);
+        else if (state.lang === 'cpp') runCpp37(done37);
+        else runJs37(done37);
+      } catch (e) {
+        termAdd('❌ ' + (e && e.message ? e.message : String(e)), 'err');
+        setStatus('● Ошибка', 'err');
+        done37();
+      }
+    }
+
+    /* ---------- 🐢 Черепашка: холст ---------- */
+    function showTurtle37() { var w = $('sb-turtlewrap'); if (w) w.classList.add('open'); }
+    function hideTurtle37() { var w = $('sb-turtlewrap'); if (w) w.classList.remove('open'); }
+    function clearTurtle37() { var c = $('sb-turtle-canvas'); if (c) c.innerHTML = ''; }
+
+    /* ---------- ⌨️ Авто-подсказки (чипсы) ---------- */
+    var SB_CHIP_HINTS37 = {
+      python: [
+        { p: 'print', ins: 'print()' }, { p: 'input', ins: 'input()' },
+        { p: 'for i in rang', ins: 'for i in range():' }, { p: 'def ', ins: 'def name():' }
+      ],
+      cpp: [
+        { p: 'std::cout', ins: 'std::cout << ' }, { p: 'std::cin', ins: 'std::cin >> ' },
+        { p: 'int mai', ins: 'int main() {' }
+      ],
+      js: [
+        { p: 'console.log', ins: 'console.log()' }, { p: 'function ', ins: 'function name() {' },
+        { p: 'const ', ins: 'const ' }
+      ]
+    };
+    function buildAutochips37() {
+      var host = $('sb-autochips');
+      if (!host) return;
+      var hints = SB_CHIP_HINTS37[state.lang] || [];
+      var tail = Ed.get().slice(-60).toLowerCase();
+      var fragM = (Ed.get().slice(-40).match(/[A-Za-z_][A-Za-z0-9_.:]*$/) || [null])[0];
+      var frag = fragM ? fragM.toLowerCase() : '';
+      var hits = [];
+      for (var i = 0; i < hints.length && hits.length < 3; i++) {
+        var p = hints[i].p.toLowerCase();
+        if ((frag.length >= 2 && p.indexOf(frag) === 0) || tail.indexOf(p) >= 0) hits.push(hints[i]);
+      }
+      if (!hits.length) { host.innerHTML = ''; return; }
+      host.innerHTML = '';
+      for (var j = 0; j < hits.length; j++) {
+        (function (h) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'sb-chip';
+          b.textContent = h.ins;
+          b.title = 'Вставить: ' + h.ins;
+          b.addEventListener('click', function () { sbApplyChip37(h); });
+          host.appendChild(b);
+        })(hits[j]);
+      }
+    }
+    function sbSetCursor37(pos) {
+      if (Ed.cm) {
+        try { Ed.cm.setCursor(Ed.cm.posFromIndex(pos)); Ed.cm.focus(); } catch (e) {}
+      } else {
+        try { codeEl.selectionStart = codeEl.selectionEnd = pos; codeEl.focus(); } catch (e) {}
+      }
+    }
+    function sbApplyChip37(h) {
+      var code = Ed.get();
+      var p = h.p.toLowerCase();
+      var fragM = (code.slice(-40).match(/[A-Za-z_][A-Za-z0-9_.:]*$/) || [null])[0];
+      var frag = fragM ? fragM.toLowerCase() : '';
+      var cut = 0;
+      if (frag && p.indexOf(frag) === 0) cut = fragM.length;
+      else if (code.toLowerCase().lastIndexOf(p) >= 0) cut = p.length;
+      var base = cut ? code.slice(0, code.length - cut) : code;
+      Ed.set(base + h.ins);
+      var pos = base.length + h.ins.length;
+      if (/\)\s*$/.test(h.ins)) pos -= 1;
+      sbSetCursor37(pos);
+      buildAutochips37();
+      sbRefresh37();
+    }
+
+    /* ---------- 📚 Языки и шаблоны ---------- */
+    function markTmplChips37() {
+      var host = $('sb-tmpls');
+      if (!host) return;
+      var chips = host.querySelectorAll('.sb-tmpl');
+      for (var i = 0; i < chips.length; i++) {
+        chips[i].classList.toggle('active', i === state.tmpl);
+      }
+    }
+    function rebuildTmplChips() {
+      var host = $('sb-tmpls');
+      if (!host) return;
+      var lbl = host.querySelector('.lbl');
+      var keep = lbl ? lbl.cloneNode(true) : null;
+      host.innerHTML = '';
+      if (keep) host.appendChild(keep);
+      var list = TEMPLATES[state.lang] || [];
+      for (var i = 0; i < list.length; i++) {
+        (function (idx) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'sb-tmpl' + (idx === state.tmpl ? ' active' : '');
+          b.textContent = list[idx].name;
+          b.addEventListener('click', function () { applyTemplate37(idx); });
+          host.appendChild(b);
+        })(i);
+      }
+    }
+    function applyTemplate37(idx) {
+      var list = TEMPLATES[state.lang] || [];
+      var t = list[idx];
+      if (!t) return;
+      state.tmpl = idx;
+      Ed.set(t.code);
+      markTmplChips37();
+      maybeAutoOpenStdin37(t.code);
+      sbRefresh37();
+      Ed.focus();
+    }
+    function setLang37(lang) {
+      state.lang = (SB_CM_MODES37[lang] ? lang : 'python');
+      state.tmpl = 0;
+      var tabs = document.querySelectorAll('.sb-lang-tab');
+      for (var i = 0; i < tabs.length; i++) tabs[i].classList.toggle('active', tabs[i].getAttribute('data-lang') === state.lang);
+      var f = $('sb-file');
+      if (f) f.textContent = FILE_NAMES[state.lang];
+      if (Ed.cm) { try { Ed.cm.setOption('mode', SB_CM_MODES37[state.lang]); } catch (e) {} }
+      rebuildTmplChips();
+      buildAutochips37();
+      sbRefresh37();
+    }
+
+    /* ---------- 💾 Мои программы (только localStorage) ---------- */
+    var SB_PROGS_KEY37 = 'l37_sandbox_programs';
+    var SB_LANG_LABELS37 = { python: '🐍 Python', cpp: '⚙️ C++', js: '⚡ JavaScript' };
+    function loadProgs37() {
+      try { var arr = JSON.parse(localStorage.getItem(SB_PROGS_KEY37) || '[]'); return Array.isArray(arr) ? arr : []; } catch (e) { return []; }
+    }
+    function saveProgs37(list) { try { localStorage.setItem(SB_PROGS_KEY37, JSON.stringify(list)); } catch (e) {} }
+    function renderProgs37() {
+      var host = $('sb-prog-list');
+      if (!host) return;
+      var list = loadProgs37();
+      host.innerHTML = '';
+      if (!list.length) {
+        host.innerHTML = '<div class="sb-progs-empty">Пока пусто — сохрани первую программу!</div>';
+        return;
+      }
+      for (var i = 0; i < list.length; i++) {
+        (function (idx) {
+          var p = list[idx];
+          var row = document.createElement('div');
+          row.className = 'sb-prog-item';
+          var meta = document.createElement('div');
+          meta.className = 'sb-prog-meta';
+          var d = new Date(p.ts || Date.now());
+          meta.innerHTML = '<b>' + escHtml(p.name || 'Без названия') + '</b><small>' + escHtml(SB_LANG_LABELS37[p.lang] || p.lang || '') + ' · ' + escHtml(d.toLocaleDateString('ru-RU') + ' ' + d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })) + '</small>';
+          var acts = document.createElement('div');
+          acts.className = 'sb-prog-actions';
+          var load = document.createElement('button');
+          load.type = 'button'; load.className = 'sb-mini'; load.textContent = '📂 Открыть';
+          load.addEventListener('click', function () {
+            closeProgs37();
+            if (p.lang && p.lang !== state.lang) setLang37(p.lang);
+            Ed.set(p.code || '');
+            sbRefresh37();
+            sysMsg('📂 Загружено: ' + (p.name || 'программа'));
+          });
+          var del = document.createElement('button');
+          del.type = 'button'; del.className = 'sb-mini'; del.textContent = '🗑️';
+          del.title = 'Удалить программу';
+          del.addEventListener('click', function () {
+            var list2 = loadProgs37();
+            list2.splice(idx, 1);
+            saveProgs37(list2);
+            renderProgs37();
+          });
+          acts.appendChild(load); acts.appendChild(del);
+          row.appendChild(meta); row.appendChild(acts);
+          host.appendChild(row);
+        })(i);
+      }
+    }
+    function saveProgram37() {
+      var nameEl = $('sb-prog-name');
+      var name = nameEl ? String(nameEl.value || '').trim() : '';
+      if (!name) name = 'Программа · ' + new Date().toLocaleString('ru-RU');
+      var list = loadProgs37();
+      list.unshift({ name: name, lang: state.lang, code: Ed.get(), ts: Date.now() });
+      if (list.length > 50) list = list.slice(0, 50);
+      saveProgs37(list);
+      if (nameEl) nameEl.value = '';
+      sysMsg('💾 Сохранено: ' + name + ' (' + SB_LANG_LABELS37[state.lang] + ')');
+      setStatus('● Готово', '');
+      renderProgs37();
+    }
+    function openProgs37() { renderProgs37(); var m = $('sb-progs-modal'); if (m) m.classList.add('open'); }
+    function closeProgs37() { var m = $('sb-progs-modal'); if (m) m.classList.remove('open'); }
+
+    /* ---------- 📋 Копирование ---------- */
+    function copyText37(text, okMsg) {
+      var finish = function () { sysMsg(okMsg); setStatus('● Готово', ''); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(finish, function () { fallbackCopy37(text, finish); });
+      } else { fallbackCopy37(text, finish); }
+    }
+    function fallbackCopy37(text, finish) {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        finish();
+      } catch (e) { sysMsg('❌ Браузер запретил копирование — выдели код вручную.'); }
+    }
+
+    /* ---------- 🔗 Вязка интерфейса ---------- */
+    (function wire37() {
+      var tabs = document.querySelectorAll('.sb-lang-tab');
+      for (var i = 0; i < tabs.length; i++) {
+        (function (tab) {
+          tab.addEventListener('click', function () { setLang37(tab.getAttribute('data-lang')); });
+        })(tabs[i]);
+      }
+      on('sb-run', run37);
+      on('sb-term-clear', termClear);
+      on('sb-turtle-clear', clearTurtle37);
+      on('sb-turtle-hide', hideTurtle37);
+      on('sb-explain', sbExplain37);
+      on('sb-save', function () {
+        openProgs37();
+        var nameEl = $('sb-prog-name');
+        if (nameEl) { try { nameEl.focus({ preventScroll: true }); } catch (e) { try { nameEl.focus(); } catch (e2) {} } }
+      });
+      on('sb-progs', openProgs37);
+      on('sb-progs-close', closeProgs37);
+      on('sb-prog-save', saveProgram37);
+      on('sb-theme', toggleTheme37);
+      on('sb-stdin-toggle', function () {
+        var s = $('sb-stdin');
+        if (s) s.classList.toggle('open');
+        sbStdinBadge37();
+      });
+      var stdinField = $('sb-stdin-field');
+      if (stdinField) stdinField.addEventListener('input', sbStdinBadge37);
+      on('sb-turtle', function () {
+        if (state.lang !== 'python') setLang37('python');
+        applyTemplate37(4);
+        showTurtle37();
+        run37();
+      });
+      on('sb-clear', function () { Ed.set(''); sbRefresh37(); Ed.focus(); });
+      on('sb-copy', function () { copyText37(Ed.get(), '📋 Код скопирован в буфер обмена.'); });
+      on('sb-tmpl-btn', function () {
+        var list = TEMPLATES[state.lang] || [];
+        if (!list.length) return;
+        applyTemplate37((state.tmpl + 1) % list.length);
+      });
+      on('sb-console-send', sbSubmitConsole37);
+      var consoleInput = $('sb-console-input');
+      if (consoleInput) {
+        consoleInput.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); sbSubmitConsole37(); }
+          if (e.key === 'Escape') { e.preventDefault(); sbCancelPendingInput37(); }
         });
       }
-    } catch (eVal37) {}
+      var syms = document.querySelectorAll('.sb-sym');
+      for (var s = 0; s < syms.length; s++) {
+        (function (btn) {
+          btn.addEventListener('click', function () {
+            var sym = btn.getAttribute('data-sym');
+            Ed.insert(sym === 'Tab' ? '    ' : sym);
+            buildAutochips37();
+          });
+        })(syms[s]);
+      }
+      var modal = $('sb-progs-modal');
+      if (modal) modal.addEventListener('click', function (e) { if (e.target === modal) closeProgs37(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeProgs37();
+      });
+      function on(id, fn) { var el = $(id); if (el) el.addEventListener('click', function (e) { e.preventDefault(); fn(e); }); }
+    })();
 
+    /* ---------- 🚀 Старт ---------- */
+    applyTheme37();
+    setLang37('python');
+    applyTemplate37(0);
+    sbStdinBadge37();
+
+    /* ---------- 🌐 Резервная загрузка Skulpt, если CDN недоступен ---------- */
+    window.addEventListener('load', function () {
+      if (typeof window.Sk !== 'undefined' || window.__sbSkulptFallback37) return;
+      window.__sbSkulptFallback37 = true;
+      var urls = [
+        'https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/skulpt.min.js',
+        'https://cdn.jsdelivr.net/npm/skulpt@1.2.0/skulpt.min.js'
+      ];
+      function next(i) {
+        if (i >= urls.length || typeof window.Sk !== 'undefined') return;
+        var s = document.createElement('script');
+        s.src = urls[i];
+        s.onload = function () { next(i + 1); };
+        s.onerror = function () { next(i + 1); };
+        document.head.appendChild(s);
+      }
+      next(0);
+    });
+
+    /* ---------- Экспорт для тестов и диагностики ---------- */
     window.__l37sandbox37 = {
-      state: state,
       templates: TEMPLATES,
-      run: run,
-      applyTemplate: applyTemplate,
+      state: state,
+      get code() { return Ed.get(); },
+      setCode: function (v) { Ed.set(v); },
+      run: run37,
+      termText: termText37,
+      lines: termLines37,
       rebuildTmplChips: rebuildTmplChips,
-      lines: function () { return term.children.length; },
-      termText: function () { return term.textContent; },
-      code: function () { return codeEl.value; },
-      programs: loadProgs37,
-      openProgs: openProgs37,
-      engine: { sbScan37: sbScan37, sbLint37: sbLint37, sbLinesHtml37: sbLinesHtml37, sbSplitLines37: sbSplitLines37, sbDist37: sbDist37, hlEl: hlEl, sbLastIssues37: sbLastIssues37, explain37: sbExplain37, turtleParse37: sbTurtleParse37, turtle37: sbTurtle37, queue37: sbQueue37 },
-      theme37: function () { return document.body.classList.contains('sb-day') ? 'day' : 'night'; }
+      theme37: toggleTheme37,
+      showTurtle: showTurtle37,
+      hideTurtle: hideTurtle37,
+      engine: {
+        sbScan37: sbScan37,
+        sbLint37: sbLint37,
+        sbSplitLines37: sbSplitLines37,
+        sbDist37: sbDist37,
+        explain37: sbExplain37,
+        turtleParse37: sbTurtleParse37,
+        turtleFlatten37: sbTurtleFlatten37,
+        rusTurtle37: sbRusTurtle37,
+        refresh37: sbRefresh37,
+        lastIssues37: function () { return sbLastIssues37; }
+      },
+      ed: Ed,
+      stdin: {
+        get: getStdinText,
+        set: function (v) { var f = $('sb-stdin-field'); if (f) f.value = String(v == null ? '' : v); sbStdinBadge37(); },
+        open: sbOpenStdin37,
+        close: sbCloseStdin37
+      },
+      console: { show: sbShowConsole37, hide: sbHideConsole37, submit: sbSubmitConsole37 }
     };
-
-    sysMsg('💻 Код-песочница Лицеиста готова. Выбери язык, шаблон — и жми «▶️ Запустить» (или Ctrl+Enter).');
-    applyTemplate();
   })();
 </script>
 </body>
