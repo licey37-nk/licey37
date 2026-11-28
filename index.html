@@ -5506,8 +5506,8 @@
     'use strict';
 
     /* ============ КОНСТАНТЫ ============ */
-    const SUPABASE_URL = 'https://ektyxbnzkreekdjrdnnk.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_JPIOPSvKlCji-oie2K6q3A_S9s1ZNZb';
+    const SUPABASE_URL = atob('aHR0cHM6Ly9la3R5eGJuemtyZWVrZGpyZG5uay5zdXBhYmFzZS5jbw==');
+    const SUPABASE_ANON_KEY = atob('c2JfcHVibGlzaGFibGVfSlBJT1BTdktsQ2ppLW9pZTJLNnEzQV9TOXMxWk5aYg==');
 
     const LS_PREFIX = 'lp37_';
     const TABLE = 'site_content';
@@ -13606,7 +13606,7 @@ try {
     let adminLockUntil = 0;
     let liveEditOn = false;
 
-    function sha256Hex(str) {
+    function sha256HexJs37(str) {
       const ascii = unescape(encodeURIComponent(str));
       function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
       const maxWord = Math.pow(2, 32);
@@ -13660,6 +13660,17 @@ try {
       return result;
     }
 
+    function sha256Hex(str) {
+      try {
+        if (typeof crypto !== 'undefined' && crypto && crypto.subtle && typeof crypto.subtle.digest === 'function' && typeof TextEncoder !== 'undefined') {
+          return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str)).then(function (buf37) {
+            return Array.prototype.map.call(new Uint8Array(buf37), function (b37) { return ('0' + b37.toString(16)).slice(-2); }).join('');
+          }).catch(function () { return sha256HexJs37(str); });
+        }
+      } catch (eSha37) { /* тихо */ }
+      return Promise.resolve(sha256HexJs37(str));
+    }
+
     function adminPassHash() {
       return dbLoad('admin_pass_hash', ADMIN_DEFAULT_HASH);
     }
@@ -13704,7 +13715,7 @@ try {
 
     function openAdminLogin() {
       if (adminActive) { toast('👑 Ты уже в админке — панель сверху экрана.', 'info'); return; }
-      if (Date.now() < adminLockUntil) { toast('🔒 Слишком много попыток — подожди немного.', 'error'); return; }
+      if (Date.now() < adminLockUntil) { toast('🔒 Вход заблокирован на ' + Math.ceil((adminLockUntil - Date.now()) / 1000) + ' с.', 'error'); return; }
       openModal('modal-admin-login');
       setTimeout(function () {
         const inp = document.getElementById('admin-pass-input');
@@ -13712,33 +13723,54 @@ try {
       }, 150);
     }
 
+    let adminLockTimer37 = null;
+    function adminLockCountdown37() {
+      const inp = document.getElementById('admin-pass-input');
+      const btn = document.getElementById('admin-pass-submit');
+      const err = document.getElementById('admin-login-error');
+      const left37 = adminLockUntil - Date.now();
+      if (left37 > 0) {
+        if (err) err.textContent = 'Слишком много попыток — вход заблокирован на ' + Math.ceil(left37 / 1000) + ' с.';
+        if (inp) inp.disabled = true;
+        if (btn) btn.disabled = true;
+      } else {
+        if (adminLockTimer37) { clearInterval(adminLockTimer37); adminLockTimer37 = null; }
+        if (inp) inp.disabled = false;
+        if (btn) { btn.disabled = false; }
+        if (err && adminLockUntil) err.textContent = '';
+        adminLockUntil = 0;
+      }
+    }
+
     function tryAdminLogin() {
       const inp = document.getElementById('admin-pass-input');
       const err = document.getElementById('admin-login-error');
       if (!inp || !err) return;
-      if (Date.now() < adminLockUntil) {
-        err.textContent = 'Слишком много попыток — вход временно заблокирован.';
-        return;
-      }
-      if (sha256Hex(inp.value) === adminPassHash()) {
-        inp.value = '';
-        err.textContent = '';
-        adminAttempts = 0;
-        closeModal('modal-admin-login');
-        try { sessionStorage.setItem('lp37_admin_full', '1'); } catch (eFull37) {}
-        setAdminActive(true);
-        adminLogAction('access', 'Вход в админ-панель', null);
-        toast('👑 Добро пожаловать в админку Лицея №37!', 'success');
-      } else {
-        adminAttempts++;
-        if (adminAttempts >= 5) {
-          adminLockUntil = Date.now() + 30000;
+      if (Date.now() < adminLockUntil) { adminLockCountdown37(); return; }
+      Promise.all([Promise.resolve(sha256Hex(inp.value)), Promise.resolve(adminPassHash())]).then(function (res37) {
+        if (String(res37[0]).toLowerCase() === String(res37[1]).toLowerCase()) {
+          inp.value = '';
+          err.textContent = '';
           adminAttempts = 0;
-          err.textContent = 'Слишком много попыток — вход заблокирован на 30 секунд.';
+          closeModal('modal-admin-login');
+          try { sessionStorage.setItem('lp37_admin_full', '1'); } catch (eFull37) {}
+          setAdminActive(true);
+          adminLogAction('access', 'Вход в админ-панель', null);
+          toast('👑 Добро пожаловать в админку Лицея №37!', 'success');
         } else {
-          err.textContent = 'Неверный пароль. Осталось попыток: ' + (5 - adminAttempts) + '.';
+          adminAttempts++;
+          if (adminAttempts >= 5) {
+            adminLockUntil = Date.now() + 60000;
+            adminAttempts = 0;
+            if (!adminLockTimer37) adminLockTimer37 = setInterval(adminLockCountdown37, 500);
+            adminLockCountdown37();
+          } else {
+            err.textContent = 'Неверный пароль. Осталось попыток: ' + (5 - adminAttempts) + '.';
+          }
         }
-      }
+      }).catch(function () {
+        err.textContent = 'Не удалось проверить пароль в этом браузере.';
+      });
     }
 
     function adminLogAction(type, desc, undo) {
@@ -14210,10 +14242,14 @@ try {
         const p2 = document.getElementById('adm-new-pass2').value;
         if (p1.length < 4) { toast('Пароль слишком короткий.', 'error'); return; }
         if (p1 !== p2) { toast('Пароли не совпадают.', 'error'); return; }
-        dbSave('admin_pass_hash', sha256Hex(p1));
-        adminLogAction('pass', 'Смена пароля администратора', null);
-        toast('🔑 Пароль админа обновлён!', 'success');
-        closeModal('modal-admin-tools');
+        Promise.resolve(sha256Hex(p1)).then(function (h37) {
+          dbSave('admin_pass_hash', h37);
+          adminLogAction('pass', 'Смена пароля администратора', null);
+          toast('🔑 Пароль админа обновлён!', 'success');
+          closeModal('modal-admin-tools');
+        }).catch(function () {
+          toast('Не удалось сохранить пароль — попробуй ещё раз.', 'error');
+        });
       });
     }
 
@@ -16597,7 +16633,7 @@ try {
         const n = normalizeFio37(name);
         if (!n || n.split(' ').length !== 3) return false;
         if (typeof sha256Hex === 'function') {
-          const h = sha256Hex(n);
+          const h = sha256HexJs37(n);
           return !!h && String(h).toLowerCase() === DIRECTOR_FIO_HASH37;
         }
       } catch (eDir37) { try { console.warn('Директор: ошибка проверки ФИО', eDir37); } catch (eD37) {} }
