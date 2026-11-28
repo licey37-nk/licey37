@@ -1,5 +1,5 @@
 /* ============================================================
-   ai-engine.js — МОЗГ «ИИ-Наставника 37» (v4.1 Neural Engine + Википедия)
+   ai-engine.js — МОЗГ «ИИ-Наставника 37» (v4.2 Neural Engine + Википедия + стриминг)
    МБОУ «Лицей №37» г. Нижнекамска
    Вынесено из index.html. Подключается одной строкой:
    <script src="ai-engine.js"></script>
@@ -16,6 +16,11 @@
    калькулятор; если ответа нет или карточка короче 180 символов —
    официальное API Русской Википедии (opensearch + REST summary,
    origin=*, таймаут 8 с); офлайн — тихая деградация без ошибок.
+   Стриминг (v4.2): ответ печатается плавно, ~250 символов в
+   секунду (5 символов каждые 20 мс), с сохранением всей HTML-
+   разметки; автопрокрутки во время печати нет — чат один раз
+   плавно подводит к началу нового сообщения, дальше экран
+   остаётся на месте (как в ChatGPT/DeepSeek).
    Все функции остаются глобальными — остальной код портала
    (викторины, глобальный поиск, уведомления) работает как раньше.
    ============================================================ */
@@ -1279,12 +1284,14 @@
         const target = bubble.querySelector('.ai-type-target');
         const full = String(msg.t || '');
         let pos = 0;
+        try {
+          if (typeof bubble.scrollIntoView === 'function') bubble.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } catch (eSv37) { try { bubble.scrollIntoView(); } catch (eSv237) {} }
         const iv = setInterval(function () {
           try {
             if (aiStopGen37) pos = full.length;
-            pos = Math.min(full.length, pos + 4);
+            pos = Math.min(full.length, pos + 5);
             if (target) target.innerHTML = aiMdRender37(full.slice(0, pos));
-            aiAutoScroll37();
             if (pos >= full.length) {
               clearInterval(iv);
               try { stopBtn.remove(); } catch (eSr37) {}
@@ -1299,7 +1306,7 @@
             try { renderAiMsgs(); } catch (e37) {}
             resolve();
           }
-        }, 40);
+        }, 20);
       });
     }
 
