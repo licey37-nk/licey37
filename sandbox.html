@@ -131,11 +131,84 @@
     font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace;
     font-size: 16px; line-height: 1.6; min-width: 52px; overflow: hidden;
   }
+  .sb-stack { position: relative; flex: 1; min-width: 0; display: flex; }
+  .sb-ed-wrap { position: relative; flex: 1; min-width: 0; display: flex; }
+  .sb-hl {
+    position: absolute; inset: 0; box-sizing: border-box; margin: 0; border: 0;
+    padding: 14px 16px;
+    font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace;
+    font-size: 16px; line-height: 1.6; tab-size: 4; white-space: pre; overflow: hidden;
+    pointer-events: none; color: #e6edf3; font-variant-ligatures: none;
+  }
+  .sb-ln { display: block; min-height: 1.6em; }
+  .sb-ln-err { background: rgba(239, 68, 68, 0.14); box-shadow: inset 3px 0 0 #ef4444; }
+  .sb-tok-kw { color: #c792ea; font-weight: 600; }
+  .sb-tok-fn { color: #7dd3fc; }
+  .sb-tok-str { color: #34d399; }
+  .sb-tok-num { color: #fbbf24; }
+  .sb-tok-com { color: #6b7280; font-style: italic; }
+  .sb-tok-op { color: #22d3ee; }
+  .sb-tok-pre { color: #f0abfc; font-style: italic; }
+  .sb-tok-bad { text-decoration: underline wavy #ef4444; }
   .sb-code {
     flex: 1; resize: none; border: none; outline: none; background: transparent;
-    color: #e6edf3; padding: 14px 16px;
+    color: transparent; caret-color: #e6edf3; padding: 14px 16px;
+    box-sizing: border-box; font-variant-ligatures: none;
     font-family: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, "Courier New", monospace;
     font-size: 16px; line-height: 1.6; tab-size: 4; white-space: pre; overflow: auto;
+    position: relative; z-index: 1;
+  }
+  .sb-code::selection { background: rgba(99, 102, 241, 0.38); color: transparent; }
+  body.sb-day .sb-code { color: transparent; caret-color: #1c2333; }
+  body.sb-day .sb-code::selection { background: rgba(99, 102, 241, 0.25); color: transparent; }
+  body.sb-day .sb-hl { color: #1c2333; }
+  body.sb-day .sb-tok-kw { color: #7c3aed; }
+  body.sb-day .sb-tok-fn { color: #0284c7; }
+  body.sb-day .sb-tok-str { color: #059669; }
+  body.sb-day .sb-tok-num { color: #d97706; }
+  body.sb-day .sb-tok-com { color: #94a3b8; }
+  body.sb-day .sb-tok-op { color: #0891b2; }
+  body.sb-day .sb-tok-pre { color: #a21caf; }
+  .sb-mentor {
+    background: rgba(17, 23, 41, 0.72);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    border: 1px solid rgba(129, 140, 248, 0.28); border-radius: 18px; overflow: hidden;
+    box-shadow: 0 18px 44px rgba(2, 6, 23, 0.55);
+  }
+  .sb-mentor-head {
+    padding: 10px 14px; background: rgba(11, 15, 25, 0.6);
+    border-bottom: 1px solid rgba(129, 140, 248, 0.16);
+    font-size: 12px; font-weight: 800; color: #8b93a7; display: flex; align-items: center;
+  }
+  .sb-mentor-count { margin-left: auto; color: #818cf8; font-weight: 800; }
+  .sb-mentor-body { max-height: 180px; overflow: auto; padding: 10px 14px; display: flex; flex-direction: column; gap: 8px; }
+  .sb-mentor-item { border-left: 3px solid; padding: 8px 10px; border-radius: 10px; font: 600 13px/1.55 Arial, sans-serif; color: #e6edf3; }
+  .sb-mentor-err { border-color: #ef4444; background: rgba(239, 68, 68, 0.10); }
+  .sb-mentor-warn { border-color: #f59e0b; background: rgba(245, 158, 11, 0.10); }
+  .sb-mentor-expl { border-color: #818cf8; background: rgba(99, 102, 241, 0.10); }
+  .sb-mentor-ok { color: #3fb950; font: 600 13px Arial, sans-serif; border-left: 3px solid #3fb950; padding: 8px 10px; border-radius: 10px; }
+  .sb-mentor-item code { font-family: ui-monospace, Consolas, monospace; background: rgba(99, 102, 241, 0.15); padding: 1px 5px; border-radius: 5px; }
+  .sb-mentor-item b { display: block; margin-bottom: 2px; }
+  .sb-mentor-item span { color: #9aa3b8; font-weight: 400; }
+  body.sb-day .sb-mentor { background: rgba(255, 255, 255, 0.85); border-color: rgba(99, 102, 241, 0.35); box-shadow: 0 14px 34px rgba(15, 23, 42, 0.14); }
+  body.sb-day .sb-mentor-head { background: rgba(241, 245, 249, 0.8); color: #475569; }
+  body.sb-day .sb-mentor-item { color: #1c2333; }
+  body.sb-day .sb-mentor-item span { color: #64748b; }
+  .sb-turtle-card { max-width: 520px; }
+  #sb-turtle-src {
+    width: 100%; box-sizing: border-box; background: rgba(11, 15, 25, 0.6);
+    border: 1px solid rgba(129, 140, 248, 0.3); border-radius: 12px; color: #e6edf3;
+    font-family: ui-monospace, Consolas, monospace; font-size: 13px; line-height: 1.55;
+    padding: 10px 12px; resize: vertical;
+  }
+  .sb-turtle-row { display: flex; align-items: center; gap: 10px; margin: 10px 0 8px; }
+  .sb-turtle-row .sb-btn { flex-shrink: 0; }
+  #sb-turtle-status { font: 700 12.5px Arial, sans-serif; color: #3fb950; }
+  #sb-turtle-canvas { width: 100%; max-width: 440px; border: 1px solid rgba(129, 140, 248, 0.3); border-radius: 12px; background: rgba(11, 15, 25, 0.5); }
+  .sb-turtle-hint { color: #8b93a7; font: 12px/1.6 Arial, sans-serif; }
+  body.sb-day #sb-turtle-src { background: rgba(255, 255, 255, 0.9); color: #1c2333; }
+  @media (max-width: 768px) {
+    .sb-mentor-body { max-height: 150px; }
   }
   .sb-termwrap {
     background: rgba(17, 23, 41, 0.72);
@@ -331,6 +404,8 @@
       <button type="button" class="sb-btn init" id="sb-py-init" style="display:none;">⚙️ Инициализировать Python (~6 МБ)</button>
       <button type="button" class="sb-btn ghost" id="sb-save">💾 Сохранить</button>
       <button type="button" class="sb-btn ghost" id="sb-progs">📂 Мои программы</button>
+      <button type="button" class="sb-btn ghost" id="sb-explain">📖 Объяснить построчно</button>
+      <button type="button" class="sb-btn ghost" id="sb-turtle">🐢 Черепашка (ЕГЭ №6)</button>
     </div>
     <section class="sb-editor">
       <div class="sb-ed-head">
@@ -343,8 +418,13 @@
         </div>
       </div>
       <div class="sb-ed-body">
-        <div class="sb-gutter" id="sb-gutter">1</div>
-        <textarea class="sb-code" id="sb-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Редактор кода"></textarea>
+        <div class="sb-stack">
+          <div class="sb-gutter" id="sb-gutter">1</div>
+          <div class="sb-ed-wrap">
+            <pre class="sb-hl" id="sb-hl" aria-hidden="true"></pre>
+            <textarea class="sb-code" id="sb-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Редактор кода"></textarea>
+          </div>
+        </div>
       </div>
     </section>
     <div class="sb-syms" id="sb-syms" aria-label="Панель быстрых символов">
@@ -367,6 +447,10 @@
       <button type="button" class="sb-sym" data-sym="'">'</button>
     </div>
     <div class="sb-autochips" id="sb-autochips" aria-label="Авто-подсказки команд"></div>
+    <section class="sb-mentor" id="sb-mentor">
+      <div class="sb-mentor-head">🧠 Подсказки Наставника<span class="sb-mentor-count" id="sb-mentor-count">всё чисто ✨</span></div>
+      <div class="sb-mentor-body" id="sb-mentor-body"></div>
+    </section>
     <section class="sb-termwrap">
       <div class="sb-term-head">
         <span class="sb-status" id="sb-status">● Готово</span>
@@ -871,6 +955,756 @@
       });
     });
 
+    /* ============================================================
+       🕵️ СИНТАКС-РАДАР 37 v1.0 · движок подсветки синтаксиса, поиска
+       ошибок и умного наставника кода для Код-песочницы Лицеиста.
+       100% автономно: без доступа к базе портала, без внешних библиотек, без сети.
+       Архитектура: <textarea> с прозрачным текстом + синхронно
+       прокручиваемый <pre> с цветными токенами (символ в символ).
+       ============================================================ */
+    function sbSet37(arr) {
+      var o = {};
+      for (var i = 0; i < arr.length; i++) o[arr[i]] = 1;
+      return o;
+    }
+    var SB_COLORS37 = {
+      kw: 'kw', fn: 'fn', call: 'fn', str: 'str', num: 'num', com: 'com',
+      op: 'op', pre: 'pre', id: '', other: '', ws: '', nl: ''
+    };
+    var SB_NUM_RE37 = /0[xX][0-9a-fA-F_]+|0[bB][01_]+|(?:\d[\d_]*\.[\d_]*|\.\d[\d_]*|\d[\d_]*)(?:[eE][+-]?\d+)?/y;
+    var SB_WORD_RE37 = /[A-Za-z_\u0400-\u04FF][A-Za-z0-9_\u0400-\u04FF]*/y;
+    var SB_LANGS37 = {
+      python: {
+        label: 'Python',
+        lineComment: '#',
+        triple: true,
+        colonKw: /^(if|elif|else|for|while|def|class|try|except|finally|with)\b/,
+        condKw: /^(if|elif|while)\b/,
+        nextIndentSkip: /^(else|elif|except|finally|case)\b/,
+        keywords: sbSet37(['False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await', 'break', 'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield', 'match', 'case', 'int', 'float', 'str', 'bool', 'list', 'dict', 'set', 'tuple']),
+        bools: sbSet37(['True', 'False', 'None']),
+        fns: sbSet37(['print', 'input', 'range', 'len', 'sum', 'min', 'max', 'abs', 'round', 'sorted', 'sort', 'reverse', 'reversed', 'enumerate', 'zip', 'map', 'filter', 'any', 'all', 'repr', 'hex', 'oct', 'bin', 'ord', 'chr', 'type', 'isinstance', 'super', 'open', 'format', 'split', 'splitlines', 'join', 'replace', 'strip', 'lstrip', 'rstrip', 'lower', 'upper', 'capitalize', 'title', 'swapcase', 'startswith', 'endswith', 'find', 'rfind', 'index', 'count', 'insert', 'append', 'extend', 'pop', 'remove', 'clear', 'copy', 'keys', 'values', 'items', 'get', 'update', 'add', 'discard', 'union', 'intersection', 'center', 'ljust', 'rjust', 'zfill', 'isdigit', 'isalpha', 'isalnum', 'isspace', 'islower', 'isupper', 'encode', 'decode', 'sqrt', 'floor', 'ceil', 'pow', 'log', 'log2', 'log10', 'exp', 'sin', 'cos', 'tan', 'asin', 'acos', 'atan', 'degrees', 'radians', 'factorial', 'gcd', 'perm', 'comb', 'randint', 'randrange', 'choice', 'choices', 'shuffle', 'sample', 'random', 'seed', 'mean', 'median', 'reduce', 'accumulate', 'groupby', 'defaultdict', 'Counter', 'deque', 'match', 'search', 'sub', 'findall', 'compile', 'fullmatch', 'read', 'write', 'readline', 'readlines', 'close', 'load', 'loads', 'dump', 'dumps', 'now', 'today', 'strftime', 'strptime', 'date', 'datetime', 'timedelta', 'time', 'sleep', 'exit', 'quit', 'setdefault', 'fromkeys', 'bit_length', 'conjugate', 'to_bytes', 'from_bytes', 'filterfalse', 'islice', 'product', 'permutations', 'combinations']),
+        typos: { 'pritn': 'print', 'prnt': 'print', 'pring': 'print', 'printt': 'print', 'pirnt': 'print', 'ipnut': 'input', 'inpu': 'input', 'inpt': 'input', 'ranger': 'range', 'rang': 'range', 'lne': 'len', 'lsit': 'list', 'dcit': 'dict', 'stf': 'str', 'slef': 'self', 'retun': 'return', 'retrun': 'return', 'whiel': 'while', 'whle': 'while', 'esle': 'else', 'eilf': 'elif', 'ture': 'True', 'flase': 'False', 'appned': 'append', 'apend': 'append', 'srot': 'sort', 'jsort': 'sort' },
+        defs: [/\bdef\s+([A-Za-z_]\w*)/g, /\bclass\s+([A-Za-z_]\w*)/g, /\bimport\s+([A-Za-z_][\w.]*)/g, /\bfrom\s+([A-Za-z_][\w.]*)\s+import/g, /^[ \t]*([A-Za-z_]\w*)\s*=(?!=)/gm, /\bfor\s+([A-Za-z_]\w*)\s+in/g]
+      },
+      cpp: {
+        label: 'C++',
+        lineComment: '//',
+        block: ['/*', '*/'],
+        preproc: true,
+        keywords: sbSet37(['alignas', 'alignof', 'and', 'asm', 'auto', 'bool', 'break', 'case', 'catch', 'char', 'char8_t', 'char16_t', 'char32_t', 'class', 'concept', 'const', 'consteval', 'constexpr', 'const_cast', 'continue', 'decltype', 'default', 'delete', 'do', 'double', 'dynamic_cast', 'else', 'enum', 'explicit', 'export', 'extern', 'false', 'float', 'for', 'friend', 'goto', 'if', 'inline', 'int', 'long', 'mutable', 'namespace', 'new', 'noexcept', 'not', 'nullptr', 'operator', 'or', 'private', 'protected', 'public', 'register', 'return', 'short', 'signed', 'sizeof', 'static', 'static_assert', 'static_cast', 'struct', 'switch', 'template', 'this', 'thread_local', 'throw', 'true', 'try', 'typedef', 'typeid', 'typename', 'union', 'unsigned', 'using', 'virtual', 'void', 'volatile', 'while', 'std', 'cout', 'cin', 'cerr', 'endl', 'vector', 'string', 'map', 'set', 'pair', 'array', 'deque', 'list', 'queue', 'stack', 'size_t', 'int64_t', 'int32_t', 'long long', 'll']),
+        bools: sbSet37(['true', 'false', 'nullptr']),
+        fns: sbSet37(['main', 'sort', 'stable_sort', 'reverse', 'min', 'max', 'min_element', 'max_element', 'find', 'find_if', 'count', 'count_if', 'accumulate', 'push_back', 'pop_back', 'emplace_back', 'push', 'pop', 'top', 'front', 'back', 'at', 'resize', 'reserve', 'size', 'length', 'empty', 'clear', 'insert', 'erase', 'begin', 'end', 'rbegin', 'rend', 'cbegin', 'cend', 'getline', 'get', 'ignore', 'swap', 'stoi', 'stol', 'stoll', 'stod', 'stof', 'to_string', 'tolower', 'toupper', 'isalpha', 'isdigit', 'isspace', 'isupper', 'islower', 'abs', 'fabs', 'sqrt', 'pow', 'floor', 'ceil', 'round', 'trunc', 'sin', 'cos', 'tan', 'atan', 'atan2', 'asin', 'acos', 'log', 'log2', 'log10', 'exp', 'fmod', 'setprecision', 'setw', 'setfill', 'fixed', 'scientific', 'fill', 'width', 'precision', 'substr', 'c_str', 'append', 'compare', 'replace', 'data', 'strlen', 'strcpy', 'strcmp', 'strcat', 'strstr', 'memset', 'memcpy', 'memcmp', 'printf', 'scanf', 'sprintf', 'malloc', 'calloc', 'realloc', 'free', 'qsort', 'bsearch', 'rand', 'srand', 'time', 'exit', 'c_str']),
+        typos: { 'cotu': 'cout', 'cuot': 'cout', 'cput': 'cout', 'coout': 'cout', 'cni': 'cin', 'ciin': 'cin', 'mian': 'main', 'mani': 'main', 'maiin': 'main', 'viod': 'void', 'voit': 'void', 'inlcude': 'include', 'includ': 'include', 'iclude': 'include', 'inclde': 'include', 'sting': 'string', 'strign': 'string', 'srting': 'string', 'vecotr': 'vector', 'vactor': 'vector', 'swich': 'switch', 'swith': 'switch', 'retun': 'return', 'retrun': 'return', 'frist': 'first', 'secound': 'second' },
+        defs: [/\b(?:int|void|bool|double|float|long|auto|char|size_t|string|vector<[^>]*>)\s+([A-Za-z_]\w*)\s*\(/g, /\b(?:struct|class|enum|union|namespace)\s+([A-Za-z_]\w*)/g, /\busing\s+([A-Za-z_]\w*)\s*=/g, /\btypedef\s+[^;]*?\s([A-Za-z_]\w*)\s*;/g]
+      },
+      js: {
+        label: 'JavaScript',
+        lineComment: '//',
+        block: ['/*', '*/'],
+        backtick: true,
+        colonKw: null,
+        condKw: null,
+        keywords: sbSet37(['await', 'break', 'case', 'catch', 'class', 'const', 'continue', 'debugger', 'default', 'delete', 'do', 'else', 'enum', 'export', 'extends', 'false', 'finally', 'for', 'function', 'if', 'implements', 'import', 'in', 'instanceof', 'interface', 'let', 'new', 'null', 'package', 'private', 'protected', 'public', 'return', 'static', 'super', 'switch', 'this', 'throw', 'true', 'try', 'typeof', 'var', 'void', 'while', 'with', 'yield', 'async', 'of', 'from', 'as']),
+        bools: sbSet37(['true', 'false', 'null', 'undefined', 'NaN', 'Infinity']),
+        fns: sbSet37(['log', 'error', 'warn', 'info', 'debug', 'table', 'dir', 'assert', 'count', 'group', 'groupEnd', 'time', 'timeEnd', 'trace', 'Map', 'Set', 'WeakMap', 'WeakSet', 'Promise', 'Proxy', 'Reflect', 'Array', 'Object', 'String', 'Number', 'Boolean', 'Date', 'RegExp', 'Error', 'TypeError', 'RangeError', 'SyntaxError', 'Symbol', 'BigInt', 'Function', 'parseInt', 'parseFloat', 'isNaN', 'isFinite', 'encodeURIComponent', 'decodeURIComponent', 'encodeURI', 'decodeURI', 'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval', 'queueMicrotask', 'requestAnimationFrame', 'cancelAnimationFrame', 'fetch', 'alert', 'prompt', 'confirm', 'atob', 'btoa', 'push', 'pop', 'shift', 'unshift', 'slice', 'splice', 'concat', 'join', 'reverse', 'sort', 'indexOf', 'lastIndexOf', 'includes', 'find', 'findIndex', 'findLast', 'findLastIndex', 'filter', 'forEach', 'map', 'reduce', 'reduceRight', 'some', 'every', 'flat', 'flatMap', 'fill', 'copyWithin', 'entries', 'keys', 'values', 'at', 'with', 'toSorted', 'toReversed', 'toSpliced', 'hasOwnProperty', 'toString', 'valueOf', 'toFixed', 'toPrecision', 'charAt', 'charCodeAt', 'codePointAt', 'startsWith', 'endsWith', 'repeat', 'padStart', 'padStart', 'padEnd', 'trim', 'trimStart', 'trimEnd', 'toUpperCase', 'toLowerCase', 'replace', 'replaceAll', 'split', 'match', 'matchAll', 'search', 'has', 'get', 'set', 'add', 'delete', 'clear', 'then', 'catch', 'finally', 'all', 'allSettled', 'any', 'race', 'resolve', 'reject', 'stringify', 'parse', 'keys', 'assign', 'freeze', 'fromEntries', 'ceil', 'floor', 'round', 'trunc', 'sign', 'abs', 'sqrt', 'cbrt', 'pow', 'min', 'max', 'random', 'hypot', 'log', 'log2', 'log10', 'exp', 'sin', 'cos', 'tan', 'atan', 'atan2', 'now', 'toISOString', 'toLocaleString', 'getTime', 'getFullYear', 'getMonth', 'getDate', 'getDay', 'getHours', 'getMinutes', 'getSeconds', 'test', 'exec', 'compile', 'bind', 'call', 'apply', 'addEventListener', 'removeEventListener', 'querySelector', 'querySelectorAll', 'getElementById', 'createElement', 'createTextNode', 'appendChild', 'removeChild', 'setAttribute', 'getAttribute', 'classList', 'closest', 'scrollIntoView', 'preventDefault', 'stopPropagation']),
+        typos: { 'cosnole': 'console', 'consle': 'console', 'conole': 'console', 'fucntion': 'function', 'functon': 'function', 'funtion': 'function', 'lnegth': 'length', 'lenth': 'length', 'lenght': 'length', 'docuemnt': 'document', 'doucment': 'document', 'documnet': 'document', 'addEventListner': 'addEventListener', 'addEventListenner': 'addEventListener', 'querySelecotr': 'querySelector', 'querySeletor': 'querySelector', 'paersInt': 'parseInt', 'parseIng': 'parseInt', 'toStrng': 'toString', 'repalce': 'replace', 'psh': 'push', 'lenght': 'length' },
+        defs: [/\bfunction\s+([A-Za-z_$][\w$]*)/g, /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)/g, /\bclass\s+([A-Za-z_$][\w$]*)/g, /([A-Za-z_$][\w$]*)\s*=\s*(?:function|\()/g, /\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(?:\([^)]*\)|[A-Za-z_$][\w$]*)\s*=>/g]
+      }
+    };
+    var SB_OPS37 = {
+      python: ['**=', '//=', '>>=', '<<=', '...', '->', ':=', '**', '//', '<<', '>>', '<=', '>=', '==', '!=', '+=', '-=', '*=', '/=', '%=', '&=', '|=', '^=', '+', '-', '*', '/', '%', '=', '<', '>', '!', '&', '|', '^', '~', '(', ')', '[', ']', '{', '}', ',', ':', '.', ';', '@'],
+      cpp: ['<<=', '>>=', '->', '::', '++', '--', '&&', '||', '<<', '>>', '<=', '>=', '==', '!=', '+=', '-=', '*=', '/=', '%=', '&=', '|=', '^=', '(', ')', '[', ']', '{', '}', ',', ':', '.', ';', '<', '>', '=', '+', '-', '*', '/', '%', '!', '&', '|', '^', '~', '?'],
+      js: ['**=', '<<=', '>>=', '>>>', '&&=', '||=', '??=', '=>', '?.', '...', '**', '===', '!==', '==', '!=', '<<', '>>', '<=', '>=', '&&', '||', '++', '--', '+=', '-=', '*=', '/=', '%=', '&=', '|=', '^=', '??', '(', ')', '[', ']', '{', '}', ',', ':', '.', ';', '<', '>', '=', '+', '-', '*', '/', '%', '!', '&', '|', '^', '~', '?', '@']
+    };
+    function sbBuildOpMap37(lang) {
+      var arr = SB_OPS37[lang] || SB_OPS37.python;
+      var m = {};
+      for (var i = 0; i < arr.length; i++) m[arr[i]] = 1;
+      return m;
+    }
+    function sbIsStrStart37(code, i, L) {
+      var ch = code[i];
+      if (L.triple && (ch === '"' || ch === "'") && code[i + 1] === ch && code[i + 2] === ch) {
+        return { q: ch + ch + ch, len: 3, triple: true };
+      }
+      if (ch === '"' || ch === "'") return { q: ch, len: 1, triple: false };
+      if (L.backtick && ch === '`') return { q: '`', len: 1, triple: false };
+      return null;
+    }
+    function sbScan37(code, lang) {
+      var L = SB_LANGS37[lang] || SB_LANGS37.python;
+      var ops = sbBuildOpMap37(lang);
+      var toks = [];
+      var i = 0, n = code.length, line = 1;
+      while (i < n) {
+        var ch = code[i];
+        if (ch === '\n') { toks.push({ t: 'nl', v: '\n', line: line }); line++; i++; continue; }
+        if (ch === ' ' || ch === '\t' || ch === '\r') {
+          var j = i;
+          while (j < n && (code[j] === ' ' || code[j] === '\t' || code[j] === '\r')) j++;
+          toks.push({ t: 'ws', v: code.slice(i, j), line: line }); i = j; continue;
+        }
+        var onlyWsBefore = true;
+        for (var b = toks.length - 1; b >= 0; b--) {
+          var tb = toks[b].t;
+          if (tb === 'ws') continue;
+          if (tb === 'nl') break;
+          onlyWsBefore = false; break;
+        }
+        if (L.preproc && ch === '#' && onlyWsBefore) {
+          var j2 = code.indexOf('\n', i); if (j2 < 0) j2 = n;
+          toks.push({ t: 'pre', v: code.slice(i, j2), line: line });
+          line += (code.slice(i, j2).match(/\n/g) || []).length;
+          i = j2; continue;
+        }
+        if (L.lineComment && code.indexOf(L.lineComment, i) === i) {
+          var j3 = code.indexOf('\n', i); if (j3 < 0) j3 = n;
+          toks.push({ t: 'com', v: code.slice(i, j3), line: line }); i = j3; continue;
+        }
+        if (L.block && code.indexOf(L.block[0], i) === i) {
+          var endB = code.indexOf(L.block[1], i + L.block[0].length);
+          var badB = endB < 0;
+          var stopB = badB ? n : endB + L.block[1].length;
+          var segB = code.slice(i, stopB);
+          var nlB = (segB.match(/\n/g) || []).length;
+          toks.push({ t: 'com', v: segB, line: line, bad: badB, multi: nlB > 0 });
+          line += nlB; i = stopB; continue;
+        }
+        var st = sbIsStrStart37(code, i, L);
+        if (st) {
+          var k = i + st.len, closed = false, buf = code.substr(i, st.len);
+          while (k < n) {
+            if (code[k] === '\\' && k + 1 < n) { buf += code[k] + code[k + 1]; k += 2; continue; }
+            if (st.triple) {
+              if (code.indexOf(st.q, k) === k) { buf += st.q; k += st.len; closed = true; break; }
+            } else {
+              if (code[k] === '\n') break;
+              if (code[k] === st.q[0]) { buf += code[k]; k++; closed = true; break; }
+            }
+            buf += code[k]; k++;
+          }
+          toks.push({ t: 'str', v: buf, line: line, bad: !closed, multi: buf.indexOf('\n') >= 0 });
+          line += (buf.match(/\n/g) || []).length;
+          i = k; continue;
+        }
+        var isNumStart = (ch >= '0' && ch <= '9') || (ch === '.' && code[i + 1] >= '0' && code[i + 1] <= '9');
+        if (isNumStart) {
+          SB_NUM_RE37.lastIndex = i;
+          var mNum = SB_NUM_RE37.exec(code);
+          if (mNum && mNum.index === i) {
+            toks.push({ t: 'num', v: mNum[0], line: line });
+            i += mNum[0].length; continue;
+          }
+        }
+        SB_WORD_RE37.lastIndex = i;
+        var mW = SB_WORD_RE37.exec(code);
+        if (mW && mW.index === i) {
+          var w = mW[0], kind = 'id';
+          if (L.keywords[w]) kind = 'kw';
+          else if (L.bools[w]) kind = 'num';
+          else {
+            var p2 = i + w.length;
+            while (p2 < n && (code[p2] === ' ' || code[p2] === '\t')) p2++;
+            if (code[p2] === '(') kind = 'call';
+            else if (L.fns[w]) kind = 'fn';
+          }
+          toks.push({ t: kind, v: w, line: line });
+          i += w.length; continue;
+        }
+        var done = false;
+        for (var ol = 3; ol >= 1 && !done; ol--) {
+          var cand = code.substr(i, ol);
+          if (ops[cand] && cand.length === ol) {
+            toks.push({ t: 'op', v: cand, line: line });
+            i += ol; done = true;
+          }
+        }
+        if (!done) { toks.push({ t: 'other', v: ch, line: line }); i++; }
+      }
+      return toks;
+    }
+    function sbSplitLines37(toks) {
+      var lines = [{ segs: [], text: '', cont: false, err: false }];
+      var cur = lines[0];
+      for (var k = 0; k < toks.length; k++) {
+        var t = toks[k];
+        if (t.t === 'nl') { lines.push({ segs: [], text: '', cont: false, err: false }); cur = lines[lines.length - 1]; continue; }
+        var parts = String(t.v).split('\n');
+        for (var p = 0; p < parts.length; p++) {
+          if (p > 0) {
+            lines.push({ segs: [], text: '', cont: true, err: false });
+            cur = lines[lines.length - 1];
+          }
+          if (parts[p]) { cur.segs.push({ t: t.t, v: parts[p], bad: !!t.bad }); cur.text += parts[p]; }
+        }
+      }
+      return lines;
+    }
+    function sbSegHtml37(seg) {
+      var cls = SB_COLORS37[seg.t];
+      var txt = escHtml(seg.v);
+      if (!cls) return txt;
+      return '<span class="sb-tok-' + cls + (seg.bad ? ' sb-tok-bad' : '') + '">' + txt + '</span>';
+    }
+    function sbLinesHtml37(lines) {
+      var out = '';
+      for (var i = 0; i < lines.length; i++) {
+        out += '<div class="sb-ln' + (lines[i].err ? ' sb-ln-err' : '') + '">';
+        for (var s = 0; s < lines[i].segs.length; s++) out += sbSegHtml37(lines[i].segs[s]);
+        out += '</div>';
+      }
+      return out;
+    }
+    function sbDist37(a, b) {
+      if (a === b) return 0;
+      var m = a.length, nn = b.length;
+      if (!m) return nn;
+      if (!nn) return m;
+      if (Math.abs(m - nn) > 2) return 3;
+      var d = [], i, j;
+      for (i = 0; i <= m; i++) { d[i] = [i]; }
+      for (j = 0; j <= nn; j++) { d[0][j] = j; }
+      for (i = 1; i <= m; i++) {
+        for (j = 1; j <= nn; j++) {
+          var cost = a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1;
+          var v = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+          if (i > 1 && j > 1 && a.charAt(i - 1) === b.charAt(j - 2) && a.charAt(i - 2) === b.charAt(j - 1)) {
+            v = Math.min(v, d[i - 2][j - 2] + 1);
+          }
+          d[i][j] = v;
+        }
+      }
+      return d[m][nn];
+    }
+    function sbCollectDefs37(code, L) {
+      var defs = {};
+      for (var r = 0; r < L.defs.length; r++) {
+        var re = L.defs[r];
+        re.lastIndex = 0;
+        var m;
+        while ((m = re.exec(code))) {
+          if (m[1]) defs[m[1]] = 1;
+          if (m.index === re.lastIndex) re.lastIndex++;
+        }
+      }
+      return defs;
+    }
+    function sbLint37(code, lang, lines, toks) {
+      var L = SB_LANGS37[lang] || SB_LANGS37.python;
+      var issues = [];
+      function add(line, sev, title, detail) {
+        if (issues.length < 400) issues.push({ line: line, sev: sev, title: title, detail: detail });
+      }
+      var openerSet = { '(': 1, '[': 1, '{': 1 };
+      var closerPair = { ')': '(', ']': '[', '}': '{' };
+      var closerName = { ')': 'круглая', ']': 'квадратная', '}': 'фигурная' };
+      var stack = [];
+      for (var ti = 0; ti < toks.length; ti++) {
+        var tk = toks[ti];
+        if (tk.t !== 'op') continue;
+        if (openerSet[tk.v]) { stack.push({ ch: tk.v, line: tk.line, seg: tk }); }
+        else if (closerPair[tk.v]) {
+          if (!stack.length) {
+            tk.bad = true;
+            add(tk.line, 'err', 'Лишняя закрывающая скобка «' + tk.v + '»', 'У этой скобки нет парной открывающей выше. Проверь строку ' + tk.line + ' — возможно, скобка лишняя или открывающая потерялась.');
+          } else {
+            var top = stack.pop();
+            if (top.ch !== closerPair[tk.v]) {
+              top.seg.bad = true; tk.bad = true;
+              add(tk.line, 'err', 'Скобки не совпадают', 'Закрывающая «' + tk.v + '» не соответствует открывающей «' + top.ch + '» (строка ' + top.line + '). Проверь порядок закрытия скобок.');
+            }
+          }
+        }
+      }
+      for (var ri = 0; ri < stack.length; ri++) {
+        var rest = stack[ri];
+        rest.seg.bad = true;
+        var mirror = rest.ch === '(' ? ')' : (rest.ch === '[' ? ']' : '}');
+        add(rest.line, 'err', 'Не закрыта скобка «' + rest.ch + '»', 'Скобка «' + rest.ch + '» открыта на строке ' + rest.line + ', но закрывающей «' + mirror + '» так и не нашлось. Добавь её там, где выражение должно закончиться.');
+      }
+      for (var qi = 0; qi < toks.length; qi++) {
+        var tq = toks[qi];
+        if (tq.t === 'str' && tq.bad) {
+          tq.bad = true;
+          add(tq.line, 'err', 'Незакрытая кавычка', 'Строка ' + tq.line + ': кавычка открыта, но не закрыта. Добавь такую же закрывающую кавычку в конце текста.');
+        }
+        if (tq.t === 'com' && tq.bad) {
+          add(tq.line, 'err', 'Незакрытый блок-комментарий', 'Комментарий «/*» на строке ' + tq.line + ' не закрыт — добавь «*/».');
+        }
+      }
+      var lineCount = lines.length;
+      for (var li = 0; li < lineCount; li++) {
+        var ln = lines[li];
+        if (ln.cont) continue;
+        var trimmed = ln.text.trim();
+        if (!trimmed) continue;
+        var n = li + 1;
+        var meaningful = [];
+        for (var si = 0; si < ln.segs.length; si++) {
+          var sg = ln.segs[si];
+          if (sg.t === 'ws') continue;
+          meaningful.push(sg);
+        }
+        if (!meaningful.length) continue;
+        if (meaningful[0].t === 'com') continue;
+        var indent = (ln.text.match(/^[ \t]*/) || [''])[0];
+        var indentSpaces = indent.replace(/\t/g, '    ').length;
+        var depth = 0, hasColon0 = false, badEq = null, lastMean = null;
+        for (var di = 0; di < meaningful.length; di++) {
+          var dt = meaningful[di];
+          if (dt.t === 'op') {
+            if (openerSet[dt.v]) depth++;
+            else if (closerPair[dt.v]) depth--;
+            else if (dt.v === ':' && depth === 0) hasColon0 = true;
+            else if (dt.v === '=' && depth === 0 && !badEq) badEq = dt;
+          }
+          lastMean = dt;
+        }
+        if (lang === 'python') {
+          if (indent.indexOf('\t') >= 0) {
+            add(n, 'warn', 'Табуляция в отступе', 'В Python нельзя смешивать табуляцию и пробелы. Замени табуляцию на 4 пробела, иначе будет IndentationError.');
+          } else if (indentSpaces % 4 !== 0) {
+            add(n, 'warn', 'Отступ не кратен 4 пробелам', 'В Python принято делать отступы по 4 пробела. Сейчас отступ ' + indentSpaces + ' пробел(а) — выровняй до кратного 4.');
+          }
+          var endsWithColon = !!(lastMean && lastMean.t === 'op' && lastMean.v === ':');
+          var kwM = trimmed.match(L.colonKw);
+          if (kwM && !/\\$/.test(trimmed)) {
+            if (!hasColon0) {
+              add(n, 'err', 'Забыто двоеточие «:»', 'В Python после «' + kwM[1] + '» в конце строки ставится «:». Например: ' + kwM[1] + ' x > 0:');
+            } else if (endsWithColon) {
+              var nj = li + 1;
+              while (nj < lineCount && !lines[nj].text.trim()) nj++;
+              if (nj < lineCount && !lines[nj].cont) {
+                var nextTrim = lines[nj].text.trim();
+                if (!L.nextIndentSkip.test(nextTrim)) {
+                  var nextIndent = (lines[nj].text.match(/^[ \t]*/) || [''])[0].replace(/\t/g, '    ').length;
+                  if (nextIndent <= indentSpaces) {
+                    add(n, 'warn', 'После «:» нужен отступ', 'Строка ' + n + ' заканчивается двоеточием — следующий оператор должен быть с отступом (4 пробела).');
+                  }
+                }
+              }
+            }
+          }
+          if (trimmed.match(L.condKw) && badEq) {
+            badEq.bad = true;
+            add(n, 'err', 'В условии «=» вместо «==»', 'Одиночное «=» — это присваивание, а для сравнения в условии нужно «==». Замени «=» на «==».');
+          }
+          if (/^print[ \t]+[^(\s=]/.test(trimmed) && !/^print[ \t]*\(/.test(trimmed)) {
+            add(n, 'warn', 'print без скобок', 'В Python 3 печать пишется со скобками: print(...). Проверь строку ' + n + '.');
+          }
+        }
+        if (lang === 'cpp') {
+          if (meaningful[0].t === 'pre') continue;
+          var hasCout = false, hasCin = false, hasL = false, hasG = false;
+          for (var ci = 0; ci < meaningful.length; ci++) {
+            var ct = meaningful[ci];
+            if ((ct.t === 'kw' || ct.t === 'id') && ct.v === 'cout') hasCout = true;
+            if ((ct.t === 'kw' || ct.t === 'id') && ct.v === 'cin') hasCin = true;
+            if (ct.t === 'op' && ct.v === '<<') hasL = true;
+            if (ct.t === 'op' && ct.v === '>>') hasG = true;
+          }
+          if (hasCout && hasG) {
+            add(n, 'err', 'У cout перепутаны стрелки', 'Вывод на экран делается через «cout <<», а «>>» — это ввод. Поменяй «>>» на «<<».');
+          }
+          if (hasCin && hasL) {
+            add(n, 'err', 'У cin перепутаны стрелки', 'Ввод с клавиатуры делается через «cin >>», а «<<» — это вывод. Поменяй «<<» на «>>».');
+          }
+          var ctrlHead = /^(?:if|else|for|while|switch|do|try|catch|namespace|case|default|class|struct|template|private|public|protected|using)\b/.test(trimmed);
+          var nextNonEmpty = '';
+          for (var nj2 = li + 1; nj2 < lineCount; nj2++) { if (lines[nj2].text.trim()) { nextNonEmpty = lines[nj2].text.trim(); break; } }
+          var isBlockEnd = /[{}]\s*$|;\s*$|:\s*$|,\s*$|\\\s*$/.test(ln.text) || (lastMean && lastMean.t === 'op' && /^[{};,:]$/.test(lastMean.v));
+          if (!ctrlHead && !isBlockEnd && !ln.cont && meaningful[0].t !== 'com' && !(nextNonEmpty && nextNonEmpty.indexOf('{') === 0)) {
+            if (/=|\(|\breturn\b|\+\+|--/.test(trimmed)) {
+              add(n, 'warn', 'Похоже, пропущена «;»', 'Инструкции в C++ заканчиваются точкой с запятой. Проверь конец строки ' + n + '.');
+            }
+          }
+          if (/^(?:class|struct)\b/.test(trimmed) && !/[{;]\s*$/.test(trimmed)) {
+            add(n, 'warn', 'class/struct без «{» или «;»', 'После объявления class/struct обычно открывается блок «{» или сразу ставится «;».');
+          }
+        }
+        if (lang === 'js') {
+          var condM = trimmed.match(/^(?:if|while)\s*\(/);
+          if (condM) {
+            var pd = 0, started = false, jsBadEq = null;
+            for (var ji = 0; ji < meaningful.length; ji++) {
+              var jt = meaningful[ji];
+              if (jt.t !== 'op') continue;
+              if (jt.v === '(') { pd++; started = true; }
+              else if (jt.v === ')') { pd--; }
+              else if (jt.v === '=' && started && pd >= 1 && !jsBadEq) jsBadEq = jt;
+            }
+            if (jsBadEq) {
+              jsBadEq.bad = true;
+              add(n, 'err', 'В условии «=» вместо «==»', 'Внутри if (...) одиночное «=» присваивает значение. Для сравнения пиши «==» или «===».');
+            }
+          }
+        }
+      }
+      var defs = sbCollectDefs37(code, L);
+      for (var wi = 0; wi < toks.length; wi++) {
+        var wt = toks[wi];
+        if (wt.t !== 'call' && wt.t !== 'id') continue;
+        var word = wt.v;
+        if (word.length < 3) continue;
+        if (L.keywords[word] || L.bools[word] || L.fns[word] || defs[word]) continue;
+        var sugg = L.typos[word];
+        if (sugg) {
+          wt.bad = true;
+          add(wt.line, 'err', 'Неизвестная команда «' + word + '»', 'Возможно, вы имели в виду «' + sugg + '»? Проверь написание.');
+          continue;
+        }
+        if (wt.t === 'call' && word.length >= 5) {
+          var best = null, bd = 2;
+          var name;
+          for (name in L.fns) { var d1 = sbDist37(word, name); if (d1 < bd) { bd = d1; best = name; } }
+          for (name in L.keywords) { var d2 = sbDist37(word, name); if (d2 < bd) { bd = d2; best = name; } }
+          if (best && bd <= 1) {
+            wt.bad = true;
+            add(wt.line, 'err', 'Неизвестная команда «' + word + '»', 'Возможно, вы имели в виду «' + best + '»? Проверь написание.');
+          }
+        }
+      }
+      for (var ei = 0; ei < issues.length; ei++) {
+        if (issues[ei].sev === 'err' && lines[issues[ei].line - 1]) lines[issues[ei].line - 1].err = true;
+      }
+      return issues;
+    }
+    var sbLastIssues37 = [];
+    var sbMentorMode37 = 'issues';
+    function sbMentorRender37(issues) {
+      var body = $('sb-mentor-body'), cnt = $('sb-mentor-count');
+      if (!body) return;
+      var errs = 0, warns = 0, i;
+      for (i = 0; i < issues.length; i++) { if (issues[i].sev === 'err') errs++; else warns++; }
+      if (cnt) cnt.textContent = (errs || warns) ? ((errs ? errs + ' ошиб.' : '') + (errs && warns ? ' · ' : '') + (warns ? warns + ' подсказ.' : '')) : 'всё чисто ✨';
+      if (!issues.length) {
+        body.innerHTML = '<div class="sb-mentor-item sb-mentor-ok">✅ Отлично! Ошибок не найдено — можно смело жать «▶️ Запустить».</div>';
+        return;
+      }
+      var html = '';
+      var shown = issues.slice(0, 40);
+      for (i = 0; i < shown.length; i++) {
+        var it = shown[i];
+        html += '<div class="sb-mentor-item ' + (it.sev === 'err' ? 'sb-mentor-err' : 'sb-mentor-warn') + '"><b>Строка ' + it.line + ' · ' + escHtml(it.title) + '</b><span>' + escHtml(it.detail) + '</span></div>';
+      }
+      if (issues.length > 40) {
+        html += '<div class="sb-mentor-item sb-mentor-warn"><b>…и ещё ' + (issues.length - 40) + '</b><span>Исправь первые подсказки — остальные, скорее всего, исчезнут сами.</span></div>';
+      }
+      body.innerHTML = html;
+    }
+    function sbMentorRenderExplain37(rows) {
+      var body = $('sb-mentor-body'), cnt = $('sb-mentor-count');
+      if (!body) return;
+      if (cnt) cnt.textContent = 'построчный разбор · ' + rows.length;
+      if (!rows.length) {
+        body.innerHTML = '<div class="sb-mentor-item sb-mentor-ok">✍️ Напиши код — и я объясню каждую строку человеческим языком.</div>';
+        return;
+      }
+      var html = '';
+      for (var i = 0; i < rows.length; i++) {
+        html += '<div class="sb-mentor-item sb-mentor-expl"><b>Строка ' + rows[i].n + ' · <code>' + escHtml(rows[i].code) + '</code></b><span>' + escHtml(rows[i].ex) + '</span></div>';
+      }
+      body.innerHTML = html;
+    }
+    function sbExplainOne37(t, lang, indent) {
+      var s = String(t == null ? '' : t);
+      var tr = s.trim();
+      if (!tr) return '';
+      var hint = indent >= 4 ? ' (с отступом — внутри блока)' : '';
+      var low = tr.toLowerCase();
+      if (lang === 'python') {
+        if (tr.indexOf('#') === 0) return 'Комментарий — пояснение для человека, Python его не выполняет.';
+        if (/^import\b/.test(low) || /^from\b/.test(low)) return 'Подключаем модуль с готовыми инструментами (например, math или random).';
+        if (/^def\b/.test(low)) return 'Объявляем свою функцию: её можно вызывать по имени ниже в программе.';
+        if (/^class\b/.test(low)) return 'Объявляем класс — шаблон для создания объектов.';
+        if (/^(for|while)\b/.test(low)) return 'Начало цикла: действия ниже с отступом повторяются несколько раз (или пока верно условие).';
+        if (/^(if|elif)\b/.test(low)) return 'Условие: если проверка в строке верна — выполняется блок с отступом ниже.';
+        if (/^else\b/.test(low)) return 'Иначе — выполняется, если предыдущие условия не сработали.';
+        if (/^(try|except|finally)\b/.test(low)) return 'Проверка ошибок: try — попробовать, except — что делать при ошибке.';
+        if (/^return\b/.test(low)) return 'Функция заканчивает работу и отдаёт результат.';
+        if (/^break\b/.test(low)) return 'Немедленно выходим из цикла.';
+        if (/^continue\b/.test(low)) return 'Пропускаем остаток шага цикла и переходим к следующему.';
+        if (/^pass\b/.test(low)) return 'Ничего не делаем — заглушка вместо тела блока.';
+        if (/^print\b/.test(low)) return 'Выводим значения на экран (в Terminal).';
+        if (/^[A-Za-z_]\w*\s*=\s*input/.test(tr)) return 'Показываем поле ввода и сохраняем то, что напечатал пользователь, в переменную.';
+        if (/^[A-Za-z_]\w*\s*=[^=]/.test(tr)) return 'Создаём переменную и кладём в неё вычисленное значение справа.';
+        if (/^[A-Za-z_]\w*\s*\(/.test(tr) || /^\w+\[.*\]\s*\(/.test(tr)) return 'Вызываем функцию или метод — она выполняет своё действие.';
+        if (hint.indexOf('отступом') >= 0) return 'Очередной шаг внутри блока выше — выполняется, когда блок запускается.';
+        return 'Выражение: Python вычисляет его значение по правилам математики и логики.';
+      }
+      if (lang === 'cpp') {
+        if (tr.indexOf('//') === 0) return 'Комментарий — пояснение для человека, компилятор его пропускает.';
+        if (tr.indexOf('#') === 0) return 'Директива препроцессора: подключаем библиотеку или настраиваем компиляцию.';
+        if (/\bmain\s*\(/.test(low)) return 'Точка входа программы — с функции main начинается выполнение любой C++-программы.';
+        if (/^for\b/.test(low) || /^while\b/.test(low) || /^do\b/.test(low)) return 'Цикл: повторяем действия в фигурных скобках (или одну инструкцию).';
+        if (/^if\b/.test(low)) return 'Условие: блок выполнится, только если условие в скобках истинно.';
+        if (/^else\b/.test(low)) return 'Иначе — выполняется, когда условие if не сработало.';
+        if (/^return\b/.test(low)) return 'Завершаем функцию и возвращаем значение (для main — код 0, «всё хорошо»).';
+        if (/cout/.test(low) && /<</.test(tr)) return 'Выводим данные на экран через поток вывода cout.';
+        if (/cin/.test(low) && />>/.test(tr)) return 'Читаем данные с клавиатуры в переменную через поток ввода cin.';
+        if (/^const\b/.test(low) || /^int\b/.test(low) || /^double\b/.test(low) || /^float\b/.test(low) || /^long\b/.test(low) || /^auto\b/.test(low) || /^char\b/.test(low) || /^bool\b/.test(low) || /^string\b/.test(low) || /^std::(string|vector|map|set)/.test(low)) {
+          if (/=/.test(tr)) return 'Создаём переменную нужного типа и сразу кладём в неё значение.';
+          return 'Объявляем переменную или объект нужного типа.';
+        }
+        if (/;\s*$/.test(tr) && /\(/.test(tr)) return 'Вызываем функцию или метод; точка с запятой завершает инструкцию.';
+        if (/;\s*$/.test(tr)) return 'Полная инструкция C++ — заканчивается точкой с запятой.';
+        return 'Часть конструкции C++ — продолжение блока или объявление.';
+      }
+      if (lang === 'js') {
+        if (tr.indexOf('//') === 0) return 'Комментарий — пояснение для человека, браузер его не выполняет.';
+        if (/^(import|export)\b/.test(low)) return 'Импорт или экспорт кода между файлами/модулями.';
+        if (/^function\b/.test(low)) return 'Объявляем функцию — блок кода, который можно вызывать по имени.';
+        if (/^(const|let|var)\b/.test(low) && /=>/.test(tr)) return 'Создаём функцию-стрелку и сохраняем её в переменную.';
+        if (/^(const|let|var)\b/.test(low)) return 'Объявляем переменную: const — без изменений, let — можно менять.';
+        if (/^(for|while)\b/.test(low)) return 'Цикл: повторяем действия, пока выполняется условие или для каждого элемента.';
+        if (/^if\b/.test(low)) return 'Условие: блок выполнится, только если выражение в скобках истинно.';
+        if (/^else\b/.test(low)) return 'Иначе — выполняется, когда условие не сработало.';
+        if (/^return\b/.test(low)) return 'Функция возвращает результат и завершается.';
+        if (/console\./.test(low)) return 'Печатаем значения в консоль (Terminal) для отладки.';
+        if (/document\./.test(low)) return 'Работаем со страницей: находим или меняем элементы HTML.';
+        if (/addEventListener/.test(low)) return 'Подписываемся на событие (клик, ввод) — обработчик запустится при нём.';
+        if (/=>/.test(tr)) return 'Функция-стрелка: компактная запись функции.';
+        if (/;\s*$/.test(tr) && /\(/.test(tr)) return 'Вызов функции или метода — выполняет действие.';
+        return 'Выражение: JavaScript вычисляет его значение на ходу.';
+      }
+      return '';
+    }
+    function sbExplain37() {
+      var code = codeEl.value;
+      if (!code.trim()) { sysMsg('✍️ Сначала напиши код — потом я его объясню.'); return; }
+      var src = code.split('\n');
+      var rows = [];
+      var limit = Math.min(src.length, 80);
+      for (var i = 0; i < limit; i++) {
+        var ex = sbExplainOne37(src[i], state.lang, (src[i].match(/^[ \t]*/) || [''])[0].length);
+        if (ex) rows.push({ n: i + 1, code: src[i].length > 120 ? src[i].slice(0, 117) + '…' : src[i], ex: ex });
+      }
+      sbMentorMode37 = 'explain';
+      sbMentorRenderExplain37(rows);
+      var mb = $('sb-mentor-body');
+      if (mb && mb.scrollIntoView) { try { mb.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (eSc37) {} }
+      sysMsg('📖 Разобрал программу построчно — объяснения в блоке «🧠 Подсказки Наставника» (' + rows.length + ' строк).');
+    }
+    var SB_TURTLE_WORDS37 = {
+      'вперёд': 'fw', 'вперед': 'fw', 'forward': 'fw', 'fd': 'fw',
+      'назад': 'bk', 'back': 'bk', 'bk': 'bk',
+      'направо': 'rt', 'right': 'rt', 'rt': 'rt',
+      'налево': 'lt', 'лево': 'lt', 'left': 'lt', 'lt': 'lt',
+      'поднять': 'pu', 'penup': 'pu', 'up': 'pu',
+      'опустить': 'pd', 'pendown': 'pd', 'down': 'pd'
+    };
+    function sbTurtleParse37(src) {
+      var textLines = String(src || '').split('\n');
+      var toks = [];
+      for (var i = 0; i < textLines.length; i++) {
+        var s = textLines[i];
+        var h = s.indexOf('#'); if (h >= 0) s = s.slice(0, h);
+        var parts = s.match(/[^\s\[\]]+|[\[\]]/g) || [];
+        for (var p = 0; p < parts.length; p++) toks.push({ w: parts[p], line: i + 1 });
+      }
+      var pos = 0;
+      function parseSeq(closed) {
+        var items = [];
+        while (pos < toks.length) {
+          var tk = toks[pos];
+          if (tk.w === ']') {
+            if (!closed) throw { message: 'Лишняя закрывающая скобка «]»', line: tk.line };
+            pos++; return items;
+          }
+          if (tk.w === '[') throw { message: 'Неожиданная открывающая скобка «[»', line: tk.line };
+          if (/^(?:повтори|повторить|повтор|repeat)$/i.test(tk.w)) {
+            pos++;
+            var numT = toks[pos];
+            if (!numT || !/^\d+$/.test(numT.w)) throw { message: 'После «повтори» нужно число повторений', line: tk.line };
+            var cnt = parseInt(numT.w, 10);
+            if (cnt < 1 || cnt > 10000) throw { message: 'Число повторов должно быть от 1 до 10000', line: numT.line };
+            pos++;
+            if (!toks[pos] || toks[pos].w !== '[') throw { message: 'После «повтори N» открой скобку «[»', line: numT.line };
+            pos++;
+            var body = parseSeq(true);
+            items.push({ rep: cnt, body: body, line: tk.line });
+            continue;
+          }
+          var lw = tk.w.toLowerCase();
+          var cmd = SB_TURTLE_WORDS37[lw];
+          if (!cmd) throw { message: 'Неизвестная команда «' + tk.w + '»', line: tk.line };
+          pos++;
+          var arg = 0;
+          if (cmd === 'fw' || cmd === 'bk') {
+            var a1 = toks[pos];
+            if (!a1 || !/^\d+$/.test(a1.w)) throw { message: 'Для команды «' + tk.w + '» нужно число шагов, например: ' + tk.w + ' 100', line: tk.line };
+            arg = parseInt(a1.w, 10); pos++;
+          } else if (cmd === 'rt' || cmd === 'lt') {
+            var a2 = toks[pos];
+            if (a2 && /^\d+$/.test(a2.w)) { arg = parseInt(a2.w, 10); pos++; } else { arg = 90; }
+          }
+          if (arg > 10000) throw { message: 'Слишком большое число — максимум 10000', line: tk.line };
+          items.push({ cmd: cmd, arg: arg, line: tk.line });
+        }
+        if (closed) throw { message: 'Не закрыта скобка «]» для «повтори»', line: toks.length ? toks[toks.length - 1].line : 1 };
+        return items;
+      }
+      if (!toks.length) throw { message: 'Программа пуста — напиши, например: повтори 4 [ вперёд 100 направо 90 ]', line: 1 };
+      return parseSeq(false);
+    }
+    function sbTurtleFlatten37(cmds) {
+      var out = [];
+      function walk(list, times) {
+        if (out.length > 20000) return;
+        for (var i = 0; i < list.length; i++) {
+          var it = list[i];
+          if (it.rep) { walk(it.body, times * it.rep); }
+          else { for (var k = 0; k < times; k++) { out.push(it); if (out.length > 20000) return; } }
+        }
+      }
+      walk(cmds, 1);
+      return out;
+    }
+    function sbTurtleRun37() {
+      var src = $('sb-turtle-src'), cv = $('sb-turtle-canvas'), st = $('sb-turtle-status');
+      if (!src || !cv) return;
+      function say(t, bad) { if (st) { st.textContent = t; st.style.color = bad ? '#f87171' : '#3fb950'; } }
+      var ast, flat;
+      try {
+        ast = sbTurtleParse37(src.value);
+        flat = sbTurtleFlatten37(ast);
+      } catch (eT) {
+        say('● Ошибка: ' + (eT && eT.message ? eT.message : 'не удалось разобрать программу') + (eT && eT.line ? ' (строка ' + eT.line + ')' : ''), true);
+        return;
+      }
+      var ctx = cv.getContext ? cv.getContext('2d') : null;
+      if (!ctx) { say('● Рисование недоступно в этом браузере', true); return; }
+      say('● Выполняется…', false);
+      var W = cv.width, H = cv.height;
+      var x = 0, y = 0, ang = 0, down = true, segs = [];
+      for (var i = 0; i < flat.length; i++) {
+        var c = flat[i];
+        if (c.cmd === 'rt') ang += c.arg;
+        else if (c.cmd === 'lt') ang -= c.arg;
+        else if (c.cmd === 'pu') down = false;
+        else if (c.cmd === 'pd') down = true;
+        else if (c.cmd === 'fw' || c.cmd === 'bk') {
+          var dd = c.cmd === 'fw' ? c.arg : -c.arg;
+          var nx = x + dd * Math.cos(ang * Math.PI / 180);
+          var ny = y + dd * Math.sin(ang * Math.PI / 180);
+          if (down) segs.push([x, y, nx, ny]);
+          x = nx; y = ny;
+        }
+      }
+      var minX = 0, maxX = 0, minY = 0, maxY = 0, s2;
+      for (var sI = 0; sI < segs.length; sI++) {
+        s2 = segs[sI];
+        minX = Math.min(minX, s2[0], s2[2]); maxX = Math.max(maxX, s2[0], s2[2]);
+        minY = Math.min(minY, s2[1], s2[3]); maxY = Math.max(maxY, s2[1], s2[3]);
+      }
+      var pad = 34;
+      var bw = Math.max(maxX - minX, 1), bh = Math.max(maxY - minY, 1);
+      var scale = Math.min((W - pad * 2) / bw, (H - pad * 2) / bh, 3);
+      if (!isFinite(scale) || scale <= 0) scale = 1;
+      var offX = W / 2 - (minX + maxX) / 2 * scale;
+      var offY = H / 2 + (minY + maxY) / 2 * scale;
+      ctx.clearRect(0, 0, W, H);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#818cf8';
+      ctx.lineCap = 'round';
+      ctx.shadowColor = 'rgba(129, 140, 248, 0.8)';
+      ctx.shadowBlur = 6;
+      ctx.beginPath();
+      for (var dI = 0; dI < segs.length; dI++) {
+        s2 = segs[dI];
+        ctx.moveTo(offX + s2[0] * scale, offY - s2[1] * scale);
+        ctx.lineTo(offX + s2[2] * scale, offY - s2[3] * scale);
+      }
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = '#34d399';
+      ctx.beginPath();
+      ctx.arc(offX + x * scale, offY - y * scale, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+      say('● Готово · линий: ' + segs.length + ' · Старт: (0, 0)', false);
+    }
+    function sbTurtle37() {
+      var old = $('sb-turtle-modal');
+      var pre = '';
+      if (/вперёд|вперед|forward|направо|right|повтори/i.test(codeEl.value)) pre = codeEl.value;
+      else pre = 'повтори 5 [ повтори 4 [ вперёд 120 направо 90 ] направо 72 ]';
+      if (old) {
+        var s0 = $('sb-turtle-src');
+        if (s0 && pre) s0.value = pre;
+        old.style.display = 'flex';
+        try { sbTurtleRun37(); } catch (e0) {}
+        return;
+      }
+      var ov = document.createElement('div');
+      ov.id = 'sb-turtle-modal';
+      ov.className = 'sb-modal';
+      ov.style.display = 'flex';
+      ov.innerHTML = '<div class="sb-modal-card sb-turtle-card">'
+        + '<div class="sb-modal-head">🐢 Черепашка (ЕГЭ №6)<button type="button" class="sb-mini" id="sb-turtle-close">✕</button></div>'
+        + '<textarea id="sb-turtle-src" rows="6" spellcheck="false" autocapitalize="off" autocomplete="off">' + escHtml(pre) + '</textarea>'
+        + '<div class="sb-turtle-row"><button type="button" class="sb-btn run" id="sb-turtle-run">▶️ Выполнить</button><span id="sb-turtle-status">● Готово</span></div>'
+        + '<canvas id="sb-turtle-canvas" width="440" height="440"></canvas>'
+        + '<div class="sb-turtle-hint">Команды: вперёд N · назад N · направо N · налево N · поднять · опустить. Циклы: повтори N [ ... ]. Черепашка рисует фигуру — так решают задачу №6 ЕГЭ!</div>'
+        + '</div>';
+      document.body.appendChild(ov);
+      $('sb-turtle-close').addEventListener('click', function () { ov.style.display = 'none'; });
+      $('sb-turtle-run').addEventListener('click', function () { try { sbTurtleRun37(); } catch (eR37) {} });
+      ov.addEventListener('click', function (e37) { if (e37.target === ov) ov.style.display = 'none'; });
+      try { sbTurtleRun37(); } catch (e37) {}
+    }
+    var hlEl = $('sb-hl');
+    var sbRafId37 = 0;
+    function sbSyncScroll37() {
+      if (hlEl) { hlEl.scrollTop = codeEl.scrollTop; hlEl.scrollLeft = codeEl.scrollLeft; }
+      gutter.scrollTop = codeEl.scrollTop;
+    }
+    function sbRefresh37() {
+      if (!hlEl) return;
+      var code = codeEl.value;
+      if (code.length > 200000) { sysMsg(' Detective 37: файл слишком большой для подсветки (>200 000 символов) — подсветка приостановлена.'); return; }
+      var toks = sbScan37(code, state.lang);
+      var lines = sbSplitLines37(toks);
+      var issues = sbLint37(code, state.lang, lines, toks);
+      sbLastIssues37 = issues;
+      sbMentorMode37 = 'issues';
+      hlEl.innerHTML = sbLinesHtml37(lines);
+      sbMentorRender37(issues);
+      sbSyncScroll37();
+    }
+    function sbQueue37() {
+      if (sbRafId37) return;
+      if (typeof window.requestAnimationFrame === 'function') {
+        sbRafId37 = window.requestAnimationFrame(function () { sbRafId37 = 0; try { sbRefresh37(); } catch (e) {} });
+      } else {
+        sbRafId37 = setTimeout(function () { sbRafId37 = 0; try { sbRefresh37(); } catch (e) {} }, 16);
+      }
+    }
+    try { codeEl.addEventListener('input', sbQueue37); } catch (eIn37) {}
+    try { codeEl.addEventListener('scroll', sbSyncScroll37); } catch (eSc37b) {}
+    try {
+      Array.prototype.forEach.call(document.querySelectorAll('#sb-langs .sb-lang-tab'), function (tb) {
+        tb.addEventListener('click', function () { setTimeout(sbQueue37, 0); });
+      });
+    } catch (eTab37) {}
+    try {
+      var explainBtn37 = $('sb-explain');
+      if (explainBtn37) explainBtn37.addEventListener('click', function () { try { sbExplain37(); } catch (eE37) {} });
+      var turtleBtn37 = $('sb-turtle');
+      if (turtleBtn37) turtleBtn37.addEventListener('click', function () { try { sbTurtle37(); } catch (eT37b) {} });
+    } catch (eBtn37) {}
+    try {
+      var proto37 = Object.getPrototypeOf(codeEl);
+      var desc37 = Object.getOwnPropertyDescriptor(proto37, 'value') || Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value');
+      if (desc37 && desc37.get && desc37.set) {
+        Object.defineProperty(codeEl, 'value', {
+          configurable: true,
+          get: function () { return desc37.get.call(codeEl); },
+          set: function (v) { desc37.set.call(codeEl, v); try { sbQueue37(); } catch (eHook37) {} }
+        });
+      }
+    } catch (eVal37) {}
+
     window.__l37sandbox37 = {
       state: state,
       templates: TEMPLATES,
@@ -882,6 +1716,7 @@
       code: function () { return codeEl.value; },
       programs: loadProgs37,
       openProgs: openProgs37,
+      engine: { sbScan37: sbScan37, sbLint37: sbLint37, sbLinesHtml37: sbLinesHtml37, sbSplitLines37: sbSplitLines37, sbDist37: sbDist37, hlEl: hlEl, sbLastIssues37: sbLastIssues37, explain37: sbExplain37, turtleParse37: sbTurtleParse37, turtle37: sbTurtle37, queue37: sbQueue37 },
       theme37: function () { return document.body.classList.contains('sb-day') ? 'day' : 'night'; }
     };
 
