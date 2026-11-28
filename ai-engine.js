@@ -1,19 +1,25 @@
 /* ============================================================
-   ai-engine.js — МОЗГ «ИИ-Наставника 37» (v4.2 Neural Engine + Википедия + стриминг)
+   ai-engine.js — МОЗГ «ИИ-Наставника 37» (v4.3 Neural Engine + каталог kb/ + Википедия + стриминг)
    МБОУ «Лицей №37» г. Нижнекамска
    Вынесено из index.html. Подключается одной строкой:
    <script src="ai-engine.js"></script>
-   База знаний: b1.txt (500 школьных карточек) + b2.txt (правила
-   живого общения и команды управления) + b3.txt (необязательный
-   единый файл сырой информации — подхватывается автоматически,
-   если существует; отсутствие файла не даёт ошибок в консоли).
+   База знаний: структурированный каталог kb/ с общим индексом
+   kb/index.json (path, title, keywords, alwaysLoad). При старте
+   движок читает лёгкий индекс и сразу подгружает только файлы с
+   alwaysLoad: true (живое общение); при каждом вопросе ученика
+   определяет 1–2 самые подходящие тематические папки по ключевым
+   словам и скачивает только их (кэшируются до перезагрузки
+   страницы). Новые карточки в любой папке kb/... (и обновлённые
+   теги в kb/index.json) подхватываются автоматически. Если
+   kb/index.json отсутствует — тихий фолбэк на старые b1.txt/b2.txt/b3.txt.
    Загружается автоматически.
    Встроено: умный калькулятор без eval(), решатель квадратных
    уравнений, перевод систем счисления, проценты, визуальный
    рендер «как у Google»: таблицы с экспортом в CSV, callouts,
    маркер-выделение, пошаговые карточки, спойлеры, файлы.
-   Двухступенчатый поиск (v4.1): сначала локальная база и
-   калькулятор; если ответа нет или карточка короче 180 символов —
+   Ленивая загрузка каталога (v4.3): локальный поиск идёт по уже
+   загруженным темам; если точного ответа нет или карточка короче
+   180 символов —
    официальное API Русской Википедии (opensearch + REST summary,
    origin=*, таймаут 8 с); офлайн — тихая деградация без ошибок.
    Стриминг (v4.2): ответ печатается плавно, ~250 символов в
@@ -29,7 +35,11 @@
     /* ============================================================
        ШАГ 5: ИИ-НАСТАВНИК 37
        ============================================================ */
-    const AI_FILES = ['b1.txt', 'b2.txt', 'b3.txt'];
+    const AI_KB_INDEX37 = 'kb/index.json';
+    const AI_FILES_LEGACY37 = ['b1.txt', 'b2.txt', 'b3.txt'];
+    let aiKbIndex37 = [];
+    let aiLoadedPaths37 = {};
+    let aiKbFetches37 = {};
     const aiKnowledge = [];
     let aiLoadedFiles = 0;
     let aiChat = [];
@@ -128,24 +138,111 @@
       if (el) el.textContent = '📚 База знаний: ' + (aiLoading37 ? 'загружаю… ' + aiLoadedFiles : 'загружено ' + aiLoadedFiles) + ' файлов (' + fmtAiNum37(aiKnowledge.length) + ' тем)';
     }
 
-    async function aiLoadFiles() {
-      if (typeof fetch !== 'function') { updateAiStatus(); return; }
-      aiLoading37 = true;
-      updateAiStatus();
-      for (let i = 0; i < AI_FILES.length; i++) {
-        const name = AI_FILES[i];
+    function aiKbEntry37(path) {
+      for (let i = 0; i < aiKbIndex37.length; i++) {
+        if (aiKbIndex37[i] && aiKbIndex37[i].path === path) return aiKbIndex37[i];
+      }
+      return null;
+    }
+
+    async function aiLoadKbPath37(path) {
+      if (!path || aiLoadedPaths37[path]) return;
+      if (aiKbFetches37[path]) { try { await aiKbFetches37[path]; } catch (eF37) {} return; }
+      aiKbFetches37[path] = (async function () {
         try {
-          const res = await fetch(encodeURI(name), { cache: 'no-cache' });
+          const res = await fetch(encodeURI(path), { cache: 'no-cache' });
           if (res.ok) {
             const text = await res.text();
             if (text && text.trim()) {
-              if (name === 'b2.txt') { try { aiLoadRules37(text); } catch (eRl37) {} }
-              else { await new Promise(function (resolve) { aiIndexFile(name, text, resolve); }); }
+              const entry = aiKbEntry37(path);
+              if (entry && entry.rules) { try { aiLoadRules37(text); } catch (eRl37) {} }
+              else { await new Promise(function (resolve) { aiIndexFile(path, text, resolve); }); }
+              aiLoadedPaths37[path] = true;
               aiLoadedFiles++;
               updateAiStatus();
             }
           }
         } catch (e) { /* file may be missing - that is fine */ }
+      })();
+      try { await aiKbFetches37[path]; } catch (eF38) {}
+    }
+
+    function aiSelectKbFiles37(query, max) {
+      const keys = aiAnalyzeQuery37(query);
+      if (!keys.length) return [];
+      const scored = [];
+      for (let i = 0; i < aiKbIndex37.length; i++) {
+        const e = aiKbIndex37[i];
+        if (!e || !e.path || aiLoadedPaths37[e.path]) continue;
+        const kws = (Array.isArray(e.keywords) ? e.keywords : []).map(function (k) { return String(k).toLowerCase(); });
+        const title = String(e.title || '').toLowerCase();
+        let s = 0;
+        for (let j = 0; j < keys.length; j++) {
+          const k = keys[j];
+          let strong = false;
+          for (let m = 0; m < kws.length; m++) {
+            const kw37 = kws[m];
+            if (kw37 === k.w || kw37 === k.stem) { strong = true; break; }
+            if (kw37.length >= 4 && (k.w.indexOf(kw37) === 0 || (k.stem.length >= 4 && k.stem.indexOf(kw37) === 0))) { strong = true; break; }
+            if (kw37.length > 4 && kw37.indexOf(k.stem) === 0) { strong = true; break; }
+          }
+          if (strong) s += 3;
+          else if (title.indexOf(k.w) !== -1 || (k.stem.length >= 4 && title.indexOf(k.stem) !== -1)) s += 1;
+          else {
+            for (let m = 0; m < kws.length; m++) {
+              if (k.w.length >= 4 && kws[m].indexOf(k.w) === 0) { s += 2; break; }
+            }
+          }
+        }
+        if (s > 0) scored.push({ path: e.path, s: s });
+      }
+      scored.sort(function (a, b) { return b.s - a.s; });
+      return scored.slice(0, max || 2).map(function (x) { return x.path; });
+    }
+
+    async function aiEnsureKb37(query) {
+      try {
+        if (!aiKbIndex37.length) return;
+        const picks = aiSelectKbFiles37(query, 2);
+        for (let i = 0; i < picks.length; i++) await aiLoadKbPath37(picks[i]);
+      } catch (eKb37) {}
+    }
+
+    async function aiLoadFiles() {
+      if (typeof fetch !== 'function') { updateAiStatus(); return; }
+      aiLoading37 = true;
+      updateAiStatus();
+      let legacy = false;
+      try {
+        const res = await fetch(AI_KB_INDEX37, { cache: 'no-cache' });
+        if (res.ok) {
+          const data = JSON.parse(await res.text());
+          const list = Array.isArray(data) ? data : (data && Array.isArray(data.files) ? data.files : []);
+          aiKbIndex37 = list.filter(function (e) { return e && e.path; });
+        } else { legacy = true; }
+      } catch (eIdx37) { legacy = true; }
+      if (legacy) {
+        for (let i = 0; i < AI_FILES_LEGACY37.length; i++) {
+          const name = AI_FILES_LEGACY37[i];
+          try {
+            const res = await fetch(encodeURI(name), { cache: 'no-cache' });
+            if (res.ok) {
+              const text = await res.text();
+              if (text && text.trim()) {
+                if (name === 'b2.txt') { try { aiLoadRules37(text); } catch (eRl37) {} }
+                else { await new Promise(function (resolve) { aiIndexFile(name, text, resolve); }); }
+                aiLoadedPaths37[name] = true;
+                aiLoadedFiles++;
+                updateAiStatus();
+              }
+            }
+          } catch (e) { /* file may be missing - that is fine */ }
+        }
+      } else {
+        for (let i = 0; i < aiKbIndex37.length; i++) {
+          const e = aiKbIndex37[i];
+          if (e && e.alwaysLoad) await aiLoadKbPath37(e.path);
+        }
       }
       aiLoading37 = false;
       updateAiStatus();
@@ -421,19 +518,28 @@
         } catch (e) { /* упадём в заглушку ниже */ }
         return 'Хм, не смог открыть эту страницу 🙈 Проверь ссылку — или попробуй позже, иногда сайты закрыты от гостей.';
       }
+      const kbQuery37 = (aiLastTopic37 && /^(продолжай|дальше|ещё|еще|подробнее|распиши|побольше|сделай таблицу|сравни|сделай файл|дай файлом)/i.test(String(text).trim())) ? aiLastTopic37 : text;
+      await aiEnsureKb37(kbQuery37);
       aiLastReasoning37 = aiAnalyzeQuery37(text);
       const local = aiSearchKnowledge(text, 3);
       const keys37 = aiLastReasoning37 || [];
-      const topT37 = local.length ? String(local[0].t || '') : '';
-      const lowTop37 = topT37.toLowerCase();
       let rel37 = 1;
       if (keys37.length && local.length) {
-        let relHits37 = 0;
-        keys37.forEach(function (k) {
-          if (lowTop37.indexOf(k.w) !== -1 || (k.stem.length >= 4 && lowTop37.indexOf(k.stem) !== -1)) relHits37++;
-        });
-        rel37 = relHits37 / keys37.length;
+        let bestRel37 = -1;
+        let bestIdx37 = 0;
+        for (let li37 = 0; li37 < local.length; li37++) {
+          const lowLi37 = String(local[li37].t || '').toLowerCase();
+          let relHits37 = 0;
+          keys37.forEach(function (k) {
+            if (lowLi37.indexOf(k.w) !== -1 || (k.stem.length >= 4 && lowLi37.indexOf(k.stem) !== -1)) relHits37++;
+          });
+          const relLi37 = relHits37 / keys37.length;
+          if (relLi37 > bestRel37) { bestRel37 = relLi37; bestIdx37 = li37; }
+        }
+        rel37 = bestRel37;
+        if (bestIdx37 > 0) { const top37 = local.splice(bestIdx37, 1)[0]; local.unshift(top37); }
       }
+      const topT37 = local.length ? String(local[0].t || '') : '';
       const schoolQ37 = /лицей/i.test(text);
       const cover37 = local.length && keys37.length ? Math.min(1, 0.6 + 0.4 * (local.length / 3)) : null;
       const composeLocal37 = function () {
@@ -444,7 +550,8 @@
         aiLastTopic37 = text.slice(0, 80);
         return composed37;
       };
-      if (local.length && (schoolQ37 || (topT37.length >= 180 && rel37 >= 0.6))) return composeLocal37();
+      const strongLocal37 = schoolQ37 || (topT37.length >= 180 && rel37 >= 0.6) || (rel37 >= 0.99 && topT37.length >= 140);
+      if (local.length && strongLocal37) return composeLocal37();
       if (typeof fetch === 'function') {
         const wiki37 = await aiWikiAnswer37(text);
         if (wiki37) {
